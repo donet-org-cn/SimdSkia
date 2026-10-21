@@ -1,10 +1,153 @@
 # SimdSkia
 
-NuGet 预览版：`SimdSkia.Avalonia` 的[完整接入说明](src/SimdSkia.Avalonia/README.md)包含可直接运行的 Windows 示例、系统字体和 AOT 发布命令。包列表、可信发布流水线及本机打包验证见 [预览发布](docs/NUGET-PREVIEW.md)。当前版本仍是受测子集，不能视为完整替代验收通过。
+独立 C# 2D 引擎，内部使用 `SimdSkia`，源码兼容层保留 `SkiaSharp.SK*`。不使用 Google Skia 绘图；字体、基础排版及图片编解码均由 C# 实现。通过 `SimdSkia.Avalonia` 可以接入 Avalonia，无需重新编译 Avalonia。
+
+当前 NuGet 版本为 **`0.1.0-preview.1`**，Avalonia 适配器固定支持 **Avalonia 12.1.4**。Windows 桌面窗口使用 CPU 软件呈现；完整兼容性和画质验收尚未全部通过。独立的 Vulkan 离屏实现尚未接入 Avalonia 窗口。
+
+## NuGet 包怎么选
+
+下列八个包均已发布 `0.1.0-preview.1`。在 Visual Studio 的 NuGet 搜索中勾选“包括预发行版”。
+
+| 包名 | 用途 |
+| --- | --- |
+| [SimdSkia.Avalonia](https://www.nuget.org/packages/SimdSkia.Avalonia/0.1.0-preview.1) | **Avalonia 应用选这个**：绘图、字体和基础文字排版后端适配器 |
+| [SimdSkia](https://www.nuget.org/packages/SimdSkia/0.1.0-preview.1) | 需要 `SkiaSharp.SK*` 源码兼容 API 时使用的依赖汇总包 |
+| [SimdSkia.Compatibility](https://www.nuget.org/packages/SimdSkia.Compatibility/0.1.0-preview.1) | `SKBitmap`、`SKCanvas` 等兼容层，也由 `SimdSkia` 汇总包引入 |
+| [SimdSkia.Core](https://www.nuget.org/packages/SimdSkia.Core/0.1.0-preview.1) | 几何、路径和绘图状态 |
+| [SimdSkia.Cpu](https://www.nuget.org/packages/SimdSkia.Cpu/0.1.0-preview.1) | CPU 光栅化、像素合成及 SIMD |
+| [SimdSkia.Text](https://www.nuget.org/packages/SimdSkia.Text/0.1.0-preview.1) | TrueType 字体解析和基础排版 |
+| [SimdSkia.Imaging](https://www.nuget.org/packages/SimdSkia.Imaging/0.1.0-preview.1) | 图片编解码和颜色处理 |
+| [SimdSkia.Gpu](https://www.nuget.org/packages/SimdSkia.Gpu/0.1.0-preview.1) | Vulkan 离屏后端，需要系统 Vulkan loader/驱动 |
+
+Avalonia 应用通常只需添加 `SimdSkia.Avalonia`，其引擎依赖会自动还原，无需额外安装 `SimdSkia` 或手动复制底层 DLL：
+
+```powershell
+dotnet add package SimdSkia.Avalonia --version 0.1.0-preview.1
+```
+
+**安装包后还必须配置启动代码。** 以下是完整的新程序示例；现有项目按后面的迁移步骤调整。
+
+## Avalonia 快速开始（Windows）
+
+使用 .NET 10 SDK，在空目录创建以下两个文件。所有 Avalonia 包统一为 **12.1.4**，无需克隆或编译本仓库。
+
+**Demo.csproj**：
+
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="SimdSkia.Avalonia" Version="0.1.0-preview.1" />
+    <PackageReference Include="Avalonia" Version="[12.1.4]" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.4]" />
+    <!-- 只使用 Win32 包内的托管窗口组件，避免引入 ANGLE 原生资源。 -->
+    <PackageDownload Include="Avalonia.Win32" Version="[12.1.4]" />
+    <Reference Include="$(NuGetPackageRoot)/avalonia.win32/12.1.4/lib/net8.0/*.dll" />
+  </ItemGroup>
+</Project>
+```
+
+**Program.cs**：
+
+```csharp
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Themes.Fluent;
+using SimdSkia.Avalonia;
+
+internal static class Program
+{
+    [STAThread]
+    public static void Main(string[] args)
+        => AppBuilder.Configure<App>()
+            .UseStandardRuntimePlatformSubsystem()
+            .UseWin32()
+            .With(new Win32PlatformOptions
+            {
+                RenderingMode = [Win32RenderingMode.Software]
+            })
+            .UseSimdSkia()
+            .StartWithClassicDesktopLifetime(args);
+}
+
+public sealed class App : Application
+{
+    public override void Initialize() => Styles.Add(new FluentTheme());
+
+    public override void OnFrameworkInitializationCompleted()
+    {
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            desktop.MainWindow = new Window
+            {
+                Title = "SimdSkia 预览",
+                Width = 600,
+                Height = 300,
+                Content = new StackPanel
+                {
+                    Margin = new Thickness(24),
+                    Spacing = 16,
+                    Children =
+                    {
+                        new TextBlock { Text = "你好，SimdSkia / Hello Avalonia", FontSize = 24 },
+                        new Button { Content = "普通 Avalonia 按钮" }
+                    }
+                }
+            };
+        }
+        base.OnFrameworkInitializationCompleted();
+    }
+}
+```
+
+在该目录运行：
+
+```powershell
+dotnet restore
+dotnet run
+```
+
+`WinExe` 避免出现额外控制台窗口。Windows 默认使用当前系统消息界面字体及受支持的已安装回退字体，无需随程序附带字体文件；中文需要系统已安装包含中文字形的静态 TrueType 字体。
+
+## 现有 Avalonia 项目如何切换
+
+1. 将项目引用的 Avalonia 系列包统一为 **12.1.4**，添加上面的 `SimdSkia.Avalonia` 包。
+2. 将项目的窗口相关引用改为示例中的 `Avalonia`、`Avalonia.Themes.Fluent` 和托管 Win32 引用。移除 `Avalonia.Desktop`、`Avalonia.Skia`、`Avalonia.Fonts.Inter` 等原版后端/字体引用及 `.WithInterFont()`；检查其他第三方包是否仍间接引入 Skia/HarfBuzz/ANGLE。
+3. 在 `Program.cs` 添加 `using SimdSkia.Avalonia;`，将 `.UsePlatformDetect()` 换成示例中的 `.UseStandardRuntimePlatformSubsystem().UseWin32().With(...).UseSimdSkia()` 启动链。保留自己的 `App`、XAML、MVVM 和窗口创建代码。
+
+`.UseSimdSkia()` 注册 Avalonia 的绘图、字体和基础排版服务，因此无需修改 Avalonia 源码。它不会把 `SkiaSharp.dll` 替换为同名程序集；直接依赖原版 SK*/GR API 或 `ISkiaSharpApiLeaseFeature` 的自定义控件仍需迁移。
+
+如需显式指定受支持的 TTF/TTC，将 `.UseSimdSkia()` 改为：
+
+```csharp
+.UseSimdSkia(options => options.FontFiles.Add(@"C:\Fonts\MyFont.ttf"))
+```
+
+显式列表会替代自动系统字体列表；随程序分发字体时，应设置复制到输出/发布目录并遵守字体许可证。Linux/macOS 尚无自动系统字体发现，本预览版的桌面窗口宿主实际验证限 Windows。更多字体、迁移及排错说明见 [Avalonia 包内 README](src/SimdSkia.Avalonia/README.md)。
+
+## Avalonia Native AOT 发布
+
+在已安装 Visual Studio C++ 工具链及 Windows SDK 的 Windows 环境，对上述示例执行：
+
+```powershell
+dotnet publish -c Release -r win-x64 -p:PublishAot=true -o publish/win-x64
+```
+
+运行 `publish/win-x64/Demo.exe`，无需安装 .NET 运行时。现有业务程序的反射、动态代码和序列化也需满足 AOT 要求。若没有窗口，先检查 `desktop.MainWindow` 是否设置，以及旧进程/单实例逻辑是否使新进程提前退出。
+
+以上两个文件与已发布 NuGet 包中的示例保持一致，并已通过仅使用 NuGet.org 源的独立还原和 Release 编译。发布流水线还使用真实 nupkg 验证了 Windows Native AOT 窗口呈现。流水线、许可证及打包验证见 [预览发布说明](docs/NUGET-PREVIEW.md)；画质、字体和 API 剩余缺口见 [兼容验证](docs/VALIDATION.md)。
+
+## 示例、实现与测试报告
 
 新增 [Avalonia Native AOT 双后端程序](examples/AvaloniaAot/README.md)：相同控件分别使用 SimdSkia 与原版，提供 Windows x64 通用及 AVX2 版本，实际比较完整发布体积、启动/绘制速度、CPU 和内存。结果见 [AOT 实测报告](docs/AVALONIA-AOT-COMPARISON.md)；既有报告是另一套 JIT/离屏基准，数据不混用。
 
-独立 C# 2D 引擎，内部使用 SimdSkia，源码兼容层使用 SkiaSharp.SK*。固定基线是 Avalonia.Skia 12.1.4 实际解析的 SkiaSharp 3.119.4。不使用 Google Skia 绘图；字体、排版和编解码都是 C#。Core/Cpu/Text/Gpu 无 NuGet 包，Imaging/Compatibility 使用固定版本纯托管 JpegLibrary；可选 Avalonia 层另有纯托管依赖，见 [许可证与依赖](docs/DEPENDENCIES.md)。
+SK* 源码兼容的固定基线是 Avalonia.Skia 12.1.4 实际解析的 SkiaSharp 3.119.4。Core/Cpu/Text/Gpu 无第三方 NuGet 依赖，Imaging/Compatibility 使用固定版本纯托管 JpegLibrary；可选 Avalonia 层另有纯托管依赖，见 [许可证与依赖](docs/DEPENDENCIES.md)。
 
 路径、抗锯齿、基本中英文 glyf TTF/TTC 字体、PNG/JPEG/部分 ICC、图像/视觉画刷、模糊/阴影、SIMD 与 Vulkan 离屏均有真实实现。**完整 Avalonia 替换尚未通过验收**：文字/曲线及部分新功能画质仍失败，通用字体排版与 Vulkan 窗口等仍有缺口。
 
@@ -70,7 +213,7 @@ dotnet run --project examples/AvaloniaControls -c Release -- --window
 
 项目附 GLSL 和 SPIR-V，普通构建不需要 shader 编译器。更改 shader 后使用 tools/build-shader.ps1 -Compiler <glslang路径>；编译器仅供开发。
 
-Git 仓库保留源码、测试夹具和文档。`baseline/`、`artifacts/`、`results/`、构建缓存及 OCR 本机配置不上传；报告中的这些路径指本机原始证据，可按所列命令重新生成。当前项目尚未选择发布授权许可证，依赖许可证单独记录在下方文档中。
+Git 仓库保留源码、测试夹具和文档。`baseline/`、`artifacts/`、`results/`、构建缓存及 OCR 本机配置不上传；报告中的这些路径指本机原始证据，可按所列命令重新生成。项目采用 [MIT 许可证](LICENSE)，第三方依赖保留各自许可证，详见下方文档。
 
 [进度](docs/PROGRESS.md) · [兼容报告](docs/COMPATIBILITY.md) · [验证与性能](docs/VALIDATION.md) · [架构](docs/ARCHITECTURE.md) · [依赖与许可证](docs/DEPENDENCIES.md)
 

@@ -1,4 +1,8 @@
-# 验证：2026-10-21
+# 验证：2026-10-22
+
+公开安装验证：八个 `0.1.0-preview.1` 包均从 NuGet.org 实际下载，包中 DLL/README 与 CI 产物逐字节一致。首页 README 的 `.csproj`、`Program.cs` 与 Avalonia 包内示例一致；从首页提取到 `artifacts/nuget-public-demo`，仅 NuGet.org 源、全新包缓存执行 restore 和 Release build，通过且 0 警告/0 错误；所有首页本地链接存在。日志为该目录中的 `restore.log`、`build.log`，包核对结果为 `artifacts/nuget-release-ci/nuget-preview/published-verification.json`。本轮修改仅为使用文档，未重新运行性能基准。
+
+## 2026-10-21 记录
 
 NuGet 预览续轮：八个包通过内容/预览版本/依赖/许可证/符号检查；从 Avalonia 包内 README 提取出的完整示例编译 0 警告/0 错误。独立 PackageReference 消费程序已实际 Native AOT 编译运行，验证 SK* 像素链路、Win32 帧、系统字体和无 CLR/JIT/Skia/HarfBuzz。全解决方案构建及 36 个行为、484 个图片、8109 个控件断言通过。最新 RemoteNetwork 启动修复版也已执行真实 AOT 登录/设置窗口测试；此前的“旧实例阻挡”状态由本轮实际运行结果更新。[流程](NUGET-PREVIEW.md)
 

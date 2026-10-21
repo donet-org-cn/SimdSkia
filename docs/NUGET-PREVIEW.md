@@ -2,6 +2,8 @@
 
 版本仅接受 `数字.数字.数字-preview.数字`，首版为 `0.1.0-preview.1`。八个包：SimdSkia、Core、Cpu、Text、Imaging、Gpu、Compatibility、Avalonia。SimdSkia 是兼容层的依赖汇总包；Avalonia 应用通常只引用适配器，不需要 SK* 汇总包。
 
+**首版已公开发布。** 2026-10-22 已确认全部八个包可从 NuGet.org 实际下载，DLL 和 README 与 CI 产物一致。[SimdSkia.Avalonia 包页面](https://www.nuget.org/packages/SimdSkia.Avalonia/0.1.0-preview.1)及 [GitHub 首页使用说明](../README.md)均提供接入示例。首页两个文件已在全新包缓存、仅 NuGet.org 源下成功还原并编译（0 警告/0 错误）。
+
 各实现包包含 net8.0 程序集、包内 README、MIT 许可证及符号包；相关第三方许可证保留。没有打包字体、Skia/HarfBuzz/ANGLE 原生库或 Vulkan loader。NuGet 页面会显示包内 README；[Avalonia 专用 README](../src/SimdSkia.Avalonia/README.md) 包含完整的双文件程序、已有应用迁移、系统字体、AOT 发布和排错步骤。
 
 ## GitHub Actions

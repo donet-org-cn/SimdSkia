@@ -1,4 +1,8 @@
-# 进度：2026-10-21
+# 进度：2026-10-22
+
+NuGet 公开发布与首页说明已完成：八个 `0.1.0-preview.1` 包均可公开下载，DLL 和 README 与成功发布的 CI 产物逐字节一致。GitHub 首页新增完整包名/用途表、安装命令、Avalonia 12.1.4 双文件程序、现有项目迁移、系统字体和 Windows AOT 发布说明。直接从首页提取两个文件，在全新包缓存、仅 NuGet.org 源下还原并编译，0 警告/0 错误；代码与已发布包内 README 示例一致。[首页](../README.md) · [发布记录](NUGET-PREVIEW.md)
+
+## 2026-10-21 记录
 
 预览发布：新增 MIT 许可、八个 `0.1.0-preview.1` NuGet 包、专用 Avalonia 中文使用 README 和 OIDC 可信发布工作流。Release 构建 0 警告/0 错误，36 个行为、484 个图片、8109 个控件断言通过；包内双文件示例已直接提取并成功编译。真实 NuGet 消费程序的系统字体 Native AOT 窗口通过，无本地 ProjectReference、无 CLR/JIT/Skia/HarfBuzz。RemoteNetwork 隐藏窗口的单实例恢复已修复，最新业务 AOT 登录/设置窗口也实际通过。[发布配置](NUGET-PREVIEW.md)
 
