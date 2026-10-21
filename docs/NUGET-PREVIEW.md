@@ -6,6 +6,8 @@
 
 ## 第二预览版 0.1.0-preview.2
 
+已公开：11 个包均完成公开下载及 CI DLL/README 内容核对，[发布流水线](https://github.com/hnlyf168/SimdSkia/actions/runs/39646305172)成功。该版本存在重叠字形与覆盖裁剪的图集顺序问题，现已在 preview.3 修复；推荐使用新版本。旧标签和包不改写。
+
 本轮增加 `SimdSkia.Avalonia.Desktop`、`SimdSkia.Avalonia.Gpu`、`SimdSkia.Gpu.Direct2D`，共 11 个包。桌面用户安装 Desktop，GPU 按需另加 Avalonia.Gpu；三个 Avalonia 包共享完整中文 README，包含三平台双文件程序、安装与迁移、GPU 配置、系统字体和 AOT。核心包仍不携带原生字体/绘图库；仅 Desktop 的官方 Avalonia.Native 依赖在 macOS 携带经允许的窗口桥。源码支持和性能结果见 [报告](DESKTOP-GPU-2026-10-22.md)，公开发布以流水线及实际下载验证为准。
 
 ```powershell

@@ -19,7 +19,7 @@ Packages target .NET 8 or later:
 | SimdSkia.Gpu.Direct2D | Windows hardware Direct2D/D3D11 canvas, C# system API bindings |
 
 ```shell
-dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.0-preview.2
+dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.0-preview.3
 ```
 
 An existing Avalonia 12.1.4 application selects the adapter explicitly:

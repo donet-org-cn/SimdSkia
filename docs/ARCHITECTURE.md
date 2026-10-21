@@ -1,5 +1,7 @@
 # 架构
 
+preview.3 当前桌面管线为 `Avalonia -> SimdSkia.Avalonia -> ICanvasBackend`，后端可为 CPU、Windows Direct2D 原生 DXGI 交换链或 Windows/Linux Vulkan 完成后回读呈现。`SimdSkia.Avalonia.Desktop` 负责 Win32/X11/官方 Cocoa 宿主；GPU 会话与窗口绑定并跨帧复用，错误上报 faulted/IsCorrupted，resize 重建。文字默认由 C# 生成有界图集，再由 GPU 合成，覆盖裁剪逐字形烘焙以保持重叠顺序；图层/滤镜可包含 CPU 工作。没有伪造 Skia GR 上下文，也未实现 macOS GPU/Metal。新模块、预算、线程和实际验证见[桌面/GPU 报告](DESKTOP-GPU-2026-10-22.md)。下面保留早期实现记录，GPU 支持范围以最新报告为准。
+
 新增另一入口：`Avalonia Controls/Layout -> SimdSkia.Avalonia -> Core/Cpu/Text/Imaging`。它实现 Avalonia 12.1.4 的平台渲染/字体/排版服务，调用自有 CPU 后端，不经过 Avalonia.Skia 或 SkiaSharp 兼容层。窗口由托管 Win32 宿主调用系统 API；适配层保存托管 framebuffer，绘制上下文释放时拷贝可见行并解锁。DPI、离屏层 Blit、窗口 resize 和资源持有有实际窗口/无头合成器断言。Avalonia GPU context 请求明确拒绝。
 
 适配层用 Clipper2 的托管实现计算布尔几何和描边轮廓；字体仍由自有 TrueType 解析器读取，GPOS pair1/2、extension 及 legacy kern0 用 C# 解释，非支持 lookup 明确报错。注册字体以 SHA-256 匹配内容共享只读数据，流/锁持有独立生命周期。控件层不能把未实现 effect 静默忽略，故后端显式实现效果接口并拒绝。

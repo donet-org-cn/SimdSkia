@@ -14,8 +14,8 @@
 | 字体格式、替换与定位特性 | 增加 glyf TTC v1/v2、face 与 sfnt 提取校验 | 基本中英及已有 kern 通过；CFF/变量/彩色、hint/LCD/复杂 OpenType/RTL 未完成 |
 | 层缓冲内存和 CPU 热点 | 已实现裁剪区域层、halo、原点与单色热路径；卷积展开 SIMD | ROI 与全层像素相同；原有完整 UI 帧前后逐字节一致，整体内存差距仍在 |
 | 完整 CPU 画质 | 未通过 | 旧图像 108/120；完整 UI 0/3；新功能 59/114，原阈值保留 |
-| Vulkan 新命令和窗口呈现 | 已实现裁切/三种采样/覆盖 clip/细曲线、多色渐变、文字纹理与窗口回读呈现；直接 swapchain 未完成 | 原回归及新 GPU 集成 12124 断言通过；原版 GPU 12/24 的旧门槛未改判通过，Linux 物理 GPU 未实测 |
-| 实际 Avalonia 控件与窗口回归 | 本机硬件与全标量 8109 项；三平台 JIT/AOT/真实 nupkg 窗口通过 | CI run 39645744951；Windows Direct2D/Vulkan GPU 和 AOT 在本机硬件单独通过，macOS GPU 未实现 |
+| Vulkan 新命令和窗口呈现 | 已实现裁切/三种采样/覆盖 clip/细曲线、多色渐变、文字纹理与窗口回读呈现；直接 swapchain 未完成 | 原回归及新 GPU 集成 12172 断言通过；原版 GPU 12/24 的旧门槛未改判通过，Linux 物理 GPU 未实测 |
+| 实际 Avalonia 控件与窗口回归 | 本机硬件与全标量 8109 项；三平台 JIT/AOT/真实 nupkg 窗口通过 | CI run 39647833834；Windows Direct2D/Vulkan GPU 和 AOT 在本机硬件单独通过，macOS GPU 未实现 |
 | API/依赖/构建/完整测试报告 | 本轮已运行并交付，完整兼容 FAIL | 425/3235 匹配、2810 缺失、0 额外；二进制不兼容；生产无原生字体/编解码 |
 | CPU/GPU 性能与内存报告 | 已交付三进程同机数据、工作集/Private/分配/CPU 与失败 gate | CPU 控件、Gaussian 内核、Vulkan 各自比较；GPU 等待 fence + 回读 |
 

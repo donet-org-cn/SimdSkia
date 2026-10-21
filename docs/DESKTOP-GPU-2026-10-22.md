@@ -20,9 +20,9 @@ AppBuilder.Configure<App>().UseSimdSkiaDesktop(o => o.UseGpu(SimdSkiaGpuBackend.
 
 ## 平台与测试
 
-GPU 初版三平台真实窗口、各自 Native AOT 编译/实际运行、真实 nupkg 完整控件窗口均通过 [CI 39645744951](https://github.com/hnlyf168/SimdSkia/actions/runs/39645744951)，受测源码提交 `3f50441b3f43257cd022f3f7d5402f3e7ec4f149`。preview.3 修复版单独重跑。此前首次宿主验证见 [CI 39635321989](https://github.com/hnlyf168/SimdSkia/actions/runs/39635321989)。
+最终 preview.3 的三平台真实窗口、各自 Native AOT 编译/实际运行、真实 nupkg 完整控件窗口均通过 [CI 39647833834](https://github.com/hnlyf168/SimdSkia/actions/runs/39647833834)，受测源码提交 `b8227eef11c8b8f654fa6b9e6b37215f14597b09`。GPU 初版另见 [CI 39645744951](https://github.com/hnlyf168/SimdSkia/actions/runs/39645744951)，首次宿主验证见 [CI 39635321989](https://github.com/hnlyf168/SimdSkia/actions/runs/39635321989)。
 
-下载 CI 产物后提取的[九条运行记录](evidence/desktop-ci-2026-10-22.json)包含 OS、架构、实际帧数、自动字体及 `NativeAot` 标志；原始日志和呈现截图由对应 CI 保留。
+下载 CI 产物后提取的[修复版九条运行记录](evidence/desktop-preview3-ci-2026-10-22.json)包含 OS、架构、实际帧数、自动字体及 `NativeAot` 标志；原始日志和呈现截图由对应 CI 保留。初版记录另存于 [GPU 初版 CI 数据](evidence/desktop-ci-2026-10-22.json)。
 
 | 平台 | 实际运行 | 字体发现 | GPU |
 | --- | --- | --- | --- |
@@ -36,7 +36,7 @@ Linux 原生 Wayland 不包含在本轮，Wayland 会话需要 XWayland；macOS 
 
 原始日志 `artifacts/desktop-final-*.log`、`artifacts/avalonia-gpu-tests.log`、`artifacts/desktop-final-tests.json`。旧 Skia 整页画质门槛和 SK* API 差距未因新增后端变成通过；不承诺完整 Skia/Avalonia 行为兼容或二进制替换。
 
-最终源码在本机 Windows x64 已以 `PublishAot=true` 发布成功，无裁剪/AOT 警告。相同原生 GUI 可执行文件分别以 CPU、Direct2D、Vulkan 运行完整控件、创建窗口并在首帧后缩放，三者通过；`NativeAot=True`，未加载 coreclr/clrjit/Skia/HarfBuzz。Direct2D 在 GTX 1050 Ti 上完成 198 条 GPU 命令、3 次原生交换链呈现、0 条不支持命令的 CPU 回退，另记录 9 条托管图层命令。日志和实际呈现截图在 `artifacts/cross-platform-aot-final/results-*`。这验证功能，不作为下表 JIT 性能测量。
+最终 preview.3 源码在本机 Windows x64 已以 `PublishAot=true` 发布成功，无裁剪/AOT 警告。相同原生 GUI 可执行文件分别以 CPU、Direct2D、Vulkan 运行完整控件、创建窗口并在首帧后缩放，三者通过；`NativeAot=True`，未加载 coreclr/clrjit/Skia/HarfBuzz。Direct2D 在 GTX 1050 Ti 上完成 132 条 GPU 命令、2 次原生交换链呈现、0 条不支持命令的 CPU 回退，另记录 6 条托管图层命令。日志和实际呈现截图在 `artifacts/cross-platform-aot-preview3/results-*`。这验证功能，不作为下表 JIT 性能测量。
 
 下面是 AOT Direct2D 的实际 GPU 呈现缓冲区截图；共享控件夹具中的“托管 CPU”等文字是固定标签，实际后端由上面的设备名和 GPU 完成/呈现计数验证。
 
