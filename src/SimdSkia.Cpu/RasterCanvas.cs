@@ -3,22 +3,28 @@ using SimdSkia;
 namespace SimdSkia.Cpu;
 
 /// <summary>Managed rasterizer with bounded immutable-geometry coverage caches.</summary>
-public sealed class RasterCanvas : ICanvasBackend
+public sealed partial class RasterCanvas : ICanvasBackend
 {
     private readonly PixelBuffer target;
     private bool disposed;
-    private readonly record struct MaskKey(PathGeometry Geometry,Matrix3 Transform,bool Antialias,RectF? Clip,bool CompactRuns);
+    private readonly record struct MaskKey(PathGeometry Geometry,Matrix3 Transform,bool Antialias,RectF? Clip,bool CompactRuns,float Tolerance);
     private readonly Dictionary<MaskKey,LinkedListNode<(MaskKey Key,CoverageMask Mask)>> masks=[];
     private readonly LinkedList<(MaskKey Key,CoverageMask Mask)> maskOrder=[];
     private long maskBytes;
     private readonly Dictionary<RectF,PathGeometry> imageRectangles=[];
     private int[] imageX=[];
     private long gradientBytes;
-    private readonly Dictionary<(LinearGradient Gradient,Matrix3 Inverse,int Left,int Right),byte[]> gradientRows=[];
+    private readonly Dictionary<(IColorShader Gradient,Matrix3 Inverse,int Left,int Right),byte[]> gradientRows=[];
     public RasterCanvas(PixelBuffer target) { ArgumentNullException.ThrowIfNull(target);target.ThrowIfDisposed();this.target=target; }
     public void Execute(in DrawingCommand command)
     {
         ObjectDisposedException.ThrowIf(disposed,this);target.ThrowIfDisposed();
+        if(!Enum.IsDefined(command.Paint.Composite))throw new NotSupportedException("Unknown compositing mode.");
+        if(command.Kind!=CommandKind.Clear&&(!command.Transform.IsFinite||!command.Transform.IsAffine))throw new NotSupportedException("Drawing requires a finite affine transform.");
+        if(command.Clip is {} clip&&!clip.IsFinite)throw new ArgumentException("Clip coordinates must be finite.");
+        if(!float.IsFinite(command.CurveTolerance)||command.CurveTolerance<=0)throw new ArgumentOutOfRangeException(nameof(command.CurveTolerance));
+        if(!Enum.IsDefined(command.Sampling))throw new ArgumentOutOfRangeException(nameof(command.Sampling));
+        if(command.CoverageClip is not null&&command.Kind==CommandKind.Clear)throw new NotSupportedException("Clear with a coverage clip is undefined; use a Source rectangle.");
         switch(command.Kind)
         {
             case CommandKind.Clear:ClearKernel.Fill(target,command.Paint.Color,CpuOptions.EnableSimd);break;
@@ -30,6 +36,7 @@ public sealed class RasterCanvas : ICanvasBackend
     }
     private void FillRectangle(in DrawingCommand command)
     {
+        if(command.CoverageClip is not null){FillPath(command with {Path=PathGeometry.Rectangle(command.Rectangle)});return;}
         var rect=command.Rectangle;var matrix=command.Transform;
         if(!rect.IsFinite)throw new ArgumentException("Rectangle coordinates must be finite.");
         rect=new(MathF.Min(rect.Left,rect.Right),MathF.Min(rect.Top,rect.Bottom),MathF.Max(rect.Left,rect.Right),MathF.Max(rect.Top,rect.Bottom));
@@ -55,9 +62,9 @@ public sealed class RasterCanvas : ICanvasBackend
                 var paint=command.Paint;
                 if(paint.Shader is null)
                 {for(int y=y0;y<y1;y++)SpanCompositor.Apply(target.GetRowSpan(y).Slice(x0*4,(x1-x0)*4),target.Format,target.Alpha,paint);return;}
-                if(paint.Shader.Start.Y==paint.Shader.End.Y&&inverse.M01==0&&paint.Color.A==255&&paint.Shader.StartColor.A==255&&paint.Shader.EndColor.A==255&&(paint.Composite is CompositeMode.Source or CompositeMode.SourceOver)&&Finite(inverse.Map(x0+.5f,y0+.5f))&&Finite(inverse.Map(x1-.5f,y1-.5f)))
+                if(paint.Shader is {} gradient&&gradient.IsHorizontal&&inverse.M01==0&&paint.Color.A==255&&gradient.IsOpaque&&(paint.Composite is CompositeMode.Source or CompositeMode.SourceOver)&&Finite(inverse.Map(x0+.5f,y0+.5f))&&Finite(inverse.Map(x1-.5f,y1-.5f)))
                 {
-                    var key=(paint.Shader,inverse,x0,x1);
+                    var key=(gradient,inverse,x0,x1);
                     if(!gradientRows.TryGetValue(key,out var colors))
                     {
                         colors=new byte[checked((x1-x0)*4)];
@@ -114,9 +121,9 @@ public sealed class RasterCanvas : ICanvasBackend
     private CoverageMask GetMask(PathGeometry geometry,in DrawingCommand command)
     {
         bool compact=command.Kind==CommandKind.FillPath;
-        var key=new MaskKey(geometry,command.Transform,command.Paint.Antialias,command.Clip,compact);
+        var key=new MaskKey(geometry,command.Transform,command.Paint.Antialias,command.Clip,compact,command.CurveTolerance);
         if(masks.TryGetValue(key,out var node)){maskOrder.Remove(node);maskOrder.AddLast(node);return node.Value.Mask;}
-        var mask=PathRasterizer.Rasterize(geometry.Flatten(command.Transform),geometry.FillRule,target.Width,target.Height,command.Paint.Antialias,command.Clip,compact);
+        var mask=PathRasterizer.Rasterize(geometry.Flatten(command.Transform,command.CurveTolerance),geometry.FillRule,target.Width,target.Height,command.Paint.Antialias,command.Clip,compact);
         long bytes=MaskBytes(mask,geometry);
         if(bytes<=16*1024*1024)
         {
@@ -136,6 +143,7 @@ public sealed class RasterCanvas : ICanvasBackend
         int left=0,top=0,right=target.Width,bottom=target.Height;
         if(text&&command.Clip is {} clip){left=SampleEdge(clip.Left,target.Width);top=SampleEdge(clip.Top,target.Height);right=SampleEdge(clip.Right,target.Width);bottom=SampleEdge(clip.Bottom,target.Height);}
         (command.ShaderTransform??command.Transform).TryInvert(out var inverse);
+        if(!mask.Dense&&TryFillHorizontalGradient(mask,command,inverse,dx,dy,left,top,right,bottom))return;
         if(mask.Dense)
         {
             for(int y=0;y<mask.Height;y++)
@@ -144,12 +152,12 @@ public sealed class RasterCanvas : ICanvasBackend
                 int start=Math.Max(left,mask.Left+dx),end=Math.Min(right,mask.Left+dx+mask.Width);if(start>=end)continue;
                 var row=target.GetRowSpan(deviceY).Slice(start*4,(end-start)*4);
                 var coverage=mask.Data.AsSpan(y*mask.Width+start-mask.Left-dx,end-start);
-                if(command.Paint.Shader is null)SpanCompositor.ApplyCoverage(row,coverage,target.Format,target.Alpha,command.Paint);
+                if(command.Paint.Shader is null)ApplyMasked(row,coverage,start,deviceY,command.Paint,command.CoverageClip);
                 else for(int x=0;x<coverage.Length;x++)
                 {
                     if(coverage[x]==0)continue;
                     var p=inverse.Map(start+x+.5f,deviceY+.5f);var color=command.Paint.Shader.Sample(p.X,p.Y);
-                    Composite(row.Slice(x*4,4),command.Paint with {Color=color with {A=PixelBuffer.Multiply(color.A,command.Paint.Color.A)}},coverage[x]);
+                    Composite(row.Slice(x*4,4),command.Paint with {Color=color with {A=PixelBuffer.Multiply(color.A,command.Paint.Color.A)}},ClipCoverage(coverage[x],start+x,deviceY,command.CoverageClip));
                 }
             }
             return;
@@ -160,16 +168,17 @@ public sealed class RasterCanvas : ICanvasBackend
             int start=Math.Max(left,run.X+dx),end=Math.Min(right,run.X+dx+run.Length);if(start>=end)continue;
             var row=target.GetRowSpan(y);
             if(command.Paint.Shader is null)
-                SpanCompositor.Apply(row.Slice(start*4,(end-start)*4),target.Format,target.Alpha,command.Paint,run.Coverage);
+                ApplyMasked(row.Slice(start*4,(end-start)*4),start,y,command.Paint,run.Coverage,command.CoverageClip);
             else for(int x=start;x<end;x++)
             {
                 var p=inverse.Map(x+.5f,y+.5f);var color=command.Paint.Shader.Sample(p.X,p.Y);
-                Composite(row.Slice(x*4,4),command.Paint with {Color=color with {A=PixelBuffer.Multiply(color.A,command.Paint.Color.A)}},run.Coverage);
+                Composite(row.Slice(x*4,4),command.Paint with {Color=color with {A=PixelBuffer.Multiply(color.A,command.Paint.Color.A)}},ClipCoverage(run.Coverage,x,y,command.CoverageClip));
             }
         }
     }
     private void DrawImage(in DrawingCommand command)
     {
+        if(command.ImageSource is not null||command.Sampling!=ImageSampling.Nearest||command.CoverageClip is not null){DrawSampledImage(command);return;}
         var image=command.Image??throw new ArgumentException("Image command requires pixels.");image.ThrowIfDisposed();
         if(!command.Transform.TryInvert(out var inverse))return;var rect=command.Rectangle;if(rect.IsEmpty)return;
         if(command.Transform.IsAffine&&command.Transform.M01==0&&command.Transform.M10==0&&!command.Paint.Antialias&&!image.GetPixelSpan().Overlaps(target.GetPixelSpan()))

@@ -7,7 +7,7 @@ namespace SimdSkia.Cpu;
 // Coverage is independent of color, target pixels, pixel format and hard clip.
 internal static class TextCoverageCache
 {
-    private readonly record struct Key(PathGeometry Geometry,Matrix3 Matrix,bool Antialias);
+    private readonly record struct Key(PathGeometry Geometry,Matrix3 Matrix,bool Antialias,float Tolerance);
     private sealed record Entry(Key Key,CoverageMask Mask,long Bytes);
     private static readonly object gate=new();
     private static readonly Dictionary<Key,LinkedListNode<Entry>> entries=[];
@@ -38,9 +38,9 @@ internal static class TextCoverageCache
         int w=x1-x0,h=y1-y0;if(w<=0||h<=0||w>32768||h>32768||(long)w*h>4*1024*1024)return false;
         // Always evaluate on the local sample grid, also on cache misses. Integer
         // scrolling therefore never changes glyph shape through float cancellation.
-        var local=m with {M02=m.M02-x0,M12=m.M12-y0};var key=new Key(geometry,local,command.Paint.Antialias);
+        var local=m with {M02=m.M02-x0,M12=m.M12-y0};var key=new Key(geometry,local,command.Paint.Antialias,command.CurveTolerance);
         if(Enabled)lock(gate)if(entries.TryGetValue(key,out var node)){order.Remove(node);order.AddLast(node);mask=node.Value.Mask;return true;}
-        mask=PathRasterizer.Rasterize(geometry.Flatten(local),geometry.FillRule,w,h,command.Paint.Antialias,compactRuns:true);
+        mask=PathRasterizer.Rasterize(geometry.Flatten(local,command.CurveTolerance),geometry.FillRule,w,h,command.Paint.Antialias,compactRuns:true);
         long size=mask.Data.LongLength+(long)mask.Runs.Length*16+(long)geometry.Segments.Length*32;
         if(!Enabled||size>MaximumBytes||Interlocked.Increment(ref uses.GetValue(geometry,static _=>new()).Count)<2)return true;
         lock(gate)

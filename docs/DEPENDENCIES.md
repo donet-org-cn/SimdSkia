@@ -1,5 +1,13 @@
 # 依赖与许可证
 
+新增可选第七模块 `SimdSkia.Avalonia`：`Avalonia 12.1.4`（MIT，控件平台契约）、`Clipper2 2.0.0`（BSL-1.0，布尔几何/描边）；传递包 `Avalonia.BuildServices 11.3.2`、`Avalonia.Remote.Protocol 12.1.4`、`MicroCom.Runtime 0.11.6`（MIT，构建/协议/托管 interop）。这五个固定包没有原生运行资产，不调用 Skia/HarfBuzz 进行绘制/排版；原六模块的零 NuGet 约束保持。许可副本在 `docs/licenses`，适配层输出携带 Avalonia/Clipper 通知。
+
+真实 UI 示例另用 `Avalonia.Themes.Fluent 12.1.4`（MIT，托管主题资源）。`Avalonia.Win32`、`Avalonia.Headless` 的固定 12.1.4 包仅通过 PackageDownload 取托管 DLL，未解析 ANGLE/HarfBuzz 传递依赖；Win32 自身调用操作系统 API。无头初始化仅用于示例/测试，固定契约的私有入口明确记录在 `HeadlessHost.cs`。隔离 `AvaloniaControls.Reference` 才安装官方 Avalonia.Skia/Avalonia.HarfBuzz 和其原生组件。生产引用图和输出由 `check-production-dependencies.ps1` 检查。
+
+新增 ZCOOL XiaoWei Regular 固定 OFL 简体中文 TTF 夹具，不含原生代码；源提交、SHA 与许可证获取固定在 `fetch-avalonia-font.ps1`，许可证副本 `docs/licenses/ZCOOLXiaoWei-OFL.txt`。其字形图像/排版数字用于验收，字体二进制位于被忽略的 baseline，不再分发系统字体。
+
+以下为原六模块和此前隔离测试依赖记录；其中“Avalonia 仅探针/非产品”的描述不包含新适配层。
+
 产品 Core/Cpu/Text/Imaging/Gpu/Compatibility 六个程序集没有第三方 NuGet 包。字体、排版、图片编解码均由 C# 实现，不调用 Skia、FreeType、HarfBuzz、System.Drawing 或 native zlib。GPU 按用户授权调用系统 Vulkan loader/驱动，shader 是 GLSL/SPIR-V。
 
 | 组件 | 用途 | 许可证/原生性质 | 产品关系 |

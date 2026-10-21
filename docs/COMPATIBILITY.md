@@ -6,6 +6,8 @@
 
 ## 三种兼容
 
+新 `SimdSkia.Avalonia` 是独立的平台服务适配层，已运行固定 Avalonia 12.1.4 的受测 CPU 控件与 Win32 软件窗口；见 [接入限制](AVALONIA-INTEGRATION.md)。它不要求编译原 Avalonia.Skia 到替代 SK* 类型，不改变下述 SkiaSharp 清单，也不承诺其 Skia 专属自绘控件或任何已编译 SkiaSharp 依赖能直接替换。
+
 | 维度 | 当前结果 |
 | --- | --- |
 | 源码 | 已实现子集可重编译；同一绘图/行为调用分别编译至原版与替代。37 类型/425 公共项与基线匹配，2810 缺口；尚不支持完整 Avalonia 后端。 |

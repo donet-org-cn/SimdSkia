@@ -18,6 +18,13 @@ public sealed class PixelBuffer : IDisposable
 
     // Only decoders that initialize every visible byte may rent uninitialized storage.
     internal static PixelBuffer RentRgba(int width,int height)=>new(width,height,PixelFormat.Rgba8888,AlphaFormat.Straight,0,true);
+    /// <summary>Rents bounded reusable storage and initializes all bytes before exposing it.</summary>
+    public static PixelBuffer Rent(int width,int height,PixelFormat format=PixelFormat.Bgra8888,AlphaFormat alpha=AlphaFormat.Premultiplied)
+    {
+        var buffer=new PixelBuffer(width,height,format,alpha,0,true);buffer.data!.AsSpan().Clear();
+        if(alpha==AlphaFormat.Opaque)for(int y=0;y<height;y++)for(int x=0;x<width;x++)buffer.data![y*buffer.RowBytes+x*4+3]=255;
+        return buffer;
+    }
 
     private PixelBuffer(int width,int height,PixelFormat format,AlphaFormat alpha,int rowBytes,bool pooled)
     {
@@ -45,6 +52,9 @@ public sealed class PixelBuffer : IDisposable
     }
     /// <summary>Independent lifetime over the same managed storage, retained by the GC.</summary>
     public PixelBuffer Share() => new(this);
+
+    /// <summary>Pins a retained storage lease until disposed; used only at platform framebuffer boundaries.</summary>
+    public PixelBufferPin Pin() { ThrowIfDisposed(); return new(this,data!); }
 
     public Span<byte> GetRowSpan(int y)
     {

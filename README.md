@@ -6,7 +6,17 @@
 
 2026-10-21 的 CPU、GPU、真实 OCR、CPU 时间和内存对比见 [本轮优化报告](docs/OPTIMIZATION-2026-10-21.md)。保留优化前数据及失败的画质检查。
 
-最新 [Avalonia 使用面与专项优化](docs/AVALONIA-OPTIMIZATION.md)：定位 text blob、跨画布缓存、滚动/DPI 和图片行优化已有可运行代码与多进程对照，含冷启动、CPU 和内存。文字画质与完整 API/窗口 GPU 接入仍未完成，不能直接替换 Avalonia.Skia。
+最新 [真实 Avalonia 接入](docs/AVALONIA-INTEGRATION.md)：新增 `UseSimdSkia`，已运行 Avalonia 12.1.4 的按钮、输入框、复选框、中文文本、图片、圆角和路径，实际验证 Win32 软件窗口呈现、输入及 DPI/resize。[实际控件 CPU/内存对比](docs/AVALONIA-CONTROLS-PERFORMANCE.md)：完整控件约 1.47 ms/帧，原版默认 0.86、开启完整透明组 3.18；工作集约 119 vs 96 MiB。报告同时保留两种透明度语义，画质 gate、完整 API 和窗口 GPU 仍未完成。原版仅用于隔离对照，不是替代程序集直接加载。
+
+```powershell
+dotnet build SimdSkia.sln -c Release
+powershell -NoProfile -File tools/fetch-avalonia-font.ps1
+dotnet run --project examples/AvaloniaControls -c Release
+# Windows 交互窗口
+dotnet run --project examples/AvaloniaControls -c Release -- --window
+```
+
+![SimdSkia 实际 Avalonia 控件](docs/images/avalonia-controls-managed.png)
 
 ## 构建和运行
 

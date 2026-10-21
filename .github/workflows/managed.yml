@@ -22,6 +22,17 @@ jobs:
       - run: dotnet run --project tests/Features -c Release --no-build -- baseline/fonts/ZenOldMincho-Regular.ttf
       - run: dotnet run --project tests/Optimization -c Release --no-build -- baseline/fonts/ZenOldMincho-Regular.ttf
       - run: dotnet run --project tests/Avalonia -c Release --no-build -- baseline/fonts/ZenOldMincho-Regular.ttf
+      - name: Fetch licensed Simplified Chinese UI fixture
+        shell: pwsh
+        run: ./tools/fetch-avalonia-font.ps1
+      - run: dotnet run --project tests/AvaloniaControls -c Release --no-build -- --frames 5 --output artifacts/avalonia-controls/ci
+      - run: dotnet run --project examples/AvaloniaControls -c Release --no-build
+      - name: Verify real Win32 software presentation
+        if: runner.os == 'Windows'
+        run: dotnet run --project examples/AvaloniaControls -c Release --no-build -- --smoke-window
+      - name: Check native dependency isolation
+        shell: pwsh
+        run: ./tools/check-production-dependencies.ps1
       - name: Verify scalar fallback
         shell: pwsh
         run: |
@@ -29,4 +40,6 @@ jobs:
           dotnet tests/Optimization/bin/Release/net8.0/Optimization.dll baseline/fonts/ZenOldMincho-Regular.ttf
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           dotnet tests/Avalonia/bin/Release/net8.0/SimdSkia.Avalonia.Tests.dll baseline/fonts/ZenOldMincho-Regular.ttf
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet tests/AvaloniaControls/bin/Release/net8.0/SimdSkia.Avalonia.Controls.Tests.dll --frames 5 --output artifacts/avalonia-controls/ci-scalar
           exit $LASTEXITCODE

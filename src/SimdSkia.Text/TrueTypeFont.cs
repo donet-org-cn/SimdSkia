@@ -9,6 +9,14 @@ public sealed class TrueTypeFont
     private readonly byte[] bytes;
     private readonly Dictionary<string,(int Offset,int Length)> tables=[];
     private readonly Dictionary<ushort,PathGeometry> glyphs=[];
+    private PairPositioning? positioning;
+    public GlyphPairAdjustment GetDefaultHorizontalPairAdjustment(ushort first,ushort second)
+    {
+        if(first>=GlyphCount||second>=GlyphCount)throw new ArgumentOutOfRangeException(nameof(first));
+        var table=Volatile.Read(ref positioning);
+        if(table is null){var created=new PairPositioning(this);table=Interlocked.CompareExchange(ref positioning,created,null)??created;}
+        return table.Get(first,second);
+    }
     private readonly int[] offsets;
     private readonly int cmapOffset,cmapLength,cmapFormat,metrics;
     public int UnitsPerEm {get;}
@@ -17,6 +25,12 @@ public sealed class TrueTypeFont
     public short Descender {get;}
     public short LineGap {get;}
     public RectF FontBounds {get;}
+    public bool TryGetTable(string tag,out ReadOnlyMemory<byte> table)
+    {
+        if(tables.TryGetValue(tag,out var entry)){table=bytes.AsMemory(entry.Offset,entry.Length);return true;}
+        table=default;return false;
+    }
+    public Stream OpenStream()=>new MemoryStream(bytes,0,bytes.Length,false,false);
     public TrueTypeFont(ReadOnlySpan<byte> data)
     {
         bytes=data.ToArray();if(bytes.Length<12)throw new InvalidDataException("Truncated font.");

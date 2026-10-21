@@ -4,6 +4,7 @@ public readonly record struct Rgba32(byte R, byte G, byte B, byte A);
 public enum PixelFormat { Rgba8888, Bgra8888 }
 public enum AlphaFormat { Opaque, Premultiplied, Straight }
 public enum CompositeMode { SourceOver, Source, Clear }
+public enum ImageSampling { Nearest, Bilinear, Mitchell }
 
 public readonly record struct RectF(float Left, float Top, float Right, float Bottom)
 {
@@ -47,7 +48,14 @@ public readonly record struct Matrix3(
     }
 }
 
-public readonly record struct Paint(Rgba32 Color, CompositeMode Composite,bool Antialias=false,LinearGradient? Shader=null);
+/// <summary>Immutable color function; advertised horizontal/opaque properties must remain true for its lifetime.</summary>
+public interface IColorShader
+{
+    Rgba32 Sample(float x,float y);
+    bool IsHorizontal=>false;
+    bool IsOpaque=>false;
+}
+public readonly record struct Paint(Rgba32 Color, CompositeMode Composite,bool Antialias=false,IColorShader? Shader=null);
 public enum CommandKind { Clear, FillRectangle,FillPath,DrawImage }
 public readonly record struct DrawingCommand(CommandKind Kind, RectF Rectangle, Matrix3 Transform, Paint Paint)
 {
@@ -57,6 +65,10 @@ public readonly record struct DrawingCommand(CommandKind Kind, RectF Rectangle, 
     public Matrix3? ShaderTransform {get;init;}
     /// <summary>Immutable text geometry may cache coverage independently of an integer device translation.</summary>
     public bool CacheTextCoverage {get;init;}
+    public float CurveTolerance {get;init;}=0.125f;
+    public CoverageClip? CoverageClip {get;init;}
+    public RectF? ImageSource {get;init;}
+    public ImageSampling Sampling {get;init;}
     public static DrawingCommand Clear(Rgba32 color) => new(CommandKind.Clear, default, Matrix3.Identity, new(color, CompositeMode.Source));
     public static DrawingCommand FillRectangle(RectF rect, Matrix3 transform, Paint paint) => new(CommandKind.FillRectangle, rect, transform, paint);
 }

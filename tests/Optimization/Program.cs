@@ -108,7 +108,7 @@ foreach(bool simd in new[]{false,true})foreach(var format in Enum.GetValues<Pixe
             var paint=new Paint(Color(),mode,true);
             var c=new DrawingCommand(CommandKind.FillPath,default,new(1,0,.03125f,0,1,.0625f,0,0,1),paint){Path=geometry,Clip=new(2.03125f,3.09375f,92.96875f,59.9375f)};
             reference.Execute(c);actual.Execute(c);Equal(a,b,"dense mask all layouts");
-            c=c with {Paint=paint with {Shader=new(new(0,0),new(97,63),Color(),Color())}};
+            c=c with {Paint=paint with {Shader=new LinearGradient(new(0,0),new(97,63),Color(),Color())}};
             reference.Execute(c);actual.Execute(c);Equal(a,b,"dense cache changed shader");
         }
     }

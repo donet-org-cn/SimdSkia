@@ -1,5 +1,13 @@
 # 架构
 
+新增另一入口：`Avalonia Controls/Layout -> SimdSkia.Avalonia -> Core/Cpu/Text/Imaging`。它实现 Avalonia 12.1.4 的平台渲染/字体/排版服务，调用自有 CPU 后端，不经过 Avalonia.Skia 或 SkiaSharp 兼容层。窗口由托管 Win32 宿主调用系统 API；适配层保存托管 framebuffer，绘制上下文释放时拷贝可见行并解锁。DPI、离屏层 Blit、窗口 resize 和资源持有有实际窗口/无头合成器断言。Avalonia GPU context 请求明确拒绝。
+
+适配层用 Clipper2 的托管实现计算布尔几何和描边轮廓；字体仍由自有 TrueType 解析器读取，GPOS pair1/2、extension 及 legacy kern0 用 C# 解释，非支持 lookup 明确报错。注册字体以 SHA-256 匹配内容共享只读数据，流/锁持有独立生命周期。控件层不能把未实现 effect 静默忽略，故后端显式实现效果接口并拒绝。
+
+命令增加 AA `CoverageClip`、源图片矩形、采样方法、曲线容差和不可变 `IColorShader`。CPU 实现真实覆盖率相乘、PMA 空间过滤、轴向采样和 SIMD SrcOver。Vulkan 暂时拒绝这些新增状态，不能据 CPU 支持推断 GPU 支持。裁剪全局 LRU 最多 64 项/8 MiB，文字/形状归一化 coverage 缓存沿用最多 512 项/16 MiB，key 包含曲线容差；绘制状态和像素不进入形状 key。分组像素来自已清零的有界像素池，跟踪实际改动范围并按组合成；并非逐 draw 乘不透明度。
+
+具体接口及版本约束见 [真实 Avalonia 接入](AVALONIA-INTEGRATION.md)。以下仍描述原 SK* 入口，其 API 覆盖率单独维护。
+
     SkiaSharp.SK* / SimdSkia.VulkanSurface / TextRendering
                          |
     SimdSkia.Compatibility：验证、状态、快照、所有权

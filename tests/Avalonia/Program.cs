@@ -72,7 +72,7 @@ foreach(var alpha in Enum.GetValues<AlphaFormat>())
         using var expected=new PixelBuffer(97,61,format,alpha,97*4+7);using var actual=new PixelBuffer(97,61,format,alpha,97*4+7);
         random.NextBytes(expected.GetPixelSpan());expected.GetPixelSpan().CopyTo(actual.GetPixelSpan());
         var color=new Rgba32((byte)random.Next(256),(byte)random.Next(256),(byte)random.Next(256),(byte)random.Next(256));
-        var p=new Paint(color,(CompositeMode)(iteration%3),iteration%5!=0,iteration%4==0?new(new(0,0),new(40,40),new(0,40,80,190),new(90,80,10,240)):null);
+        var p=new Paint(color,(CompositeMode)(iteration%3),iteration%5!=0,iteration%4==0?new LinearGradient(new(0,0),new(40,40),new(0,40,80,190),new(90,80,10,240)):null);
         var command=new DrawingCommand(CommandKind.FillPath,default,transform,p){Path=shape,CacheTextCoverage=true,Clip=iteration%3==0?new RectF(9,8,67,54):null};
         TextCoverageCache.Enabled=false;using(var canvas=new RasterCanvas(expected))canvas.Execute(command);
         TextCoverageCache.Enabled=true;

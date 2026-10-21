@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><AllowUnsafeBlocks>true</AllowUnsafeBlocks><RestorePackagesWithLockFile>true</RestorePackagesWithLockFile></PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="[12.1.4]" GeneratePathProperty="true" ExcludeAssets="compile" />
+    <Reference Include="$(PkgAvalonia)/lib/net8.0/*.dll" />
+    <PackageReference Include="Avalonia.Skia" Version="[12.1.4]" />
+    <PackageReference Include="SkiaSharp" Version="[3.119.4]" />
+    <PackageReference Include="Avalonia.HarfBuzz" Version="[12.1.4]" />
+    <PackageReference Include="HarfBuzzSharp" Version="[8.3.1.3]" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.4]" />
+    <PackageDownload Include="Avalonia.Headless" Version="[12.1.4]" />
+    <Reference Include="$(NuGetPackageRoot)/avalonia.headless/12.1.4/lib/net8.0/Avalonia.Headless.dll" />
+    <Compile Include="../AvaloniaControls/ControlScene.cs" Link="ControlScene.cs" />
+    <Compile Include="../AvaloniaControls/HeadlessHost.cs" Link="HeadlessHost.cs" />
+    <Compile Include="../AvaloniaControls/Program.cs" Link="Program.cs" />
+  </ItemGroup>
+</Project>

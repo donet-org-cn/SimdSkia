@@ -136,10 +136,13 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
     public void Execute(in DrawingCommand command)
     {
         Validate();if(!Enum.IsDefined(command.Kind)||!Enum.IsDefined(command.Paint.Composite))throw new NotSupportedException("Unknown Vulkan drawing command/composite mode.");
+        if(command.CoverageClip is not null||command.ImageSource is not null||command.Sampling!=ImageSampling.Nearest||command.CurveTolerance!=0.125f)
+            throw new NotSupportedException("Vulkan coverage clips, cropped/filtered sampling and custom curve tolerance are not implemented.");
         if(!command.Transform.IsFinite||!command.Transform.IsAffine)throw new NotSupportedException("Vulkan drawing requires a finite affine transform.");
         if(!command.Rectangle.IsFinite)throw new ArgumentException("Rectangle coordinates must be finite.");
         if(command.Clip is {} clip&&!clip.IsFinite)throw new ArgumentException("Clip coordinates must be finite.");
-        if(command.Paint.Shader is {} shader)
+        if(command.Paint.Shader is not null and not LinearGradient)throw new NotSupportedException("Vulkan supports two-stop linear gradient shaders only.");
+        if(command.Paint.Shader is LinearGradient shader)
         {float dx=shader.End.X-shader.Start.X,dy=shader.End.Y-shader.Start.Y;if(!float.IsFinite(dx*dx+dy*dy))throw new NotSupportedException("Gradient coordinates exceed Vulkan float32 precision.");}
         if(pending.Count>=128)Flush();EdgeEntry? edges=null;
         if(command.Kind==CommandKind.FillPath)
@@ -278,7 +281,7 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
         floats[12]=rect.Left;floats[13]=rect.Top;floats[14]=rect.Right;floats[15]=rect.Bottom;
         words[19]=(uint)(item.Texture?.Width??1);words[20]=(uint)(item.Texture?.Height??1);
         (cmd.Kind==CommandKind.FillPath?cmd.ShaderTransform??cmd.Transform:cmd.Transform).TryInvert(out var inverse);floats[22]=inverse.M00;floats[23]=inverse.M01;floats[24]=inverse.M02;floats[25]=inverse.M10;floats[26]=inverse.M11;floats[27]=inverse.M12;
-        if(cmd.Paint.Shader is {} gradient){words[16]=1;words[17]=Pack(gradient.StartColor);words[18]=Pack(gradient.EndColor);floats[28]=gradient.Start.X;floats[29]=gradient.Start.Y;floats[30]=gradient.End.X;floats[31]=gradient.End.Y;}
+        if(cmd.Paint.Shader is LinearGradient gradient){words[16]=1;words[17]=Pack(gradient.StartColor);words[18]=Pack(gradient.EndColor);floats[28]=gradient.Start.X;floats[29]=gradient.Start.Y;floats[30]=gradient.End.X;floats[31]=gradient.End.Y;}
         if(cmd.Kind==CommandKind.FillRectangle&&cmd.Transform.M01==0&&cmd.Transform.M10==0)
         {
             words[32]=1;var a=cmd.Transform.Map(rect.Left,rect.Top);var b=cmd.Transform.Map(rect.Right,rect.Bottom);

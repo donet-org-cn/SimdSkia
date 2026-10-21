@@ -139,8 +139,10 @@ public sealed class PathGeometry
         new(PathVerb.Line,new(rect.Right,rect.Bottom)),new(PathVerb.Line,new(rect.Left,rect.Bottom)),new(PathVerb.Close,default)]);
 }
 
-public sealed record LinearGradient(PointF Start,PointF End,Rgba32 StartColor,Rgba32 EndColor)
+public sealed record LinearGradient(PointF Start,PointF End,Rgba32 StartColor,Rgba32 EndColor):IColorShader
 {
+    public bool IsHorizontal=>Start.Y==End.Y;
+    public bool IsOpaque=>StartColor.A==255&&EndColor.A==255;
     public Rgba32 Sample(float x,float y)
     {
         if(!float.IsFinite(Start.X)||!float.IsFinite(Start.Y)||!float.IsFinite(End.X)||!float.IsFinite(End.Y)||!float.IsFinite(x)||!float.IsFinite(y))throw new ArgumentException("Gradient coordinates must be finite.");

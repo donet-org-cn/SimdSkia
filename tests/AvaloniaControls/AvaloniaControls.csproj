@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><AssemblyName>SimdSkia.Avalonia.Controls.Tests</AssemblyName><DefineConstants>$(DefineConstants);MANAGED</DefineConstants><AllowUnsafeBlocks>true</AllowUnsafeBlocks><RestorePackagesWithLockFile>true</RestorePackagesWithLockFile></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/SimdSkia.Avalonia/SimdSkia.Avalonia.csproj" />
+    <PackageReference Include="Avalonia" Version="[12.1.4]" GeneratePathProperty="true" ExcludeAssets="compile" />
+    <Reference Include="$(PkgAvalonia)/lib/net8.0/*.dll" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.4]" />
+    <PackageDownload Include="Avalonia.Headless" Version="[12.1.4]" />
+    <Reference Include="$(NuGetPackageRoot)/avalonia.headless/12.1.4/lib/net8.0/Avalonia.Headless.dll" />
+  </ItemGroup>
+  <ItemGroup><None Update="fixtures/*.json" CopyToOutputDirectory="PreserveNewest" /></ItemGroup>
+</Project>

@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><AllowUnsafeBlocks>true</AllowUnsafeBlocks><RestorePackagesWithLockFile>true</RestorePackagesWithLockFile></PropertyGroup>
+  <ItemGroup>
+    <!-- Avalonia's consumer ref assemblies deliberately prohibit implementing backend contracts.
+         Compile this fixed-version adapter against its unmodified runtime assemblies instead. -->
+    <PackageReference Include="Avalonia" Version="[12.1.4]" GeneratePathProperty="true" ExcludeAssets="compile" />
+    <Reference Include="$(PkgAvalonia)/lib/net8.0/*.dll" />
+    <PackageReference Include="Clipper2" Version="[2.0.0]" />
+    <ProjectReference Include="../SimdSkia.Core/SimdSkia.Core.csproj" />
+    <ProjectReference Include="../SimdSkia.Cpu/SimdSkia.Cpu.csproj" />
+    <ProjectReference Include="../SimdSkia.Text/SimdSkia.Text.csproj" />
+    <ProjectReference Include="../SimdSkia.Imaging/SimdSkia.Imaging.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="../../docs/licenses/Clipper2-BSL-1.0.txt" Link="licenses/Clipper2-BSL-1.0.txt" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="licenses" />
+    <None Include="../../docs/licenses/Avalonia-MIT.txt" Link="licenses/Avalonia-MIT.txt" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="licenses" />
+  </ItemGroup>
+</Project>
