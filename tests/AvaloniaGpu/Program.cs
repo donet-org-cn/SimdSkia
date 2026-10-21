@@ -38,6 +38,18 @@ foreach (var format in Enum.GetValues<PixelFormat>())
     gpu.Execute(DrawingCommand.FillRectangle(new(2, 32, 10, 38), Matrix3.Identity, new(new(255, 0, 255, 255), CompositeMode.SourceOver)));
     gpu.Flush();
     Check(target.ReadPixel(5, 35) == new Rgba32(255, 0, 255, 255) && target.ReadPixel(5, 5) == new Rgba32(255, 0, 0, 255), "Persistent GPU target retains the preceding completed frame.");
+    // Fractional clipping must happen for each glyph before overlapping glyphs blend.
+    foreach(byte opacity in new byte[]{128,255})foreach(byte coverageValue in new byte[]{64,128})
+    {
+        var fractionalClip=new CoverageClip(0,0,48,40,Enumerable.Range(0,48*40).Select(i=>(byte)(coverageValue+i%48%7*17)).ToArray());
+        foreach(float origin in new[]{0f,1.25f,5.25f})
+        {
+            var clippedRun=new DrawingCommand(CommandKind.DrawGlyphRun,default,Matrix3.Identity with{M02=origin},new(new(0,0,0,opacity),CompositeMode.SourceOver)){GlyphRun=run,CoverageClip=fractionalClip};
+            Both(DrawingCommand.Clear(new(255,255,255,255)));Both(clippedRun);gpu.Flush();
+            int overlapX=7+(int)MathF.Floor(origin);
+            Check(Math.Abs(target.ReadPixel(overlapX,26).R-expected.ReadPixel(overlapX,26).R)<=1,"Fractional clip preserves overlapping glyph alpha order and cached scroll/mask identity.");
+        }
+    }
     var strict = new SimdSkiaOptions(); strict.UseGpu(backend, presentation: SimdSkiaGpuPresentation.FramebufferReadback);
     using var strictTarget = PixelBuffer.Rent(8, 8); using var strictCanvas = strict.CanvasBackendFactory!(strictTarget);
     bool rejected = false;

@@ -19,7 +19,9 @@ if args.runs<1:raise SystemExit('runs must be positive')
 if (args.output/'manifest.json').exists():raise SystemExit('Choose a new output directory to preserve the previous measurement.')
 args.output.mkdir(parents=True,exist_ok=True)
 binary=args.executable.resolve();font=args.font.resolve()
-manifest={'executable':str(binary),'executableSha256':hashlib.sha256(binary.read_bytes()).hexdigest(),'fontSha256':hashlib.sha256(font.read_bytes()).hexdigest(),'runs':args.runs,'scene':args.scene,'backends':args.backends,'windowPosition':'offscreen on Windows; measures render/present service time, not visible monitor FPS','note':'GPU timers include fence/event completion; capture disabled during timed frames. CPU glyph atlas construction and CPU layers are recorded, not called GPU rasterization.'}
+measured_files=sorted({binary,*binary.parent.glob('*.dll'),*binary.parent.glob('*.deps.json'),*binary.parent.glob('*.runtimeconfig.json')})
+hashes={str(path):hashlib.sha256(path.read_bytes()).hexdigest() for path in measured_files}
+manifest={'executable':str(binary),'executableSha256':hashes[str(binary)],'runtimeFileSha256':hashes,'fontSha256':hashlib.sha256(font.read_bytes()).hexdigest(),'runs':args.runs,'scene':args.scene,'backends':args.backends,'windowPosition':'offscreen on Windows; measures render/present service time, not visible monitor FPS','note':'GPU timers include fence/event completion; capture disabled during timed frames. CPU glyph atlas construction and CPU layers are recorded, not called GPU rasterization.'}
 (args.output/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
 rows=[]
 for run in range(args.runs):
@@ -39,5 +41,6 @@ for backend in args.backends:
     group=[r for r in rows if r['backend'].lower()==backend]
     summary.append({'backend':backend,'runs':len(group),'allSampleCountsSufficient':all(r['sampleCountSufficient'] for r in group),**{key:statistics.median(r[key] for r in group) for key in ['drawingP50Ms','drawingP95Ms','drawingMeanMs','cpuPercentMachine','cpuPercentOneCore','peakWorkingSetBytes','peakPrivateBytes']},'allocationBytesPerFrame':statistics.median(r['allocatedBytes']/r['timedFrames'] for r in group),'frames':sum(r['timedFrames'] for r in group),'cpuFallbackCommands':sum(r['cpuFallbackCommands'] for r in group)})
 (args.output/'summary.json').write_text(json.dumps(summary,indent=2)+'\n',encoding='utf-8')
-assert hashlib.sha256(binary.read_bytes()).hexdigest()==manifest['executableSha256'],'Binary changed during measurement.'
+for path,digest in hashes.items():
+    if hashlib.sha256(Path(path).read_bytes()).hexdigest()!=digest:raise SystemExit(f'Runtime file changed during measurement: {path}')
 print('PASS completed measurements; summary.json and raw per-frame samples retained')

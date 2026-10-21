@@ -1,5 +1,7 @@
 # 验证：2026-10-22
 
+preview.3：覆盖裁剪与重叠文字的顺序回归先验证旧代码失败，再验证新代码在两后端/两格式、透明度/覆盖率和滚动坐标组合通过，总计 12172 项 GPU 集成断言。三平台初版 JIT、Native AOT、真实 nupkg 窗口已通过 [CI 39645744951](https://github.com/hnlyf168/SimdSkia/actions/runs/39645744951)，修复版另验；旧版整页画质和完整 API 缺口仍未改判为通过。
+
 preview.2 源码验收：Release 全解决方案 0 警告/错误，原有 36 行为、484 图片、7845 优化、595 文字、8109 控件和三组 Vulkan 回归通过；Windows 字体通过。新 Direct2D 54 硬件检查、GPU 集成 12124 断言、60 个逐字节字形批次和 framebuffer 提交失败清理检查通过。真实 CPU/Direct2D/Vulkan 窗口均执行首次呈现后的 resize；三平台 JIT CI 已通过，Native AOT/包消费另验。性能与限制见 [本轮报告](DESKTOP-GPU-2026-10-22.md)。
 
 公开安装验证：八个 `0.1.0-preview.1` 包均从 NuGet.org 实际下载，包中 DLL/README 与 CI 产物逐字节一致。首页 README 的 `.csproj`、`Program.cs` 与 Avalonia 包内示例一致；从首页提取到 `artifacts/nuget-public-demo`，仅 NuGet.org 源、全新包缓存执行 restore 和 Release build，通过且 0 警告/0 错误；所有首页本地链接存在。日志为该目录中的 `restore.log`、`build.log`，包核对结果为 `artifacts/nuget-release-ci/nuget-preview/published-verification.json`。本轮修改仅为使用文档，未重新运行性能基准。

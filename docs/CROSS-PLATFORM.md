@@ -22,7 +22,7 @@ dotnet run --project tests/PlatformFonts -c Release
 dotnet run --project examples/CrossPlatform -c Release -- --smoke
 ```
 
-首版 NuGet `0.1.0-preview.1` 不含这个桌面扩展；新项目引用 `SimdSkia.Avalonia.Desktop 0.1.0-preview.2`，需 GPU 时再添加 `SimdSkia.Avalonia.Gpu`。三平台实际窗口运行已通过 [CI 39635321989](https://github.com/hnlyf168/SimdSkia/actions/runs/39635321989)：Windows x64、Ubuntu 24.04 x64、macOS 26 ARM64。工作流 `.github/workflows/desktop.yml` 继续检查初次 framebuffer、呈现后 resize、按钮路由和非空像素；Linux 使用 Xvfb 虚拟 X11 显示。Native AOT 是独立检查项，结果见交付报告，不以 JIT 窗口通过代替 AOT 验证。
+首版 NuGet `0.1.0-preview.1` 不含这个桌面扩展；新项目引用 `SimdSkia.Avalonia.Desktop 0.1.0-preview.2`，需 GPU 时再添加 `SimdSkia.Avalonia.Gpu`。三平台实际窗口运行已通过 [CI 39645744951](https://github.com/hnlyf168/SimdSkia/actions/runs/39645744951)：Windows x64、Ubuntu 24.04 x64、macOS 26 ARM64。工作流 `.github/workflows/desktop.yml` 继续检查初次 framebuffer、呈现后 resize、按钮路由和非空像素；Linux 使用 Xvfb 虚拟 X11 显示。Native AOT 是独立检查项，结果见交付报告，不以 JIT 窗口通过代替 AOT 验证。
 
 默认 CPU。Windows 可选择 `options.UseGpu(SimdSkiaGpuBackend.Direct2D)`，使用硬件 D3D11/Direct2D 和 DXGI 原生交换链；Vulkan 可在 Windows/Linux 绘制后等待 fence、回读并交窗口 framebuffer 呈现。macOS 的 Metal/GPU 尚未实现，配置 GPU 会明确报错。
 

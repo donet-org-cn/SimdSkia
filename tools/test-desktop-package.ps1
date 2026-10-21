@@ -1,6 +1,6 @@
 param(
- [string]$Version='0.1.0-preview.2',
- [string]$Packages='artifacts/nuget-preview-2',
+ [string]$Version='0.1.0-preview.3',
+ [string]$Packages='artifacts/nuget-preview-3',
  [string]$Output='artifacts/desktop-package-consumer',
  [ValidateSet('cpu','direct2d','vulkan')][string]$Backend='cpu',
  [switch]$SystemFonts

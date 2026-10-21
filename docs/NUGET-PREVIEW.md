@@ -1,5 +1,9 @@
 # NuGet 预览版发布
 
+## 第三预览版 0.1.0-preview.3
+
+修复 GPU 文字图集在覆盖裁剪下的重叠合成顺序与滚动缓存，继续提供 11 个包。推荐安装 `SimdSkia.Avalonia.Desktop`，GPU 另加 `SimdSkia.Avalonia.Gpu`，两者版本均为 `0.1.0-preview.3`；完整使用方式在[首页](../README.md)。preview.2 标签和包保持原样，新代码通过独立检查后发布 preview.3。实际公开下载验证另行记录。
+
 ## 第二预览版 0.1.0-preview.2
 
 本轮增加 `SimdSkia.Avalonia.Desktop`、`SimdSkia.Avalonia.Gpu`、`SimdSkia.Gpu.Direct2D`，共 11 个包。桌面用户安装 Desktop，GPU 按需另加 Avalonia.Gpu；三个 Avalonia 包共享完整中文 README，包含三平台双文件程序、安装与迁移、GPU 配置、系统字体和 AOT。核心包仍不携带原生字体/绘图库；仅 Desktop 的官方 Avalonia.Native 依赖在 macOS 携带经允许的窗口桥。源码支持和性能结果见 [报告](DESKTOP-GPU-2026-10-22.md)，公开发布以流水线及实际下载验证为准。

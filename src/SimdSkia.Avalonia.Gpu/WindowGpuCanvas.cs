@@ -18,8 +18,8 @@ internal sealed class WindowGpuCanvas : ICanvasBackend
     private readonly Dictionary<(GlyphRunGeometry Run,Matrix3 Matrix,bool Aa,bool Snap),PathGeometry[]> glyphBatches=[];
     private long glyphBytes;
     private readonly SimdSkiaGpuTextMode textMode;
-    private readonly Dictionary<(int ContentHash,Matrix3 Matrix,Paint Paint,bool Preblend,bool Snap,float Tolerance),AtlasEntry> atlas=[];
-    private sealed record AtlasEntry(PixelBuffer Pixels,int Left,int Top,GlyphRunGeometry Run);
+    private readonly Dictionary<(int ContentHash,Matrix3 Matrix,Paint Paint,bool Preblend,bool Snap,float Tolerance,CoverageClip? Coverage,int OriginX,int OriginY),AtlasEntry> atlas=[];
+    private sealed record AtlasEntry(PixelBuffer Pixels,int Left,int Top,GlyphRunGeometry Run,long RetainedBytes);
     private long atlasBytes;
     public bool IsFaulted=>hardware.IsFaulted;
     internal WindowGpuCanvas(PixelBuffer target, SimdSkiaGpuBackend kind, bool fallback,nint windowHandle=0,SimdSkiaGpuTextMode textMode=SimdSkiaGpuTextMode.ManagedGlyphAtlas)
@@ -114,10 +114,10 @@ internal sealed class WindowGpuCanvas : ICanvasBackend
         var run=command.GlyphRun??throw new ArgumentException("Glyph outlines required.");var matrix=command.Transform;
         int ix=(int)MathF.Floor(matrix.M02),iy=(int)MathF.Floor(matrix.M12);var local=matrix with{M02=matrix.M02-ix,M12=matrix.M12-iy};
         var hash=new HashCode();hash.Add(run.FontTransform);hash.Add(run.Positioning);foreach(var glyph in run.Glyphs)hash.Add(glyph);
-        var key=(hash.ToHashCode(),local,command.Paint,command.TextMaskPreblend,command.SnapGlyphBaseline,command.CurveTolerance);
+        var key=(hash.ToHashCode(),local,command.Paint,command.TextMaskPreblend,command.SnapGlyphBaseline,command.CurveTolerance,command.CoverageClip,command.CoverageClip is null?0:ix,command.CoverageClip is null?0:iy);
         bool found=atlas.TryGetValue(key,out var entry);
         if(found&&!ReferenceEquals(run,entry!.Run)&&(run.FontTransform!=entry.Run.FontTransform||run.Positioning!=entry.Run.Positioning||!run.Glyphs.SequenceEqual(entry.Run.Glyphs)))
-        {atlas.Remove(key);atlasBytes-=entry.Pixels.ByteCount;entry.Pixels.Dispose();found=false;}
+        {atlas.Remove(key);atlasBytes-=entry.RetainedBytes;entry.Pixels.Dispose();found=false;}
         if(!found)
         {
             var normalized=command with{Transform=local,Clip=null,CoverageClip=null};RectF? bounds=null;
@@ -128,14 +128,23 @@ internal sealed class WindowGpuCanvas : ICanvasBackend
             }
             if(bounds is not {} area)return true;
             int left=(int)MathF.Floor(area.Left)-1,top=(int)MathF.Floor(area.Top)-1,right=(int)MathF.Ceiling(area.Right)+1,bottom=(int)MathF.Ceiling(area.Bottom)+1;
-            int width=right-left,height=bottom-top;long bytes=(long)width*height*4;
+            int width=right-left,height=bottom-top;long bytes=(long)width*height*4+(long)(command.CoverageClip?.Width??0)*(command.CoverageClip?.Height??0);
             if(width<=0||height<=0||width>32768||height>32768||bytes>8*1024*1024)return false;
             var bitmap=PixelBuffer.Rent(width,height);
             try
             {
                 using var raster=new RasterCanvas(bitmap);
-                raster.Execute(normalized with{Transform=local with{M02=local.M02-left,M12=local.M12-top}});
-                entry=new(bitmap,left,top,run);
+                CoverageClip? baked=null;
+                if(command.CoverageClip is {} clip)
+                {
+                    // Clipping after flattening changes SourceOver at overlapping glyphs.
+                    // Bake device coverage per glyph and key the cache by mask + origin.
+                    byte[] coverage=new byte[checked(width*height)];
+                    for(int y=0;y<height;y++)for(int x=0;x<width;x++)coverage[y*width+x]=clip.At(ix+left+x,iy+top+y);
+                    baked=new CoverageClip(0,0,width,height,coverage);
+                }
+                raster.Execute(normalized with{Transform=local with{M02=local.M02-left,M12=local.M12-top},CoverageClip=baked});
+                entry=new(bitmap,left,top,run,bytes);
                 if(atlas.Count>=256||atlasBytes+bytes>8*1024*1024){foreach(var old in atlas.Values)old.Pixels.Dispose();atlas.Clear();atlasBytes=0;}
                 atlas.Add(key,entry);atlasBytes+=bytes;SimdSkiaGpuDiagnostics.AtlasBuilt();
             }
@@ -143,7 +152,7 @@ internal sealed class WindowGpuCanvas : ICanvasBackend
         }
         else SimdSkiaGpuDiagnostics.AtlasHit();
         Execute(new DrawingCommand(CommandKind.DrawImage,new(ix+entry!.Left,iy+entry.Top,ix+entry.Left+entry.Pixels.Width,iy+entry.Top+entry.Pixels.Height),Matrix3.Identity,new(new(255,255,255,255),CompositeMode.SourceOver))
-        {Image=entry.Pixels,ImageIsImmutable=true,ImageSource=new(0,0,entry.Pixels.Width,entry.Pixels.Height),Sampling=ImageSampling.Nearest,Clip=command.Clip,CoverageClip=command.CoverageClip});
+        {Image=entry.Pixels,ImageIsImmutable=true,ImageSource=new(0,0,entry.Pixels.Width,entry.Pixels.Height),Sampling=ImageSampling.Nearest,Clip=command.Clip});
         return true;
     }
     public void Flush()

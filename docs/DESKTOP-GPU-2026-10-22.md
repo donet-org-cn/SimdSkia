@@ -4,7 +4,9 @@
 
 ## 使用
 
-桌面包 `SimdSkia.Avalonia.Desktop`，可选 GPU 包 `SimdSkia.Avalonia.Gpu`，版本均为 `0.1.0-preview.2`；发布结果见 [NuGet 记录](NUGET-PREVIEW.md)。无需重新编译 Avalonia。
+preview.3 修复文字图集在半透明覆盖裁剪下提前合成重叠字形的问题：覆盖率在 C# 字形栅格化时逐字形应用，缓存同时区分遮罩和设备原点，并保守计入保留的遮罩字节。新增回归先在旧实现复现失败，再在 Vulkan/Direct2D、RGBA/BGRA、两种文字透明度、两种裁剪覆盖率及整数/小数滚动下通过；硬件集成断言增至 12172 项。preview.2 标签和已上传包保留原内容，使用修复后的 preview.3。三平台的 GPU 初版 CI 和最终修复版 CI 分别记录。
+
+桌面包 `SimdSkia.Avalonia.Desktop`，可选 GPU 包 `SimdSkia.Avalonia.Gpu`，版本均为 `0.1.0-preview.3`；发布结果见 [NuGet 记录](NUGET-PREVIEW.md)。无需重新编译 Avalonia。
 
 ```csharp
 using SimdSkia.Avalonia;
@@ -18,7 +20,9 @@ AppBuilder.Configure<App>().UseSimdSkiaDesktop(o => o.UseGpu(SimdSkiaGpuBackend.
 
 ## 平台与测试
 
-三平台真实窗口已通过 [CI 39635321989](https://github.com/hnlyf168/SimdSkia/actions/runs/39635321989)：
+GPU 初版三平台真实窗口、各自 Native AOT 编译/实际运行、真实 nupkg 完整控件窗口均通过 [CI 39645744951](https://github.com/hnlyf168/SimdSkia/actions/runs/39645744951)，受测源码提交 `3f50441b3f43257cd022f3f7d5402f3e7ec4f149`。preview.3 修复版单独重跑。此前首次宿主验证见 [CI 39635321989](https://github.com/hnlyf168/SimdSkia/actions/runs/39635321989)。
+
+下载 CI 产物后提取的[九条运行记录](evidence/desktop-ci-2026-10-22.json)包含 OS、架构、实际帧数、自动字体及 `NativeAot` 标志；原始日志和呈现截图由对应 CI 保留。
 
 | 平台 | 实际运行 | 字体发现 | GPU |
 | --- | --- | --- | --- |
@@ -26,7 +30,7 @@ AppBuilder.Configure<App>().UseSimdSkiaDesktop(o => o.UseGpu(SimdSkiaGpuBackend.
 | Ubuntu 24.04 x64 | CI X11/Xvfb | DejaVu Sans + 已安装 CJK 测试字体 | 代码具备 Vulkan 接入，未在 Linux 物理 GPU 验收 |
 | macOS 26 ARM64 | CI 官方 Cocoa 宿主 | Arial + 已安装 CJK 测试字体 | CPU；Metal 未实现 |
 
-Linux 原生 Wayland 不包含在本轮，Wayland 会话需要 XWayland；macOS x64、Windows ARM64 尚未实机验收。CI JIT、Native AOT、实际物理 GPU 是不同检查，不能互相代替。源码工作流继续独立执行三平台 Native AOT 编译及运行。
+Linux 原生 Wayland 不包含在本轮，Wayland 会话需要 XWayland；macOS x64、Windows ARM64 尚未实机验收。CI JIT、Native AOT、实际物理 GPU 是不同检查，不能互相代替。三平台 CI 的 AOT 均记录 `NativeAot=True`，实际呈现、首次呈现后的 resize 和控件事件路由通过；GPU 硬件测试在本机单独执行。
 
 本机 Release 全解决方案构建 0 警告、0 错误。行为 36、图片 484、CPU/编解码 7845、文字 595、控件 8109、Windows 字体及新字体发现/失败帧清理检查通过；原有 Vulkan、Vulkan 优化、采样回归通过。新增 Direct2D 54 项硬件检查，GPU 集成 12124 项断言，含 RGBA/BGRA/stride、C# 文字纹理、回退前后顺序、跨帧保留、部分纹理上传、小数源矩形、三种采样、多色渐变、重复/镜像和画刷变换；变换后的 Direct2D 渐变按显式 CPU 回退验证。60 个字形合批对照逐字节一致，480 次独立描画合为 200 次且保留重叠顺序。
 
@@ -34,23 +38,27 @@ Linux 原生 Wayland 不包含在本轮，Wayland 会话需要 XWayland；macOS 
 
 最终源码在本机 Windows x64 已以 `PublishAot=true` 发布成功，无裁剪/AOT 警告。相同原生 GUI 可执行文件分别以 CPU、Direct2D、Vulkan 运行完整控件、创建窗口并在首帧后缩放，三者通过；`NativeAot=True`，未加载 coreclr/clrjit/Skia/HarfBuzz。Direct2D 在 GTX 1050 Ti 上完成 198 条 GPU 命令、3 次原生交换链呈现、0 条不支持命令的 CPU 回退，另记录 9 条托管图层命令。日志和实际呈现截图在 `artifacts/cross-platform-aot-final/results-*`。这验证功能，不作为下表 JIT 性能测量。
 
+下面是 AOT Direct2D 的实际 GPU 呈现缓冲区截图；共享控件夹具中的“托管 CPU”等文字是固定标签，实际后端由上面的设备名和 GPU 完成/呈现计数验证。
+
+![AOT Direct2D 实际呈现的中文控件窗口](images/desktop-direct2d-controls-2026-10-22.png)
+
 ## 性能：同一真实控件窗口
 
 Windows x64、i7-8700K/12 逻辑处理器、GTX 1050 Ti、.NET 10 JIT。窗口逻辑 1000×720、DPI 125%，设备像素 1250×900。三种后端使用相同 `ControlScene`、固定 ZCOOL 中文字体与动态按钮文本，每配置 3 个独立进程，轮换运行顺序；预热 2 秒，测量至少 3 秒。下表取每进程 P50/P95 等指标的中位数。Direct2D 包含 GPU event 完成，Vulkan 包含 fence、回读和 framebuffer 拷贝；截图捕获关闭。
 
 | 指标 | SimdSkia CPU | Direct2D 原生交换链 | Vulkan 回读呈现 |
 | --- | ---: | ---: | ---: |
-| 帧绘制 P50 | 3.569 ms | 1.948 ms | 20.972 ms |
-| 帧绘制 P95 | 5.034 ms | 2.723 ms | 22.101 ms |
-| 进程 CPU / 全机 | 5.27% | 4.82% | 6.45% |
-| 进程 CPU / 单逻辑核 | 63.25% | 57.80% | 77.44% |
-| 采样工作集峰值 | 114.0 MiB | 175.4 MiB | 217.0 MiB |
-| 采样 private bytes 峰值 | 61.4 MiB | 171.4 MiB | 248.1 MiB |
-| 托管分配 / 实测帧 | 30.7 KiB | 225.0 KiB | 439.0 KiB |
-| 三进程计时帧数 | 318 | 307 | 329 |
+| 帧绘制 P50 | 3.539 ms | 2.049 ms | 21.437 ms |
+| 帧绘制 P95 | 4.905 ms | 2.910 ms | 22.914 ms |
+| 进程 CPU / 全机 | 5.53% | 4.51% | 7.16% |
+| 进程 CPU / 单逻辑核 | 66.38% | 54.14% | 85.88% |
+| 采样工作集峰值 | 114.5 MiB | 176.1 MiB | 216.6 MiB |
+| 采样 private bytes 峰值 | 61.8 MiB | 195.2 MiB | 247.6 MiB |
+| 托管分配 / 实测帧 | 30.1 KiB | 225.4 KiB | 434.7 KiB |
+| 三进程计时帧数 | 328 | 313 | 334 |
 | 未支持绘制命令的 CPU 回退 | 0 | 0 | 0 |
 
-该场景 Direct2D 的帧服务时间约为 CPU 的 55%，同时内存和分配更高；Vulkan 仍约慢 5.9 倍，不作为性能优势宣传。CPU 百分比受实际调度帧数影响，保留每进程原始计数；进程峰值包括 CLR/驱动开销，不等同于独立显存占用。文字纹理首次生成与透明图层/滤镜有 CPU 工作，回退计数 0 不代表整条管线没有 CPU 计算。
+该场景 Direct2D 的帧服务时间约为 CPU 的 58%（约 1.73 倍），同时内存和分配更高；Vulkan 仍约慢 6.1 倍，不作为性能优势宣传。CPU 百分比受实际调度帧数影响，保留每进程原始计数；进程峰值包括 CLR/驱动开销，不等同于独立显存占用。文字纹理首次生成与透明图层/滤镜有 CPU 工作，回退计数 0 不代表整条管线没有 CPU 计算。
 
 窗口在 Windows 测量时放到屏幕外，以上是渲染/提交/完成服务成本，**不是显示器 FPS、端到端输入延迟或原版 SkiaSharp 性能对比**。这是一组 JIT 数据；Native AOT 的功能验证不作为此性能结论。不同后端的曲线 AA 仍有差异，表格不能宣称同原版逐像素等价胜出。此前原版对比保持在各自报告中，不混用时间范围。
 
@@ -66,7 +74,7 @@ dotnet run --project tests/AvaloniaGpu -c Release
 dotnet run --project tests/GlyphBatches -c Release
 ```
 
-完整逐帧数据、二进制/字体 SHA、分配与峰值在 `artifacts/desktop-gpu-performance/final-jit`。机器没有空跑基准替代实际 GPU 完成，也未将云 CI 当性能测试。
+表格已针对 preview.3 修复版重新完成九次独立进程测量，完整逐帧数据、运行时程序集/字体哈希、分配与峰值见[修复版原始记录](evidence/desktop-gpu-preview3-jit-2026-10-22.json)，本机原件在 `artifacts/desktop-gpu-performance/preview3-jit`。每个运行时文件在测后再次核对 SHA，防止测量途中重建。早期结果另见[初版原始记录](evidence/desktop-gpu-jit-2026-10-22.json)；当时只记录 apphost 和字体 SHA，不冒称与发布包的每个 DLL 均逐字节核对。机器没有空跑基准替代实际 GPU 完成，也未将云 CI 当性能测试。
 
 ## 剩余限制
 

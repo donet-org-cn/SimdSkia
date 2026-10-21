@@ -43,10 +43,10 @@
         "dependencies": {
           "Avalonia": "[12.1.4, 12.1.4]",
           "Clipper2": "[2.0.0, 2.0.0]",
-          "SimdSkia.Core": "[0.1.0-preview.2, )",
-          "SimdSkia.Cpu": "[0.1.0-preview.2, )",
-          "SimdSkia.Imaging": "[0.1.0-preview.2, )",
-          "SimdSkia.Text": "[0.1.0-preview.2, )"
+          "SimdSkia.Core": "[0.1.0-preview.3, )",
+          "SimdSkia.Cpu": "[0.1.0-preview.3, )",
+          "SimdSkia.Imaging": "[0.1.0-preview.3, )",
+          "SimdSkia.Text": "[0.1.0-preview.3, )"
         }
       },
       "simdskia.core": {
@@ -55,32 +55,32 @@
       "simdskia.cpu": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.0-preview.2, )"
+          "SimdSkia.Core": "[0.1.0-preview.3, )"
         }
       },
       "simdskia.gpu": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.0-preview.2, )"
+          "SimdSkia.Core": "[0.1.0-preview.3, )"
         }
       },
       "simdskia.gpu.direct2d": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.0-preview.2, )"
+          "SimdSkia.Core": "[0.1.0-preview.3, )"
         }
       },
       "simdskia.imaging": {
         "type": "Project",
         "dependencies": {
           "JpegLibrary": "[0.4.32, 0.4.32]",
-          "SimdSkia.Core": "[0.1.0-preview.2, )"
+          "SimdSkia.Core": "[0.1.0-preview.3, )"
         }
       },
       "simdskia.text": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.0-preview.2, )"
+          "SimdSkia.Core": "[0.1.0-preview.3, )"
         }
       }
     }
