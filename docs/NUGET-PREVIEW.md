@@ -24,6 +24,8 @@
 
 NuGet 策略由账户拥有者在 [Trusted Publishing](https://www.nuget.org/account/trustedpublishing) 配置；对应字段以 [NuGet 官方文档](https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing) 为准。首次发布允许创建新包，后续版本仍需带 preview 后缀。dotnet push 的重复版本跳过只用于重试；不可用相同版本替换已发布的不同内容。
 
+上传后还需等待 NuGet 验证和索引。后续流水线会轮询实际公开 nupkg 下载，并逐字节核对其中的 DLL、README 与 CI 产物；NuGet 对 ZIP 容器增加仓库签名，因此不把整个 nupkg 的签名后哈希与未签名文件强行对比。等待上限 20 分钟，超时会明确失败，不以 PUT 成功代替可安装验证。首版发布的上传日志为 [GitHub Actions 39628597818](https://github.com/hnlyf168/SimdSkia/actions/runs/39628597818)。
+
 ## 本机验证
 
 ```powershell
