@@ -13,7 +13,7 @@
 | 层缓冲内存和 CPU 热点 | 已实现裁剪区域层、halo、原点与单色热路径；卷积展开 SIMD | ROI 与全层像素相同；原有完整 UI 帧前后逐字节一致，整体内存差距仍在 |
 | 完整 CPU 画质 | 未通过 | 旧图像 108/120；完整 UI 0/3；新功能 59/114，原阈值保留 |
 | Vulkan 新命令和窗口呈现 | 已实现裁切/三种采样/覆盖 clip/细曲线；窗口未完成 | 新 445 项数值检查及旧 313 项通过；原版 GPU 12/24，glyph mask/窗口/效果组未接入 |
-| 实际 Avalonia 控件与窗口回归 | 本机硬件与全标量 8109 项、Win32 软件呈现通过 | Linux/macOS 托管 CI 见本轮 Actions；Linux/macOS 桌面与 Linux GPU 未实测 |
+| 实际 Avalonia 控件与窗口回归 | 本机硬件与全标量 8109 项、Win32 软件呈现，Windows/Linux/macOS 托管 CI 均通过 | CI run 39608699127；Linux/macOS 桌面与 Linux GPU 未实测 |
 | API/依赖/构建/完整测试报告 | 本轮已运行并交付，完整兼容 FAIL | 425/3235 匹配、2810 缺失、0 额外；二进制不兼容；生产无原生字体/编解码 |
 | CPU/GPU 性能与内存报告 | 已交付三进程同机数据、工作集/Private/分配/CPU 与失败 gate | CPU 控件、Gaussian 内核、Vulkan 各自比较；GPU 等待 fence + 回读 |
 

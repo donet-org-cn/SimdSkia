@@ -79,7 +79,7 @@ Remove-Item Env:DOTNET_EnableHWIntrinsic
 
 完整本机日志：`artifacts/completion/delivery-validation.log`；四组标量日志以 `scalar-*-final.log` 命名。[Vulkan 采样统计](gpu-sampling-test-results.json)、[旧 CPU 原版像素统计](compatibility-pixel-results.json)、版本清单和基准配置随报告保存；工作区 artifacts 含完整 PNG/RGBA、ticks 与进程日志。
 
-Windows/Linux/macOS 的托管 CI 状态以本轮 GitHub Actions 链接为准，GPU 实测只覆盖本机 Windows/NVIDIA。未在 Linux GPU、Linux/macOS 桌面宿主或用户真实完整 Avalonia 应用上验收，不把构建通过扩大为这些环境已完成。
+代码提交 `3e00192` 的 [Windows/Linux/macOS 三系统 CI 全部通过](https://github.com/hnlyf168/SimdSkia/actions/runs/39608699127)，包含构建、独立图片、实际控件、依赖隔离及完整标量回退；Windows 另运行真实软件窗口。[归档状态](ci-validation-results.json) 记录提交 SHA 与作业结果。GPU 实测只覆盖本机 Windows/NVIDIA。未在 Linux GPU、Linux/macOS 桌面宿主或用户真实完整 Avalonia 应用上验收，不把托管 CI 通过扩大为这些环境已完成。
 
 ## 尚未完成
 
