@@ -8,6 +8,8 @@ preview.4 源码验证：[性能与兼容报告](PERFORMANCE-COMPATIBILITY-2026-
 
 本轮日志位于 `artifacts/optimization-round2`；三平台 CI、实际 nupkg 与公开发布结果见 [预览发布](NUGET-PREVIEW.md)。以下记录保留当时版本与验收状态。
 
+preview.4 源码提交 `5eef27d936dc72cb0dd61c7074292b3192bf9a30`：三平台 [托管/标量回归](https://github.com/hnlyf168/SimdSkia/actions/runs/39657207175)、[实际桌面 JIT/AOT/nupkg 窗口](https://github.com/hnlyf168/SimdSkia/actions/runs/39657207152)、[Windows 双后端 AOT](https://github.com/hnlyf168/SimdSkia/actions/runs/39657207392)全部通过。已下载并核对 [9 条实际窗口记录](evidence/desktop-preview4-ci-2026-10-22.json)，含三个 `NativeAot=True` 和三个包消费控件窗口。云端检查是功能验收，不作为本机 GPU 性能成绩。
+
 公开消费最终检查：11 个 `0.1.0-preview.3` 下载与 CI DLL/README 内容核对通过；仅 NuGet.org 源、全新缓存恢复的 CPU/GPU README 双文件项目各自编译 0 警告/0 错误。公开包的 Direct2D 完整控件窗口在 GTX 1050 Ti 上创建并在首帧后缩放，完成 132 条 GPU 命令和 2 次原生呈现；0 条不支持命令的回退，6 条独立记录的 CPU 图层命令。发布 CI、实际版本和下载 SHA 见[公开验证证据](evidence/nuget-preview3-2026-10-22.json)。
 
 preview.3：覆盖裁剪与重叠文字的顺序回归先验证旧代码失败，再验证新代码在两后端/两格式、透明度/覆盖率和滚动坐标组合通过，总计 12172 项 GPU 集成断言。修复版三平台 JIT、Native AOT、真实 nupkg 窗口已全部通过 [CI 39647833834](https://github.com/hnlyf168/SimdSkia/actions/runs/39647833834)；本机 AOT CPU/Direct2D/Vulkan 控件和真实 Direct2D 包窗口再次通过。包内完整双文件程序的 CPU/GPU 配置编译通过。旧版整页画质和完整 API 缺口仍未改判为通过。

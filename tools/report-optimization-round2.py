@@ -52,6 +52,9 @@ evidence={'baseline':'Avalonia 12.1.4 / SkiaSharp 3.119.4',
           'verificationLogSha256':{name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in required},
           'nativeAot':{backend:(root/f'aot-{backend}/runtime.txt').read_text(encoding='utf-8') for backend in ('cpu','direct2d','vulkan')}}
 out=report.parent/'evidence';out.mkdir(parents=True,exist_ok=True)
+images=report.parent/'images';images.mkdir(parents=True,exist_ok=True)
+for label,source in [('before','features-before'),('native','features-reference'),('after','features-phase4')]:
+    shutil.copyfile(root/source/'image-Tile-Uniform-1.5.png',images/f'tile-round2-{label}-2026-10-22.png')
 evidence_name='optimization-round2-2026-10-22.json'
 (out/evidence_name).write_text(json.dumps(evidence,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 for variant,directory in [('before','gpu-baseline-v2'),('after','gpu-final')]:
@@ -72,7 +75,7 @@ lines=['# 性能与兼容性复测：2026-10-22',
        '',
        '所有正式测量串行进行，未与 profiler 或构建并行。CPU 控件与 Vulkan 离屏使用 .NET 8.0.32；真实窗口使用 .NET 10 JIT，三组数据分开比较。每配置 3 个进程。基准采集时包元数据仍为 preview.3，本轮 C# 优化代码随后以 preview.4 打包；测量 SHA 指向实际测得的二进制，不能当作新包的容器 SHA。发布后的性能没有换用旧版报告数字。',
        '',
-       'CPU ms/帧是整个进程处理器时间/帧数；机器 CPU% = 单核归一占用/12。满速循环的 CPU% 不能直接当作固定 60 FPS 占用。工作集、Private、峰值都是整个进程，包含运行时/驱动/缓存，均不是显存；B/帧是托管分配。短批处理器计时有量化误差，表中使用多进程汇总。',
+       'CPU ms/帧是整个进程处理器时间/帧数；机器 CPU% = 单核归一占用/12。满速循环的 CPU% 不能直接当作固定 60 FPS 占用。工作集、Private、峰值都是整个进程，包含运行时/驱动/缓存，均不是显存。CPU 控件/窗口的 B/帧计入所有托管线程；Vulkan 微基准只计调用线程，均不包含原生分配。短批处理器计时有量化误差，表中使用多进程汇总。',
        '',
        '## CPU：真实控件、布局与模板',
        '',
@@ -101,7 +104,7 @@ for b,a in zip(before,after):
     assert b['backend']==a['backend']
     for r,label in [(b,'优化前'),(a,'优化后')]:
         lines.append(f"| {r['backend']} | {label} | {r['drawingP50Ms']:.3f} / {r['drawingP95Ms']:.3f} | {r['cpuPercentMachine']:.2f} | {mib(r['peakWorkingSetBytes']):.1f} | {mib(r['peakPrivateBytes']):.1f} | {r['allocationBytesPerFrame']/1024:.2f} |")
-lines+=['','Direct2D P50 下降 14.4%，Vulkan 下降 9.2%。CPU 窗口 P50 改善约 5.8%，但 P95 从 3.941 升到 4.273 ms，不能声称尾延迟也改善；只有三个进程，CPU% 的进程间波动也保留在原始数据中。所有 18 次窗口运行都达到采样数要求，GPU 不支持命令的 CPU 回退计数为 0；C# 字形图集和托管离屏层仍是实际工作，不算成纯 GPU 栅格化。','',
+lines+=['','Direct2D P50 下降 14.4%，Vulkan 下降 9.2%。CPU 窗口 P50 改善约 5.8%，但 P95 从 3.941 升到 4.273 ms，不能声称尾延迟也改善；只有三个进程，CPU% 的进程间波动也保留在原始数据中。窗口峰值是计时区间定时采样的最高值，可能漏掉瞬时峰值，不与 CPU 的进程历史峰值混用。所有 18 次窗口运行都达到采样数要求，GPU 不支持命令的 CPU 回退计数为 0；C# 字形图集和托管离屏层仍是实际工作，不算成纯 GPU 栅格化。','',
         '## 与原版 Vulkan：相同完成与回读边界',
         '',
         '同一 GTX 1050 Ti、相同字体/格式/场景，12 场景×2 尺寸×2 引擎×3 进程×7 批；另重跑冻结引擎的完整对照。每批目标 60 ms，至少 100 ms/3 帧预热再校准；关闭 TieredCompilation、ReadyToRun、Server GC。原版 `ReadPixels` 阻塞等待完成；SimdSkia 显式 fence 后回读。下面是全部命令、提交、完成和回读，绝非只有提交时间，也不能推导原生交换链的可见帧率。',
@@ -124,7 +127,7 @@ for r in gpu['Rows']:
 lines+=['','最近邻边界额外核查：原版 CPU 与原版 Vulkan 的结果本身不同。例如 256×256 夹具的 (15,8)，CPU 为 RGBA (17,7,0,255)，Vulkan 为 (0,0,0,255)；(8,15) 两者均为 (3,13,0,255)。不能把 GPU 的单轴取样差异全局套到 CPU。本轮没有这样修改通用 `DrawBitmap`，也没有放宽 image 的 0 误差 gate；图片 GPU 行仍明确失败。CPU 原版探针位于 `artifacts/optimization-round2/nearest-cpu-reference`。','',
         '## 实际优化与兼容修正',
         '',
-        '- 实测 CPU 采样显示轴向图片采样 18.16%、水平渐变 13.56%、Span 填充 12.21%、清屏 11.52% 独占采样时间。采用运行时展开的 Span.Fill、紧密缓冲整块填充、完全不透明渐变直接行复制、图片扫描行复用与整行 SIMD 合成；关闭硬件指令仍运行同一整数舍入规则。',
+        '- dotnet-trace 10.0.750501 的 sampled-thread-time 诊断显示轴向图片采样 18.16%、水平渐变 13.56%、Span 填充 12.21%、清屏 11.52% 独占采样时间；该比例用于定位此基准热点，不是机器 CPU 占用率。采用运行时展开的 Span.Fill、紧密缓冲整块填充、完全不透明渐变直接行复制、图片扫描行复用与整行 SIMD 合成；关闭硬件指令仍运行同一整数舍入规则。',
         '- Direct2D/Vulkan 纹理缓存增加不同对象间的内容复用。哈希只筛候选，宽高/格式/Alpha/必要 stride 与快照逐字节验证才决定复用；更新 LRU，不增加无界别名。仍限制 256 项/64 MiB，Vulkan 被已提交命令引用的旧纹理等待 fence 后释放。只优化重复上传，不省略颜色转换、覆盖裁剪或 GPU 完成等待。',
         '- 修复 Direct2D Opaque 源图片使用非 255 物理 A 字节的问题。新增硬件检查覆盖两像素格式、三 Alpha、不同包装、源修改、源提前 Dispose、同批旧/新版本和超过缓存上限的淘汰。',
         '- 图片画刷最近邻处理中修正固定精度接缝、单轴镜像的重复边界，以及中间图片边缘的解析面积覆盖率。未把普通路径的 16×16 AA 改成低质量模式。38 个已过场景保存原版压缩 RGBA 夹具，并加入正常 Avalonia 回归；完整 114 项探针仍报告剩余失败。',
@@ -135,6 +138,11 @@ for feature in ['ImageBrush','VisualBrush','Blur','DropShadow','BoxShadow']:
     a=[r for r in features['cases'] if r['feature']==feature];b=[r for r in features_before['cases'] if r['feature']==feature]
     lines.append(f"| {feature} | {sum(r['passed'] for r in b)}/{len(b)} | {sum(r['passed'] for r in a)}/{len(a)} |")
 lines+=['',f"总计 {features_before['passed']}/{features_before['total']} → **{features['passed']}/{features['total']}**，没有已通过项目退化。ImageBrush 剩余 `None/Fill` 和 `None/Uniform` 的 150% DPI 采样相位；VisualBrush 高 DPI、圆角阴影和一项 blur 仍失败。",'',
+        '150% DPI、Tile + Uniform 的实际渲染：旧 raw RGBA 最大误差 255，修正后为 0。PNG 压缩器不同，比较的是解码后的像素。',
+        '',
+        '| 优化前 | 原版 | 优化后 |',
+        '|---|---|---|',
+        '| ![优化前图片画刷](images/tile-round2-before-2026-10-22.png) | ![原版图片画刷](images/tile-round2-native-2026-10-22.png) | ![优化后图片画刷](images/tile-round2-after-2026-10-22.png) |','',
         '## 验证结果与边界',
         '',
         '- Release 全解决方案 0 警告/0 错误；36 基础行为、484 图片、7845 CPU/编解码、595 文字、8147 Avalonia 断言通过。7845/8147 在 DOTNET_EnableHWIntrinsic=0 下再次通过。',

@@ -2,9 +2,11 @@
 
 ## 第四预览版 0.1.0-preview.4
 
-源码与预览包正在验证发布。包含实测 CPU 热点优化、GPU 有界纹理内容复用、Direct2D Opaque Alpha 修正和高 DPI ImageBrush 38/40 修正；不宣称完整兼容。独立 [性能与兼容报告](PERFORMANCE-COMPATIBILITY-2026-10-22.md)包含原版 CPU/Vulkan、新旧窗口、CPU/内存/分配和失败画质项目。Windows AOT 三种后端窗口已在本机运行；最终 CI 和公开包下载验证完成后会在此记录。
+**11 个包已提交 NuGet.org，公开下载验证等待 20 分钟后超时；上架未确认。** [发布流水线](https://github.com/hnlyf168/SimdSkia/actions/runs/39657888167)的构建、包内容检查、AOT/nupkg 实际窗口与上传已完成；最终公开下载校验失败，因此整个发布流水线不是全绿。已记录 [上传与超时证据](evidence/nuget-preview4-2026-10-22.json)，不能把上传成功当成已经公开可下载。源码标签 `v0.1.0-preview.4` 固定在 `5eef27d936dc72cb0dd61c7074292b3192bf9a30`，旧标签与包不改写。
 
-已有 preview.3 包与标签保持原内容。新版本统一升级全部 11 个包；桌面应用安装 `SimdSkia.Avalonia.Desktop`，可选 `SimdSkia.Avalonia.Gpu`，使用方式见 [首页](../README.md)。
+本轮包含实测 CPU 热点优化、GPU 有界纹理内容复用、Direct2D Opaque Alpha 修正和高 DPI ImageBrush 38/40 修正；不宣称完整兼容。独立 [性能与兼容报告](PERFORMANCE-COMPATIBILITY-2026-10-22.md)包含原版 CPU/Vulkan、新旧窗口、CPU/内存/分配和失败画质项目。三平台回归、实际窗口/AOT/nupkg 与 Windows 双后端 AOT 已全部通过，详见 [验证](VALIDATION.md)及 [9 条 CI 记录](evidence/desktop-preview4-ci-2026-10-22.json)。
+
+已有公开 preview.3 包与标签保持原内容，尚不包含本轮优化。待公开下载校验通过后，新版本统一升级全部 11 个包；桌面应用安装 `SimdSkia.Avalonia.Desktop`，可选 `SimdSkia.Avalonia.Gpu`，使用方式见 [首页](../README.md)。当前可使用上述源码标签或本次 CI 的 `nuget-preview-0.1.0-preview.4` 产物，通过本地 NuGet 源验证。
 
 ## 第三预览版 0.1.0-preview.3
 

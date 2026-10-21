@@ -4,7 +4,7 @@
 
 图片画刷原版探针由 15/40 提升至 38/40，完整功能探针由 59/114 提升至 82/114。38 个原版 RGBA 夹具加入正常回归；GPU 新增不同对象同内容、源修改/Dispose/排队版本和缓存淘汰检查。硬件与完全标量的 7845/8147 项通过，Direct2D 344、GPU 采样 590、GPU 集成 12172 项通过；Windows AOT 的 CPU/Direct2D/Vulkan 实际控件窗口均通过。
 
-仍未完成：完整 UI 画质 0/3、旧图像 108/120、原版 GPU 12/24，SK* 公共面 425/3235；字体/曲线、VisualBrush 高 DPI、圆角阴影、复杂排版和更多 API 继续保留缺口。正在准备 preview.4；公开发布与 CI 最终状态见 [预览发布](NUGET-PREVIEW.md) 和 [验证](VALIDATION.md)。下文为此前进度。
+仍未完成：完整 UI 画质 0/3、旧图像 108/120、原版 GPU 12/24，SK* 公共面 425/3235；字体/曲线、VisualBrush 高 DPI、圆角阴影、复杂排版和更多 API 继续保留缺口。preview.4 已通过三平台回归与实际 JIT/AOT/nupkg 窗口检查，NuGet 已接收 11 包但公开下载校验超时，上架未确认；最终状态见 [预览发布](NUGET-PREVIEW.md) 和 [验证](VALIDATION.md)。下文为此前进度。
 
 最终发布：11 个 `0.1.0-preview.3` 包已从 NuGet.org 公开下载，DLL/README 与成功发布的 CI 产物一致。公开包的 CPU/GPU README 程序在私有缓存中编译通过，公开 Direct2D 包的真实控件窗口通过；不依赖本地引擎 ProjectReference。[发布记录](NUGET-PREVIEW.md)
 
