@@ -36,10 +36,10 @@ internal sealed class DrawingContext:IDrawingContextImplWithEffects
     private void Check(){ObjectDisposedException.ThrowIf(disposed,this);target.ThrowIfDisposed();}
     private void Execute(DrawingCommand command)
     {
-        using var measurement=SimdSkiaDiagnostics.Measure(command.Kind==CommandKind.FillPath?command.Paint.Shader is null?"path-solid":"path-gradient":command.Kind==CommandKind.DrawImage?"image":"rectangle");
+        using var measurement=SimdSkiaDiagnostics.Measure(command.Kind==CommandKind.DrawGlyphRun?"glyph-run":command.Kind==CommandKind.FillPath?command.Paint.Shader is null?"path-solid":"path-gradient":command.Kind==CommandKind.DrawImage?"image":"rectangle");
         Check();canvas.Execute(command with {Clip=clip,CoverageClip=coverageClip,CurveTolerance=0.015625f});
         if(groups.Count==0)return;
-        var bounds=command.Path?.ControlBounds??command.Rectangle;var m=command.Transform;
+        var bounds=command.GlyphRun?.Bounds??command.Path?.ControlBounds??command.Rectangle;var m=command.Transform;
         var a=m.Map(bounds.Left,bounds.Top);var b=m.Map(bounds.Right,bounds.Top);var c=m.Map(bounds.Left,bounds.Bottom);var d=m.Map(bounds.Right,bounds.Bottom);
         var area=Intersect(clip,new RectF(Math.Min(Math.Min(a.X,b.X),Math.Min(c.X,d.X))-1,Math.Min(Math.Min(a.Y,b.Y),Math.Min(c.Y,d.Y))-1,Math.Max(Math.Max(a.X,b.X),Math.Max(c.X,d.X))+1,Math.Max(Math.Max(a.Y,b.Y),Math.Max(c.Y,d.Y))+1));
         area=Intersect(area,new(0,0,target.Width,target.Height));if(area.IsEmpty)return;
@@ -88,8 +88,9 @@ internal sealed class DrawingContext:IDrawingContextImplWithEffects
         if(textOptions.TextRenderingMode==TextRenderingMode.SubpixelAntialias)throw new NotSupportedException("LCD subpixel rendering is not implemented; select Antialias.");
         var glyph=(GlyphRun)run;var origin=run.BaselineOrigin;
         var matrix=ConvertTo.Matrix(Matrix.CreateTranslation(origin.X,origin.Y)*transform*dpiTransform);
-        if(textOptions.BaselinePixelAlignment==BaselinePixelAlignment.Aligned)matrix=matrix with {M12=MathF.Round(matrix.M12)};
-        DrawPath(brush,new Geometry(glyph.Path),matrix,true);
+        bool textAa=textOptions.TextRenderingMode==TextRenderingMode.Unspecified?Antialias:textOptions.TextRenderingMode!=TextRenderingMode.Alias;
+        var paint=BrushFactory.Create(brush,ConvertTo.Rect(glyph.Glyphs.Bounds),textAa);
+        Execute(new(CommandKind.DrawGlyphRun,default,matrix,paint){GlyphRun=glyph.Glyphs,TextMaskPreblend=true,SnapGlyphBaseline=textOptions.BaselinePixelAlignment!=BaselinePixelAlignment.Unaligned});
     }
     private CompositeMode BitmapComposite=>renderOptions.BitmapBlendingMode switch {BitmapBlendingMode.Unspecified or BitmapBlendingMode.SourceOver=>CompositeMode.SourceOver,BitmapBlendingMode.Source=>CompositeMode.Source,_=>throw new NotSupportedException($"Bitmap blend {renderOptions.BitmapBlendingMode} is not implemented.")};
     internal static ImageSampling Sampling(BitmapInterpolationMode mode)=>mode switch {BitmapInterpolationMode.None=>ImageSampling.Nearest,BitmapInterpolationMode.Unspecified or BitmapInterpolationMode.LowQuality or BitmapInterpolationMode.MediumQuality=>ImageSampling.Bilinear,BitmapInterpolationMode.HighQuality=>ImageSampling.Mitchell,_=>throw new NotSupportedException("Unknown interpolation mode.")};
@@ -111,7 +112,11 @@ internal sealed class DrawingContext:IDrawingContextImplWithEffects
         Check();var m=DeviceMatrix;
         if(m.M01!=0||m.M10!=0){PushGeometryClip(Geometry.Rectangle(rect));return;}
         clips.Push((clip,coverageClip));var a=m.Map((float)rect.Left,(float)rect.Top);var b=m.Map((float)rect.Right,(float)rect.Bottom);
-        var next=new RectF(Math.Min(a.X,b.X),Math.Min(a.Y,b.Y),Math.Max(a.X,b.X),Math.Max(a.Y,b.Y));clip=Intersect(clip,next);
+        // Rect clips use the native backend's non-AA device-rectangle rule.
+        // In particular, +0.5 rounds up on both edges; integrating a fractional
+        // clip as shape coverage or testing pixel centers produces different ink.
+        static float Edge(float value)=>MathF.Floor(value+.5f);
+        var next=new RectF(Edge(Math.Min(a.X,b.X)),Edge(Math.Min(a.Y,b.Y)),Edge(Math.Max(a.X,b.X)),Edge(Math.Max(a.Y,b.Y)));clip=Intersect(clip,next);
     }
     private static RectF Intersect(RectF? a,RectF b)=>a is {} r?new(Math.Max(r.Left,b.Left),Math.Max(r.Top,b.Top),Math.Min(r.Right,b.Right),Math.Min(r.Bottom,b.Bottom)):b;
     public void PushClip(RoundedRect rect){if(!rect.IsRounded)PushClip(rect.Rect);else PushGeometryClip(Shape(rect));}

@@ -31,6 +31,7 @@ public sealed partial class RasterCanvas : ICanvasBackend
             case CommandKind.FillRectangle:FillRectangle(command);break;
             case CommandKind.FillPath:FillPath(command);break;
             case CommandKind.DrawImage:DrawImage(command);break;
+            case CommandKind.DrawGlyphRun:DrawGlyphRun(command);break;
             default:throw new NotSupportedException($"Drawing command {command.Kind} is unsupported.");
         }
     }
@@ -140,9 +141,14 @@ public sealed partial class RasterCanvas : ICanvasBackend
         int dx=0,dy=0;CoverageMask mask=null!;
         bool text=command.CacheTextCoverage&&TextCoverageCache.TryGet(geometry,command,target.Width,target.Height,out mask!,out dx,out dy);
         if(!text)mask=GetMask(geometry,command);
+        FillMask(mask,command,dx,dy,text);
+    }
+    private void FillMask(CoverageMask mask,in DrawingCommand command,int dx,int dy,bool independentClip)
+    {
         int left=0,top=0,right=target.Width,bottom=target.Height;
-        if(text&&command.Clip is {} clip){left=SampleEdge(clip.Left,target.Width);top=SampleEdge(clip.Top,target.Height);right=SampleEdge(clip.Right,target.Width);bottom=SampleEdge(clip.Bottom,target.Height);}
-        (command.ShaderTransform??command.Transform).TryInvert(out var inverse);
+        if(independentClip&&command.Clip is {} clip){left=SampleEdge(clip.Left,target.Width);top=SampleEdge(clip.Top,target.Height);right=SampleEdge(clip.Right,target.Width);bottom=SampleEdge(clip.Bottom,target.Height);}
+        Matrix3 inverse=default;
+        if(command.Paint.Shader is not null)(command.ShaderTransform??command.Transform).TryInvert(out inverse);
         if(!mask.Dense&&TryFillHorizontalGradient(mask,command,inverse,dx,dy,left,top,right,bottom))return;
         if(mask.Dense)
         {

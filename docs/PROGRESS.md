@@ -1,6 +1,12 @@
 # 进度：2026-10-21
 
-最新完成：独立 `SimdSkia.Avalonia` 已运行真实 Avalonia 12.1.4 控件、Fluent 模板、布局和输入，并实际通过 Win32 软件窗口 framebuffer 呈现。新增 Image 裁切/过滤、AA 几何/圆角裁剪、区域、分组透明度/mask、独立圆角、多色渐变、弧/布尔几何、caps/joins/dashes、托管字体服务和 Latin/DFLT kern/GPOS 字距。原版仅在 Reference 项目运行，六个原有引擎模块仍无包依赖；新增适配层只用固定版本托管 Avalonia 和 Clipper2。
+最新续轮：按字形共享/分批 mask、设备亚像素与 baseline、sRGB 文字预混合、半像素硬 clip 舍入已实现。6581 项真实 UI/字形/资源/原版夹具断言在硬件与完整标量回退通过；7845 项 CPU/编解码、595 项旧文字链通过，313 项 Vulkan 检查及实际 Win32 呈现通过。36 进程同机复测：100% 控件 1.492→1.083 ms，首绘 89.2→18.6 ms；列表 0.723→0.433 ms。工作集仍约 118 vs 原版默认 96 MiB。整页 RMSE 降到约 2.3–2.6，但最大误差仍超阈值，**0/3 画质 gate，完整替换与窗口 GPU 仍未完成**。详见[本轮 CPU/内存与画质](AVALONIA-TEXT-CACHE.md)。
+
+下一步继续降低文字栅格误差、首绘与层缓冲内存，再补 ImageBrush/VisualBrush、滤镜、字体/编解码和 Vulkan 窗口；当前受测控件子集不等于目标应用完整兼容。
+
+## 前轮实际接入记录
+
+前轮完成：独立 `SimdSkia.Avalonia` 已运行真实 Avalonia 12.1.4 控件、Fluent 模板、布局和输入，并实际通过 Win32 软件窗口 framebuffer 呈现。新增 Image 裁切/过滤、AA 几何/圆角裁剪、区域、分组透明度/mask、独立圆角、多色渐变、弧/布尔几何、caps/joins/dashes、托管字体服务和 Latin/DFLT kern/GPOS 字距。原版仅在 Reference 项目运行，六个原有引擎模块仍无包依赖；新增适配层只用固定版本托管 Avalonia 和 Clipper2。
 
 914 个真实 UI/像素/资源/排版断言通过，含按钮点击、中文输入、DPI/resize、SIMD 独立预期、15 份原版排版夹具和拒绝合成字体。CPU 最终三进程中位数：1000×720 控件 1.47 ms，原版完整组 3.18、原版默认 0.86；150% 为 2.67 / 6.73 / 1.59；滚动约 0.71 vs 原版 0.37。原版默认 opacity 与完整组行为有差异，报告单列。初版控件 32.3 ms 已改善，工作集仍约 119 vs 96 MiB，首绘仍慢。**像素 gate 仍为 0/3，完整替换和窗口 GPU 未完成**。接入、命令、当前限制见 [真实接入](AVALONIA-INTEGRATION.md)，CPU/内存及失败差异见 [实际控件报告](AVALONIA-CONTROLS-PERFORMANCE.md)。
 

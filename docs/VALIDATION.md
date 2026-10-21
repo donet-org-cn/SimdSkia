@@ -1,6 +1,10 @@
 # 验证：2026-10-21
 
-最新验收已改为真实 Avalonia 控件及合成器，见 [接入文档](AVALONIA-INTEGRATION.md) 和 [实际控件 CPU/内存报告](AVALONIA-CONTROLS-PERFORMANCE.md)。914 项断言验证窗口 framebuffer、鼠标点击、中文输入、DPI/resize、分组重叠/mask 像素、AA 裁剪、格式/stride/Alpha、标量与 AVX2 合成、图片轴向/通用路径、可变 pen/路径失效、拒绝合成字体与原版 kern/GPOS 夹具。另实际运行 Win32 软件窗口，完成呈现且未加载 Skia/HarfBuzz/ANGLE。新增原版排版夹具允许误差 0.000001；原版全文 UI 像素门槛未放宽，三个性能场景仍全部失败。
+最新续轮通过 6581 项真实 Avalonia/字形检查（硬件与 DOTNET_EnableHWIntrinsic=0），7845 项 CPU/编解码及 595 项旧文字链双模式通过；313 项 Vulkan 含新增字形命令明确拒绝、实际 Win32 呈现、生产依赖隔离通过。原版 22 份硬裁剪夹具一致，24 组独立文字及 3 个完整 UI 像素 gate 仍失败，阈值未放宽。最终 36 进程 CPU/内存/P95/P99/首绘和 SHA 清单见[续轮报告](AVALONIA-TEXT-CACHE.md)。验证日志在 `artifacts/text-cache-verification.log`。
+
+## 前轮接入验收（历史记录）
+
+前轮验收已改为真实 Avalonia 控件及合成器，见 [接入文档](AVALONIA-INTEGRATION.md) 和 [实际控件 CPU/内存报告](AVALONIA-CONTROLS-PERFORMANCE.md)。914 项断言验证窗口 framebuffer、鼠标点击、中文输入、DPI/resize、分组重叠/mask 像素、AA 裁剪、格式/stride/Alpha、标量与 AVX2 合成、图片轴向/通用路径、可变 pen/路径失效、拒绝合成字体与原版 kern/GPOS 夹具。另实际运行 Win32 软件窗口，完成呈现且未加载 Skia/HarfBuzz/ANGLE。新增原版排版夹具允许误差 0.000001；原版全文 UI 像素门槛未放宽，三个性能场景仍全部失败。
 
 最终性能对比 27 个进程：托管、原版完整透明组、原版默认各三个配置×三个进程，每进程预热 2.5 秒并测量 600 次，记录 P95/P99、吞吐、CPU、GC 和内存。此前优化前后与排版修复/透明度核查的各轮数据另存；第一轮托管优化前后逐字节一致，后续字距修正及透明度选项变化未声称仍逐像素一致。保存 manifest/程序集及字体 SHA、逐配置 PNG/RGBA 与差异图。`run-avalonia-controls.ps1` 画质失败时返回 2。原版只在 Reference 项目；依赖扫描覆盖六模块零包依赖及可选适配层五个纯托管包、示例输出无原生绘制组件。
 

@@ -18,6 +18,9 @@ try {
     if($fontPath){dotnet run --project tests/Avalonia -c Release --no-build -- $fontPath artifacts/avalonia/tests-managed}
     else{dotnet run --project tests/Avalonia -c Release --no-build}
     if($LASTEXITCODE -ne 0){throw 'Avalonia text-chain checks failed.'}
+    if(-not (Test-Path -LiteralPath baseline/fonts/ZCOOLXiaoWei-Regular.ttf)){throw 'Run tools/fetch-avalonia-font.ps1 before real Avalonia control verification.'}
+    dotnet run --project tests/AvaloniaControls -c Release --no-build -- --frames 5 --output artifacts/avalonia-controls/verify
+    if($LASTEXITCODE -ne 0){throw 'Real Avalonia control, glyph-mask and lifetime checks failed.'}
     dotnet run --project examples/Rectangle -c Release --no-build
     if ($LASTEXITCODE -ne 0) { throw 'Rectangle example failed.' }
     dotnet run --project tools/ApiAudit -c Release --no-build -- extract src/SimdSkia.Compatibility/bin/Release/net8.0/SimdSkia.Compatibility.dll docs/api/implemented.json

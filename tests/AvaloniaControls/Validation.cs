@@ -25,7 +25,7 @@ internal static class Validation
     {try{action();}catch(T){assertions++;return;}throw new InvalidOperationException(message);}
     internal static void Run(Window host,Control scene,RenderTargetBitmap bitmap,string font,string output)
     {
-        RunDrawingChecks();RunCompositorOracle();RunGeometry();RunShaping(font);RunLifetime();
+        RunDrawingChecks();RunCompositorOracle();RunGeometry();RunShaping(font);RunLifetime();assertions+=GlyphValidation.Run();
         AvaloniaHeadlessPlatform.ForceRenderTimerTick(2);using var frame=host.CaptureRenderedFrame();Assert(frame is not null&&frame.PixelSize.Width>0,"Real window compositor did not present a framebuffer.");
         var button=scene.GetVisualDescendants().OfType<Button>().First();int clicked=0;button.Click+=(_,_)=>clicked++;
         var point=button.TranslatePoint(new Point(button.Bounds.Width/2,button.Bounds.Height/2),host)??throw new InvalidOperationException("Button coordinate mapping failed.");
@@ -44,6 +44,15 @@ internal static class Validation
     {using var locked=bitmap.Lock();var values=new byte[4];Marshal.Copy(locked.Address+y*locked.RowBytes+x*4,values,0,4);return locked.Format==PixelFormats.Bgra8888?Color.FromArgb(values[3],values[2],values[1],values[0]):Color.FromArgb(values[3],values[0],values[1],values[2]);}
     private static void RunDrawingChecks()
     {
+        using(var fixture=JsonDocument.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory,"fixtures","clips-native-3.119.4.json"))))
+        foreach(var sample in fixture.RootElement.EnumerateArray())
+        {
+            double edge=sample.GetProperty("edge").GetDouble();bool left=sample.GetProperty("left").GetBoolean();
+            using var probe=Target(8,1);using(var c=probe.CreateDrawingContext())
+            {c.Clear(Colors.Transparent);c.PushClip(left?new Rect(edge,0,8-edge,1):new Rect(0,0,edge+4,1));c.DrawRectangle(Brushes.Red,null,new Rect(0,0,8,1));c.PopClip();}
+            var expected=sample.GetProperty("alpha").GetBytesFromBase64();
+            Assert(Enumerable.Range(0,8).All(i=>Pixel(probe,i,0).A==expected[i]),$"Native hard-clip rounding differs at {edge}, left={left}.");
+        }
         using var image=Target();
         using(var context=image.CreateDrawingContext())
         {
@@ -140,6 +149,17 @@ internal static class Validation
         ushort aGlyph=face.CharacterToGlyphMap['A'];
         using(var normal=Factory.CreateGlyphRun(face,18,new[]{new GlyphInfo(aGlyph,0,18)},default))using(var shifted=Factory.CreateGlyphRun(face,18,new[]{new GlyphInfo(aGlyph,0,18,new Vector(2,5))},default))
             Assert(Math.Abs(shifted.Bounds.Top-normal.Bounds.Top-5)<1e-5&&Math.Abs(shifted.Bounds.Left-normal.Bounds.Left-2)<1e-5,"GlyphInfo offsets did not follow Avalonia's screen coordinate convention.");
+        byte[] GlyphImage(TextRenderingMode mode,EdgeMode edge)
+        {
+            using var image=Target();using var run=Factory.CreateGlyphRun(face,18,new[]{new GlyphInfo(aGlyph,0,18)},new(3.125,20.375));
+            using(var c=image.CreateDrawingContext())
+            {c.Clear(Colors.Transparent);c.PushRenderOptions(new(){EdgeMode=edge});c.PushTextOptions(new(){TextRenderingMode=mode,TextHintingMode=TextHintingMode.None,BaselinePixelAlignment=BaselinePixelAlignment.Unaligned});c.DrawGlyphRun(Brushes.Red,run);c.PopTextOptions();c.PopRenderOptions();}
+            return Bytes(image);
+        }
+        var antialiased=GlyphImage(TextRenderingMode.Antialias,EdgeMode.Unspecified);var aliased=GlyphImage(TextRenderingMode.Alias,EdgeMode.Unspecified);
+        Assert(antialiased.AsSpan().SequenceEqual(GlyphImage(TextRenderingMode.Antialias,EdgeMode.Aliased)),"Explicit text AA was overridden by shape EdgeMode.");
+        Assert(aliased.AsSpan().SequenceEqual(GlyphImage(TextRenderingMode.Unspecified,EdgeMode.Aliased)),"Unspecified text mode did not inherit aliased EdgeMode.");
+        Assert(antialiased.Where((_,i)=>i%4==3).Any(a=>a is >0 and <255)&&aliased.Where((_,i)=>i%4==3).All(a=>a is 0 or 255),"Text AA/alias modes did not produce their documented coverage.");
         using(var shaped=shaper.ShapeText("中文 ABC".AsMemory(),new(face,18))){Assert(shaped.Length==6&&shaped[0].GlyphIndex!=0&&shaped[1].GlyphIndex!=0,"Chinese text was not mapped to actual TrueType glyphs.");for(int i=0;i<shaped.Length;i++)Assert(shaped[i].GlyphCluster==i&&shaped[i].GlyphAdvance>=0,"UTF-16 clusters or advances were invalid.");}
         using(var shaped=shaper.ShapeText("A\U00020000B".AsMemory(),new(face,18)))Assert(shaped.Length==3&&shaped[2].GlyphCluster==3,"Supplementary-plane UTF-16 cluster accounting failed.");
         using(var shaped=shaper.ShapeText("A\tB\r\nC".AsMemory(),new(face,18)))Assert(shaped[1].GlyphIndex==face.CharacterToGlyphMap[' ']&&shaped[3].GlyphAdvance==0&&shaped[4].GlyphAdvance==0,"Tabs and line breaks were shaped as visible .notdef boxes.");

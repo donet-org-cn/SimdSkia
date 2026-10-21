@@ -1,5 +1,7 @@
 # 真实 Avalonia 控件 CPU 对比：2026-10-21
 
+本文保留前轮数据。后续字形缓存、sRGB 与半像素裁剪修复的最新 CPU/内存、首绘和失败画质结果见 [续轮优化报告](AVALONIA-TEXT-CACHE.md)。
+
 现在可以用 `UseSimdSkia` 运行基础 Avalonia 控件和真实 Win32 软件窗口。完整控件场景约 1.47 ms/帧；原版默认约 0.86 ms，原版开启完整透明分组约 3.18 ms。原版默认采用逐 draw 的 opacity，透明内容重叠时与完整分组的结果不同，因此两种配置全部列出。托管工作集仍更高、首绘仍更慢，像素 gate 仍失败，不能视为全面超过原版或完整替换成功。
 
 这份测量使用实际 Avalonia 12.1.4 控件、Fluent 主题、布局/模板和 `RenderTargetBitmap.Render`，由 Avalonia 的 ImmediateRenderer 遍历视觉树。不是此前的 SKCanvas 调用回放，也不包含 GPU 或桌面窗口呈现耗时。真实窗口呈现与输入由另外的功能测试验证。

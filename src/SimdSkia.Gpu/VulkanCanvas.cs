@@ -136,6 +136,7 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
     public void Execute(in DrawingCommand command)
     {
         Validate();if(!Enum.IsDefined(command.Kind)||!Enum.IsDefined(command.Paint.Composite))throw new NotSupportedException("Unknown Vulkan drawing command/composite mode.");
+        if(command.Kind==CommandKind.DrawGlyphRun)throw new NotSupportedException("Vulkan glyph masks are not implemented.");
         if(command.CoverageClip is not null||command.ImageSource is not null||command.Sampling!=ImageSampling.Nearest||command.CurveTolerance!=0.125f)
             throw new NotSupportedException("Vulkan coverage clips, cropped/filtered sampling and custom curve tolerance are not implemented.");
         if(!command.Transform.IsFinite||!command.Transform.IsAffine)throw new NotSupportedException("Vulkan drawing requires a finite affine transform.");

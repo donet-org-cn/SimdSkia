@@ -1,0 +1,559 @@
+{
+  "width": 960,
+  "height": 1008,
+  "threshold": {
+    "maximumChannelError": 32,
+    "rmse": 2
+  },
+  "referenceSha256": "2de4c536347be958173fb9108fe0bc96c096a8a8a19e0d6c6eb35808fcaf23b7",
+  "results": [
+    {
+      "variant": "after",
+      "sha256": "29ff2f309a3e5301ccd285066e66d4fa0dc549fad3cf8d075b29cf4bd24fbbb5",
+      "maximumChannelError": 111,
+      "rmse": 3.8100747379172515,
+      "channelsOver32": 11149,
+      "passed": false,
+      "cases": [
+        {
+          "size": 12,
+          "scale": 1,
+          "phase": 0,
+          "top": 0,
+          "height": 42,
+          "maximumChannelError": 75,
+          "rmse": 2.161846458268252,
+          "channelsOver32": 151,
+          "passed": false
+        },
+        {
+          "size": 12,
+          "scale": 1,
+          "phase": 0.125,
+          "top": 42,
+          "height": 42,
+          "maximumChannelError": 79,
+          "rmse": 2.125614115276687,
+          "channelsOver32": 130,
+          "passed": false
+        },
+        {
+          "size": 12,
+          "scale": 1,
+          "phase": 0.375,
+          "top": 84,
+          "height": 42,
+          "maximumChannelError": 75,
+          "rmse": 2.673561120950916,
+          "channelsOver32": 247,
+          "passed": false
+        },
+        {
+          "size": 12,
+          "scale": 1,
+          "phase": 0.625,
+          "top": 126,
+          "height": 42,
+          "maximumChannelError": 75,
+          "rmse": 2.103513866205179,
+          "channelsOver32": 127,
+          "passed": false
+        },
+        {
+          "size": 12,
+          "scale": 1.5,
+          "phase": 0,
+          "top": 168,
+          "height": 42,
+          "maximumChannelError": 89,
+          "rmse": 3.0925818501698545,
+          "channelsOver32": 296,
+          "passed": false
+        },
+        {
+          "size": 12,
+          "scale": 1.5,
+          "phase": 0.125,
+          "top": 210,
+          "height": 42,
+          "maximumChannelError": 74,
+          "rmse": 2.6864281269650983,
+          "channelsOver32": 182,
+          "passed": false
+        },
+        {
+          "size": 12,
+          "scale": 1.5,
+          "phase": 0.375,
+          "top": 252,
+          "height": 42,
+          "maximumChannelError": 65,
+          "rmse": 2.7593523329975547,
+          "channelsOver32": 235,
+          "passed": false
+        },
+        {
+          "size": 12,
+          "scale": 1.5,
+          "phase": 0.625,
+          "top": 294,
+          "height": 42,
+          "maximumChannelError": 51,
+          "rmse": 2.257446067576338,
+          "channelsOver32": 78,
+          "passed": false
+        },
+        {
+          "size": 18,
+          "scale": 1,
+          "phase": 0,
+          "top": 336,
+          "height": 42,
+          "maximumChannelError": 89,
+          "rmse": 3.0925818501698545,
+          "channelsOver32": 296,
+          "passed": false
+        },
+        {
+          "size": 18,
+          "scale": 1,
+          "phase": 0.125,
+          "top": 378,
+          "height": 42,
+          "maximumChannelError": 74,
+          "rmse": 2.6864281269650983,
+          "channelsOver32": 182,
+          "passed": false
+        },
+        {
+          "size": 18,
+          "scale": 1,
+          "phase": 0.375,
+          "top": 420,
+          "height": 42,
+          "maximumChannelError": 65,
+          "rmse": 2.7593523329975547,
+          "channelsOver32": 235,
+          "passed": false
+        },
+        {
+          "size": 18,
+          "scale": 1,
+          "phase": 0.625,
+          "top": 462,
+          "height": 42,
+          "maximumChannelError": 51,
+          "rmse": 2.257446067576338,
+          "channelsOver32": 78,
+          "passed": false
+        },
+        {
+          "size": 18,
+          "scale": 1.5,
+          "phase": 0,
+          "top": 504,
+          "height": 42,
+          "maximumChannelError": 101,
+          "rmse": 3.901533263417801,
+          "channelsOver32": 504,
+          "passed": false
+        },
+        {
+          "size": 18,
+          "scale": 1.5,
+          "phase": 0.125,
+          "top": 546,
+          "height": 42,
+          "maximumChannelError": 86,
+          "rmse": 4.11850062171074,
+          "channelsOver32": 581,
+          "passed": false
+        },
+        {
+          "size": 18,
+          "scale": 1.5,
+          "phase": 0.375,
+          "top": 588,
+          "height": 42,
+          "maximumChannelError": 75,
+          "rmse": 3.297105964038044,
+          "channelsOver32": 288,
+          "passed": false
+        },
+        {
+          "size": 18,
+          "scale": 1.5,
+          "phase": 0.625,
+          "top": 630,
+          "height": 42,
+          "maximumChannelError": 75,
+          "rmse": 4.076981971268406,
+          "channelsOver32": 498,
+          "passed": false
+        },
+        {
+          "size": 27,
+          "scale": 1,
+          "phase": 0,
+          "top": 672,
+          "height": 42,
+          "maximumChannelError": 101,
+          "rmse": 3.901533263417801,
+          "channelsOver32": 504,
+          "passed": false
+        },
+        {
+          "size": 27,
+          "scale": 1,
+          "phase": 0.125,
+          "top": 714,
+          "height": 42,
+          "maximumChannelError": 86,
+          "rmse": 4.11850062171074,
+          "channelsOver32": 581,
+          "passed": false
+        },
+        {
+          "size": 27,
+          "scale": 1,
+          "phase": 0.375,
+          "top": 756,
+          "height": 42,
+          "maximumChannelError": 75,
+          "rmse": 3.297105964038044,
+          "channelsOver32": 288,
+          "passed": false
+        },
+        {
+          "size": 27,
+          "scale": 1,
+          "phase": 0.625,
+          "top": 798,
+          "height": 42,
+          "maximumChannelError": 75,
+          "rmse": 4.076981971268406,
+          "channelsOver32": 498,
+          "passed": false
+        },
+        {
+          "size": 27,
+          "scale": 1.5,
+          "phase": 0,
+          "top": 840,
+          "height": 42,
+          "maximumChannelError": 111,
+          "rmse": 6.189894017382573,
+          "channelsOver32": 1413,
+          "passed": false
+        },
+        {
+          "size": 27,
+          "scale": 1.5,
+          "phase": 0.125,
+          "top": 882,
+          "height": 42,
+          "maximumChannelError": 75,
+          "rmse": 5.4688574252487525,
+          "channelsOver32": 1234,
+          "passed": false
+        },
+        {
+          "size": 27,
+          "scale": 1.5,
+          "phase": 0.375,
+          "top": 924,
+          "height": 42,
+          "maximumChannelError": 94,
+          "rmse": 6.089883541383944,
+          "channelsOver32": 1088,
+          "passed": false
+        },
+        {
+          "size": 27,
+          "scale": 1.5,
+          "phase": 0.625,
+          "top": 966,
+          "height": 42,
+          "maximumChannelError": 110,
+          "rmse": 6.632510156209504,
+          "channelsOver32": 1435,
+          "passed": false
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "sha256": "4a7a71816007a15ae0a972284e7f9944616d36fe6c93fce07100413c8f9ca732",
+      "maximumChannelError": 110,
+      "rmse": 8.061634445433235,
+      "channelsOver32": 71193,
+      "passed": false,
+      "cases": [
+        {
+          "size": 12,
+          "scale": 1,
+          "phase": 0,
+          "top": 0,
+          "height": 42,
+          "maximumChannelError": 84,
+          "rmse": 4.36392163128169,
+          "channelsOver32": 1042,
+          "passed": false
+        },
+        {
+          "size": 12,
+          "scale": 1,
+          "phase": 0.125,
+          "top": 42,
+          "height": 42,
+          "maximumChannelError": 94,
+          "rmse": 4.95995684205014,
+          "channelsOver32": 1288,
+          "passed": false
+        },
+        {
+          "size": 12,
+          "scale": 1,
+          "phase": 0.375,
+          "top": 84,
+          "height": 42,
+          "maximumChannelError": 94,
+          "rmse": 4.8310134005393195,
+          "channelsOver32": 1214,
+          "passed": false
+        },
+        {
+          "size": 12,
+          "scale": 1,
+          "phase": 0.625,
+          "top": 126,
+          "height": 42,
+          "maximumChannelError": 94,
+          "rmse": 4.697288721099127,
+          "channelsOver32": 1072,
+          "passed": false
+        },
+        {
+          "size": 12,
+          "scale": 1.5,
+          "phase": 0,
+          "top": 168,
+          "height": 42,
+          "maximumChannelError": 96,
+          "rmse": 6.323529771404676,
+          "channelsOver32": 1919,
+          "passed": false
+        },
+        {
+          "size": 12,
+          "scale": 1.5,
+          "phase": 0.125,
+          "top": 210,
+          "height": 42,
+          "maximumChannelError": 95,
+          "rmse": 6.750802788828214,
+          "channelsOver32": 2147,
+          "passed": false
+        },
+        {
+          "size": 12,
+          "scale": 1.5,
+          "phase": 0.375,
+          "top": 252,
+          "height": 42,
+          "maximumChannelError": 94,
+          "rmse": 6.670848762660245,
+          "channelsOver32": 2067,
+          "passed": false
+        },
+        {
+          "size": 12,
+          "scale": 1.5,
+          "phase": 0.625,
+          "top": 294,
+          "height": 42,
+          "maximumChannelError": 110,
+          "rmse": 6.292806779386955,
+          "channelsOver32": 1951,
+          "passed": false
+        },
+        {
+          "size": 18,
+          "scale": 1,
+          "phase": 0,
+          "top": 336,
+          "height": 42,
+          "maximumChannelError": 96,
+          "rmse": 6.323529771404676,
+          "channelsOver32": 1919,
+          "passed": false
+        },
+        {
+          "size": 18,
+          "scale": 1,
+          "phase": 0.125,
+          "top": 378,
+          "height": 42,
+          "maximumChannelError": 95,
+          "rmse": 6.750802788828214,
+          "channelsOver32": 2147,
+          "passed": false
+        },
+        {
+          "size": 18,
+          "scale": 1,
+          "phase": 0.375,
+          "top": 420,
+          "height": 42,
+          "maximumChannelError": 94,
+          "rmse": 6.670848762660245,
+          "channelsOver32": 2067,
+          "passed": false
+        },
+        {
+          "size": 18,
+          "scale": 1,
+          "phase": 0.625,
+          "top": 462,
+          "height": 42,
+          "maximumChannelError": 110,
+          "rmse": 6.292806779386955,
+          "channelsOver32": 1951,
+          "passed": false
+        },
+        {
+          "size": 18,
+          "scale": 1.5,
+          "phase": 0,
+          "top": 504,
+          "height": 42,
+          "maximumChannelError": 94,
+          "rmse": 8.2197878290358,
+          "channelsOver32": 3410,
+          "passed": false
+        },
+        {
+          "size": 18,
+          "scale": 1.5,
+          "phase": 0.125,
+          "top": 546,
+          "height": 42,
+          "maximumChannelError": 98,
+          "rmse": 8.862270451165614,
+          "channelsOver32": 3336,
+          "passed": false
+        },
+        {
+          "size": 18,
+          "scale": 1.5,
+          "phase": 0.375,
+          "top": 588,
+          "height": 42,
+          "maximumChannelError": 107,
+          "rmse": 9.00539892627909,
+          "channelsOver32": 3624,
+          "passed": false
+        },
+        {
+          "size": 18,
+          "scale": 1.5,
+          "phase": 0.625,
+          "top": 630,
+          "height": 42,
+          "maximumChannelError": 95,
+          "rmse": 8.84430227817313,
+          "channelsOver32": 3746,
+          "passed": false
+        },
+        {
+          "size": 27,
+          "scale": 1,
+          "phase": 0,
+          "top": 672,
+          "height": 42,
+          "maximumChannelError": 94,
+          "rmse": 8.2197878290358,
+          "channelsOver32": 3410,
+          "passed": false
+        },
+        {
+          "size": 27,
+          "scale": 1,
+          "phase": 0.125,
+          "top": 714,
+          "height": 42,
+          "maximumChannelError": 98,
+          "rmse": 8.862270451165614,
+          "channelsOver32": 3336,
+          "passed": false
+        },
+        {
+          "size": 27,
+          "scale": 1,
+          "phase": 0.375,
+          "top": 756,
+          "height": 42,
+          "maximumChannelError": 107,
+          "rmse": 9.00539892627909,
+          "channelsOver32": 3624,
+          "passed": false
+        },
+        {
+          "size": 27,
+          "scale": 1,
+          "phase": 0.625,
+          "top": 798,
+          "height": 42,
+          "maximumChannelError": 95,
+          "rmse": 8.84430227817313,
+          "channelsOver32": 3746,
+          "passed": false
+        },
+        {
+          "size": 27,
+          "scale": 1.5,
+          "phase": 0,
+          "top": 840,
+          "height": 42,
+          "maximumChannelError": 98,
+          "rmse": 10.030046625886657,
+          "channelsOver32": 4942,
+          "passed": false
+        },
+        {
+          "size": 27,
+          "scale": 1.5,
+          "phase": 0.125,
+          "top": 882,
+          "height": 42,
+          "maximumChannelError": 110,
+          "rmse": 11.95215251127502,
+          "channelsOver32": 6014,
+          "passed": false
+        },
+        {
+          "size": 27,
+          "scale": 1.5,
+          "phase": 0.375,
+          "top": 924,
+          "height": 42,
+          "maximumChannelError": 110,
+          "rmse": 11.65348798609513,
+          "channelsOver32": 5661,
+          "passed": false
+        },
+        {
+          "size": 27,
+          "scale": 1.5,
+          "phase": 0.625,
+          "top": 966,
+          "height": 42,
+          "maximumChannelError": 110,
+          "rmse": 11.886283538563557,
+          "channelsOver32": 5560,
+          "passed": false
+        }
+      ]
+    }
+  ]
+}

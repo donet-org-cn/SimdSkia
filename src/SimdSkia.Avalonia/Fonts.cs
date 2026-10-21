@@ -136,21 +136,36 @@ internal sealed class TextShaper:ITextShaperImpl
 internal sealed class GlyphRun:IGlyphRunImpl
 {
     private SimdSkia.PathGeometry? path;
-    internal SimdSkia.PathGeometry Path=>path??throw new ObjectDisposedException(nameof(GlyphRun));
+    private GlyphRunGeometry? glyphs;
+    internal GlyphRunGeometry Glyphs=>glyphs??throw new ObjectDisposedException(nameof(GlyphRun));
+    internal SimdSkia.PathGeometry Path
+    {
+        get
+        {
+            var run=Glyphs;if(path is not null)return path;
+            var segments=new List<PathSegment>();
+            foreach(var glyph in run.Glyphs)glyph.Outline.AppendTransformedTo(segments,new Matrix3(1,0,glyph.Position.X,0,1,glyph.Position.Y,0,0,1)*run.FontTransform);
+            return path=new(segments);
+        }
+    }
     public double FontRenderingEmSize {get;}
     public Point BaselineOrigin {get;}
     public Rect Bounds {get;}
     internal GlyphRun(GlyphTypeface typeface,double size,IReadOnlyList<GlyphInfo> infos,Point baseline)
     {
+        ArgumentNullException.ThrowIfNull(typeface);
         if(typeface.FontSimulations!=FontSimulations.None)throw new NotSupportedException("Synthetic bold/oblique glyph rendering is not implemented.");
         if(!double.IsFinite(size)||size<=0)throw new ArgumentOutOfRangeException(nameof(size));
-        var font=((PlatformTypeface)typeface.PlatformTypeface).Data.Font;float scale=(float)(size/font.UnitsPerEm);var segments=new List<PathSegment>();double x=0;
+        ArgumentNullException.ThrowIfNull(infos);
+        if(!double.IsFinite(baseline.X)||!double.IsFinite(baseline.Y))throw new ArgumentException("Glyph baseline must be finite.",nameof(baseline));
+        var font=((PlatformTypeface)typeface.PlatformTypeface).Data.Font;float scale=(float)(size/font.UnitsPerEm);var positioned=new PositionedGlyph[infos.Count];double x=0;int index=0;
         foreach(var info in infos)
         {
-            font.Outline(info.GlyphIndex).AppendTransformedTo(segments,new(scale,0,(float)(x+info.GlyphOffset.X),0,-scale,(float)info.GlyphOffset.Y,0,0,1));
+            if(!double.IsFinite(info.GlyphAdvance))throw new ArgumentException("Glyph advances must be finite.",nameof(infos));
+            positioned[index++]=new(font.Outline(info.GlyphIndex),new((float)(x+info.GlyphOffset.X),(float)info.GlyphOffset.Y));
             x+=info.GlyphAdvance;
         }
-        path=new(segments);BaselineOrigin=baseline;FontRenderingEmSize=size;Bounds=ConvertTo.Rect(path.GetTightBounds(Matrix3.Identity)).Translate(new Vector(baseline.X,baseline.Y));
+        glyphs=new(positioned,new(scale,0,0,0,-scale,0,0,0,1),GlyphPositioning.QuarterPixel);BaselineOrigin=baseline;FontRenderingEmSize=size;Bounds=ConvertTo.Rect(glyphs.Bounds).Translate(new Vector(baseline.X,baseline.Y));
     }
     public IReadOnlyList<float> GetIntersections(float lower,float upper)
     {
@@ -161,5 +176,5 @@ internal sealed class GlyphRun:IGlyphRunImpl
         var intervals=clipped.Where(c=>c.Length>0).Select(c=>(Left:c.Min(p=>p.X),Right:c.Max(p=>p.X))).OrderBy(p=>p.Left);
         var values=new List<float>();foreach(var interval in intervals){if(values.Count>0&&interval.Left<=values[^1])values[^1]=Math.Max(values[^1],interval.Right);else{values.Add(interval.Left);values.Add(interval.Right);}}return values;
     }
-    public void Dispose()=>path=null;
+    public void Dispose(){path=null;glyphs=null;}
 }

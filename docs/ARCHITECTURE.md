@@ -8,6 +8,8 @@
 
 具体接口及版本约束见 [真实 Avalonia 接入](AVALONIA-INTEGRATION.md)。以下仍描述原 SK* 入口，其 API 覆盖率单独维护。
 
+续轮 Avalonia 文字改为不可变 `GlyphRunGeometry` / `DrawGlyphRun` 命令。CPU 原始字形 mask LRU 最多 4096 项/8 MiB，带亚像素相位、baseline 策略及可选 sRGB 预混合 luminance 的行 LRU 最多 512 项/2 MiB；预算保守计入被 key 持有的轮廓，不是实际进程内存上限。连续且像素不重叠的字形打包合成，重叠则按输入顺序分批，避免改变透明合成。矩形硬 clip 采用已核对原版的设备坐标舍入；16×16 几何 AA 不变。Vulkan 明确拒绝新字形命令，详见 [文字/首绘报告](AVALONIA-TEXT-CACHE.md)。
+
     SkiaSharp.SK* / SimdSkia.VulkanSurface / TextRendering
                          |
     SimdSkia.Compatibility：验证、状态、快照、所有权

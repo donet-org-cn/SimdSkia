@@ -56,10 +56,14 @@ public interface IColorShader
     bool IsOpaque=>false;
 }
 public readonly record struct Paint(Rgba32 Color, CompositeMode Composite,bool Antialias=false,IColorShader? Shader=null);
-public enum CommandKind { Clear, FillRectangle,FillPath,DrawImage }
+public enum CommandKind { Clear, FillRectangle,FillPath,DrawImage,DrawGlyphRun }
 public readonly record struct DrawingCommand(CommandKind Kind, RectF Rectangle, Matrix3 Transform, Paint Paint)
 {
     public PathGeometry? Path { get; init; }
+    public GlyphRunGeometry? GlyphRun {get;init;}
+    public bool SnapGlyphBaseline {get;init;}
+    /// <summary>sRGB text mask preblend, with luminance-based contrast, for the Avalonia raster compatibility profile.</summary>
+    public bool TextMaskPreblend {get;init;}
     public RectF? Clip { get; init; }
     public PixelBuffer? Image { get; init; }
     public Matrix3? ShaderTransform {get;init;}

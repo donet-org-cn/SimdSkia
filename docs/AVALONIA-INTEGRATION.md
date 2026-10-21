@@ -33,7 +33,7 @@ AppBuilder.Configure<App>()
 
 具体包引用见 [示例项目](../examples/AvaloniaControls/AvaloniaControls.csproj)。`Avalonia.Win32` 的常规包依赖 ANGLE 原生组件；示例以 `PackageDownload` 固定版本，只引用其中托管 DLL。保留 `Avalonia.Desktop` 会传递引入原版渲染组件，因此不能仅修改启动方法就声称满足无原生绘制依赖的部署要求。当前实际桌面宿主验证限 Windows；Linux/macOS 有托管无头/离屏验收，尚无本机桌面宿主承诺。
 
-使用 `TextHintingMode.None` 和 `TextRenderingMode.Antialias`。未指定的文本选项采用无 hint 的灰度覆盖；显式 Strong/Light hinting、LCD subpixel 会报错。示例在根控件设置这些属性。由软件栅格位置生成的覆盖率与原版仍有差异，详见 [性能及画质报告](AVALONIA-CONTROLS-PERFORMANCE.md)。
+使用 `TextHintingMode.None` 和 `TextRenderingMode.Antialias`。未指定的文本选项采用无 hint 的灰度覆盖；显式 Strong/Light hinting、LCD subpixel 会报错。示例在根控件设置这些属性。现支持共享字形 mask、设备亚像素相位、baseline snap 和 sRGB 文字预混合；显式文本模式优先于形状 EdgeMode。栅格结果仍有原版差异，详见 [最新性能及画质报告](AVALONIA-TEXT-CACHE.md)。
 
 ## 当前实现与边界
 
@@ -64,6 +64,6 @@ Remove-Item Env:DOTNET_EnableHWIntrinsic
 powershell -NoProfile -File tools/check-production-dependencies.ps1
 ```
 
-914 项断言包含真实合成窗口、鼠标及输入、DPI/resize、资源持有、异常、分组重叠像素、mask、图片预乘过滤、各种格式/stride、SIMD 对独立 Porter-Duff 预期、轴向对通用采样、拒绝合成字体以及原版排版夹具。`tests/AvaloniaControls.Reference` 才引用原版后端与 HarfBuzz；这两个原版库不在示例或生产引用图内。
+6581 项断言包含真实合成窗口、鼠标及输入、DPI/resize、资源持有、异常、分组重叠像素、mask、图片预乘过滤、各种格式/stride、SIMD 对独立 Porter-Duff 预期、轴向对通用采样、拒绝合成字体、原版排版夹具，以及字形缓存/顺序合成/预混合、文本模式与原版硬裁剪舍入。`tests/AvaloniaControls.Reference` 才引用原版后端与 HarfBuzz；这两个原版库不在示例或生产引用图内。
 
 固定字体与 Clipper/Avalonia 许可证见 [依赖文档](DEPENDENCIES.md) 及 `docs/licenses`。下一优先级是修复文字/曲线/DPI 像素 gate、降低首次覆盖生成成本和托管工作集；其后补滤镜/图像画刷及 Vulkan 窗口呈现。不能将当前失败的画质检查或 CPU 测量当作已达到完整 Avalonia 的上线要求。

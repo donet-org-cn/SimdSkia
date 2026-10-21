@@ -36,6 +36,8 @@ builder.SetupWithoutStarting();
 var collection=new EmbeddedFontCollection(new Uri("fonts:Validation"),new Uri(font));
 if(collection.Count==0)throw new InvalidOperationException("Font file was not registered.");
 FontManager.Current.AddFontCollection(collection);
+if(args.Contains("--text-probe")){TextProbe.Run(output,collection[0]);return;}
+if(args.Contains("--clip-probe")){TextProbe.Clips(output);return;}
 if(args.Contains("--dump-shaping"))
 {
     var shaper=AvaloniaLocator.Current.GetRequiredService<ITextShaperImpl>();var face=new Typeface(collection[0]).GlyphTypeface;
