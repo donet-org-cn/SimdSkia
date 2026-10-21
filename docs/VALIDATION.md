@@ -1,5 +1,9 @@
 # 验证：2026-10-21
 
+NuGet 预览续轮：八个包通过内容/预览版本/依赖/许可证/符号检查；从 Avalonia 包内 README 提取出的完整示例编译 0 警告/0 错误。独立 PackageReference 消费程序已实际 Native AOT 编译运行，验证 SK* 像素链路、Win32 帧、系统字体和无 CLR/JIT/Skia/HarfBuzz。全解决方案构建及 36 个行为、484 个图片、8109 个控件断言通过。最新 RemoteNetwork 启动修复版也已执行真实 AOT 登录/设置窗口测试；此前的“旧实例阻挡”状态由本轮实际运行结果更新。[流程](NUGET-PREVIEW.md)
+
+Windows 系统字体续轮：系统默认字体 13 项、显式文件配置 10 项检查通过，既有固定字体控件回归 8109 项通过；RemoteNetwork 不附带字体资源的 11 个 JIT 界面场景通过。新版 AOT 编译并发布到独立目录，原生启动测试因旧版用户实例持有单实例锁而未执行，不沿用旧版的窗口启动结果。实现及平台边界见 [系统默认字体](WINDOWS-SYSTEM-FONTS.md)。
+
 新增真实 Windows Native AOT 验证：[详细报告](AVALONIA-AOT-COMPARISON.md)。4 份发布物（两种渲染器 × 两种 ISA）均成功生成原生代码，90 个正式进程运行检查 AOT 标志、PE 头、真实 Fluent 模板、字体、ImageBrush 像素及模块隔离；原有 8109 项控件回归通过。15/15 跨 ISA 图像逐字节相同；原版整页画质门槛 0/20，通过性能测量不代表通过替换验收。新增 CI 是 Windows AOT 编译/运行 smoke，不能当作共享云主机性能基准。
 
 本轮最终结果见 [测试报告](TEST-REPORT-2026-10-21.md)。已运行 Release、原版 API/像素、实际 Avalonia/Win32、CPU/GPU、全硬件回退、PNG/JPEG/ICC、TTC、压缩与依赖隔离。功能回归通过，完整兼容性仍失败；`verify.ps1 -Reference -Gpu` 在执行全部检查后返回 2，失败像素行不会被跳过。CPU/GPU 性能及内存见 [最终报告](PERFORMANCE-FINAL-2026-10-21.md)，本地完整日志 `artifacts/completion/delivery-validation.log`。

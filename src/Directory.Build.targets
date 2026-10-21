@@ -1,0 +1,6 @@
+<Project>
+  <Target Name="RequirePreviewPackageVersion" BeforeTargets="GenerateNuspec" Condition="'$(IsPackable)' == 'true'">
+    <Error Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('$(PackageVersion)', '^\d+\.\d+\.\d+-preview\.\d+$'))"
+           Text="SimdSkia publishes previews only. Use a version such as 0.1.0-preview.1." />
+  </Target>
+</Project>

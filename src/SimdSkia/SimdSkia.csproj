@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <IncludeSymbols>false</IncludeSymbols>
+    <Description>SimdSkia preview convenience package for the SkiaSharp namespace source compatibility layer. Different assembly identity; incomplete APIs; no binary replacement guarantee. For Avalonia use SimdSkia.Avalonia.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../SimdSkia.Compatibility/SimdSkia.Compatibility.csproj" />
+    <None Include="_._" Pack="true" PackagePath="lib/net8.0/_._" />
+  </ItemGroup>
+</Project>

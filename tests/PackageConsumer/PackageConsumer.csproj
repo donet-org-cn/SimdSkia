@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>WinExe</OutputType>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <IsPackable>false</IsPackable>
+    <PublishAot Condition="'$(PackageConsumerAot)' == 'true'">true</PublishAot>
+    <SelfContained>true</SelfContained>
+    <OptimizationPreference>Speed</OptimizationPreference>
+    <SimdSkiaPackageVersion Condition="'$(SimdSkiaPackageVersion)' == ''">0.1.0-preview.1</SimdSkiaPackageVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="SimdSkia" Version="[$(SimdSkiaPackageVersion)]" />
+    <PackageReference Include="SimdSkia.Avalonia" Version="[$(SimdSkiaPackageVersion)]" />
+    <PackageReference Include="Avalonia" Version="[12.1.4]" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.4]" />
+    <PackageDownload Include="Avalonia.Win32" Version="[12.1.4]" />
+    <Reference Include="$(NuGetPackageRoot)/avalonia.win32/12.1.4/lib/net8.0/*.dll" />
+  </ItemGroup>
+</Project>

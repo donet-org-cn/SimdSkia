@@ -18,7 +18,7 @@ dotnet run --project examples/AvaloniaControls -c Release -- --window
 dotnet run --project examples/AvaloniaControls -c Release -- --smoke-window
 ```
 
-首条运行命令输出 `artifacts/avalonia-controls/managed.png`。默认字体是固定提交、固定 SHA-256 的 OFL 简体中文 TrueType 文件，不使用系统字体代替测试结果。也可以传入实际的 `.ttf` 路径；不内置系统字体，不扫描系统字体目录。
+首条运行命令输出 `artifacts/avalonia-controls/managed.png`。对照示例的字体是固定提交、固定 SHA-256 的 OFL 简体中文 TrueType 文件，不使用系统字体代替测试结果。一般 Windows 应用可省略字体配置并读取系统默认字体，不内置或分发 Windows 字体；显式字体路径依然受支持。
 
 应用引用 `SimdSkia.Avalonia.csproj`，在 `AppBuilder` 注册：
 
@@ -29,9 +29,11 @@ AppBuilder.Configure<App>()
     .UseStandardRuntimePlatformSubsystem()
     .UseWin32()
     .With(new Win32PlatformOptions { RenderingMode = [Win32RenderingMode.Software] })
-    .UseSimdSkia(options => options.FontFiles.Add("fonts/MyChineseFont.ttf"))
+    .UseSimdSkia() // Windows：读取系统当前界面字体，无需附带字体资源
     .StartWithClassicDesktopLifetime(args);
 ```
+
+Windows 自动字体的发现方式、回退集合、限制及测试见 [系统默认字体](WINDOWS-SYSTEM-FONTS.md)。显式传入 `options.FontFiles` 时仍以该列表的首个家族作为默认，不自动加入系统字体；Linux/macOS 暂需使用显式配置。性能/画质对照示例继续使用固定字体以保证可重复性。
 
 具体包引用见 [示例项目](../examples/AvaloniaControls/AvaloniaControls.csproj)。`Avalonia.Win32` 的常规包依赖 ANGLE 原生组件；示例以 `PackageDownload` 固定版本，只引用其中托管 DLL。保留 `Avalonia.Desktop` 会传递引入原版渲染组件，因此不能仅修改启动方法就声称满足无原生绘制依赖的部署要求。当前实际桌面宿主验证限 Windows；Linux/macOS 有托管无头/离屏验收，尚无本机桌面宿主承诺。
 

@@ -1,6 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup><AllowUnsafeBlocks>true</AllowUnsafeBlocks><RestorePackagesWithLockFile>true</RestorePackagesWithLockFile></PropertyGroup>
+  <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks><RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <Description>Preview C# CPU rendering and font backend for Avalonia 12.1.4. Includes a complete Windows quick start in the package README. No Skia/HarfBuzz rendering dependency; incomplete compatibility.</Description>
+  </PropertyGroup>
   <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="/README.md" />
     <!-- Avalonia's consumer ref assemblies deliberately prohibit implementing backend contracts.
          Compile this fixed-version adapter against its unmodified runtime assemblies instead. -->
     <PackageReference Include="Avalonia" Version="[12.1.4]" GeneratePathProperty="true" ExcludeAssets="compile" />

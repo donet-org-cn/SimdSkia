@@ -1,5 +1,9 @@
 # 进度：2026-10-21
 
+预览发布：新增 MIT 许可、八个 `0.1.0-preview.1` NuGet 包、专用 Avalonia 中文使用 README 和 OIDC 可信发布工作流。Release 构建 0 警告/0 错误，36 个行为、484 个图片、8109 个控件断言通过；包内双文件示例已直接提取并成功编译。真实 NuGet 消费程序的系统字体 Native AOT 窗口通过，无本地 ProjectReference、无 CLR/JIT/Skia/HarfBuzz。RemoteNetwork 隐藏窗口的单实例恢复已修复，最新业务 AOT 登录/设置窗口也实际通过。[发布配置](NUGET-PREVIEW.md)
+
+Windows 字体默认行为：新增零参数 `UseSimdSkia()`，读取当前系统消息界面字体并定位已安装的静态 TrueType 字面和有界回退集合。字体解析、排版及绘制仍由 C# 完成；显式文件配置保留原行为。系统模式 13 项、显式模式 10 项检查通过，RemoteNetwork 无资源字体的 11 个 JIT 界面场景通过，另发布独立 AOT 包；当前旧版运行实例占用单实例锁，新版 AOT 启动状态单独记录，不沿用旧版验收。[使用及边界](WINDOWS-SYSTEM-FONTS.md)
+
 启动体验修复：AOT 两种后端改为 `WinExe`，普通 AvaloniaControls 示例在 Windows 同样使用 GUI 子系统。重新发布通用 x64/AVX2 共 4 个 exe，子系统均为 2，AOT/重定向输出/与原版发布物像素一致检查全部通过；旧性能二进制与哈希保留，GUI 新包位于 `artifacts/aot-gui`。[验证记录](aot-gui-validation.json)
 
 Native AOT 续轮已完成：共享源码的 SimdSkia / 原版 Avalonia Win32 窗口，通用 x64 与 x86-64-v3 两套实际发布，共 90 次正式进程测量。v3 控件 1000×720：1.396 vs 原版默认 1.059 ms，工作集 85.7 vs 60.5 MiB；完整运行包 25.68 vs 41.10 MiB。通用版 SimdSkia 为 3.422 ms，不能把 v3 成绩当作通用 x64 成绩。8109 项回归通过，15/15 跨 ISA 固定输出逐字节相同；新整页画质 0/20 通过，完整替换仍 FAIL。详见 [AOT 实测报告](AVALONIA-AOT-COMPARISON.md) 与 [可运行程序](../examples/AvaloniaAot/README.md)。

@@ -64,12 +64,16 @@ internal sealed class PlatformTypeface(FontData data):IPlatformTypeface
 internal sealed class FontManager:IFontManagerImpl
 {
     private readonly FontData[] fonts;
-    internal FontManager(IEnumerable<string> paths)
+    private readonly string defaultFamily;
+    internal FontManager(IEnumerable<string> paths,string? defaultFamily=null)
     {
         fonts=paths.SelectMany(p=>{var data=File.ReadAllBytes(p);return Enumerable.Range(0,FontCollection.Count(data)).Select(i=>new FontData(data,i));}).ToArray();
         if(fonts.Length==0)throw new ArgumentException("Register at least one supported TrueType font in SimdSkiaOptions.FontFiles.");
+        this.defaultFamily=defaultFamily??fonts[0].Family;
+        if(!fonts.Any(f=>f.Family.Equals(this.defaultFamily,StringComparison.OrdinalIgnoreCase)))
+            throw new NotSupportedException($"The Windows interface font '{this.defaultFamily}' was not found in the supported installed TrueType font faces. Register an explicit supported font to override it.");
     }
-    public string GetDefaultFontFamilyName()=>fonts[0].Family;
+    public string GetDefaultFontFamilyName()=>defaultFamily;
     public string[] GetInstalledFontFamilyNames(bool checkForUpdates=false)=>fonts.Select(f=>f.Family).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
     private IEnumerable<FontData> Order(FontStyle style,FontWeight weight,FontStretch stretch)=>fonts.OrderBy(f=>f.Style==style?0:1).ThenBy(f=>Math.Abs((int)f.Stretch-(int)stretch)).ThenBy(f=>Math.Abs((int)f.Weight-(int)weight));
     public bool TryCreateGlyphTypeface(string familyName,FontStyle style,FontWeight weight,FontStretch stretch,[NotNullWhen(true)]out IPlatformTypeface? typeface)

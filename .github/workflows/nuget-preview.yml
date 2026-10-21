@@ -1,0 +1,129 @@
+name: NuGet preview
+
+on:
+  push:
+    tags: ['v*-preview.*']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Preview version (for example 0.1.0-preview.1)'
+        required: true
+        default: '0.1.0-preview.1'
+      publish:
+        description: 'Publish verified packages to NuGet.org using trusted publishing'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nuget-preview-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            10.0.x
+            8.0.x
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Validate preview version
+        id: version
+        shell: pwsh
+        env:
+          REQUESTED_VERSION: ${{ inputs.version }}
+        run: |
+          $version = if ($env:GITHUB_REF_TYPE -eq 'tag') { $env:GITHUB_REF_NAME.Substring(1) } else { $env:REQUESTED_VERSION }
+          if ($version -notmatch '^\d+\.\d+\.\d+-preview\.\d+$') { throw 'Stable versions are not accepted by this workflow.' }
+          "version=$version" >> $env:GITHUB_OUTPUT
+      - name: Fetch pinned licensed test fonts
+        shell: pwsh
+        run: |
+          ./tools/fetch-test-font.ps1
+          ./tools/fetch-avalonia-font.ps1
+      - name: Verify managed rendering and fixed-font controls
+        shell: pwsh
+        run: |
+          dotnet build SimdSkia.sln -c Release
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet run --project tests/SimdSkia.Tests -c Release --no-build
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet run --project tests/Imaging -c Release --no-build
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet run --project tests/AvaloniaControls -c Release --no-build -- --frames 5 --output artifacts/nuget-controls
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Pack preview packages and inspect dependency graph
+        shell: pwsh
+        env:
+          PREVIEW_VERSION: ${{ steps.version.outputs.version }}
+        run: ./tools/pack-preview.ps1 -Version $env:PREVIEW_VERSION
+      - name: Consume the packages and verify a real Native AOT window
+        shell: pwsh
+        env:
+          PREVIEW_VERSION: ${{ steps.version.outputs.version }}
+        run: ./tools/test-preview-consumer.ps1 -Version $env:PREVIEW_VERSION
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nuget-preview-${{ steps.version.outputs.version }}
+          path: |
+            artifacts/nuget-preview/*.nupkg
+            artifacts/nuget-preview/*.snupkg
+            artifacts/nuget-preview/manifest.json
+            artifacts/nuget-consumer/metrics.json
+            artifacts/nuget-consumer/window.png
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: preview-validation-logs
+          path: artifacts/nuget-consumer/*.log
+          if-no-files-found: ignore
+
+  publish:
+    needs: build
+    if: github.event_name == 'push' || inputs.publish
+    runs-on: ubuntu-latest
+    environment: nuget-preview
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - uses: actions/download-artifact@v4
+        with:
+          name: nuget-preview-${{ needs.build.outputs.version }}
+          path: artifacts
+      - name: Require the configured NuGet profile
+        env:
+          NUGET_USER: ${{ vars.NUGET_USER }}
+        run: test -n "$NUGET_USER"
+      - name: Exchange GitHub OIDC for a short-lived NuGet key
+        id: login
+        uses: NuGet/login@v1
+        with:
+          user: ${{ vars.NUGET_USER }}
+      - name: Publish preview packages
+        shell: bash
+        env:
+          NUGET_API_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
+        run: |
+          set -euo pipefail
+          mapfile -d '' packages < <(find artifacts -name '*.nupkg' -print0 | sort -z)
+          if [ "${#packages[@]}" -ne 8 ]; then echo 'Expected exactly eight packages'; exit 1; fi
+          for package in "${packages[@]}"; do
+            dotnet nuget push "$package" --source https://api.nuget.org/v3/index.json --api-key "$NUGET_API_KEY" --skip-duplicate
+          done

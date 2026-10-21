@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><RestorePackagesWithLockFile>true</RestorePackagesWithLockFile></PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../AvaloniaControls/HeadlessHost.cs" Link="HeadlessHost.cs" />
+    <ProjectReference Include="../../src/SimdSkia.Avalonia/SimdSkia.Avalonia.csproj" />
+    <PackageReference Include="Avalonia" Version="[12.1.4]" GeneratePathProperty="true" ExcludeAssets="compile" />
+    <Reference Include="$(PkgAvalonia)/lib/net8.0/*.dll" />
+    <PackageDownload Include="Avalonia.Headless" Version="[12.1.4]" />
+    <Reference Include="$(NuGetPackageRoot)/avalonia.headless/12.1.4/lib/net8.0/Avalonia.Headless.dll" />
+  </ItemGroup>
+</Project>
