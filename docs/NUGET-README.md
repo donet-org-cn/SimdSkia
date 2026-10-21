@@ -14,9 +14,12 @@ Packages target .NET 8 or later:
 | SimdSkia.Gpu | Vulkan offscreen rendering; requires the system Vulkan loader/driver |
 | SimdSkia.Compatibility | Implemented SkiaSharp namespace / SK* facade |
 | SimdSkia.Avalonia | Rendering/font adapter pinned to Avalonia **12.1.4** |
+| SimdSkia.Avalonia.Desktop | Windows/Linux X11/macOS OS hosts plus the managed renderer |
+| SimdSkia.Avalonia.Gpu | Optional Direct2D native presentation / Vulkan framebuffer drawing |
+| SimdSkia.Gpu.Direct2D | Windows hardware Direct2D/D3D11 canvas, C# system API bindings |
 
 ```shell
-dotnet add package SimdSkia.Avalonia --version 0.1.0-preview.1
+dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.0-preview.2
 ```
 
 An existing Avalonia 12.1.4 application selects the adapter explicitly:
@@ -25,16 +28,13 @@ An existing Avalonia 12.1.4 application selects the adapter explicitly:
 using SimdSkia.Avalonia;
 
 AppBuilder.Configure<App>()
-    .UseStandardRuntimePlatformSubsystem()
-    .UseWin32()
-    .With(new Win32PlatformOptions { RenderingMode = [Win32RenderingMode.Software] })
-    .UseSimdSkia()
+    .UseSimdSkiaDesktop()
     .StartWithClassicDesktopLifetime(args);
 ```
 
-Windows uses its current system message font and installed static TrueType fallback fonts. Font parsing, shaping and rendering remain C#. Explicit `options.FontFiles.Add(path)` is supported and required for other operating systems. Missing/unsupported font formats fail explicitly. Chinese text requires an installed Chinese font. Complex shaping, CFF/variable/color fonts and hinting are not fully implemented.
+Windows uses its current message font; Linux/macOS discover supported installed static TrueType families. Explicit `options.FontFiles.Add(path)` overrides automatic selection. Parsing, shaping, glyph coverage and codecs remain C#. Chinese text needs a supported installed Chinese font. Complex shaping, CFF/variable/color fonts and hinting have gaps.
 
-The adapter does not install a native windowing host. Keep the appropriate Avalonia host in the application. To avoid shipping Skia/HarfBuzz/ANGLE assets on Windows, remove Avalonia.Desktop and use Avalonia/Fluent 12.1.4 plus the managed Win32 assemblies as shown in the repository's [integration guide](https://github.com/hnlyf168/SimdSkia/blob/main/docs/AVALONIA-INTEGRATION.md). Avalonia Windows rendering currently uses the CPU framebuffer backend; the Vulkan package does not provide an Avalonia window swapchain.
+The base adapter provides rendering/font services. The Desktop package supplies OS host selection without Skia/HarfBuzz/ANGLE packages. macOS uses the official MIT libAvaloniaNative window bridge, an explicit window-host exception; application drawing/fonts are managed. The optional GPU adapter defaults Direct2D to a native Windows swapchain; Vulkan currently waits for completion and reads back to the OS framebuffer. macOS GPU/Metal is not implemented. GPU glyphs normally use a managed atlas, and CPU layers/fallbacks are reported. See the [complete quick start](https://github.com/hnlyf168/SimdSkia#readme).
 
 `SimdSkia` and `SimdSkia.Compatibility` expose only the implemented SK* subset. Do not reference them together with the original SkiaSharp types in the same compilation. Avalonia users normally need only the adapter, not the SK* facade.
 

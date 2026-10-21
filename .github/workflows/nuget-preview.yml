@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Preview version (for example 0.1.0-preview.1)'
+        description: 'Preview version (for example 0.1.0-preview.2)'
         required: true
-        default: '0.1.0-preview.1'
+        default: '0.1.0-preview.2'
       publish:
         description: 'Publish verified packages to NuGet.org using trusted publishing'
         type: boolean
@@ -62,6 +62,10 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           dotnet run --project tests/Imaging -c Release --no-build
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet run --project tests/PlatformFonts -c Release --no-build
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet run --project tests/GlyphBatches -c Release --no-build
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           dotnet run --project tests/AvaloniaControls -c Release --no-build -- --frames 5 --output artifacts/nuget-controls
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Pack preview packages and inspect dependency graph
@@ -74,6 +78,11 @@ jobs:
         env:
           PREVIEW_VERSION: ${{ steps.version.outputs.version }}
         run: ./tools/test-preview-consumer.ps1 -Version $env:PREVIEW_VERSION
+      - name: Consume the actual desktop and GPU adapter packages
+        shell: pwsh
+        env:
+          PREVIEW_VERSION: ${{ steps.version.outputs.version }}
+        run: ./tools/test-desktop-package.ps1 -Version $env:PREVIEW_VERSION -Packages artifacts/nuget-preview
       - uses: actions/upload-artifact@v4
         with:
           name: nuget-preview-${{ steps.version.outputs.version }}
@@ -83,6 +92,7 @@ jobs:
             artifacts/nuget-preview/manifest.json
             artifacts/nuget-consumer/metrics.json
             artifacts/nuget-consumer/window.png
+            artifacts/desktop-package-consumer/results/
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         if: failure()
@@ -125,7 +135,7 @@ jobs:
         run: |
           set -euo pipefail
           mapfile -d '' packages < <(find artifacts -name '*.nupkg' -print0 | sort -z)
-          if [ "${#packages[@]}" -ne 8 ]; then echo 'Expected exactly eight packages'; exit 1; fi
+          if [ "${#packages[@]}" -ne 11 ]; then echo 'Expected exactly eleven packages'; exit 1; fi
           for package in "${packages[@]}"; do
             dotnet nuget push "$package" --source https://api.nuget.org/v3/index.json --api-key "$NUGET_API_KEY" --skip-duplicate
           done

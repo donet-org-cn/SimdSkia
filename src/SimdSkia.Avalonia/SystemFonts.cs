@@ -79,6 +79,7 @@ internal static class UnixSystemFonts
         uint[] offsets;
         if (Read32(header, 0) == 0x74746366)
         {
+            if(Read32(header,4) is not (0x00010000 or 0x00020000))throw new NotSupportedException("Unsupported TTC version.");
             uint count = Read32(header, 8);
             if (count is 0 or >4096) throw new InvalidDataException("Invalid TTC face count.");
             var directory = Read(file, 12, checked((int)count * 4));
@@ -108,7 +109,7 @@ internal static class UnixSystemFonts
             var names = Table("name", 1024 * 1024);
             string? family = Name(names, 16) ?? Name(names, 1);
             if (string.IsNullOrWhiteSpace(family)) throw new InvalidDataException("Font has no Unicode family name.");
-            var os2 = Table("OS/2", 4096);
+            var os2 = tables.ContainsKey("OS/2")?Table("OS/2", 4096):[];
             bool cjk = HasGlyph(Table("cmap", 4 * 1024 * 1024), 0x4e2d);
             output.Add(new(path, family, os2.Length >= 6 && Read16(os2, 4) >= 600, cjk));
         }
@@ -137,6 +138,8 @@ internal static class UnixSystemFonts
         if (count > (cmap.Length - 4) / 8) throw new InvalidDataException("Truncated cmap records.");
         for (int i = 0; i < count; i++)
         {
+            int platform=Read16(cmap,4+i*8),encoding=Read16(cmap,6+i*8);
+            if(platform!=0&&(platform!=3||encoding is not (1 or 10)))continue;
             int offset = checked((int)Read32(cmap, 8 + i * 8));
             if (offset < 0 || offset > cmap.Length - 4) throw new InvalidDataException("Invalid cmap offset.");
             int format = Read16(cmap, offset);

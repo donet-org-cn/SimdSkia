@@ -1,7 +1,7 @@
 <Project>
   <Import Project="../Directory.Build.props" />
   <PropertyGroup>
-    <Version Condition="'$(Version)' == ''">0.1.0-preview.1</Version>
+    <Version Condition="'$(Version)' == ''">0.1.0-preview.2</Version>
     <Authors>hnlyf168</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/hnlyf168/SimdSkia</PackageProjectUrl>
@@ -11,12 +11,12 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Description>Experimental managed C# 2D rendering components. Preview only; API and rendering compatibility are incomplete. No Google Skia rendering dependency.</Description>
     <PackageTags>SimdSkia;graphics;rendering;managed;preview</PackageTags>
-    <PackageReleaseNotes>First preview: CPU rendering, managed TrueType and imaging, optional Vulkan offscreen and Avalonia 12.1.4 adapter. Full compatibility and pixel equivalence are not guaranteed.</PackageReleaseNotes>
+    <PackageReleaseNotes>Preview 2: Windows/Linux X11/macOS desktop hosts, managed installed-font discovery, optional Avalonia Direct2D native swapchain and Vulkan framebuffer drawing. Managed glyph atlas, ROI uploads and explicit fallback diagnostics. macOS GPU/Metal is not implemented. Full compatibility is incomplete.</PackageReleaseNotes>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)../docs/NUGET-README.md" Pack="true" PackagePath="/README.md" Condition="'$(MSBuildProjectName)' != 'SimdSkia.Avalonia'" />
+    <None Include="$(MSBuildThisFileDirectory)../docs/NUGET-README.md" Pack="true" PackagePath="/README.md" Condition="'$(MSBuildProjectName)' != 'SimdSkia.Avalonia' AND '$(MSBuildProjectName)' != 'SimdSkia.Avalonia.Desktop' AND '$(MSBuildProjectName)' != 'SimdSkia.Avalonia.Gpu'" />
     <None Include="$(MSBuildThisFileDirectory)../LICENSE" Pack="true" PackagePath="/" />
   </ItemGroup>
 </Project>

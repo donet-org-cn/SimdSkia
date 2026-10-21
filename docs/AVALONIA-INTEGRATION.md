@@ -1,10 +1,12 @@
 # Avalonia 12.1.4 实际接入：2026-10-21
 
+2026-10-22 更新：新程序推荐 `SimdSkia.Avalonia.Desktop 0.1.0-preview.2` 与 `.UseSimdSkiaDesktop()`，统一 Windows、Linux X11、macOS；可选 `SimdSkia.Avalonia.Gpu` 的 Direct2D 原生交换链或 Vulkan 回读绘图。完整代码在 [首页](../README.md)，实测范围见 [新报告](DESKTOP-GPU-2026-10-22.md)。下方保留低层服务和 Win32 接入示例，仍可使用。
+
 新增可独立发布的 [Native AOT 对照应用](../examples/AvaloniaAot/README.md)，包含 SimdSkia 与原版两个共享源码的真实 Win32 程序。使用固定 .NET 10，兼容层补充了图像画刷内部 getter 的精确裁剪元数据保留；AOT 运行实际检查 ImageBrush 像素与原生依赖隔离。完整体积、CPU、内存、速度和画质结果见 [AOT 报告](AVALONIA-AOT-COMPARISON.md)。
 
 新增 `src/SimdSkia.Avalonia`。它注册 Avalonia 自身的绘图、字体和排版服务，现已运行真正的 Button、TextBox、CheckBox、TextBlock、Border、Image 和 Path。控件、样式、布局和输入仍由 Avalonia 执行，绘制不加载 Avalonia.Skia、SkiaSharp、HarfBuzzSharp、FreeType 或 ANGLE。
 
-已经验证真实 Win32 软件窗口完成 framebuffer 呈现，以及无头窗口的鼠标点击、中文输入、150% DPI 切换、窗口尺寸变化和重绘。这是可运行的受测子集，完整应用替换还存在下表所列缺口。当前窗口后端是 CPU；既有 Vulkan compute 仍是另一条离屏路径。
+已经验证真实 Win32 软件窗口完成 framebuffer 呈现，以及无头窗口的鼠标点击、中文输入、150% DPI 切换、窗口尺寸变化和重绘。现在也有新 Desktop 跨平台宿主和 GPU 适配器；完整应用替换仍存在下表所列缺口。
 
 ## 使用
 
@@ -33,9 +35,9 @@ AppBuilder.Configure<App>()
     .StartWithClassicDesktopLifetime(args);
 ```
 
-Windows 自动字体的发现方式、回退集合、限制及测试见 [系统默认字体](WINDOWS-SYSTEM-FONTS.md)。显式传入 `options.FontFiles` 时仍以该列表的首个家族作为默认，不自动加入系统字体；Linux/macOS 暂需使用显式配置。性能/画质对照示例继续使用固定字体以保证可重复性。
+Windows 自动字体见 [系统默认字体](WINDOWS-SYSTEM-FONTS.md)。显式 `options.FontFiles` 仍覆盖自动发现；preview.2 为 Linux/macOS 新增纯 C# 静态字体发现。性能/画质对照继续使用固定字体。
 
-具体包引用见 [示例项目](../examples/AvaloniaControls/AvaloniaControls.csproj)。`Avalonia.Win32` 的常规包依赖 ANGLE 原生组件；示例以 `PackageDownload` 固定版本，只引用其中托管 DLL。保留 `Avalonia.Desktop` 会传递引入原版渲染组件，因此不能仅修改启动方法就声称满足无原生绘制依赖的部署要求。当前实际桌面宿主验证限 Windows；Linux/macOS 有托管无头/离屏验收，尚无本机桌面宿主承诺。
+低层手动引用见 [旧示例](../examples/AvaloniaControls/AvaloniaControls.csproj)。`Avalonia.Win32` 常规包依赖 ANGLE，`Avalonia.X11` 常规包声明 Skia 依赖；Desktop 包只取其固定托管宿主 DLL，保留 MIT 通知。macOS 官方窗口桥是允许的原生例外。不要保留会间接恢复原版绘图组件的 `Avalonia.Desktop`。
 
 使用 `TextHintingMode.None` 和 `TextRenderingMode.Antialias`。未指定的文本选项采用无 hint 的灰度覆盖；显式 Strong/Light hinting、LCD subpixel 会报错。示例在根控件设置这些属性。现支持共享字形 mask、设备亚像素相位、baseline snap 和 sRGB 文字预混合；显式文本模式优先于形状 EdgeMode。栅格结果仍有原版差异，详见 [最新性能及画质报告](AVALONIA-TEXT-CACHE.md)。
 

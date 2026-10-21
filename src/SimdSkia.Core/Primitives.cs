@@ -54,6 +54,26 @@ public interface IColorShader
     Rgba32 Sample(float x,float y);
     bool IsHorizontal=>false;
     bool IsOpaque=>false;
+    bool TryGetLinearGradient(out LinearGradientDescription? gradient){gradient=null;return false;}
+}
+public enum GradientExtendMode { Clamp, Repeat, Mirror }
+public readonly record struct LinearColorStop(float Offset,Rgba32 Color);
+public sealed class LinearGradientDescription
+{
+    private readonly LinearColorStop[] stops;
+    public PointF Start{get;}
+    public PointF End{get;}
+    public ReadOnlyMemory<LinearColorStop> Stops=>stops;
+    public GradientExtendMode Extend{get;}
+    /// <summary>Maps drawing-local points into the gradient's coordinate system.</summary>
+    public Matrix3 SampleTransform{get;}
+    public LinearGradientDescription(PointF start,PointF end,IEnumerable<LinearColorStop> stops,GradientExtendMode extend=GradientExtendMode.Clamp,Matrix3? sampleTransform=null)
+    {
+        Start=start;End=end;this.stops=stops.ToArray();Extend=extend;SampleTransform=sampleTransform??Matrix3.Identity;
+        if(!float.IsFinite(start.X)||!float.IsFinite(start.Y)||!float.IsFinite(end.X)||!float.IsFinite(end.Y)||!SampleTransform.IsFinite||!SampleTransform.IsAffine)throw new ArgumentException("Gradient coordinates must be finite and affine.");
+        if(!Enum.IsDefined(extend)||this.stops.Length==0||this.stops.Any(s=>!float.IsFinite(s.Offset)))throw new ArgumentException("Gradient stops and spread must be valid.");
+        for(int i=1;i<this.stops.Length;i++)if(this.stops[i].Offset<this.stops[i-1].Offset)throw new ArgumentException("Gradient stops must be ordered.");
+    }
 }
 public readonly record struct Paint(Rgba32 Color, CompositeMode Composite,bool Antialias=false,IColorShader? Shader=null);
 public enum CommandKind { Clear, FillRectangle,FillPath,DrawImage,DrawGlyphRun }
@@ -66,6 +86,8 @@ public readonly record struct DrawingCommand(CommandKind Kind, RectF Rectangle, 
     public bool TextMaskPreblend {get;init;}
     public RectF? Clip { get; init; }
     public PixelBuffer? Image { get; init; }
+    /// <summary>Producer guarantees unchanged source bytes for its lifetime; permits cached GPU uploads without rescanning.</summary>
+    public bool ImageIsImmutable {get;init;}
     public Matrix3? ShaderTransform {get;init;}
     /// <summary>Immutable text geometry may cache coverage independently of an integer device translation.</summary>
     public bool CacheTextCoverage {get;init;}
@@ -81,6 +103,7 @@ public readonly record struct DrawingCommand(CommandKind Kind, RectF Rectangle, 
 /// <summary>Backend-independent command boundary. Backends must reject unsupported commands.</summary>
 public interface ICanvasBackend : IDisposable
 {
+    bool IsFaulted=>false;
     void Execute(in DrawingCommand command);
     void Flush();
 }

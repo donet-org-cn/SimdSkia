@@ -8,7 +8,7 @@ Push-Location -LiteralPath $workspacePath
 try {
     $packagePath=[IO.Path]::GetFullPath($Output)
     New-Item -ItemType Directory -Path $packagePath -Force | Out-Null
-    $projects=@('SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Text','SimdSkia.Imaging','SimdSkia.Gpu','SimdSkia.Compatibility','SimdSkia.Avalonia','SimdSkia')
+    $projects=@('SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Text','SimdSkia.Imaging','SimdSkia.Gpu','SimdSkia.Gpu.Direct2D','SimdSkia.Compatibility','SimdSkia.Avalonia','SimdSkia.Avalonia.Desktop','SimdSkia.Avalonia.Gpu','SimdSkia')
     foreach($project in $projects){
         dotnet pack "src/$project/$project.csproj" -c Release -p:Version=$Version -p:PackageVersion=$Version -o $packagePath --nologo
         if($LASTEXITCODE -ne 0){throw "Preview packing failed: $project"}

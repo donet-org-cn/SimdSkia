@@ -36,9 +36,41 @@ try
 }
 finally { Directory.Delete(temp, true); }
 
+var framebuffer=new FailureFramebuffer();var failing=new FailureCanvas();long completed=SimdSkiaDiagnostics.FramesPresented;
+using(var target=new SimdSkia.Avalonia.FramebufferTarget(framebuffer,_=>failing))
+{
+    var context=target.CreateDrawingContext(new(new global::Avalonia.PixelSize(16,16),1,default),out _);
+    context.Clear(global::Avalonia.Media.Colors.White);
+    Check(failing.Commands==1,"Window commands must reach the selected backend.");
+    Throws<InvalidOperationException>(()=>context.Dispose());
+    Check(framebuffer.LockReleased,"A failing GPU flush must release the OS framebuffer lock.");
+    Check(SimdSkiaDiagnostics.FramesPresented==completed,"A failed GPU frame must not increment completed presentation counts.");
+    Check(target.PlatformRenderTargetState.IsCorrupted,"GPU resource failure must be reported to the compositor.");
+}
+Check(failing.Disposed,"GPU resources must be disposed after a failed frame.");
+Console.WriteLine("PASS framebuffer failure cleanup and completion accounting");
+
 static global::Avalonia.Media.IPlatformTypeface CreateTypeface(SimdSkiaSystemFontInfo info)
 {
     var manager = new SimdSkia.Avalonia.FontManager(info.Files, info.DefaultFamily, supportedFacesOnly: true);
     if (!manager.TryCreateGlyphTypeface(info.DefaultFamily, global::Avalonia.Media.FontStyle.Normal, global::Avalonia.Media.FontWeight.Normal, global::Avalonia.Media.FontStretch.Normal, out var typeface)) throw new InvalidOperationException("Cannot load discovered face.");
     return typeface;
+}
+
+sealed class FailureCanvas:SimdSkia.ICanvasBackend
+{
+    public bool IsFaulted{get;private set;}
+    internal bool Disposed;
+    internal int Commands;
+    public void Execute(in SimdSkia.DrawingCommand command)=>Commands++;
+    public void Flush(){IsFaulted=true;throw new InvalidOperationException("Injected GPU submission failure");}
+    public void Dispose()=>Disposed=true;
+}
+sealed class FailureFramebuffer:global::Avalonia.Platform.Surfaces.IFramebufferRenderTarget
+{
+    private readonly SimdSkia.PixelBuffer pixels=SimdSkia.PixelBuffer.Rent(16,16);
+    internal bool LockReleased;
+    public global::Avalonia.Platform.ILockedFramebuffer Lock(global::Avalonia.Platform.IRenderTarget.RenderTargetSceneInfo info,out global::Avalonia.Platform.Surfaces.FramebufferLockProperties properties)
+    {properties=default;return new SimdSkia.Avalonia.Bitmap.Locked(pixels,new(96,96),()=>LockReleased=true);}
+    public void Dispose()=>pixels.Dispose();
 }

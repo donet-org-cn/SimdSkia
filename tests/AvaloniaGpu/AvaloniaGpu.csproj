@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/SimdSkia.Avalonia.Gpu/SimdSkia.Avalonia.Gpu.csproj" />
+    <PackageReference Include="Avalonia" Version="[12.1.4]" />
+  </ItemGroup>
+</Project>

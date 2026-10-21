@@ -11,7 +11,7 @@ using AAlpha=Avalonia.Platform.AlphaFormat;
 
 namespace SimdSkia.Avalonia;
 
-internal sealed class RenderInterface:IPlatformRenderInterface
+internal sealed class RenderInterface(Func<PixelBuffer,ICanvasBackend>? backendFactory=null,Func<INativePlatformHandleSurface,IRenderTarget>? nativeFactory=null):IPlatformRenderInterface
 {
     public bool SupportsIndividualRoundRects=>true;
     public bool SupportsRegions=>true;
@@ -66,10 +66,10 @@ internal sealed class RenderInterface:IPlatformRenderInterface
         catch{pixels.Dispose();throw;}
     }
     public IPlatformRenderInterfaceContext CreateBackendContext(IPlatformGraphicsContext? graphics)
-    {if(graphics is not null)throw new NotSupportedException("The Avalonia adapter currently provides the software framebuffer backend; configure software rendering.");return new RenderContext();}
+    {if(graphics is not null)throw new NotSupportedException("Configure the OS host for framebuffer presentation; optional GPU drawing is selected by SimdSkia options.");return new RenderContext(backendFactory,nativeFactory);}
 }
 
-internal sealed class RenderContext:IPlatformRenderInterfaceContext
+internal sealed class RenderContext(Func<PixelBuffer,ICanvasBackend>? backendFactory=null,Func<INativePlatformHandleSurface,IRenderTarget>? nativeFactory=null):IPlatformRenderInterfaceContext
 {
     private bool disposed;
     public bool IsLost=>disposed;
@@ -77,34 +77,46 @@ internal sealed class RenderContext:IPlatformRenderInterfaceContext
     public PixelSize? MaxOffscreenRenderTargetPixelSize=>new(16384,16384);
     public object? TryGetFeature(Type type)=>null;
     public IRenderTarget CreateRenderTarget(IEnumerable<IPlatformRenderSurface> surfaces)
-    {ObjectDisposedException.ThrowIf(disposed,this);var framebuffer=surfaces.OfType<IFramebufferPlatformSurface>().FirstOrDefault()??throw new NotSupportedException("No software framebuffer surface was provided.");return new FramebufferTarget(framebuffer.CreateFramebufferRenderTarget());}
+    {
+        ObjectDisposedException.ThrowIf(disposed,this);var available=surfaces.ToArray();
+        if(nativeFactory is not null)return nativeFactory(available.OfType<INativePlatformHandleSurface>().FirstOrDefault()??throw new NotSupportedException("Direct GPU presentation requires a native window surface."));
+        var framebuffer=available.OfType<IFramebufferPlatformSurface>().FirstOrDefault()??throw new NotSupportedException("No software framebuffer surface was provided.");return new FramebufferTarget(framebuffer.CreateFramebufferRenderTarget(),backendFactory);
+    }
     public IDrawingContextLayerImpl CreateOffscreenRenderTarget(PixelSize size,Vector scaling,bool antialias)
     {ObjectDisposedException.ThrowIf(disposed,this);return new Bitmap(PixelBuffer.Rent(size.Width,size.Height),scaling*96){ScaleToDpi=false};}
     public void Dispose()=>disposed=true;
 }
 
-internal sealed class FramebufferTarget(IFramebufferRenderTarget surface):IRenderTarget
+internal sealed class FramebufferTarget(IFramebufferRenderTarget surface,Func<PixelBuffer,ICanvasBackend>? backendFactory=null):IRenderTarget
 {
     private IFramebufferRenderTarget? surface=surface;
     private PixelBuffer? buffer;
+    private ICanvasBackend? backend;
     private bool retained,active;
     public RenderTargetProperties Properties=>new(){RetainsPreviousFrameContents=true,IsSuitableForDirectRendering=true};
-    public PlatformRenderTargetState PlatformRenderTargetState=>surface?.State??PlatformRenderTargetState.Disposed;
+    public PlatformRenderTargetState PlatformRenderTargetState=>backend?.IsFaulted==true?new(){IsCorrupted=true}:surface?.State??PlatformRenderTargetState.Disposed;
     public IDrawingContextImpl CreateDrawingContext(IRenderTarget.RenderTargetSceneInfo scene,out RenderTargetDrawingContextProperties properties)
     {
         ObjectDisposedException.ThrowIf(surface is null,this);if(active)throw new InvalidOperationException("A framebuffer drawing context is already active.");
+        long started=SimdSkiaDiagnostics.FrameStarted();
         var locked=surface.Lock(scene,out _);
         try
         {
             var format=ConvertTo.Format(locked.Format);var alpha=ConvertTo.Alpha(locked.AlphaFormat);
             if(buffer is null||buffer.Width!=locked.Size.Width||buffer.Height!=locked.Size.Height||buffer.Format!=format||buffer.Alpha!=alpha)
-            {buffer?.Dispose();buffer=new(locked.Size.Width,locked.Size.Height,format,alpha);retained=false;}
+            {backend?.Dispose();backend=null;buffer?.Dispose();buffer=new(locked.Size.Width,locked.Size.Height,format,alpha);retained=false;}
+            if(backend is null&&backendFactory is not null)backend=backendFactory(buffer)??throw new InvalidOperationException("CanvasBackendFactory returned null.");
             properties=new(){PreviousFrameIsRetained=retained};active=true;var pixels=buffer;
-            return new DrawingContext(pixels,locked.Dpi,false,()=>
+            return new DrawingContext(pixels,locked.Dpi,false,success=>
             {
-                try{CopyTo(pixels,locked);retained=true;}
-                finally{active=false;locked.Dispose();}
-            });
+                bool copied=false;
+                try{if(success){CopyTo(pixels,locked);retained=true;copied=true;}else retained=false;}
+                finally
+                {
+                    active=false;try{locked.Dispose();}catch{retained=false;throw;}
+                    if(copied){SimdSkiaDiagnostics.Presented(pixels);SimdSkiaDiagnostics.FrameCompleted(started);}
+                }
+            },backend);
         }
         catch{locked.Dispose();throw;}
     }
@@ -112,7 +124,6 @@ internal sealed class FramebufferTarget(IFramebufferRenderTarget surface):IRende
     {
         if(framebuffer.RowBytes<checked(pixels.Width*4)||framebuffer.Address==IntPtr.Zero)throw new InvalidOperationException("Invalid platform framebuffer.");
         for(int y=0;y<pixels.Height;y++)pixels.GetRowSpan(y)[..(pixels.Width*4)].CopyTo(new Span<byte>((byte*)framebuffer.Address+checked((long)y*framebuffer.RowBytes),pixels.Width*4));
-        SimdSkiaDiagnostics.Presented();
     }
-    public void Dispose(){if(active)throw new InvalidOperationException("Dispose the active framebuffer context first.");Interlocked.Exchange(ref surface,null)?.Dispose();Interlocked.Exchange(ref buffer,null)?.Dispose();}
+    public void Dispose(){if(active)throw new InvalidOperationException("Dispose the active framebuffer context first.");Interlocked.Exchange(ref backend,null)?.Dispose();Interlocked.Exchange(ref surface,null)?.Dispose();Interlocked.Exchange(ref buffer,null)?.Dispose();}
 }

@@ -1,5 +1,7 @@
 # 依赖与许可证
 
+preview.2 新模块：`SimdSkia.Gpu.Direct2D` 无 NuGet 依赖，自写 C# ABI 调用系统 d2d1/d3d11/DXGI，不分发这些 Windows 系统 DLL。`SimdSkia.Avalonia.Gpu` 仅引用已有托管引擎/适配器。`SimdSkia.Avalonia.Desktop` 加入官方 MIT Avalonia.FreeDesktop/AtSpi/Native 12.1.4、MIT Tmds.DBus.Protocol 0.94.1 和 MIT System.IO.Pipelines 8.0.0；X11/Win32 通过固定 PackageDownload 仅分发托管宿主 DLL及 Avalonia MIT 通知。macOS 按用户最新选择允许官方 `libAvaloniaNative.dylib`，仅作窗口/系统交互；绘图、字体解析/覆盖率和编解码依旧为 C#。Linux 需部署系统 X11/XWayland/GLib 等环境库。原型 Vortice/SharpGen 因 AOT 反射裁剪问题已移除，不进入任何交付包。
+
 新增 `examples/AvaloniaAot` 是 .NET 10 Native AOT / Win32 软件窗口对照，继续固定 Avalonia/Fluent 12.1.4。SimdSkia 版只使用上述托管渲染依赖和操作系统 API；Original 版单独引用 Avalonia.Skia 12.1.4、SkiaSharp 3.119.4、Avalonia.HarfBuzz 12.1.4、HarfBuzzSharp 8.3.1.3，仅此对照进程携带原版原生 DLL。两边均携带同一 OFL 字体与许可证，Original 还携带包内 SkiaSharp/HarfBuzzSharp LICENSE；体积清单逐文件记录。Native AOT 的 .NET 10 运行时随 C# 程序静态编译链接，不要求用户额外安装 .NET。基准父程序为 Python 标准库，Windows 资源 API 仅用于测量；报告差异图的 zlib 不进入产品引用图。
 
 当前生产依赖：Core/Cpu/Text/Gpu 没有 NuGet 包。Imaging 新增精确 `[0.4.32]` 的 **JpegLibrary**（MIT，纯 C# JPEG 熵编码、IDCT 和编码器；net8 使用其 net6 托管资产，没有传递包或 native 资产），Compatibility 与 Avalonia 适配层传递引用该包。字体和编解码全部 C# 的要求保持；此前“六模块零包”是历史实现状态，现已变更。
@@ -36,7 +38,7 @@ baseline/ 被忽略；原版 DLL 只复制至独立测试输出。tools/check-pr
 
 Avalonia 专项额外读取固定 12.1.4 官方 MIT 源码及隔离 Avalonia.Skia.dll，做 IL/API 调查；源码 archive 与 54 个 C# 文件 SHA 在 avalonia-source-baseline.json。没有将 Avalonia 或其原生依赖引入六个生产程序集。新增 Python 报告中的 zlib 仅用于测试差异图 PNG 的编码，产品编解码仍全部 C#；独立 zlib/PNG 回归夹具的完整计数见 VALIDATION.md。
 
-已编译 SPIR-V 随源码提供，普通构建无需 glslang。shader 源码/编译器/输出版本与哈希见 shader-build.json。项目本身尚未选择发布授权许可证；上游依赖许可不等于擅自给本项目选择许可。
+已编译 SPIR-V 随源码提供，普通构建无需 glslang。shader 源码/编译器/输出版本与哈希见 shader-build.json。SimdSkia 按用户确认采用根目录 MIT 许可证；各上游组件保留其各自许可证。
 
 
 OCR 专项基准额外只读链接 Qcxt.OCR（Apache-2.0 源码及其原有第三方/模型 notices）、Qcxt.OCR.SkiaSharp（MIT）和本机缓存 SkiaSharp/Win32 NativeAssets 4.153.1（MIT 包及随包 notices，原生组件，仅 Reference）。目标资源保持原项目的许可归属；这些项目不属于六个生产程序集的引用图。基准使用 .NET 10 执行实际目标 CPU 内核，不修改全局兼容基线，也不把旧版/本项目的 native handle 或二进制兼容结果推广到 4.x。

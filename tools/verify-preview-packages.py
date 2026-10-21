@@ -13,7 +13,7 @@ parser.add_argument('--version',required=True)
 args=parser.parse_args()
 if not re.fullmatch(r'\d+\.\d+\.\d+-preview\.\d+',args.version):
     raise SystemExit('Only preview versions are accepted.')
-ids=['SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Text','SimdSkia.Imaging','SimdSkia.Gpu','SimdSkia.Compatibility','SimdSkia.Avalonia','SimdSkia']
+ids=['SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Text','SimdSkia.Imaging','SimdSkia.Gpu','SimdSkia.Gpu.Direct2D','SimdSkia.Compatibility','SimdSkia.Avalonia','SimdSkia.Avalonia.Desktop','SimdSkia.Avalonia.Gpu','SimdSkia']
 rows=[]
 for package_id in ids:
     path=args.directory/f'{package_id}.{args.version}.nupkg'
@@ -43,9 +43,15 @@ for package_id in ids:
         if package_id=='SimdSkia.Avalonia':
             assert dependencies.get('Avalonia')=='[12.1.4]',dependencies
             readme=package.read('README.md').decode('utf-8')
-            for step in ('Demo.csproj','Program.cs','dotnet restore','dotnet run','dotnet publish','UseSimdSkia()','PackageDownload','12.1.4'):
+            for step in ('Demo.csproj','Program.cs','dotnet restore','dotnet run','dotnet publish','UseSimdSkiaDesktop()','SimdSkia.Avalonia.Desktop','12.1.4'):
                 assert step in readme,(path,'Missing README instructions',step)
             assert '\u7cfb\u7edf' in readme and '\u9884\u89c8' in readme,path
+        if package_id=='SimdSkia.Avalonia.Desktop':
+            assert dependencies.get('Avalonia.Native')=='[12.1.4]',dependencies
+            for host in ['Avalonia.Win32.dll','Avalonia.Win32.Automation.dll','Avalonia.X11.dll']:
+                assert f'lib/net8.0/{host}' in names,(path,host)
+        if package_id=='SimdSkia.Gpu.Direct2D':
+            assert set(dependencies)=={'SimdSkia.Core'},dependencies
         rows.append({'id':package_id,'version':args.version,'bytes':path.stat().st_size,'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'dependencies':dependencies})
 (args.directory/'manifest.json').write_text(json.dumps(rows,indent=2)+'\n',encoding='utf-8')
 print(f'PASS {len(rows)} preview packages: dependency versions, managed assemblies, README, MIT, symbols and no font/native drawing binaries')

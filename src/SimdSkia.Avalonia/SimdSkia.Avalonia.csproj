@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks><RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-    <Description>Preview C# CPU rendering and font backend for Avalonia 12.1.4. Includes a complete Windows quick start in the package README. No Skia/HarfBuzz rendering dependency; incomplete compatibility.</Description>
+    <Description>Preview C# rendering/font services for Avalonia 12.1.4. Windows/Linux/macOS installed-font discovery. Add SimdSkia.Avalonia.Desktop for OS window hosts and SimdSkia.Avalonia.Gpu for optional hardware drawing. Incomplete compatibility.</Description>
   </PropertyGroup>
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="/README.md" />

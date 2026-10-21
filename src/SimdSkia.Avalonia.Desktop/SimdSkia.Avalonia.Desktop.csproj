@@ -4,6 +4,7 @@
     <Description>Preview Windows, Linux X11 and macOS software window hosts for SimdSkia. macOS uses the official MIT Avalonia native window bridge; drawing and fonts remain managed.</Description>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="../SimdSkia.Avalonia/README.md" Pack="true" PackagePath="/README.md" />
     <ProjectReference Include="../SimdSkia.Avalonia/SimdSkia.Avalonia.csproj" />
     <PackageReference Include="Avalonia" Version="[12.1.4]" GeneratePathProperty="true" ExcludeAssets="compile" />
     <Reference Include="$(PkgAvalonia)/lib/net8.0/*.dll" />
@@ -17,7 +18,7 @@
     <Reference Include="$(NuGetPackageRoot)/avalonia.x11/12.1.4/lib/net8.0/Avalonia.X11.dll" />
     <Reference Include="$(NuGetPackageRoot)/avalonia.win32/12.1.4/lib/net8.0/*.dll" />
     <None Include="$(NuGetPackageRoot)/avalonia.x11/12.1.4/lib/net8.0/Avalonia.X11.dll" Pack="true" PackagePath="lib/net8.0/" />
-    <None Include="$(NuGetPackageRoot)/avalonia.win32/12.1.4/lib/net8.0/Avalonia.Win32.dll" Pack="true" PackagePath="lib/net8.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.win32/12.1.4/lib/net8.0/*.dll" Pack="true" PackagePath="lib/net8.0/" />
     <None Include="../../docs/licenses/Avalonia-MIT.txt" Pack="true" PackagePath="licenses/" />
   </ItemGroup>
 </Project>

@@ -2,9 +2,9 @@ name: Cross-platform desktop
 on:
   workflow_dispatch:
   push:
-    paths: ['src/**', 'examples/CrossPlatform/**', 'tests/PlatformFonts/**', '.github/workflows/desktop.yml']
+    paths: ['src/**', 'examples/CrossPlatform/**', 'tests/PlatformFonts/**', 'tests/GlyphBatches/**', 'tools/test-desktop-package.ps1', 'tools/pack-preview.ps1', '.github/workflows/desktop.yml']
   pull_request:
-    paths: ['src/**', 'examples/CrossPlatform/**', 'tests/PlatformFonts/**', '.github/workflows/desktop.yml']
+    paths: ['src/**', 'examples/CrossPlatform/**', 'tests/PlatformFonts/**', 'tests/GlyphBatches/**', 'tools/test-desktop-package.ps1', 'tools/pack-preview.ps1', '.github/workflows/desktop.yml']
 permissions:
   contents: read
 jobs:
@@ -27,6 +27,8 @@ jobs:
         run: ./tools/fetch-avalonia-font.ps1
       - name: Verify metadata discovery and malformed/unsupported fonts
         run: dotnet run --project tests/PlatformFonts -c Release
+      - name: Verify glyph batch equivalence
+        run: dotnet run --project tests/GlyphBatches -c Release
       - name: Install fixture as a user font for automatic discovery
         if: runner.os != 'Windows'
         shell: bash
@@ -48,9 +50,45 @@ jobs:
       - name: Real Windows window with fixed CJK font
         if: runner.os == 'Windows'
         run: dotnet run --project examples/CrossPlatform -c Release --no-build -- --smoke --font baseline/fonts/ZCOOLXiaoWei-Regular.ttf
+      - name: Publish Native AOT for the current OS and architecture
+        shell: pwsh
+        run: |
+          $arch=if($env:RUNNER_ARCH -eq 'ARM64'){'arm64'}else{'x64'}
+          $prefix=if($IsWindows){'win'}elseif($IsMacOS){'osx'}else{'linux'}
+          dotnet publish examples/CrossPlatform/CrossPlatform.csproj -c Release -r "$prefix-$arch" -p:PublishAot=true -p:TrimmerSingleWarn=false -o artifacts/desktop-aot
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Run Linux Native AOT window
+        if: runner.os == 'Linux'
+        run: xvfb-run -a -s '-screen 0 1280x900x24' artifacts/desktop-aot/CrossPlatform --smoke --output artifacts/cross-platform/aot
+      - name: Run macOS Native AOT window
+        if: runner.os == 'macOS'
+        run: artifacts/desktop-aot/CrossPlatform --smoke --output artifacts/cross-platform/aot
+      - name: Run Windows Native AOT window
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $p=Start-Process artifacts/desktop-aot/CrossPlatform.exe -ArgumentList '--smoke --font baseline/fonts/ZCOOLXiaoWei-Regular.ttf --output artifacts/cross-platform/aot' -PassThru -Wait -WindowStyle Hidden
+          exit $p.ExitCode
+      - name: Pack and validate all preview modules
+        shell: pwsh
+        run: ./tools/pack-preview.ps1 -Version 0.1.0-preview.2 -Output artifacts/desktop-packages
+      - name: Consume actual nupkg on Linux
+        if: runner.os == 'Linux'
+        run: xvfb-run -a -s '-screen 0 1280x900x24' pwsh -NoProfile -File tools/test-desktop-package.ps1 -Packages artifacts/desktop-packages -SystemFonts
+      - name: Consume actual nupkg on macOS
+        if: runner.os == 'macOS'
+        shell: pwsh
+        run: ./tools/test-desktop-package.ps1 -Packages artifacts/desktop-packages -SystemFonts
+      - name: Consume actual nupkg on Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./tools/test-desktop-package.ps1 -Packages artifacts/desktop-packages
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: desktop-${{ runner.os }}-${{ runner.arch }}
-          path: artifacts/cross-platform/
+          path: |
+            artifacts/cross-platform/
+            artifacts/desktop-package-consumer/results/
+            artifacts/desktop-package-consumer/*.log
           if-no-files-found: warn

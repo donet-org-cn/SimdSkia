@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><RestorePackagesWithLockFile>true</RestorePackagesWithLockFile><AllowUnsafeBlocks>true</AllowUnsafeBlocks></PropertyGroup>
+  <ItemGroup>
+    <None Include="../SimdSkia.Avalonia/README.md" Pack="true" PackagePath="/README.md" />
+    <PackageReference Include="Avalonia" Version="[12.1.4]" GeneratePathProperty="true" ExcludeAssets="compile" />
+    <Reference Include="$(PkgAvalonia)/lib/net8.0/*.dll" />
+    <ProjectReference Include="../SimdSkia.Avalonia/SimdSkia.Avalonia.csproj" />
+    <ProjectReference Include="../SimdSkia.Gpu/SimdSkia.Gpu.csproj" />
+    <ProjectReference Include="../SimdSkia.Gpu.Direct2D/SimdSkia.Gpu.Direct2D.csproj" />
+  </ItemGroup>
+</Project>

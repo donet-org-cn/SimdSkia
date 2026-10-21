@@ -1,6 +1,6 @@
 $ErrorActionPreference='Stop'
 $workspacePath = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-foreach ($name in @('SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Text','SimdSkia.Imaging','SimdSkia.Gpu','SimdSkia.Compatibility')) {
+foreach ($name in @('SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Text','SimdSkia.Imaging','SimdSkia.Gpu','SimdSkia.Gpu.Direct2D','SimdSkia.Compatibility')) {
     $projectPath = Join-Path $workspacePath ('src/' + $name)
     $assets = Get-Content -LiteralPath (Join-Path $projectPath 'obj/project.assets.json') -Raw | ConvertFrom-Json
     foreach ($library in $assets.libraries.PSObject.Properties) {
@@ -10,7 +10,7 @@ foreach ($name in @('SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Text','SimdSkia.Ima
     $forbidden = Get-ChildItem -LiteralPath (Join-Path $projectPath 'bin/Release/net8.0') -File | Where-Object { $_.Name -match '^(libSkiaSharp|SkiaSharp|HarfBuzzSharp)' }
     if ($forbidden) { throw ('Native/reference dependencies leaked into production output for ' + $name) }
 }
-Write-Output 'PASS: Core/Cpu/Text/Gpu have zero NuGet packages; Imaging/Compatibility allow only pinned managed JpegLibrary 0.4.32, with no native runtime assets. Only GPU interop calls the system Vulkan loader.'
+Write-Output 'PASS: Core/Cpu/Text/Gpu/Gpu.Direct2D have zero NuGet packages; Imaging/Compatibility allow only pinned managed JpegLibrary 0.4.32. GPU interop calls system Vulkan or Direct2D/D3D11; no native drawing component is bundled.'
 $adapterPath=Join-Path $workspacePath 'src/SimdSkia.Avalonia/obj/project.assets.json'
 if(Test-Path -LiteralPath $adapterPath){
     $assets=Get-Content -LiteralPath $adapterPath -Raw|ConvertFrom-Json

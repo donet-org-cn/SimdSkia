@@ -16,7 +16,7 @@ parser.add_argument('--manifest',required=True,type=Path)
 parser.add_argument('--wait-seconds',type=int,default=1200)
 args=parser.parse_args()
 rows=json.loads(args.manifest.read_text(encoding='utf-8'))
-assert len(rows)==8
+assert len(rows)>=8 and len({row['id'] for row in rows})==len(rows)
 for row in rows:
     assert re.fullmatch(r'\d+\.\d+\.\d+-preview\.\d+',row['version'])
 pending={row['id']:row for row in rows}
@@ -53,4 +53,4 @@ while pending:
     print('Waiting for NuGet validation/indexing:',', '.join(pending),flush=True)
     time.sleep(min(30,max(0,deadline-time.monotonic())))
 (args.manifest.parent/'published-verification.json').write_text(json.dumps(verified,indent=2)+'\n',encoding='utf-8')
-print('PASS all eight preview packages are publicly downloadable, with the exact CI DLLs and README',flush=True)
+print(f'PASS all {len(rows)} preview packages are publicly downloadable, with the exact CI DLLs and README',flush=True)

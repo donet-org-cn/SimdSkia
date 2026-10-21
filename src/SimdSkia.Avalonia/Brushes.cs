@@ -22,6 +22,13 @@ internal static class BrushFactory
         private readonly Point origin,center,end;
         private readonly double rx,ry,angle;
         private readonly int kind;
+        private LinearGradientDescription? linearDescription;
+        public bool TryGetLinearGradient(out LinearGradientDescription? gradient)
+        {
+            gradient=null;if(kind!=0||stops.Length==0)return false;
+            gradient=linearDescription??=new(new((float)origin.X,(float)origin.Y),new((float)end.X,(float)end.Y),stops.Select(s=>new LinearColorStop((float)s.Offset,s.Color)),spread switch{GradientSpreadMethod.Pad=>GradientExtendMode.Clamp,GradientSpreadMethod.Repeat=>GradientExtendMode.Repeat,GradientSpreadMethod.Reflect=>GradientExtendMode.Mirror,_=>throw new NotSupportedException("Unknown gradient spread.")},ConvertTo.Matrix(inverse));
+            return true;
+        }
         public bool IsHorizontal=>kind==0&&origin.Y==end.Y&&inverse.M21==0;
         public bool IsOpaque=>stops.Length>0&&stops.All(s=>s.Color.A==255);
         internal Gradient(IGradientBrush brush,Rect bounds)

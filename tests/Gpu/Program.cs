@@ -42,8 +42,8 @@ if(File.Exists(fontPath))
 paint.Color=SKColors.Red;
 foreach(var canvas in new[]{cpu,surface.Canvas}){canvas.Clear(SKColors.White);for(int i=0;i<130;i++)canvas.DrawRect(SKRect.Create(i%60,i%44,4,4),paint);}
 using(var image=surface.Snapshot())using(var actual=SKBitmap.FromImage(image))Compare(bitmap,actual,0,"automatic submission across 128-command batch boundary");
-for(int i=0;i<36;i++){using var tile=new SKBitmap(1,1);tile.Erase(new SKColor((byte)i,12,20));surface.Canvas.DrawBitmap(tile,i,0);}
-surface.Flush();if(surface.CachedTextures>32)throw new Exception("Texture cache exceeded its post-fence eviction limit.");Console.WriteLine("PASS completed-frame texture eviction");
+for(int i=0;i<SimdSkia.Gpu.VulkanCanvas.MaximumCachedTextures+4;i++){using var tile=new SKBitmap(1,1);tile.Erase(new SKColor((byte)i,12,20));surface.Canvas.DrawBitmap(tile,i%60,(i/60)%40);}
+surface.Flush();if(surface.CachedTextures>SimdSkia.Gpu.VulkanCanvas.MaximumCachedTextures)throw new Exception("Texture cache exceeded its post-fence eviction limit.");Console.WriteLine("PASS completed-frame texture eviction");
 bool threadRejected=false;var thread=new Thread(()=>{try{surface.Flush();}catch(InvalidOperationException){threadRejected=true;}});thread.Start();thread.Join();if(!threadRejected)throw new Exception("Cross-thread queue access was not rejected.");
 using(var image=surface.Snapshot())using(var data=image.Encode(SKEncodedImageFormat.Png,100))using(var file=File.Create("artifacts/vulkan.png"))data.SaveTo(file);
 var report=new {Backend="Vulkan compute (device coverage and composition)",surface.DeviceName,surface.IsSoftwareDevice,surface.CompletedBatches,surface.CachedTextures,surface.LastSubmitMilliseconds,surface.LastCompletionMilliseconds,ThreadConstraintVerified=threadRejected,ChineseVerified=chineseVerified,TextureVkImageVerified=true};

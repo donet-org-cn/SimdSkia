@@ -9,6 +9,7 @@ public sealed class VulkanDeviceLostException(string message) : Exception(messag
 /// <summary>Vulkan 1.0 compute rasterizer. Coverage and compositing execute on the device.</summary>
 public sealed unsafe class VulkanCanvas : ICanvasBackend
 {
+    public const int MaximumCachedTextures=256;
     private readonly int ownerThread=Environment.CurrentManagedThreadId;
     private readonly PixelBuffer target;
     private readonly bool optimizedCoverage;
@@ -16,6 +17,8 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
     private ulong descriptorLayout,pipelineLayout,pipeline,descriptorPool,commandPool,fence,sampler;
     private Vk.MemoryProperties memory;
     private GpuBuffer? output,readback,empty,edgesArena,paramsArena;
+    private GpuBuffer? hostUpload;
+    private bool uploadPending;
     private bool outputInitialized;
     private Texture? emptyTexture;
     private readonly List<Queued> pending=[];
@@ -145,7 +148,12 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
         if(!command.Transform.IsFinite||!command.Transform.IsAffine)throw new NotSupportedException("Vulkan drawing requires a finite affine transform.");
         if(!command.Rectangle.IsFinite)throw new ArgumentException("Rectangle coordinates must be finite.");
         if(command.Clip is {} clip&&!clip.IsFinite)throw new ArgumentException("Clip coordinates must be finite.");
-        if(command.Paint.Shader is not null and not LinearGradient)throw new NotSupportedException("Vulkan supports two-stop linear gradient shaders only.");
+        if(command.Paint.Shader is not null and not LinearGradient)
+        {
+            if(!command.Paint.Shader.TryGetLinearGradient(out var linear)||linear is null)throw new NotSupportedException("Vulkan accepts linear gradient shaders; other shaders require an explicit CPU fallback.");
+            if(linear.Stops.Length>32||linear.Stops.ToArray().Any(s=>s.Offset<0||s.Offset>1))throw new NotSupportedException("Vulkan linear gradients accept up to 32 stops in [0,1].");
+            float dx=linear.End.X-linear.Start.X,dy=linear.End.Y-linear.Start.Y;if(!float.IsFinite(dx*dx+dy*dy))throw new NotSupportedException("Gradient coordinates exceed Vulkan float32 precision.");
+        }
         if(command.Paint.Shader is LinearGradient shader)
         {float dx=shader.End.X-shader.Start.X,dy=shader.End.Y-shader.Start.Y;if(!float.IsFinite(dx*dx+dy*dy))throw new NotSupportedException("Gradient coordinates exceed Vulkan float32 precision.");}
         if(pending.Count>=128)Flush();EdgeEntry? edges=null;
@@ -161,7 +169,7 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
             var source=command.ImageSource??new RectF(0,0,image.Width,image.Height);
             if(!source.IsFinite||source.IsEmpty||source.Left<0||source.Top<0||source.Right>image.Width||source.Bottom>image.Height)throw new ArgumentOutOfRangeException(nameof(command.ImageSource));
             if(command.Rectangle.IsEmpty)return;
-            if(!imageCache.TryGetValue(image,out var entry)||!MatchesSnapshot(image,entry.Snapshot))
+            if(!imageCache.TryGetValue(image,out var entry)||!command.ImageIsImmutable&&!MatchesSnapshot(image,entry.Snapshot))
             {
                 // The stale texture may still be referenced by queued commands in this batch;
                 // retire it instead of destroying it and free it once the GPU is idle after Flush.
@@ -171,10 +179,10 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
                 {var color=image.ReadPixel(x,y);int offset=(y*image.Width+x)*4;data[offset]=color.R;data[offset+1]=color.G;data[offset+2]=color.B;data[offset+3]=image.Alpha==AlphaFormat.Opaque?(byte)255:color.A;}
                 if(data.Length>64*1024*1024)throw new NotSupportedException("A texture exceeds the configured 64 MiB image cache budget.");
                 long bytes=imageCache.Values.Sum(e=>(long)e.Texture.Size);
-                if(imageCache.Count>=32||bytes+data.Length>64*1024*1024)
+                if(imageCache.Count>=MaximumCachedTextures||bytes+data.Length>64*1024*1024)
                 {
                     Flush();foreach(var victim in imageCache.OrderBy(e=>e.Value.Used).ToArray())
-                    {if(imageCache.Count<32&&bytes+data.Length<=64*1024*1024)break;bytes-=victim.Value.Texture.Size;victim.Value.Texture.Dispose();imageCache.Remove(victim.Key);}
+                    {if(imageCache.Count<MaximumCachedTextures&&bytes+data.Length<=64*1024*1024)break;bytes-=victim.Value.Texture.Size;victim.Value.Texture.Dispose();imageCache.Remove(victim.Key);}
                 }
                 var snapshot=new byte[data.Length];for(int y=0;y<image.Height;y++)image.GetRowSpan(y).Slice(0,image.Width*4).CopyTo(snapshot.AsSpan(y*image.Width*4,image.Width*4));
                 entry=new(){Texture=AllocateTexture(image.Width,image.Height,data),Snapshot=snapshot};imageCache.Add(image,entry);
@@ -204,11 +212,19 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
             if(!image.GetRowSpan(y).Slice(0,image.Width*4).SequenceEqual(snapshot.AsSpan(y*image.Width*4,image.Width*4)))return false;
         return true;
     }
+    /// <summary>Stages externally modified target pixels. Flush before changing CPU pixels or calling this method.</summary>
+    public void Upload()
+    {
+        Validate();if(pending.Count!=0)throw new InvalidOperationException("Flush pending GPU commands before uploading CPU pixels.");
+        hostUpload??=Allocate(checked(target.Width*target.Height*4),usage:1);
+        for(int y=0;y<target.Height;y++)target.GetRowSpan(y)[..(target.Width*4)].CopyTo(hostUpload.Bytes.Slice(y*target.Width*4,target.Width*4));
+        uploadPending=true;
+    }
     public void Flush()
     {
         Validate();if(pending.Count==0)return;
         bool submitted=false,completed=false;
-        int edgeStride=256,paramStride=256;
+        int edgeStride=256,paramStride=768;
         int edgeBytesNeeded=pending.Sum(p=>((EdgePayload(p)+255)&~255))+edgeStride,paramBytesNeeded=pending.Count*paramStride+paramStride;
         try
         {
@@ -218,16 +234,17 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
             {var old=paramsArena;paramsArena=Allocate(paramBytesNeeded);old?.Dispose();}
             if(descriptorSets is null||descriptorSets.Length<pending.Count)AllocateDescriptorSets(Math.Max(pending.Count,(descriptorSets?.Length??0)*2));
             ulong waitFence=fence;Check(Vk.vkResetFences(device,1,&waitFence));var begin=new Vk.CommandBeginInfo {Type=42,Flags=1};Check(Vk.vkBeginCommandBuffer(command,&begin));
-            if(!outputInitialized)
+            if(uploadPending||!outputInitialized)
             {
-                Vk.vkCmdFillBuffer(command,output!.Handle,0,(ulong)output.Size,0);
+                if(uploadPending){var uploadRegion=new Vk.BufferCopy{Size=(ulong)output!.Size};Vk.vkCmdCopyBuffer(command,hostUpload!.Handle,output.Handle,1,&uploadRegion);}
+                else Vk.vkCmdFillBuffer(command,output!.Handle,0,(ulong)output.Size,0);
                 var initialize=new Vk.BufferBarrier {Type=44,SourceAccess=4096,DestinationAccess=32|64,SourceFamily=uint.MaxValue,DestinationFamily=uint.MaxValue,Buffer=output.Handle,Size=(ulong)output.Size};
                 Vk.vkCmdPipelineBarrier(command,4096,2048,0,0,null,1,&initialize,0,null);
             }
             Vk.vkCmdBindPipeline(command,1,pipeline);
             foreach(var texture in imageCache.Values.Select(e=>e.Texture).Concat(retiredTextures).Prepend(emptyTexture!).Where(t=>!t.Uploaded))RecordTextureUpload(texture);
             var buffers=stackalloc Vk.DescriptorBuffer[4];var writes=stackalloc Vk.WriteDescriptor[4];int setIndex=0,edgeOffset=0,paramOffset=0;
-            Span<uint> words=stackalloc uint[58];
+            Span<uint> words=stackalloc uint[160];
             foreach(var item in pending)
             {
                 var cmd=item.Command;
@@ -241,7 +258,7 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
                     {var bytes=payload[(item.Data.Length*4)..];bytes.Clear();for(int y=0;y<coverage.Height;y++)coverage.GetRow(coverage.Top+y).CopyTo(bytes.Slice(y*coverage.Width,coverage.Width));}
                     edges=edgesArena;edgeOffset=edgeBase+edgeSize;
                 }
-                int paramBase=(paramOffset+255)&~255;var parameters=paramsArena!;int paramSize=58*4;Prepare(item,words);words.CopyTo(MemoryMarshal.Cast<byte,uint>(parameters.Bytes.Slice(paramBase,paramSize)));paramOffset=paramBase+paramSize;
+                int paramBase=(paramOffset+255)&~255;var parameters=paramsArena!;int paramSize=160*4;Prepare(item,words);words.CopyTo(MemoryMarshal.Cast<byte,uint>(parameters.Bytes.Slice(paramBase,paramSize)));paramOffset=paramBase+paramSize;
                 ulong set=descriptorSets![setIndex++];
                 buffers[0]=output!.Descriptor;
                 buffers[1]=new(){Buffer=edges.Handle,Offset=(ulong)(edges==empty?0:edgeBase),Range=(ulong)(edgeSize>0?edgeSize:edges.Size)};
@@ -266,7 +283,7 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
             Check(Vk.vkQueueSubmit(queue,1,&submit,fence));submitted=true;LastSubmitMilliseconds=timer.Elapsed.TotalMilliseconds;
             int result=Vk.vkWaitForFences(device,1,&waitFence,1,10_000_000_000);LastCompletionMilliseconds=timer.Elapsed.TotalMilliseconds;
             if(result==2)throw new TimeoutException("Vulkan completion fence timed out; the frame is not reported as completed.");Check(result);completed=true;
-            outputInitialized=true;
+            outputInitialized=true;uploadPending=false;
             if(target.RowBytes==target.Width*4)readback.Bytes.CopyTo(target.GetPixelSpan());
             else for(int y=0;y<target.Height;y++)readback.Bytes.Slice(y*target.Width*4,target.Width*4).CopyTo(target.GetRowSpan(y));
             foreach(var texture in imageCache.Values.Select(e=>e.Texture).Prepend(emptyTexture!)){texture.Uploaded=true;texture.Staging?.Dispose();texture.Staging=null;}
@@ -291,6 +308,13 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
         words[19]=(uint)(item.Texture?.Width??1);words[20]=(uint)(item.Texture?.Height??1);
         (cmd.Kind==CommandKind.FillPath?cmd.ShaderTransform??cmd.Transform:cmd.Transform).TryInvert(out var inverse);floats[22]=inverse.M00;floats[23]=inverse.M01;floats[24]=inverse.M02;floats[25]=inverse.M10;floats[26]=inverse.M11;floats[27]=inverse.M12;
         if(cmd.Paint.Shader is LinearGradient gradient){words[16]=1;words[17]=Pack(gradient.StartColor);words[18]=Pack(gradient.EndColor);floats[28]=gradient.Start.X;floats[29]=gradient.Start.Y;floats[30]=gradient.End.X;floats[31]=gradient.End.Y;}
+        else if(cmd.Paint.Shader is {} shader&&shader.TryGetLinearGradient(out var linear)&&linear is not null)
+        {
+            words[16]=2;words[58]=(uint)linear.Stops.Length;words[59]=(uint)linear.Extend;
+            floats[28]=linear.Start.X;floats[29]=linear.Start.Y;floats[30]=linear.End.X;floats[31]=linear.End.Y;
+            var stops=linear.Stops.Span;for(int i=0;i<stops.Length;i++){floats[60+i*2]=stops[i].Offset;words[61+i*2]=Pack(stops[i].Color);}
+            var m=linear.SampleTransform;floats[124]=m.M00;floats[125]=m.M01;floats[126]=m.M02;floats[127]=m.M10;floats[128]=m.M11;floats[129]=m.M12;
+        }
         if(cmd.Kind is CommandKind.FillRectangle or CommandKind.DrawImage&&cmd.Transform.M01==0&&cmd.Transform.M10==0)
         {
             words[32]=1;var a=cmd.Transform.Map(rect.Left,rect.Top);var b=cmd.Transform.Map(rect.Right,rect.Bottom);
@@ -332,7 +356,7 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
     {
         long bytes=imageCache.Values.Sum(e=>(long)e.Texture.Size);
         foreach(var entry in imageCache.OrderBy(e=>e.Value.Used).ToArray())
-        {if(imageCache.Count<=32&&bytes<=64*1024*1024)break;bytes-=entry.Value.Texture.Size;entry.Value.Texture.Dispose();imageCache.Remove(entry.Key);}
+        {if(imageCache.Count<=MaximumCachedTextures&&bytes<=64*1024*1024)break;bytes-=entry.Value.Texture.Size;entry.Value.Texture.Dispose();imageCache.Remove(entry.Key);}
     }
     private Texture AllocateTexture(int width,int height,ReadOnlySpan<byte> data)
     {
@@ -398,7 +422,7 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
         if(disposed)return;disposed=true;
         if(device!=IntPtr.Zero)
         {
-            Vk.vkDeviceWaitIdle(device);pending.Clear();foreach(var entry in imageCache.Values)entry.Texture.Dispose();imageCache.Clear();foreach(var retired in retiredTextures)retired.Dispose();retiredTextures.Clear();edgeCache.Clear();edgeBytes=0;emptyTexture?.Dispose();output?.Dispose();readback?.Dispose();empty?.Dispose();edgesArena?.Dispose();paramsArena?.Dispose();
+            Vk.vkDeviceWaitIdle(device);pending.Clear();foreach(var entry in imageCache.Values)entry.Texture.Dispose();imageCache.Clear();foreach(var retired in retiredTextures)retired.Dispose();retiredTextures.Clear();edgeCache.Clear();edgeBytes=0;emptyTexture?.Dispose();output?.Dispose();readback?.Dispose();empty?.Dispose();edgesArena?.Dispose();paramsArena?.Dispose();hostUpload?.Dispose();
             if(fence!=0)Vk.vkDestroyFence(device,fence,null);if(commandPool!=0)Vk.vkDestroyCommandPool(device,commandPool,null);if(descriptorPool!=0)Vk.vkDestroyDescriptorPool(device,descriptorPool,null);
             if(sampler!=0)Vk.vkDestroySampler(device,sampler,null);
             if(pipeline!=0)Vk.vkDestroyPipeline(device,pipeline,null);if(pipelineLayout!=0)Vk.vkDestroyPipelineLayout(device,pipelineLayout,null);if(descriptorLayout!=0)Vk.vkDestroyDescriptorSetLayout(device,descriptorLayout,null);Vk.vkDestroyDevice(device,null);device=IntPtr.Zero;

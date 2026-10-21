@@ -1,5 +1,7 @@
 # 进度：2026-10-22
 
+新增 preview.2：三平台桌面统一入口、Linux/macOS 托管系统字体发现、Windows Direct2D/D3D11 原生交换链、Avalonia Vulkan 回读绘图已实际实现。三平台 JIT 窗口 CI 通过；本机三后端均在呈现后 resize 通过。Direct2D 硬件 54 项、GPU 集成 12124 项、字形合批 60 项与原回归通过。三进程 JIT 控件 P50：CPU 3.569 / Direct2D 1.948 / Vulkan 20.972 ms；工作集 114.0 / 175.4 / 217.0 MiB。默认文字图集由 C# 生成，GPU 合成；不把 CPU 图层算成 GPU 光栅化。Native AOT、包消费和公开发布作为独立检查持续记录。[完整报告](DESKTOP-GPU-2026-10-22.md)
+
 NuGet 公开发布与首页说明已完成：八个 `0.1.0-preview.1` 包均可公开下载，DLL 和 README 与成功发布的 CI 产物逐字节一致。GitHub 首页新增完整包名/用途表、安装命令、Avalonia 12.1.4 双文件程序、现有项目迁移、系统字体和 Windows AOT 发布说明。直接从首页提取两个文件，在全新包缓存、仅 NuGet.org 源下还原并编译，0 警告/0 错误；代码与已发布包内 README 示例一致。[首页](../README.md) · [发布记录](NUGET-PREVIEW.md)
 
 ## 2026-10-21 记录

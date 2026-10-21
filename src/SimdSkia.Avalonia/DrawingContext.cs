@@ -9,11 +9,13 @@ namespace SimdSkia.Avalonia;
 internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
 {
     private PixelBuffer target;
-    private RasterCanvas canvas;
+    private ICanvasBackend canvas;
+    private readonly ICanvasBackend? rootBackend;
+    private readonly bool flushBackend;
     private readonly PixelBuffer root;
     private readonly Matrix dpiTransform;
     private readonly Vector dpi;
-    private readonly Action? completed;
+    private readonly Action<bool>? completed;
     private bool disposed;
     private bool nearestLowerBoundary;
     private Matrix transform=Matrix.Identity;
@@ -27,21 +29,24 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
     private readonly Stack<Group> groups=[];
     private RectF? dirty;
     private int originX,originY;
-    private readonly record struct Group(string Kind,PixelBuffer? Parent,RasterCanvas? Canvas,RectF? Clip,CoverageClip? Coverage,byte Opacity,IBrush? Mask,Rect Bounds,RectF? ParentDirty,Matrix3 Matrix,FilterSpec? Filter=null,int OffsetX=0,int OffsetY=0);
+    private readonly record struct Group(string Kind,PixelBuffer? Parent,ICanvasBackend? Canvas,RectF? Clip,CoverageClip? Coverage,byte Opacity,IBrush? Mask,Rect Bounds,RectF? ParentDirty,Matrix3 Matrix,FilterSpec? Filter=null,int OffsetX=0,int OffsetY=0);
     private static readonly object shapeGate=new();
     private static readonly Dictionary<(RoundedRect Rect,bool Ellipse),Geometry> shapes=[];
-    internal DrawingContext(PixelBuffer pixels,Vector dpi,bool scaleToDpi=true,Action? completed=null)
-    {root=target=pixels.Share();canvas=new(target);this.dpi=dpi;dpiTransform=scaleToDpi?Matrix.CreateScale(dpi.X/96,dpi.Y/96):Matrix.Identity;this.completed=completed;}
+    internal DrawingContext(PixelBuffer pixels,Vector dpi,bool scaleToDpi=true,Action<bool>? completed=null,ICanvasBackend? backend=null,bool flushBackend=true)
+    {root=target=pixels.Share();rootBackend=backend;this.flushBackend=flushBackend;canvas=backend??new RasterCanvas(target);this.dpi=dpi;dpiTransform=scaleToDpi?Matrix.CreateScale(dpi.X/96,dpi.Y/96):Matrix.Identity;this.completed=completed;}
     public Matrix Transform {get=>transform;set{Check();if(!value.IsIdentity&&!ConvertTo.Matrix(value).IsFinite)throw new ArgumentException("Transform must be finite.");transform=value;}}
     private Matrix3 ApplyOrigin(Matrix matrix)
     {var value=ConvertTo.Matrix(matrix);return (originX|originY)==0?value:value with{M02=value.M02-originX,M12=value.M12-originY};}
     private Matrix3 DeviceMatrix=>ApplyOrigin(transform*dpiTransform);
+    private CoverageClip CreateCoverageClip(PathGeometry path,Matrix3 matrix,bool antialias)
+    {if(canvas is RasterCanvas raster)return raster.CreateClip(path,matrix,antialias);using var clipper=new RasterCanvas(target);return clipper.CreateClip(path,matrix,antialias);}
     private bool Antialias=>renderOptions.EdgeMode!=EdgeMode.Aliased;
     private void Check(){ObjectDisposedException.ThrowIf(disposed,this);target.ThrowIfDisposed();}
     private void Execute(DrawingCommand command)
     {
         using var measurement=SimdSkiaDiagnostics.Measure(command.Kind==CommandKind.DrawGlyphRun?"glyph-run":command.Kind==CommandKind.FillPath?command.Paint.Shader is null?"path-solid":"path-gradient":command.Kind==CommandKind.DrawImage?"image":"rectangle");
-        Check();canvas.Execute(command with {Clip=clip,CoverageClip=coverageClip,CurveTolerance=0.015625f});
+        Check();if(rootBackend is not null&&!ReferenceEquals(canvas,rootBackend))SimdSkiaDiagnostics.SoftwareLayerCommand();
+        canvas.Execute(command with {Clip=clip,CoverageClip=coverageClip,CurveTolerance=0.015625f});
         if(groups.Count==0)return;
         var bounds=command.GlyphRun?.Bounds??command.Path?.ControlBounds??command.Rectangle;var m=command.Transform;
         var a=m.Map(bounds.Left,bounds.Top);var b=m.Map(bounds.Right,bounds.Top);var c=m.Map(bounds.Left,bounds.Bottom);var d=m.Map(bounds.Right,bounds.Bottom);
@@ -129,7 +134,8 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
     public void PushGeometryClip(IGeometryImpl geometry)
     {
         using var measurement=SimdSkiaDiagnostics.Measure("clip");
-        Check();var g=(Geometry)geometry;g.Validate();var next=canvas.CreateClip(g.Path,DeviceMatrix,Antialias);var combined=coverageClip is null?next:CoverageClip.Intersect(coverageClip,next);
+        Check();var g=(Geometry)geometry;g.Validate();var next=CreateCoverageClip(g.Path,DeviceMatrix,Antialias);
+        var combined=coverageClip is null?next:CoverageClip.Intersect(coverageClip,next);
         clips.Push((clip,coverageClip));coverageClip=combined;clip=Intersect(clip,next.Bounds);
     }
     public void PopClip(){Check();if(!clips.TryPop(out var state))throw new InvalidOperationException("Unbalanced clip stack.");(clip,coverageClip)=state;}
@@ -200,13 +206,22 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
     {
         if(disposed)return;disposed=true;
         bool unbalanced=groups.Count>0||clips.Count>0||renderStack.Count>0||textStack.Count>0;
+        bool success=false;
         try
         {
-            canvas.Dispose();if(!ReferenceEquals(target,root))target.Dispose();
-            foreach(var group in groups)if(group.Parent is not null){group.Canvas?.Dispose();if(!ReferenceEquals(group.Parent,root))group.Parent.Dispose();}
-            groups.Clear();root.Dispose();
+            if(ReferenceEquals(canvas,rootBackend)){if(flushBackend)canvas.Flush();}else canvas.Dispose();
+            success=!unbalanced;
         }
-        finally{completed?.Invoke();}
+        finally
+        {
+            try
+            {
+                if(!ReferenceEquals(target,root))target.Dispose();
+                foreach(var group in groups)if(group.Parent is not null){if(!ReferenceEquals(group.Canvas,rootBackend))group.Canvas?.Dispose();if(!ReferenceEquals(group.Parent,root))group.Parent.Dispose();}
+                groups.Clear();root.Dispose();
+            }
+            finally{completed?.Invoke(success);}
+        }
         if(unbalanced)throw new InvalidOperationException("Drawing context disposed with unbalanced layers, clips or options.");
     }
 }

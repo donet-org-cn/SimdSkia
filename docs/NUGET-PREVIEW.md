@@ -1,5 +1,18 @@
 # NuGet 预览版发布
 
+## 第二预览版 0.1.0-preview.2
+
+本轮增加 `SimdSkia.Avalonia.Desktop`、`SimdSkia.Avalonia.Gpu`、`SimdSkia.Gpu.Direct2D`，共 11 个包。桌面用户安装 Desktop，GPU 按需另加 Avalonia.Gpu；三个 Avalonia 包共享完整中文 README，包含三平台双文件程序、安装与迁移、GPU 配置、系统字体和 AOT。核心包仍不携带原生字体/绘图库；仅 Desktop 的官方 Avalonia.Native 依赖在 macOS 携带经允许的窗口桥。源码支持和性能结果见 [报告](DESKTOP-GPU-2026-10-22.md)，公开发布以流水线及实际下载验证为准。
+
+```powershell
+powershell -NoProfile -File tools/pack-preview.ps1 -Version 0.1.0-preview.2 -Output artifacts/nuget-preview-2
+powershell -NoProfile -File tools/test-desktop-package.ps1 -Packages artifacts/nuget-preview-2
+```
+
+桌面消费程序使用私有 NuGet 缓存，检查没有引擎 ProjectReference，并实际创建系统窗口；三平台 CI 另做 Native AOT。下面为首版发布历史与仍适用的可信发布配置。
+
+## 首版 0.1.0-preview.1（历史）
+
 版本仅接受 `数字.数字.数字-preview.数字`，首版为 `0.1.0-preview.1`。八个包：SimdSkia、Core、Cpu、Text、Imaging、Gpu、Compatibility、Avalonia。SimdSkia 是兼容层的依赖汇总包；Avalonia 应用通常只引用适配器，不需要 SK* 汇总包。
 
 **首版已公开发布。** 2026-10-22 已确认全部八个包可从 NuGet.org 实际下载，DLL 和 README 与 CI 产物一致。[SimdSkia.Avalonia 包页面](https://www.nuget.org/packages/SimdSkia.Avalonia/0.1.0-preview.1)及 [GitHub 首页使用说明](../README.md)均提供接入示例。首页两个文件已在全新包缓存、仅 NuGet.org 源下成功还原并编译（0 警告/0 错误）。

@@ -86,7 +86,7 @@ internal sealed partial class DrawingContext
             x0=Math.Clamp(x0,left,right);y0=Math.Clamp(y0,top,bottom);x1=Math.Clamp(x1,x0,right);y1=Math.Clamp(y1,y0,bottom);
             var coverage=new byte[(x1-x0)*(y1-y0)];coverage.AsSpan().Fill(255);boxClip=new(x0,y0,x1-x0,y1-y0,coverage);
         }
-        else boxClip=canvas.CreateClip(baseGeometry.Path,m,true);
+        else boxClip=CreateCoverageClip(baseGeometry.Path,m,true);
         var color=ConvertTo.Color(shadow.Color);int ri=target.Format==PixelFormat.Rgba8888?0:2;
         for(int y=0;y<blurred.Height;y++)
         {

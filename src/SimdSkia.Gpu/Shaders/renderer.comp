@@ -154,7 +154,19 @@ void main(){
         vec2 uv=(q-vec2(f(12),f(13)))/vec2(f(14)-f(12),f(15)-f(13));
         uvec2 at=uvec2(clamp(uv*vec2(p[19],p[20]),vec2(0),vec2(p[19]-1u,p[20]-1u)));
         uint opacity=color.a;color=uvec4(roundEven(texelFetch(imageTexture,ivec2(at),0)*255.0));color.a=multiplyAlpha(color.a,opacity);
-    }else if(p[16]!=0u){
+    }else if(p[16]==2u){
+        vec2 point=vec2(f(124)*q.x+f(125)*q.y+f(126),f(127)*q.x+f(128)*q.y+f(129));
+        vec2 start=vec2(f(28),f(29)),delta=vec2(f(30),f(31))-start;
+        float denominator=dot(delta,delta),t=denominator==0.0?1.0:dot(point-start,delta)/denominator;
+        t=p[59]==0u?clamp(t,0.0,1.0):p[59]==1u?t-floor(t):1.0-abs((t-2.0*floor(t/2.0))-1.0);
+        uint opacity=color.a;uvec4 mixed=unpackColor(p[61+int((p[58]-1u)*2u)]);
+        if(t<=f(60))mixed=unpackColor(p[61]);
+        else for(uint i=1u;i<p[58];i++)if(t<f(60+int(i*2u))){
+            float previous=f(60+int((i-1u)*2u)),fraction=(t-previous)/(f(60+int(i*2u))-previous);
+            mixed=uvec4(roundEven(mix(vec4(unpackColor(p[61+int((i-1u)*2u)])),vec4(unpackColor(p[61+int(i*2u)])),fraction)));break;
+        }
+        color=mixed;color.a=multiplyAlpha(color.a,opacity);
+    }else if(p[16]==1u){
         vec2 start=vec2(f(28),f(29)),delta=vec2(f(30),f(31))-start;
         float denominator=dot(delta,delta),t=denominator==0.0?1.0:clamp(dot(q-start,delta)/denominator,0.0,1.0);
         uint opacity=color.a;color=uvec4(roundEven(mix(vec4(unpackColor(p[17])),vec4(unpackColor(p[18])),t)));color.a=multiplyAlpha(color.a,opacity);

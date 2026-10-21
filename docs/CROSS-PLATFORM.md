@@ -1,4 +1,4 @@
-# 跨平台桌面接入（开发中）
+# 跨平台桌面接入（0.1.0-preview.2）
 
 新增源码项目 `src/SimdSkia.Avalonia.Desktop`，为固定 Avalonia 12.1.4 提供统一入口：
 
@@ -22,6 +22,10 @@ dotnet run --project tests/PlatformFonts -c Release
 dotnet run --project examples/CrossPlatform -c Release -- --smoke
 ```
 
-首版 NuGet `0.1.0-preview.1` 不含这个桌面扩展，不得把源码新能力当作已发布版本能力。三平台工作流为 `.github/workflows/desktop.yml`：实际创建系统窗口并检查 framebuffer 帧、resize、按钮路由和非空像素，Linux 使用 Xvfb 虚拟 X11 显示。平台运行结果以工作流真实结果和截图为准；尚未运行的检查不计通过。
+首版 NuGet `0.1.0-preview.1` 不含这个桌面扩展；新项目引用 `SimdSkia.Avalonia.Desktop 0.1.0-preview.2`，需 GPU 时再添加 `SimdSkia.Avalonia.Gpu`。三平台实际窗口运行已通过 [CI 39635321989](https://github.com/hnlyf168/SimdSkia/actions/runs/39635321989)：Windows x64、Ubuntu 24.04 x64、macOS 26 ARM64。工作流 `.github/workflows/desktop.yml` 继续检查初次 framebuffer、呈现后 resize、按钮路由和非空像素；Linux 使用 Xvfb 虚拟 X11 显示。Native AOT 是独立检查项，结果见交付报告，不以 JIT 窗口通过代替 AOT 验证。
 
-此阶段宿主采用软件 framebuffer 呈现；GPU 命令绘制接入、直接 GPU swapchain 呈现和性能测量分别记录，不能混为同一能力。
+默认 CPU。Windows 可选择 `options.UseGpu(SimdSkiaGpuBackend.Direct2D)`，使用硬件 D3D11/Direct2D 和 DXGI 原生交换链；Vulkan 可在 Windows/Linux 绘制后等待 fence、回读并交窗口 framebuffer 呈现。macOS 的 Metal/GPU 尚未实现，配置 GPU 会明确报错。
+
+默认 `ManagedGlyphAtlas`：C# 按设备像素与实际文本颜色生成/缓存文字纹理，保持现有覆盖率预混合，再由 GPU 合成。另有较慢的 `GpuOutlines` 选项。图层和滤镜仍可用 C#，不把其 CPU 工作计作 GPU 光栅化。`allowCpuFallback` 默认关闭；独立画刷变换等不能满足行为约束的功能必须明确启用回退。Direct2D 原生窗口不支持分层透明 HWND，需显式选择 `FramebufferReadback`。Linux Vulkan 窗口尚无本机硬件运行验收，Windows Vulkan 当前完整控件慢于 CPU。
+
+GPU 硬件测试、三进程 CPU/内存对照、已知差距与复现命令见 [本轮报告](DESKTOP-GPU-2026-10-22.md)。
