@@ -7,7 +7,8 @@ param(
     [int]$WarmupMilliseconds=100,
     [string]$Sizes='256x256,1024x768',
     [string]$Scenes='',
-    [string]$Report='docs/PERFORMANCE-GPU.md'
+    [string]$Report='docs/PERFORMANCE-GPU.md',
+    [string]$ManagedDirectory=''
 )
 $ErrorActionPreference='Stop'
 $workspacePath=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
@@ -26,6 +27,7 @@ try {
     New-Item -ItemType Directory -Path $outputPath -Force | Out-Null
     $fontPath=(Resolve-Path -LiteralPath $Font).Path
     $managedPath=Join-Path $workspacePath 'benchmarks/GpuManaged/bin/Release/net8.0/SimdSkia.Benchmark.GpuManaged.dll'
+    if($ManagedDirectory){$managedPath=Join-Path ([IO.Path]::GetFullPath($ManagedDirectory)) 'SimdSkia.Benchmark.GpuManaged.dll';if(-not(Test-Path -LiteralPath $managedPath)){throw 'Frozen managed GPU worker is missing.'}}
     $referencePath=Join-Path $workspacePath 'benchmarks/GpuReference/bin/Release/net8.0/SimdSkia.Benchmark.GpuReference.dll'
     $env:DOTNET_TieredCompilation='0'
     $env:DOTNET_ReadyToRun='0'
@@ -40,6 +42,14 @@ try {
     }
     $sourceHashes=[ordered]@{};foreach($sourceFile in @(rg --files src -g '*.cs' -g '*.csproj' -g '*.comp' -g '*.spv' -g '!**/obj/**' -g '!**/bin/**')){$sourceHashes[$sourceFile]=(Get-FileHash -LiteralPath $sourceFile).Hash}
     $manifest=[ordered]@{ProductSourceSha256=$sourceHashes;Date=(Get-Date -Format 'yyyy-MM-dd');StartedUtc=[DateTimeOffset]::UtcNow.ToString('o');Backend='Vulkan GPU round-trip';Baseline='SkiaSharp 3.119.4';Forks=$Forks;Samples=$Samples;TargetSampleMilliseconds=$SampleMilliseconds;WarmupMilliseconds=$WarmupMilliseconds;Sizes=$Sizes;Scenes=$Scenes;Font=$fontPath;FontSha256=(Get-FileHash -LiteralPath $fontPath).Hash;Seed=20261012;TieredCompilation=0;ReadyToRun=0;ServerGc=0;JobOrder=$jobs;Complete=$false}
+    $runtimeHashes=[ordered]@{}
+    foreach($worker in @($managedPath,$referencePath)){
+        foreach($file in Get-ChildItem -LiteralPath (Split-Path -Parent $worker) -File | Where-Object {$_.Extension -eq '.dll' -or $_.Name -like '*.deps.json' -or $_.Name -like '*.runtimeconfig.json'}){
+            $runtimeHashes[$file.FullName]=(Get-FileHash -LiteralPath $file.FullName).Hash
+        }
+    }
+    $manifest.ManagedWorker=$managedPath;$manifest.RuntimeSha256=$runtimeHashes
+    $manifest.SourceNote=if($ManagedDirectory){'Frozen managed runtime supplied explicitly; RuntimeSha256 identifies the measured binaries. ProductSourceSha256 records the workspace and is not a claim that it built the frozen runtime.'}else{'Measured managed runtime built from the recorded workspace source.'}
     $manifest|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $outputPath 'run.json') -Encoding UTF8
     foreach($job in $jobs){
         $jobPath=Join-Path $outputPath ($job.Engine+'-'+$job.Fork)
@@ -49,6 +59,7 @@ try {
         if($LASTEXITCODE -ne 0){throw ('Benchmark failed: '+$job.Engine+' fork '+$job.Fork)}
     }
     foreach($sourceFile in $sourceHashes.Keys){if((Get-FileHash -LiteralPath $sourceFile).Hash -ne $sourceHashes[$sourceFile]){throw ('Product source changed during measurement: '+$sourceFile)}}
+    foreach($runtimeFile in $runtimeHashes.Keys){if((Get-FileHash -LiteralPath $runtimeFile).Hash -ne $runtimeHashes[$runtimeFile]){throw ('Worker runtime changed during measurement: '+$runtimeFile)}}
     $manifest.Complete=$true
     $manifest|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $outputPath 'run.json') -Encoding UTF8
     dotnet benchmarks/GpuReport/bin/Release/net8.0/GpuReport.dll $outputPath $Report

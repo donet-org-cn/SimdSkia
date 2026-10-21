@@ -11,7 +11,7 @@ def diff_png(path,width,height,d):
  rgba=bytes(v for i in range(0,len(d),4) for v in [min(255,d[i]*4),min(255,d[i+1]*4),min(255,d[i+2]*4),255])
  raw=b''.join(b'\0'+rgba[y*width*4:(y+1)*width*4] for y in range(height))
  path.write_bytes(b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',struct.pack('>IIBBBBB',width,height,8,6,0,0,0))+chunk(b'IDAT',zlib.compress(raw))+chunk(b'IEND',b''))
-diffs=out.parent/'feature-diff';diffs.mkdir(parents=True,exist_ok=True)
+diffs=out.parent/(out.stem+'-diff');diffs.mkdir(parents=True,exist_ok=True)
 for case in cases:
  x=(a/(case['name']+'.rgba')).read_bytes();y=(b/(case['name']+'.rgba')).read_bytes()
  if len(x)!=len(y):raise SystemExit('Frame dimensions differ.')

@@ -24,7 +24,7 @@ def png(path,width,height,rgba):
 
 quality=[]
 for scene,scale in sorted({(r['scenario'],r['scale']) for r in rows}):
-    selected={variant:next((r for r in rows if r['scenario']==scene and r['scale']==scale and r['variant']==variant),None) for variant in ('before','after','reference')}
+    selected={variant:next((r for r in rows if r['scenario']==scene and r['scale']==scale and r['variant']==variant),None) for variant in ('before','after','reference','default')}
     after=selected['after'];reference=selected['reference']
     if not after or not reference:continue
     a=(root/after['run']/'scene.rgba').read_bytes();b=(root/reference['run']/'scene.rgba').read_bytes()
@@ -35,6 +35,12 @@ for scene,scale in sorted({(r['scenario'],r['scale']) for r in rows}):
     if before:same=a==(root/before['run']/'scene.rgba').read_bytes()
     pixels=len(a)//4;bad=sum(any(differences[i+c]>32 for c in range(4)) for i in range(0,len(a),4))
     item={'scenario':scene,'scale':scale,'maximumChannelError':max_error,'rmse':rmse,'pixelsOver32':bad,'pixels':pixels,'threshold':{'maximumChannelError':32,'rmse':2.0},'passed':max_error<=32 and rmse<=2,'beforeAfterExactlyEqual':same,'afterSha256':hashlib.sha256(a).hexdigest(),'referenceSha256':hashlib.sha256(b).hexdigest()}
+    if selected['default']:
+        native=(root/selected['default']['run']/'scene.rgba').read_bytes()
+        if len(native)!=len(a):raise SystemExit('Native default pixel dimensions differ.')
+        delta=[abs(x-y) for x,y in zip(a,native)]
+        native_max=max(delta);native_rmse=math.sqrt(sum(d*d for d in delta)/len(delta))
+        item.update(nativeDefaultMaximumChannelError=native_max,nativeDefaultRmse=native_rmse,nativeDefaultPassed=native_max<=32 and native_rmse<=2,nativeDefaultSha256=hashlib.sha256(native).hexdigest())
     quality.append(item)
     diff=bytearray(len(a))
     for i in range(0,len(a),4):diff[i:i+4]=bytes([min(255,differences[i]*4),min(255,differences[i+1]*4),min(255,differences[i+2]*4),255])

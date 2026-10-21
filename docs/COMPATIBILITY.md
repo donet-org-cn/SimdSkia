@@ -1,5 +1,7 @@
 # 兼容报告：SkiaSharp 3.119.4
 
+2026-10-22 第二轮核验：[原版对照与性能](PERFORMANCE-COMPATIBILITY-2026-10-22.md)。ImageBrush 38/40、VisualBrush 5/10，新功能总计 82/114；旧图像 108/120、完整 UI 0/3、GPU 12/24，完整行为兼容仍未成立。下表区分 SK* 外观与独立 Avalonia 平台适配器，后者通过服务接口接入，并不要求完整 SK* 表面。
+
 ## 固定基线
 
 核查日期 2026-10-12。Avalonia.Skia 12.1.4 的实际恢复锁文件解析到 SkiaSharp 3.119.4，见 [依赖探针](../probes/AvaloniaDependencyProbe/packages.lock.json)。这是独立探针，不是用户现有应用的使用清单。官方 [NuGet 依赖](https://www.nuget.org/packages/Avalonia.Skia/12.1.4) 与 [版本源码](https://github.com/mono/SkiaSharp/tree/v3.119.4/binding/SkiaSharp) 用于调查；包哈希见 baseline-packages.json。
@@ -10,8 +12,8 @@
 
 | 维度 | 当前结果 |
 | --- | --- |
-| 源码 | 已实现子集可重编译；同一绘图/行为调用分别编译至原版与替代。37 类型/425 公共项与基线匹配，2810 缺口；尚不支持完整 Avalonia 后端。 |
-| 二进制 | 未成立。原版 SkiaSharp, Version=3.119.0.0, PublicKeyToken=0738eb9f132ed756；替代 SimdSkia.Compatibility, Version=1.0.0.0, PublicKeyToken=null。未伪造强名称、公钥或承诺已编译依赖直接替换。 |
+| 源码 | 已实现子集可重编译；同一绘图/行为调用分别编译至原版与替代。37 类型/425 公共项与基线匹配，2810 缺口；完整 SkiaSharp 与任意 Avalonia 应用替换尚未验收。 |
+| 二进制 | 未成立。原版 SkiaSharp, Version=3.119.0.0, PublicKeyToken=0738eb9f132ed756；本轮实际构建的替代为 SimdSkia.Compatibility, Version=0.1.0.0, PublicKeyToken=null。未伪造强名称、公钥或承诺已编译依赖直接替换。 |
 | 行为 | 36 原有/14 扩展测试通过，25 基线探针一致；原版画质 108/120 达标、12 曲线/文字不达标。GPU 对 CPU 所测场景一致，仍非全行为证明。 |
 
 ## 清单
@@ -25,15 +27,15 @@
 | 类型/领域 | 已实现 | 明确缺口/限制 |
 | --- | --- | --- |
 | SKColor/SKColors、几何/矩阵/ImageInfo | 既有基础子集、RGBA/BGRA/三 Alpha/stride/值/仿射/字节信息 | 很多重载/尺寸类型/颜色转换缺失，checked 溢出可能不同 |
-| SKBitmap/SKSurface/SKImage | 托管分配、真实 Span/Bytes/GetPixel/SetPixel、Clear/Copy/Snapshot、PNG | raw pointers/InstallPixels/GR surface 等拒绝或缺失；部分分配/解码异常与原版不同 |
+| SKBitmap/SKSurface/SKImage | 托管分配、真实 Span/Bytes/GetPixel/SetPixel、Clear/Copy/Snapshot、PNG/JPEG | raw pointers/InstallPixels/GR surface 等拒绝或缺失；部分分配/解码异常与原版不同 |
 | SKPath | Move/Line/Quad/Cubic/Close、AddRect/AddCircle、四种 fill rule、Bounds、快照 | conic/arc/path ops/多数 API 缺失 |
 | SKPaint/SKCanvas | AA 填充、butt/miter stroke、线/圆、硬矩形 clip、状态、两色 Clamp gradient、最近邻图片、透明度 | StrokeAndFill、其他 caps/joins/AA clip/一般 clip path/其他 blend 与 shader/filter/高级采样未支持，明确报错 |
-| SKTypeface/SKFont | 真实 glyf TTF、cmap 4/12、metrics、XY composite、字形轮廓、基本中英文 | TTC/CFF/可变/彩色/组件点附着/hint VM/复杂 shaping/fallback 未支持 |
+| SKTypeface/SKFont | 真实 glyf TTF/TTC v1/v2、face 索引、cmap 4/12、metrics、XY composite、字形轮廓、基本中英文 | CFF/可变/彩色/组件点附着/hint VM/复杂 shaping/完整 fallback 未支持；Avalonia 另有已安装字体发现 |
 | SKTextBlob/Builder/RunBuffer | 定位字形 run 构建、glyph/position Span、Build 后独立快照、跨画布覆盖率缓存与真实绘制；SKFont 的 codepoint→glyph 和 Span 度量 | 仅定位 run 子集；字体灰度、默认选项、glyph bounds 仍有差异；重叠字形透明合成不完整；无 native text blob handle |
 | 文本布局 | 同位置 DrawText、度量/对齐；SimdSkia.TextRendering 支持基本换行与 Latin word/CJK 边界折行并返回布局 | 不是完整 Unicode line-break/shaping；不支持 Bidi/mark，段落 API 是品牌 API，不伪造基线重载 |
-| PNG/SKData | 无原生依赖编码/解码、过滤/CRC/zlib、sRGB/gAMA、透明度 | JPEG/WebP/16-bit/Adam7/APNG/ICC 等未提供；PNG encoder stored 块较大；质量参数不改变 PNG 无损像素 |
+| PNG/JPEG/SKData | 纯 C# PNG，含 Adam7/16 位输入、LZ77 压缩、CRC/zlib；常见 8 位 JPEG、基线 CMYK；部分 ICC 转 sRGB | WebP/GIF/BMP/APNG、四分量渐进 JPEG、全部 ICC 模型与 profile 查询仍未完成；YCCK 缺独立验收；PNG quality 不改变无损像素 |
 | SIMD | Vector<T> 清屏/Alpha/不透明图片行，AVX2 覆盖率合成/Adler，SSE2/SSSE3 PNG 过滤/转换；真实标量 fallback | 各路径依硬件选择；未宣称所有功能都已优化或 ARM 实机验证 |
-| GPU | SimdSkia.VulkanSurface 创建真实 Vulkan 离屏后端；CPU/GPU 消费同命令，VkImage 缓存 | 无 GR/native handle 替代、窗口 swapchain、完整 GPU API 或二进制接入；Linux 未实测 |
+| GPU | VulkanSurface 离屏；独立 Avalonia.Gpu 可选 Windows Direct2D 原生交换链、Windows/Linux Vulkan 完成后回读；有界纹理内容缓存 | 无 GR/native handle 替代/完整 GPU API/二进制接入；Vulkan 直接窗口交换链、macOS GPU、Linux 物理 GPU 验收仍缺失 |
 
 ## 默认值和生命周期
 

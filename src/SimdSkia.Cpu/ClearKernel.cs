@@ -17,13 +17,16 @@ public static class ClearKernel
         if(target.Alpha!=AlphaFormat.Straight){r=PixelBuffer.Multiply(r,a);g=PixelBuffer.Multiply(g,a);b=PixelBuffer.Multiply(b,a);}
         byte first=target.Format==PixelFormat.Rgba8888?r:b,third=target.Format==PixelFormat.Rgba8888?b:r;
         uint packed=BitConverter.IsLittleEndian?(uint)(first|(g<<8)|(third<<16)|(a<<24)):(uint)((first<<24)|(g<<16)|(third<<8)|a);
-        var vector=new Vector<uint>(packed);
+        // Span.Fill uses the runtime's unrolled vector stores. Treat a tight
+        // image as one span, while never writing into padded scanlines.
+        if(useSimd&&Vector.IsHardwareAccelerated&&target.RowBytes==target.Width*4)
+        {MemoryMarshal.Cast<byte,uint>(target.GetPixelSpan()).Fill(packed);return;}
         for(int y=0;y<target.Height;y++)
         {
-            var row=MemoryMarshal.Cast<byte,uint>(target.GetRowSpan(y)[..checked(target.Width*4)]);int i=0;
+            var row=MemoryMarshal.Cast<byte,uint>(target.GetRowSpan(y)[..checked(target.Width*4)]);
             if(useSimd&&Vector.IsHardwareAccelerated)
-                for(;i<=row.Length-Vector<uint>.Count;i+=Vector<uint>.Count)vector.CopyTo(row[i..]);
-            for(;i<row.Length;i++)row[i]=packed;
+                row.Fill(packed);
+            else for(int i=0;i<row.Length;i++)row[i]=packed;
         }
     }
 }

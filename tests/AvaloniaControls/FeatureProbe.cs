@@ -10,6 +10,30 @@ namespace SimdSkia.ControlValidation;
 
 internal static class FeatureProbe
 {
+#if MANAGED
+    internal static int ValidateTileFixtures(string output)
+    {
+        string directory=Path.Combine(output,"tile-regression");Directory.CreateDirectory(directory);Run(directory);
+        using var document=JsonDocument.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory,"fixtures","tiles-native-3.119.4.json")));
+        int count=0;
+        foreach(var fixture in document.RootElement.GetProperty("cases").EnumerateArray())
+        {
+            string name=fixture.GetProperty("name").GetString()!;
+            using var input=new MemoryStream(Convert.FromBase64String(fixture.GetProperty("zlibRgba").GetString()!));
+            using var decoder=new System.IO.Compression.ZLibStream(input,System.IO.Compression.CompressionMode.Decompress);
+            using var decoded=new MemoryStream();decoder.CopyTo(decoded);byte[] expected=decoded.ToArray();
+            byte[] actual=File.ReadAllBytes(Path.Combine(directory,name+".rgba"));
+            if(actual.Length!=expected.Length)throw new InvalidOperationException("Tile fixture dimensions differ: "+name);
+            int maximum=0;long squared=0;
+            for(int i=0;i<actual.Length;i++){int d=Math.Abs(actual[i]-expected[i]);maximum=Math.Max(maximum,d);squared+=(long)d*d;}
+            double rmse=Math.Sqrt(squared/(double)actual.Length);
+            if(maximum>fixture.GetProperty("maximum").GetInt32()||rmse>fixture.GetProperty("rmse").GetDouble())
+                throw new InvalidOperationException($"Original tile regression {name}: maximum={maximum}, RMSE={rmse}.");
+            count++;
+        }
+        return count;
+    }
+#endif
     internal static void Run(string output)
     {
         var factory=AvaloniaLocator.Current.GetRequiredService<IPlatformRenderInterface>();var cases=new List<object>();

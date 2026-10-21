@@ -1,4 +1,6 @@
-> 2026-10-21 最新交付：[测试报告](TEST-REPORT-2026-10-21.md)、[CPU/内存/滤镜性能](PERFORMANCE-FINAL-2026-10-21.md)、[Vulkan GPU 对照](PERFORMANCE-GPU-FINAL-2026-10-21.md)、[剩余缺口](COMPLETION-TRACKER.md)。完整 Avalonia 替换仍未通过验收。此前 [Avalonia 调用回放](AVALONIA-OPTIMIZATION.md) 与 [通用优化报告](OPTIMIZATION-2026-10-21.md) 保留为历史，下文仍是 2026-10-12 的测量。
+> 2026-10-22 第二轮实测：[性能与兼容报告](PERFORMANCE-COMPATIBILITY-2026-10-22.md)。CPU 控件场景耗时降低 9%–12%；GPU 窗口分配降低 90%/94%，峰值 Private 降低约 39%/40%；图片画刷 38/40。CPU 常驻内存、完整 UI 0/3 和 GPU 12/24 的画质差距仍在，不能把速度改善当成完整替换验收。以下保留各历史轮次。
+
+> 2026-10-21 交付：[测试报告](TEST-REPORT-2026-10-21.md)、[CPU/内存/滤镜性能](PERFORMANCE-FINAL-2026-10-21.md)、[Vulkan GPU 对照](PERFORMANCE-GPU-FINAL-2026-10-21.md)、[剩余缺口](COMPLETION-TRACKER.md)。完整 Avalonia 替换仍未通过验收。此前 [Avalonia 调用回放](AVALONIA-OPTIMIZATION.md) 与 [通用优化报告](OPTIMIZATION-2026-10-21.md) 保留为历史，下文仍是 2026-10-12 的测量。
 
 # SimdSkia 性能与继续投入评估：2026-10-12
 

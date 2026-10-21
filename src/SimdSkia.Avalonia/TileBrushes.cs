@@ -153,7 +153,17 @@ internal sealed class TileShader(PixelBuffer pixels,Matrix inverse,TileMode mode
     {
         var local=inverse.Transform(new Point(x,y));double px=local.X-.5,py=local.Y-.5;
         Rgba32 premultiplied;
-        if(sampling==ImageSampling.Nearest)premultiplied=Read((int)MathF.Ceiling((float)(px+.5))-1,(int)MathF.Ceiling((float)(py+.5))-1);
+        // The pinned nearest sampler uses fixed-point coordinates and chooses
+        // the lower texel on a boundary. Remove float-transform overshoot at
+        // tile seams before applying that rule (also for negative coordinates).
+        if(sampling==ImageSampling.Nearest)
+        {
+            double tx=Math.Floor(local.X*65536)/65536,ty=Math.Floor(local.Y*65536)/65536;
+            int ix=(int)Math.Ceiling(tx)-1,iy=(int)Math.Ceiling(ty)-1;
+            if(mode==TileMode.FlipX&&ty%pixels.Height==0)iy=(int)ty;
+            if(mode==TileMode.FlipY&&tx%pixels.Width==0)ix=(int)tx;
+            premultiplied=Read(ix,iy);
+        }
         else
         {
             int ix=(int)Math.Floor(px),iy=(int)Math.Floor(py);double fx=px-ix,fy=py-iy,r=0,g=0,b=0,a=0;

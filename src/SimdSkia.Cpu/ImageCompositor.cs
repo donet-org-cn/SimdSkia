@@ -7,6 +7,8 @@ internal static class ImageCompositor
 {
     internal static void SourceOver(ReadOnlySpan<byte> source,Span<byte> destination,byte opacity,bool sourceOpaque)
     {
+        if(opacity==0)return;
+        if(sourceOpaque&&opacity==255){SpanCompositor.CopyOpaque(source,destination);return;}
         int at=0;
         if(CpuOptions.EnableSimd&&Avx2.IsSupported)
         {

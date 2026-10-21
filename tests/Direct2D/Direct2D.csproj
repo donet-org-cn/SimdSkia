@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
   <ItemGroup>
+    <Compile Include="../Shared/TextureCacheValidation.cs" Link="TextureCacheValidation.cs" />
     <ProjectReference Include="../../src/SimdSkia.Gpu.Direct2D/SimdSkia.Gpu.Direct2D.csproj" />
     <ProjectReference Include="../../src/SimdSkia.Cpu/SimdSkia.Cpu.csproj" />
   </ItemGroup>

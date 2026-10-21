@@ -14,12 +14,14 @@ public sealed class Direct2DCanvas : ICanvasBackend
     private readonly Dictionary<Rgba32,nint> solids=[];
     private readonly Dictionary<CoverageClip,(nint Bitmap,nint Brush,long Bytes)> clips=[];
     private long clipBytes;
-    private sealed class CachedImage(nint bitmap,byte[] snapshot,long used){internal nint Bitmap=bitmap;internal byte[] Snapshot=snapshot;internal long Used=used;}
+    private sealed class CachedImage(nint bitmap,byte[] snapshot,int hash,long used){internal nint Bitmap=bitmap;internal byte[] Snapshot=snapshot;internal int Hash=hash;internal long Used=used;}
     private readonly Dictionary<PixelBuffer,CachedImage> images=[];
     private long imageBytes;
     private long imageClock;
     public string DeviceName{get;private set;}="";
     public int CompletedBatches{get;private set;}
+    public long UploadedTextures{get;private set;}
+    public long TextureCacheHits{get;private set;}
     public double LastCompletionMilliseconds{get;private set;}
     public bool IsFaulted=>faulted;
     public Direct2DCanvas(PixelBuffer pixels,nint windowHandle=0)
@@ -48,7 +50,7 @@ public sealed class Direct2DCanvas : ICanvasBackend
         for(int y=0;y<source.Height;y++)
         {
             var src=source.GetRowSpan(y);var dst=result.GetRowSpan(y);
-            for(int x=0;x<source.Width;x++){int p=x*4;byte a=src[p+3],r=src[p+(source.Format==PixelFormat.Rgba8888?0:2)],g=src[p+1],b=src[p+(source.Format==PixelFormat.Rgba8888?2:0)];if(source.Alpha==AlphaFormat.Straight){r=PixelBuffer.Multiply(r,a);g=PixelBuffer.Multiply(g,a);b=PixelBuffer.Multiply(b,a);}dst[p]=b;dst[p+1]=g;dst[p+2]=r;dst[p+3]=a;}
+            for(int x=0;x<source.Width;x++){int p=x*4;byte a=source.Alpha==AlphaFormat.Opaque?(byte)255:src[p+3],r=src[p+(source.Format==PixelFormat.Rgba8888?0:2)],g=src[p+1],b=src[p+(source.Format==PixelFormat.Rgba8888?2:0)];if(source.Alpha==AlphaFormat.Straight){r=PixelBuffer.Multiply(r,a);g=PixelBuffer.Multiply(g,a);b=PixelBuffer.Multiply(b,a);}dst[p]=b;dst[p+1]=g;dst[p+2]=r;dst[p+3]=a;}
         }
         return result;
     }
@@ -103,12 +105,24 @@ public sealed class Direct2DCanvas : ICanvasBackend
     private nint CreateBitmap(PixelBuffer source){using var converted=source.Format==PixelFormat.Bgra8888&&source.Alpha==AlphaFormat.Premultiplied?null:ConvertBgra(source);var input=converted??source;using var pin=input.Pin();return D2DNative.Bitmap(context,source.Width,source.Height,pin.Address,input.RowBytes);}
     private nint CachedBitmap(PixelBuffer source,bool immutable)
     {
-        if(images.TryGetValue(source,out var found)&&(immutable||source.GetPixelSpan().SequenceEqual(found.Snapshot))){found.Used=++imageClock;return found.Bitmap;}
+        if(images.TryGetValue(source,out var found)&&(immutable||source.GetPixelSpan().SequenceEqual(found.Snapshot))){found.Used=++imageClock;TextureCacheHits++;return found.Bitmap;}
         if(source.ByteCount>64*1024*1024)throw new NotSupportedException("A Direct2D source texture exceeds the 64 MiB cache budget.");
+        // Different wrappers (ROI crops and CPU layers) often contain the same
+        // pixels. Hash only narrows the search; exact bytes/metadata decide reuse.
+        var hash=new HashCode();hash.AddBytes(source.GetPixelSpan());int fingerprint=hash.ToHashCode();
+        PixelBuffer? duplicate=null;
+        foreach(var item in images)
+            if(item.Value.Hash==fingerprint&&item.Key.Width==source.Width&&item.Key.Height==source.Height&&item.Key.RowBytes==source.RowBytes&&item.Key.Format==source.Format&&item.Key.Alpha==source.Alpha&&source.GetPixelSpan().SequenceEqual(item.Value.Snapshot))
+            {duplicate=item.Key;found=item.Value;break;}
+        if(duplicate is not null)
+        {
+            if(images.Remove(source,out var stale)){nint old=stale.Bitmap;D2DNative.Release(ref old);imageBytes-=stale.Snapshot.Length;}
+            images.Remove(duplicate);images.Add(source,found!);found!.Used=++imageClock;TextureCacheHits++;return found.Bitmap;
+        }
         var snapshot=source.CopyBytes();nint bitmap=CreateBitmap(source);
         if(images.Remove(source,out var previous)){nint old=previous.Bitmap;D2DNative.Release(ref old);imageBytes-=previous.Snapshot.Length;}
         while(images.Count>0&&(images.Count>=256||imageBytes+snapshot.Length>64*1024*1024)){var victim=images.MinBy(p=>p.Value.Used);nint old=victim.Value.Bitmap;D2DNative.Release(ref old);imageBytes-=victim.Value.Snapshot.Length;images.Remove(victim.Key);}
-        images.Add(source,new(bitmap,snapshot,++imageClock));imageBytes+=snapshot.Length;return bitmap;
+        images.Add(source,new(bitmap,snapshot,fingerprint,++imageClock));imageBytes+=snapshot.Length;UploadedTextures++;return bitmap;
     }
     private nint GetPath(PathGeometry path)
     {

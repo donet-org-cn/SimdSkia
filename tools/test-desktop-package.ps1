@@ -1,5 +1,5 @@
 param(
- [string]$Version='0.1.0-preview.3',
+ [string]$Version='0.1.0-preview.4',
  [string]$Packages='artifacts/nuget-preview-3',
  [string]$Output='artifacts/desktop-package-consumer',
  [ValidateSet('cpu','direct2d','vulkan')][string]$Backend='cpu',

@@ -1,5 +1,7 @@
 # SimdSkia preview
 
+Preview 4 adds measured CPU span/gradient/image optimizations, bounded exact-content GPU texture reuse, and high-DPI ImageBrush corrections. [CPU/GPU, memory and compatibility measurements](https://github.com/hnlyf168/SimdSkia/blob/main/docs/PERFORMANCE-COMPATIBILITY-2026-10-22.md) retain failed quality gates; full compatibility is still incomplete.
+
 An independent C# 2D renderer. No Google Skia rendering calls. This release is a **preview**: public API coverage, font support and rendering equivalence are incomplete. It is not a binary replacement for the strong-named SkiaSharp assembly.
 
 Packages target .NET 8 or later:

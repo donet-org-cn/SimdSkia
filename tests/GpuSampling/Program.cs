@@ -38,5 +38,6 @@ foreach(var target in new[]{expected,actual})for(int y=0;y<height;y++)if(target.
 bool rejected=false;using(var source=new PixelBuffer(2,2,PixelFormat.Rgba8888,AlphaFormat.Premultiplied))
 {try{gpu.Execute(new(CommandKind.DrawImage,new(0,0,5,5),Matrix3.Identity,new(new(255,255,255,255),CompositeMode.SourceOver)){Image=source,ImageSource=new(-1,0,2,2)});}catch(ArgumentOutOfRangeException){rejected=true;}}
 if(!rejected)throw new Exception("GPU accepted invalid source crop.");checks++;
-var report=new{checks,maximumError,maximumRmse,device=gpu.DeviceName,passed=true,scope="Actual Vulkan device filtering/coverage + fence/readback; independent CPU scalar math; two formats, three alpha/composite modes, AA, rotation/mirror, fractional crops, stride and fine curves"};
+checks+=TextureCacheValidation.Run(gpu,actual,()=>gpu.UploadedTextures,()=>gpu.TextureCacheHits);
+var report=new{checks,maximumError,maximumRmse,device=gpu.DeviceName,passed=true,scope="Actual Vulkan device filtering/coverage + fence/readback; independent CPU scalar math; two formats, three alpha/composite modes, AA, rotation/mirror, fractional crops, stride and fine curves; content cache reuse/mutation/eviction/disposed sources"};
 Directory.CreateDirectory("artifacts/completion");File.WriteAllText("artifacts/completion/gpu-sampling-tests.json",JsonSerializer.Serialize(report,new JsonSerializerOptions{WriteIndented=true}));Console.WriteLine(JsonSerializer.Serialize(report));

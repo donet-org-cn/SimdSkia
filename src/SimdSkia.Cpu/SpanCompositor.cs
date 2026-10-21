@@ -62,9 +62,9 @@ internal static partial class SpanCompositor
     internal static void Fill(Span<byte> pixels,byte first,byte second,byte third,byte fourth)
     {
         uint packed=BitConverter.IsLittleEndian ? (uint)(first|second<<8|third<<16|fourth<<24) : (uint)(first<<24|second<<16|third<<8|fourth);
-        var words=MemoryMarshal.Cast<byte,uint>(pixels);int i=0;
+        var words=MemoryMarshal.Cast<byte,uint>(pixels);
         if(CpuOptions.EnableSimd && Vector.IsHardwareAccelerated)
-        {var v=new Vector<uint>(packed);for(;i<=words.Length-Vector<uint>.Count;i+=Vector<uint>.Count)v.CopyTo(words[i..]);}
-        for(;i<words.Length;i++)words[i]=packed;
+        {words.Fill(packed);return;}
+        for(int i=0;i<words.Length;i++)words[i]=packed;
     }
 }

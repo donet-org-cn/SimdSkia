@@ -1,31 +1,33 @@
 # SimdSkia
 
+最新优化与原版 CPU/Vulkan 实测见 [性能与兼容报告](docs/PERFORMANCE-COMPATIBILITY-2026-10-22.md)。本轮三个 CPU 控件场景比优化前降低约 9%–12% 耗时，GPU 窗口每帧托管分配减少约 90%–94%；完整 UI 画质和 API 验收仍未全部通过。
+
 独立 C# 2D 引擎，内部使用 `SimdSkia`，源码兼容层保留 `SkiaSharp.SK*`。不使用 Google Skia 绘图；字体、基础排版及图片编解码均由 C# 实现。通过 `SimdSkia.Avalonia` 可以接入 Avalonia，无需重新编译 Avalonia。
 
-本轮版本为 **`0.1.0-preview.3`**，固定支持 **Avalonia 12.1.4**。Windows、Linux X11/XWayland、macOS 已通过真实窗口验证；macOS 使用经用户确认允许的官方原生窗口宿主，绘图、字体、排版和编解码仍是 C#。默认使用 CPU，可选 Windows Direct2D 原生交换链或 Windows/Linux Vulkan 绘图。**macOS GPU/Metal 尚未实现，完整兼容性和画质验收仍未全部通过。**
+本轮版本为 **`0.1.0-preview.4`**，固定支持 **Avalonia 12.1.4**。Windows、Linux X11/XWayland、macOS 已通过真实窗口验证；macOS 使用经用户确认允许的官方原生窗口宿主，绘图、字体、排版和编解码仍是 C#。默认使用 CPU，可选 Windows Direct2D 原生交换链或 Windows/Linux Vulkan 绘图。**macOS GPU/Metal 尚未实现，完整兼容性和画质验收仍未全部通过。**
 
 ## NuGet 包怎么选
 
-本轮包含下列十一个包，统一版本 `0.1.0-preview.3`；发布状态见 [预览发布](docs/NUGET-PREVIEW.md)。在 Visual Studio 的 NuGet 搜索中勾选“包括预发行版”。
+本轮包含下列十一个包，统一版本 `0.1.0-preview.4`；发布状态见 [预览发布](docs/NUGET-PREVIEW.md)。在 Visual Studio 的 NuGet 搜索中勾选“包括预发行版”。
 
 | 包名 | 用途 |
 | --- | --- |
-| [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.0-preview.3) | **桌面应用优先选这个**：自动选择 Windows/Linux/macOS 宿主，传递引入渲染适配器 |
-| [SimdSkia.Avalonia](https://www.nuget.org/packages/SimdSkia.Avalonia/0.1.0-preview.3) | 绘图、字体和基础文字排版服务，也可配合自行配置的宿主 |
-| [SimdSkia.Avalonia.Gpu](https://www.nuget.org/packages/SimdSkia.Avalonia.Gpu/0.1.0-preview.3) | 可选 Avalonia GPU 绘图、Direct2D 直接呈现和回退/缓存诊断 |
-| [SimdSkia.Gpu.Direct2D](https://www.nuget.org/packages/SimdSkia.Gpu.Direct2D/0.1.0-preview.3) | Windows Direct2D/D3D11，纯 C# 系统 API 互操作，无第三方绑定包 |
-| [SimdSkia](https://www.nuget.org/packages/SimdSkia/0.1.0-preview.3) | 需要 `SkiaSharp.SK*` 源码兼容 API 时使用的依赖汇总包 |
-| [SimdSkia.Compatibility](https://www.nuget.org/packages/SimdSkia.Compatibility/0.1.0-preview.3) | `SKBitmap`、`SKCanvas` 等兼容层，也由 `SimdSkia` 汇总包引入 |
-| [SimdSkia.Core](https://www.nuget.org/packages/SimdSkia.Core/0.1.0-preview.3) | 几何、路径和绘图状态 |
-| [SimdSkia.Cpu](https://www.nuget.org/packages/SimdSkia.Cpu/0.1.0-preview.3) | CPU 光栅化、像素合成及 SIMD |
-| [SimdSkia.Text](https://www.nuget.org/packages/SimdSkia.Text/0.1.0-preview.3) | TrueType 字体解析和基础排版 |
-| [SimdSkia.Imaging](https://www.nuget.org/packages/SimdSkia.Imaging/0.1.0-preview.3) | 图片编解码和颜色处理 |
-| [SimdSkia.Gpu](https://www.nuget.org/packages/SimdSkia.Gpu/0.1.0-preview.3) | Vulkan 离屏后端，需要系统 Vulkan loader/驱动 |
+| [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.0-preview.4) | **桌面应用优先选这个**：自动选择 Windows/Linux/macOS 宿主，传递引入渲染适配器 |
+| [SimdSkia.Avalonia](https://www.nuget.org/packages/SimdSkia.Avalonia/0.1.0-preview.4) | 绘图、字体和基础文字排版服务，也可配合自行配置的宿主 |
+| [SimdSkia.Avalonia.Gpu](https://www.nuget.org/packages/SimdSkia.Avalonia.Gpu/0.1.0-preview.4) | 可选 Avalonia GPU 绘图、Direct2D 直接呈现和回退/缓存诊断 |
+| [SimdSkia.Gpu.Direct2D](https://www.nuget.org/packages/SimdSkia.Gpu.Direct2D/0.1.0-preview.4) | Windows Direct2D/D3D11，纯 C# 系统 API 互操作，无第三方绑定包 |
+| [SimdSkia](https://www.nuget.org/packages/SimdSkia/0.1.0-preview.4) | 需要 `SkiaSharp.SK*` 源码兼容 API 时使用的依赖汇总包 |
+| [SimdSkia.Compatibility](https://www.nuget.org/packages/SimdSkia.Compatibility/0.1.0-preview.4) | `SKBitmap`、`SKCanvas` 等兼容层，也由 `SimdSkia` 汇总包引入 |
+| [SimdSkia.Core](https://www.nuget.org/packages/SimdSkia.Core/0.1.0-preview.4) | 几何、路径和绘图状态 |
+| [SimdSkia.Cpu](https://www.nuget.org/packages/SimdSkia.Cpu/0.1.0-preview.4) | CPU 光栅化、像素合成及 SIMD |
+| [SimdSkia.Text](https://www.nuget.org/packages/SimdSkia.Text/0.1.0-preview.4) | TrueType 字体解析和基础排版 |
+| [SimdSkia.Imaging](https://www.nuget.org/packages/SimdSkia.Imaging/0.1.0-preview.4) | 图片编解码和颜色处理 |
+| [SimdSkia.Gpu](https://www.nuget.org/packages/SimdSkia.Gpu/0.1.0-preview.4) | Vulkan 离屏后端，需要系统 Vulkan loader/驱动 |
 
 新桌面应用添加 `SimdSkia.Avalonia.Desktop`，其渲染服务和引擎依赖会自动还原，无需额外安装 `SimdSkia` 或手动复制底层 DLL：
 
 ```powershell
-dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.0-preview.3
+dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.0-preview.4
 ```
 
 **安装包后还必须配置启动代码。** 以下是完整的新程序示例；现有项目按后面的迁移步骤调整。
@@ -45,7 +47,7 @@ dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.0-preview.3
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SimdSkia.Avalonia.Desktop" Version="0.1.0-preview.3" />
+    <PackageReference Include="SimdSkia.Avalonia.Desktop" Version="0.1.0-preview.4" />
     <PackageReference Include="Avalonia" Version="[12.1.4]" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.4]" />
   </ItemGroup>
@@ -114,7 +116,7 @@ Windows 的 `WinExe` 避免额外控制台窗口。三平台自动发现受支�
 在上面的桌面程序中增加可选包：
 
 ```powershell
-dotnet add package SimdSkia.Avalonia.Gpu --version 0.1.0-preview.3
+dotnet add package SimdSkia.Avalonia.Gpu --version 0.1.0-preview.4
 ```
 
 Windows 将 `.UseSimdSkiaDesktop()` 改为：
@@ -165,7 +167,7 @@ SK* 源码兼容的固定基线是 Avalonia.Skia 12.1.4 实际解析的 SkiaShar
 
 路径、抗锯齿、基本中英文 glyf TTF/TTC 字体、PNG/JPEG/部分 ICC、图像/视觉画刷、模糊/阴影、SIMD、Vulkan 离屏及窗口回读呈现、Direct2D 原生交换链均有真实实现。**完整 Avalonia 替换尚未通过验收**：文字/曲线及部分新功能画质仍失败，通用字体排版、Vulkan 直接交换链和 macOS GPU 等仍有缺口。
 
-最新交付：[测试报告](docs/TEST-REPORT-2026-10-21.md)、[CPU/内存/滤镜性能](docs/PERFORMANCE-FINAL-2026-10-21.md)、[原版 Vulkan GPU 对比](docs/PERFORMANCE-GPU-FINAL-2026-10-21.md)、[实现范围与缺口](docs/IMPLEMENTATION-DETAILS-2026-10-21.md)。报告保留未通过项，不承诺替代原版强名称程序集。
+2026-10-21 历史交付：[测试报告](docs/TEST-REPORT-2026-10-21.md)、[CPU/内存/滤镜性能](docs/PERFORMANCE-FINAL-2026-10-21.md)、[原版 Vulkan GPU 对比](docs/PERFORMANCE-GPU-FINAL-2026-10-21.md)、[实现范围与缺口](docs/IMPLEMENTATION-DETAILS-2026-10-21.md)。报告保留未通过项，不承诺替代原版强名称程序集。
 
 2026-10-21 的 CPU、GPU、真实 OCR、CPU 时间和内存对比见 [本轮优化报告](docs/OPTIMIZATION-2026-10-21.md)。保留优化前数据及失败的画质检查。
 

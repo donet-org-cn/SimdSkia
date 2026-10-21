@@ -11,19 +11,21 @@ public sealed partial class RasterCanvas
         if(!gradientRows.TryGetValue(key,out var colors))
         {
             colors=new byte[checked((end-start)*4)];
-            for(int x=start;x<end;x++){var p=inverse.Map(x+.5f,.5f);var color=shader.Sample(p.X,p.Y);SpanCompositor.Apply(colors.AsSpan((x-start)*4,4),target.Format,target.Alpha,new(color,CompositeMode.Source));}
+            int ri=target.Format==PixelFormat.Rgba8888?0:2;
+            for(int x=start;x<end;x++){var p=inverse.Map(x+.5f,.5f);var color=shader.Sample(p.X,p.Y);int at=(x-start)*4;colors[at+ri]=color.R;colors[at+1]=color.G;colors[at+2-ri]=color.B;colors[at+3]=255;}
             if(colors.Length<=4*1024*1024){if(gradientRows.Count>=16||gradientBytes+colors.Length>4*1024*1024){gradientRows.Clear();gradientBytes=0;}gradientRows.Add(key,colors);gradientBytes+=colors.Length;}
         }
         foreach(var run in mask.Runs)
         {
             int y=run.Y+dy;if(y<top||y>=bottom)continue;int a=Math.Max(start,run.X+dx),b=Math.Min(end,run.X+dx+run.Length);if(a>=b)continue;
             var source=colors.AsSpan((a-start)*4,(b-a)*4);var row=target.GetRowSpan(y).Slice(a*4,(b-a)*4);
-            if(command.CoverageClip is null){ImageCompositor.SourceOver(source,row,run.Coverage,true);continue;}
+            if(command.CoverageClip is null){if(run.Coverage==255)source.CopyTo(row);else ImageCompositor.SourceOver(source,row,run.Coverage,true);continue;}
             for(int i=0;i<b-a;)
             {
                 byte coverage=ClipCoverage(run.Coverage,a+i,y,command.CoverageClip);int next=i+1;
                 while(next<b-a&&ClipCoverage(run.Coverage,a+next,y,command.CoverageClip)==coverage)next++;
-                if(coverage>0)ImageCompositor.SourceOver(source.Slice(i*4,(next-i)*4),row.Slice(i*4,(next-i)*4),coverage,true);i=next;
+                if(coverage==255)source.Slice(i*4,(next-i)*4).CopyTo(row.Slice(i*4,(next-i)*4));
+                else if(coverage>0)ImageCompositor.SourceOver(source.Slice(i*4,(next-i)*4),row.Slice(i*4,(next-i)*4),coverage,true);i=next;
             }
         }
         return true;
@@ -74,7 +76,7 @@ public sealed partial class RasterCanvas
         using var snapshot=image.GetPixelSpan().Overlaps(target.GetPixelSpan())?image.Clone():null;
         image=snapshot??image;
         if(TryBlit(command,source,image))return;
-        if(!command.NearestLowerBoundary&&TryDrawAxisSampled(command,source,image,inverse))return;
+        if(TryDrawAxisSampled(command,source,image,inverse))return;
         if(!imageRectangles.TryGetValue(command.Rectangle,out var geometry))
         {geometry=PathGeometry.Rectangle(command.Rectangle);if(imageRectangles.Count>=16)imageRectangles.Clear();imageRectangles.Add(command.Rectangle,geometry);}
         var mask=GetMask(geometry,command);var rect=command.Rectangle;
@@ -101,11 +103,17 @@ public sealed partial class RasterCanvas
         if(command.Clip is {} clip){left=Math.Max(left,clip.Left);right=Math.Min(right,clip.Right);top=Math.Max(top,clip.Top);bottom=Math.Min(bottom,clip.Bottom);}
         if(left>=right||top>=bottom)return true;
         int n=command.Paint.Antialias?16:1;
+        bool lowerBoundary=command.NearestLowerBoundary&&command.Sampling==ImageSampling.Nearest,analyticCoverage=lowerBoundary&&command.Paint.Antialias;
         int x0=n==16?SampleGrid(left,target.Width):SampleEdge(left,target.Width),x1=n==16?SampleGrid(right,target.Width):SampleEdge(right,target.Width);
         int y0=n==16?SampleGrid(top,target.Height):SampleEdge(top,target.Height),y1=n==16?SampleGrid(bottom,target.Height):SampleEdge(bottom,target.Height);
+        if(analyticCoverage){x0=(int)Math.Clamp(MathF.Floor(left),0,target.Width)*n;x1=(int)Math.Clamp(MathF.Ceiling(right),0,target.Width)*n;y0=(int)Math.Clamp(MathF.Floor(top),0,target.Height)*n;y1=(int)Math.Clamp(MathF.Ceiling(bottom),0,target.Height)*n;}
         int start=x0/n,end=(x1+n-1)/n;if(start>=end||y0>=y1)return true;
         int minX=(int)MathF.Floor(source.Left),maxX=(int)MathF.Ceiling(source.Right)-1,minY=(int)MathF.Floor(source.Top),maxY=(int)MathF.Ceiling(source.Bottom)-1;
         var taps=System.Buffers.ArrayPool<ImageTap>.Shared.Rent(end-start);
+        // Sample once into a reusable PMA scanline, then composite constant
+        // coverage spans with the same integer kernel as unscaled images.
+        byte[]? sampled=command.Paint.Composite==CompositeMode.SourceOver&&target.Alpha!=AlphaFormat.Straight
+            ?System.Buffers.ArrayPool<byte>.Shared.Rent(checked((end-start)*4)):null;
         float sx=(source.Right-source.Left)/(rect.Right-rect.Left),sy=(source.Bottom-source.Top)/(rect.Bottom-rect.Top);
         bool nearest=command.Sampling==ImageSampling.Nearest;
         try
@@ -113,7 +121,7 @@ public sealed partial class RasterCanvas
             for(int x=start;x<end;x++)
             {
                 var p=inverse.Map(x+.5f,.5f);float u=source.Left+(p.X-rect.Left)*sx-.5f;int ix=(int)MathF.Floor(u);
-                taps[x-start]=nearest?new(Math.Clamp((int)MathF.Floor(u+.5f),minX,maxX),0,0):new(Math.Clamp(ix,minX,maxX),Math.Clamp(ix+1,minX,maxX),u-ix);
+                taps[x-start]=nearest?new(Math.Clamp(lowerBoundary?LowerTexel(u):(int)MathF.Floor(u+.5f),minX,maxX),0,0):new(Math.Clamp(ix,minX,maxX),Math.Clamp(ix+1,minX,maxX),u-ix);
             }
             int ri=image.Format==PixelFormat.Rgba8888?0:2;bool straight=image.Alpha==AlphaFormat.Straight,opaque=image.Alpha==AlphaFormat.Opaque;
             Rgba32 Read(ReadOnlySpan<byte> row,int x)
@@ -121,15 +129,26 @@ public sealed partial class RasterCanvas
                 var p=row.Slice(x*4,4);byte alpha=opaque?(byte)255:p[3],r=p[ri],g=p[1],blue=p[2-ri];
                 if(straight){r=PixelBuffer.Multiply(r,alpha);g=PixelBuffer.Multiply(g,alpha);blue=PixelBuffer.Multiply(blue,alpha);}return new(r,g,blue,alpha);
             }
+            int lastRow0=-1,lastRow1=-1;float lastFraction=float.NaN;var coverageClip=command.CoverageClip;
             for(int y=y0/n;y<(y1+n-1)/n;y++)
             {
                 var p=inverse.Map(.5f,y+.5f);float v=source.Top+(p.Y-rect.Top)*sy-.5f;int iy=(int)MathF.Floor(v);float fy=v-iy;
-                var row0=image.GetRowSpan(nearest?Math.Clamp((int)MathF.Floor(v+.5f),minY,maxY):Math.Clamp(iy,minY,maxY));
-                var row1=image.GetRowSpan(Math.Clamp(iy+1,minY,maxY));var destination=target.GetRowSpan(y);
+                int rowIndex0=nearest?Math.Clamp(lowerBoundary?LowerTexel(v):(int)MathF.Floor(v+.5f),minY,maxY):Math.Clamp(iy,minY,maxY),rowIndex1=Math.Clamp(iy+1,minY,maxY);
+                var row0=image.GetRowSpan(rowIndex0);
+                var row1=image.GetRowSpan(rowIndex1);var destination=target.GetRowSpan(y);
                 int cy=Math.Max(0,Math.Min(y1,(y+1)*n)-Math.Max(y0,y*n));
-                for(int x=start;x<end;x++)
+                byte Coverage(int x)
                 {
-                    int cx=Math.Max(0,Math.Min(x1,(x+1)*n)-Math.Max(x0,x*n));byte coverage=ClipCoverage((byte)((cx*cy*255+n*n/2)/(n*n)),x,y,command.CoverageClip);if(coverage==0)continue;
+                    byte c;
+                    if(analyticCoverage)c=(byte)Math.Clamp((int)MathF.Round(Math.Max(0,Math.Min(right,x+1)-Math.Max(left,x))*Math.Max(0,Math.Min(bottom,y+1)-Math.Max(top,y))*255),0,255);
+                    else{int cx=Math.Max(0,Math.Min(x1,(x+1)*n)-Math.Max(x0,x*n));c=(byte)((cx*cy*255+n*n/2)/(n*n));}
+                    return ClipCoverage(c,x,y,coverageClip);
+                }
+                bool reuse=sampled is not null&&rowIndex0==lastRow0&&(nearest||(rowIndex1==lastRow1&&fy==lastFraction));
+                for(int x=start;!reuse&&x<end;x++)
+                {
+                    byte coverage=255;
+                    if(sampled is null){coverage=Coverage(x);if(coverage==0)continue;}
                     var tap=taps[x-start];Rgba32 color;
                     if(nearest)color=Read(row0,tap.First);
                     else
@@ -141,11 +160,28 @@ public sealed partial class RasterCanvas
                         byte Channel(byte a,byte b,byte c,byte d)=>(byte)Math.Clamp((int)MathF.Round(Mix(a,b,c,d,w00,w10,w01,w11)),0,alpha);
                         color=new(Channel(c00.R,c10.R,c01.R,c11.R),Channel(c00.G,c10.G,c01.G,c11.G),Channel(c00.B,c10.B,c01.B,c11.B),alpha);
                     }
-                    CompositePremultiplied(destination.Slice(x*4,4),color,command.Paint.Color.A,coverage,command.Paint.Composite);
+                    if(sampled is null)CompositePremultiplied(destination.Slice(x*4,4),color,command.Paint.Color.A,coverage,command.Paint.Composite);
+                    else
+                    {
+                        int at=(x-start)*4,di=target.Format==PixelFormat.Rgba8888?0:2;
+                        sampled[at+di]=color.R;sampled[at+1]=color.G;sampled[at+2-di]=color.B;sampled[at+3]=color.A;
+                    }
                 }
+                if(sampled is not null)
+                {
+                    for(int x=start;x<end;)
+                    {
+                        byte coverage=Coverage(x);int next=x+1;
+                        if(coverageClip is null){if(x>start&&x<end-1)next=end-1;}
+                        else while(next<end&&Coverage(next)==coverage)next++;
+                        if(coverage!=0)ImageCompositor.SourceOver(sampled.AsSpan((x-start)*4,(next-x)*4),destination.Slice(x*4,(next-x)*4),PixelBuffer.Multiply(command.Paint.Color.A,coverage),false);
+                        x=next;
+                    }
+                }
+                lastRow0=rowIndex0;lastRow1=rowIndex1;lastFraction=fy;
             }
         }
-        finally{System.Buffers.ArrayPool<ImageTap>.Shared.Return(taps);}return true;
+        finally{System.Buffers.ArrayPool<ImageTap>.Shared.Return(taps);if(sampled is not null)System.Buffers.ArrayPool<byte>.Shared.Return(sampled);}return true;
     }
     private bool TryBlit(in DrawingCommand command,RectF source,PixelBuffer image)
     {
@@ -162,6 +198,7 @@ public sealed partial class RasterCanvas
         return true;
     }
     // Filtering takes place in premultiplied space so transparent colored texels cannot bleed.
+    private static int LowerTexel(float coordinate)=>(int)Math.Ceiling(Math.Floor((double)(coordinate+.5f)*65536)/65536)-1;
     private static Rgba32 Sample(PixelBuffer image,float x,float y,ImageSampling sampling,RectF source,bool nearestLowerBoundary=false)
     {
         int left=(int)MathF.Floor(source.Left),top=(int)MathF.Floor(source.Top),right=(int)MathF.Ceiling(source.Right)-1,bottom=(int)MathF.Ceiling(source.Bottom)-1;
@@ -172,7 +209,7 @@ public sealed partial class RasterCanvas
             if(image.Alpha==AlphaFormat.Straight){r=PixelBuffer.Multiply(r,a);g=PixelBuffer.Multiply(g,a);b=PixelBuffer.Multiply(b,a);}
             return new(r,g,b,a);
         }
-        if(sampling==ImageSampling.Nearest)return nearestLowerBoundary?Read((int)MathF.Ceiling(x+.5f)-1,(int)MathF.Ceiling(y+.5f)-1):Read((int)MathF.Floor(x+.5f),(int)MathF.Floor(y+.5f));
+        if(sampling==ImageSampling.Nearest)return nearestLowerBoundary?Read(LowerTexel(x),LowerTexel(y)):Read((int)MathF.Floor(x+.5f),(int)MathF.Floor(y+.5f));
         int ix=(int)MathF.Floor(x),iy=(int)MathF.Floor(y);float fx=x-ix,fy=y-iy;
         float r=0,g=0,b=0,a=0;
         if(sampling==ImageSampling.Bilinear)

@@ -1,5 +1,11 @@
 # NuGet 预览版发布
 
+## 第四预览版 0.1.0-preview.4
+
+源码与预览包正在验证发布。包含实测 CPU 热点优化、GPU 有界纹理内容复用、Direct2D Opaque Alpha 修正和高 DPI ImageBrush 38/40 修正；不宣称完整兼容。独立 [性能与兼容报告](PERFORMANCE-COMPATIBILITY-2026-10-22.md)包含原版 CPU/Vulkan、新旧窗口、CPU/内存/分配和失败画质项目。Windows AOT 三种后端窗口已在本机运行；最终 CI 和公开包下载验证完成后会在此记录。
+
+已有 preview.3 包与标签保持原内容。新版本统一升级全部 11 个包；桌面应用安装 `SimdSkia.Avalonia.Desktop`，可选 `SimdSkia.Avalonia.Gpu`，使用方式见 [首页](../README.md)。
+
 ## 第三预览版 0.1.0-preview.3
 
 **已公开发布。** 11 个 `0.1.0-preview.3` 包均已实际下载，DLL 和 README 与发布 CI 产物逐字节一致，[发布流水线 39648463806](https://github.com/hnlyf168/SimdSkia/actions/runs/39648463806)全部成功。修复 GPU 文字图集在覆盖裁剪下的重叠合成顺序与滚动缓存；preview.2 标签和包保持原样。推荐安装 [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.0-preview.3)，GPU 另加 [SimdSkia.Avalonia.Gpu](https://www.nuget.org/packages/SimdSkia.Avalonia.Gpu/0.1.0-preview.3)，两者版本均为 `0.1.0-preview.3`；完整使用方式在[首页](../README.md)。公开下载核对见[发布证据](evidence/nuget-preview3-2026-10-22.json)。

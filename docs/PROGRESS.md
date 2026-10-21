@@ -1,5 +1,11 @@
 # 进度：2026-10-22
 
+本轮第二次优化：[完整报告](PERFORMANCE-COMPATIBILITY-2026-10-22.md)包含本次重新运行的原版 CPU/Vulkan 对照、36 进程控件测量、18 次窗口测量、CPU/工作集/Private/分配与全部画质失败项。三个 CPU 场景比优化前降低 9%–12% 耗时，最终帧逐字节相同；Direct2D/Vulkan 窗口每帧托管分配减少 90%/94%，峰值 Private 减少约 39%/40%。CPU 窗口 P95 波动未隐藏，CPU 常驻内存差距仍在。
+
+图片画刷原版探针由 15/40 提升至 38/40，完整功能探针由 59/114 提升至 82/114。38 个原版 RGBA 夹具加入正常回归；GPU 新增不同对象同内容、源修改/Dispose/排队版本和缓存淘汰检查。硬件与完全标量的 7845/8147 项通过，Direct2D 344、GPU 采样 590、GPU 集成 12172 项通过；Windows AOT 的 CPU/Direct2D/Vulkan 实际控件窗口均通过。
+
+仍未完成：完整 UI 画质 0/3、旧图像 108/120、原版 GPU 12/24，SK* 公共面 425/3235；字体/曲线、VisualBrush 高 DPI、圆角阴影、复杂排版和更多 API 继续保留缺口。正在准备 preview.4；公开发布与 CI 最终状态见 [预览发布](NUGET-PREVIEW.md) 和 [验证](VALIDATION.md)。下文为此前进度。
+
 最终发布：11 个 `0.1.0-preview.3` 包已从 NuGet.org 公开下载，DLL/README 与成功发布的 CI 产物一致。公开包的 CPU/GPU README 程序在私有缓存中编译通过，公开 Direct2D 包的真实控件窗口通过；不依赖本地引擎 ProjectReference。[发布记录](NUGET-PREVIEW.md)
 
 preview.3 修复重叠文字的半透明覆盖裁剪顺序与滚动缓存；GPU 硬件集成断言 12172 项通过，含先复现失败再修复的回归。修复版的三平台 JIT、Native AOT 及真实包窗口已全部通过 [CI 39647833834](https://github.com/hnlyf168/SimdSkia/actions/runs/39647833834)；本机 Direct2D/Vulkan AOT 硬件也再次通过。修复版九进程 JIT 控件 P50：CPU 3.539 / Direct2D 2.049 / Vulkan 21.437 ms，工作集 114.5 / 176.1 / 216.6 MiB；完整数据、实际截图、公开发布及限制见[交付报告](DESKTOP-GPU-2026-10-22.md)。

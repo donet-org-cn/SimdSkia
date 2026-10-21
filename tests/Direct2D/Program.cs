@@ -45,6 +45,7 @@ foreach (var format in Enum.GetValues<PixelFormat>())
     }
     var threadError = Task.Run(() => { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); try { canvas.Flush(); return false; } catch (InvalidOperationException) { return true; } }).GetAwaiter().GetResult();
     Check(threadError, "Context thread ownership is enforced.");
+    checks+=TextureCacheValidation.Run(canvas,pixels,()=>OperatingSystem.IsWindows()?canvas.UploadedTextures:throw new PlatformNotSupportedException(),()=>OperatingSystem.IsWindows()?canvas.TextureCacheHits:throw new PlatformNotSupportedException());
     canvas.Dispose(); canvas.Dispose();
     try { canvas.Flush(); throw new InvalidOperationException("Expected disposed error."); } catch (ObjectDisposedException) { checks++; }
     Console.WriteLine($"GPU={canvas.DeviceName}; format={format}; completed={canvas.CompletedBatches}");

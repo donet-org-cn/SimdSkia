@@ -19,7 +19,7 @@ if($BeforeDirectory){$engines=@([pscustomobject]@{Name='before';Path=(Join-Path 
 $configurations=@([pscustomobject]@{Scene='controls';Scale='1'},[pscustomobject]@{Scene='scroll';Scale='1'},[pscustomobject]@{Scene='controls';Scale='1.5'})
 $files=@();foreach($engine in $engines){
     $directory=Split-Path -Parent $engine.Path
-    foreach($file in Get-ChildItem -LiteralPath $directory -Filter '*.dll' -File | Where-Object {$_.Name -match '^(SimdSkia|Avalonia|SkiaSharp|HarfBuzzSharp)'}){$files+=@{Engine=$engine.Name;Name=$file.Name;Sha256=(Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash}}
+    foreach($file in Get-ChildItem -LiteralPath $directory -Filter '*.dll' -File){$files+=@{Engine=$engine.Name;Name=$file.Name;Sha256=(Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash}}
 }
 $manifest=@{Backend='CPU software; real Avalonia controls, layout/templates, RenderTargetBitmap + ImmediateRenderer; no window-present or GPU timing';WarmupSeconds=2.5;Frames=$Frames;Forks=$Forks;Font=[IO.Path]::GetFullPath((Join-Path $workspacePath $Font));FontSha256=(Get-FileHash -LiteralPath $Font -Algorithm SHA256).Hash;Configurations=$configurations;Files=$files;SceneSha256=(Get-FileHash tests/AvaloniaControls/ControlScene.cs -Algorithm SHA256).Hash;ProgramSha256=(Get-FileHash tests/AvaloniaControls/Program.cs -Algorithm SHA256).Hash}
 $manifest|ConvertTo-Json -Depth 8|Set-Content -LiteralPath (Join-Path $outputPath 'manifest.json') -Encoding utf8
@@ -35,6 +35,12 @@ foreach($fork in 0..($Forks-1)){
             dotnet $engine.Path --bench --font $Font --frames $Frames --scene $configuration.Scene --scale $configuration.Scale --output $runPath @extraArguments *> (Join-Path $runPath 'process.log')
             if($LASTEXITCODE -ne 0){Get-Content -LiteralPath (Join-Path $runPath 'process.log');throw ('Benchmark failed: '+$name)}
         }
+    }
+}
+foreach($engine in $engines){
+    foreach($file in $files | Where-Object {$_.Engine -eq $engine.Name}){
+        $path=Join-Path (Split-Path -Parent $engine.Path) $file.Name
+        if((Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash -ne $file.Sha256){throw ('Measured runtime changed during the run: '+$path)}
     }
 }
 python tools/report-avalonia-controls.py $outputPath

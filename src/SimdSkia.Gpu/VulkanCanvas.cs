@@ -34,6 +34,8 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
     public bool IsFaulted=>faulted;
     public int CompletedBatches {get;private set;}
     public int CachedTextures=>imageCache.Count;
+    public long UploadedTextures{get;private set;}
+    public long TextureCacheHits{get;private set;}
     public double LastSubmitMilliseconds {get;private set;}
     public double LastCompletionMilliseconds {get;private set;}
     private readonly record struct Queued(DrawingCommand Command,EdgeEntry? Path,Texture? Texture)
@@ -44,7 +46,7 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
     private static int EdgePayload(Queued item)=>checked((item.Data.Length*4+checked((item.Command.CoverageClip?.Width??0)*(item.Command.CoverageClip?.Height??0))+15)&~15);
     private sealed class ImageEntry
     {
-        public required Texture Texture;public required byte[] Snapshot;public long Used;
+        public required Texture Texture;public required byte[] Snapshot;public int Hash;public long Used;
     }
     private sealed class EdgeEntry
     {
@@ -174,6 +176,15 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
                 // The stale texture may still be referenced by queued commands in this batch;
                 // retire it instead of destroying it and free it once the GPU is idle after Flush.
                 if(entry is not null){retiredTextures.Add(entry.Texture);imageCache.Remove(image);}
+                var hash=new HashCode();for(int y=0;y<image.Height;y++)hash.AddBytes(image.GetRowSpan(y)[..(image.Width*4)]);int fingerprint=hash.ToHashCode();
+                PixelBuffer? duplicate=null;
+                foreach(var item in imageCache)
+                    if(item.Value.Hash==fingerprint&&item.Key.Width==image.Width&&item.Key.Height==image.Height&&item.Key.Format==image.Format&&item.Key.Alpha==image.Alpha&&MatchesSnapshot(image,item.Value.Snapshot))
+                    {duplicate=item.Key;entry=item.Value;break;}
+                if(duplicate is not null)
+                {imageCache.Remove(duplicate);imageCache.Add(image,entry!);TextureCacheHits++;}
+                else
+                {
                 var data=new byte[checked(image.Width*image.Height*4)];
                 for(int y=0;y<image.Height;y++)for(int x=0;x<image.Width;x++)
                 {var color=image.ReadPixel(x,y);int offset=(y*image.Width+x)*4;data[offset]=color.R;data[offset+1]=color.G;data[offset+2]=color.B;data[offset+3]=image.Alpha==AlphaFormat.Opaque?(byte)255:color.A;}
@@ -185,9 +196,11 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
                     {if(imageCache.Count<MaximumCachedTextures&&bytes+data.Length<=64*1024*1024)break;bytes-=victim.Value.Texture.Size;victim.Value.Texture.Dispose();imageCache.Remove(victim.Key);}
                 }
                 var snapshot=new byte[data.Length];for(int y=0;y<image.Height;y++)image.GetRowSpan(y).Slice(0,image.Width*4).CopyTo(snapshot.AsSpan(y*image.Width*4,image.Width*4));
-                entry=new(){Texture=AllocateTexture(image.Width,image.Height,data),Snapshot=snapshot};imageCache.Add(image,entry);
+                entry=new(){Texture=AllocateTexture(image.Width,image.Height,data),Snapshot=snapshot,Hash=fingerprint};imageCache.Add(image,entry);UploadedTextures++;
+                }
             }
-            entry.Used=++useCounter;texture=entry.Texture;
+            else TextureCacheHits++;
+            entry!.Used=++useCounter;texture=entry.Texture;
         }
         pending.Add(new(command with {Image=null},edges,texture));
     }
