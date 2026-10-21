@@ -65,13 +65,24 @@ internal sealed class FontManager:IFontManagerImpl
 {
     private readonly FontData[] fonts;
     private readonly string defaultFamily;
-    internal FontManager(IEnumerable<string> paths,string? defaultFamily=null)
+    internal FontManager(IEnumerable<string> paths,string? defaultFamily=null,bool supportedFacesOnly=false)
     {
-        fonts=paths.SelectMany(p=>{var data=File.ReadAllBytes(p);return Enumerable.Range(0,FontCollection.Count(data)).Select(i=>new FontData(data,i));}).ToArray();
+        var loaded=new List<FontData>();
+        foreach(string path in paths)
+        {
+            var data=File.ReadAllBytes(path);
+            for(int i=0;i<FontCollection.Count(data);i++)
+            {
+                try{loaded.Add(new FontData(data,i));}
+                catch(NotSupportedException error) when(supportedFacesOnly)
+                {System.Diagnostics.Trace.WriteLine($"Excluded installed font {path}, face {i}: {error.Message}");}
+            }
+        }
+        fonts=loaded.ToArray();
         if(fonts.Length==0)throw new ArgumentException("Register at least one supported TrueType font in SimdSkiaOptions.FontFiles.");
         this.defaultFamily=defaultFamily??fonts[0].Family;
         if(!fonts.Any(f=>f.Family.Equals(this.defaultFamily,StringComparison.OrdinalIgnoreCase)))
-            throw new NotSupportedException($"The Windows interface font '{this.defaultFamily}' was not found in the supported installed TrueType font faces. Register an explicit supported font to override it.");
+            throw new NotSupportedException($"The default font '{this.defaultFamily}' was not found in the supported installed TrueType font faces. Register an explicit supported font to override it.");
     }
     public string GetDefaultFontFamilyName()=>defaultFamily;
     public string[] GetInstalledFontFamilyNames(bool checkForUpdates=false)=>fonts.Select(f=>f.Family).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();

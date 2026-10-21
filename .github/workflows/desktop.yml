@@ -1,0 +1,56 @@
+name: Cross-platform desktop
+on:
+  workflow_dispatch:
+  push:
+    paths: ['src/**', 'examples/CrossPlatform/**', 'tests/PlatformFonts/**', '.github/workflows/desktop.yml']
+  pull_request:
+    paths: ['src/**', 'examples/CrossPlatform/**', 'tests/PlatformFonts/**', '.github/workflows/desktop.yml']
+permissions:
+  contents: read
+jobs:
+  desktop:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            10.0.x
+            8.0.x
+      - name: Fetch fixed licensed CJK fixture
+        shell: pwsh
+        run: ./tools/fetch-avalonia-font.ps1
+      - name: Verify metadata discovery and malformed/unsupported fonts
+        run: dotnet run --project tests/PlatformFonts -c Release
+      - name: Install fixture as a user font for automatic discovery
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" = "macOS" ]; then dest="$HOME/Library/Fonts"; else dest="$HOME/.local/share/fonts/SimdSkia"; fi
+          mkdir -p "$dest"
+          cp baseline/fonts/ZCOOLXiaoWei-Regular.ttf "$dest/SimdSkia-CI-ZCOOL.ttf"
+      - name: Install X11 virtual display and system libraries
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y xvfb libx11-6 libice6 libsm6 libxrandr2 libxi6 libxcursor1 libxinerama1 libxext6 libxrender1 libglib2.0-0
+      - name: Build actual desktop consumer
+        run: dotnet build examples/CrossPlatform -c Release
+      - name: Real Linux X11 window, automatic fonts, resize and framebuffer
+        if: runner.os == 'Linux'
+        run: xvfb-run -a -s '-screen 0 1280x900x24' dotnet run --project examples/CrossPlatform -c Release --no-build -- --smoke
+      - name: Real macOS window, automatic fonts, resize and framebuffer
+        if: runner.os == 'macOS'
+        run: dotnet run --project examples/CrossPlatform -c Release --no-build -- --smoke
+      - name: Real Windows window with fixed CJK font
+        if: runner.os == 'Windows'
+        run: dotnet run --project examples/CrossPlatform -c Release --no-build -- --smoke --font baseline/fonts/ZCOOLXiaoWei-Regular.ttf
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: desktop-${{ runner.os }}-${{ runner.arch }}
+          path: artifacts/cross-platform/
+          if-no-files-found: warn
