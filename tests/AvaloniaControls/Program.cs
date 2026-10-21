@@ -24,6 +24,8 @@ string output=Path.GetFullPath(Value("--output","artifacts/avalonia-controls/tes
 int frames=int.Parse(Value("--frames","60"),System.Globalization.CultureInfo.InvariantCulture);
 double scale=double.Parse(Value("--scale","1"),System.Globalization.CultureInfo.InvariantCulture);
 string scenario=Value("--scene","controls");
+if(scenario is not ("controls" or "scroll"))throw new ArgumentException("Unknown benchmark scene: "+scenario);
+if(frames<=0||!double.IsFinite(scale)||scale<=0||scale>4)throw new ArgumentOutOfRangeException(nameof(frames),"Frames must be positive and scale in (0,4].");
 bool nativeDefaultOpacity=args.Contains("--native-default-opacity");
 var builder=AppBuilder.Configure<TestApp>().UseStandardRuntimePlatformSubsystem().UseManagedHeadless();
 #if MANAGED
@@ -38,6 +40,7 @@ if(collection.Count==0)throw new InvalidOperationException("Font file was not re
 FontManager.Current.AddFontCollection(collection);
 if(args.Contains("--text-probe")){TextProbe.Run(output,collection[0]);return;}
 if(args.Contains("--clip-probe")){TextProbe.Clips(output);return;}
+if(args.Contains("--feature-probe")){FeatureProbe.Run(output);return;}
 if(args.Contains("--dump-shaping"))
 {
     var shaper=AvaloniaLocator.Current.GetRequiredService<ITextShaperImpl>();var face=new Typeface(collection[0]).GlyphTypeface;

@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../../src/SimdSkia.Compatibility/SimdSkia.Compatibility.csproj" /></ItemGroup>
+  <ItemGroup><None Include="fixtures.json" CopyToOutputDirectory="PreserveNewest" /></ItemGroup>
+  <ItemGroup><None Include="jpeg-encode-native.json" CopyToOutputDirectory="PreserveNewest" /></ItemGroup>
+</Project>

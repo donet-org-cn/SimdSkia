@@ -51,4 +51,4 @@ var behaviorDifferences=referenceBehavior.Keys.Union(candidateBehavior.Keys).Ord
 passed &= behaviorDifferences.Length==0;
 Console.WriteLine($"{(behaviorDifferences.Length==0 ? "PASS" : "FAIL")}: {referenceBehavior.Count} baseline behavior probes; {behaviorDifferences.Length} differences.");
 File.WriteAllText(Path.Combine(args[2],"results.json"),JsonSerializer.Serialize(new { Backend="CPU raster, including 16x16 antialiasing",Passed=passed,Scenes=results,BehaviorProbes=referenceBehavior.Count,BehaviorDifferences=behaviorDifferences },new JsonSerializerOptions { WriteIndented=true }));
-return passed ? 0 : 1;
+return passed ? 0 : 2;

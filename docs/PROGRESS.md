@@ -1,5 +1,9 @@
 # 进度：2026-10-21
 
+本轮交付：图像/视觉画刷、Blur/DropShadow/内外阴影、ROI 层缓冲、Gaussian AVX2、TTC face、Adam7/16 位/部分 ICC、纯 C# JPEG 与 PNG LZ77 压缩、Vulkan 裁切/采样/覆盖裁剪均有实际代码。8109 项真实 UI、484 项图片、7845 项 CPU、595 项文字在硬件及全标量通过；Vulkan 新 445 项和旧 313 项通过。**完整兼容仍 FAIL**：425/3235 SK 项匹配、完整 UI 0/3、新功能 59/114、原版 GPU 12/24；Vulkan 窗口和通用字体排版尚缺。详见 [测试报告](TEST-REPORT-2026-10-21.md)、[CPU/内存/滤镜](PERFORMANCE-FINAL-2026-10-21.md)、[GPU](PERFORMANCE-GPU-FINAL-2026-10-21.md) 和 [逐项进度](COMPLETION-TRACKER.md)。
+
+以下为同日此前的历史数据，不替代本轮测量与当前支持范围。
+
 最新续轮：按字形共享/分批 mask、设备亚像素与 baseline、sRGB 文字预混合、半像素硬 clip 舍入已实现。6581 项真实 UI/字形/资源/原版夹具断言在硬件与完整标量回退通过；7845 项 CPU/编解码、595 项旧文字链通过，313 项 Vulkan 检查及实际 Win32 呈现通过。36 进程同机复测：100% 控件 1.492→1.083 ms，首绘 89.2→18.6 ms；列表 0.723→0.433 ms。工作集仍约 118 vs 原版默认 96 MiB。整页 RMSE 降到约 2.3–2.6，但最大误差仍超阈值，**0/3 画质 gate，完整替换与窗口 GPU 仍未完成**。详见[本轮 CPU/内存与画质](AVALONIA-TEXT-CACHE.md)。
 
 下一步继续降低文字栅格误差、首绘与层缓冲内存，再补 ImageBrush/VisualBrush、滤镜、字体/编解码和 Vulkan 窗口；当前受测控件子集不等于目标应用完整兼容。

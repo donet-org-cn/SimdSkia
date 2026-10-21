@@ -1,4 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup><Compile Include="../Imaging/EncodeProbe.cs" Link="EncodeProbe.cs" /></ItemGroup>
   <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
   <ItemGroup>
     <Reference Include="SkiaSharp"><HintPath>../../baseline/skiasharp.3.119.4/lib/net6.0/SkiaSharp.dll</HintPath></Reference>

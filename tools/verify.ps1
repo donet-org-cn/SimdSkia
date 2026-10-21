@@ -3,6 +3,7 @@ $ErrorActionPreference='Stop'
 $workspacePath = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 Push-Location -LiteralPath $workspacePath
 try {
+    $referenceQualityFailed=$false
     dotnet build SimdSkia.sln -c Release --nologo
     if ($LASTEXITCODE -ne 0) { throw 'Build failed.' }
     dotnet run --project tests/SimdSkia.Tests -c Release --no-build
@@ -12,6 +13,8 @@ try {
     if($fontPath){dotnet run --project tests/Features -c Release --no-build -- $fontPath}
     else{dotnet run --project tests/Features -c Release --no-build}
     if ($LASTEXITCODE -ne 0) { throw 'Feature tests failed.' }
+    dotnet run --project tests/Imaging -c Release --no-build
+    if($LASTEXITCODE -ne 0){throw 'Independent image codec/ICC fixture checks failed.'}
     if($fontPath){dotnet run --project tests/Optimization -c Release --no-build -- $fontPath}
     else{dotnet run --project tests/Optimization -c Release --no-build}
     if($LASTEXITCODE -ne 0){throw 'Exact-byte optimization checks failed.'}
@@ -38,15 +41,21 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Managed rendering failed.' }
         dotnet run --project tests/ReferenceRenderer -c Release
         if ($LASTEXITCODE -ne 0) { throw 'Isolated native reference failed. Check the RID and its reference native assets.' }
+        dotnet run --project tests/Features -c Release --no-build -- $fontPath --reference-pngs
+        if($LASTEXITCODE -ne 0){throw 'Native-encoded PNG decode fixtures failed.'}
         dotnet run --project tools/PixelCompare -c Release --no-build -- artifacts/reference artifacts/managed artifacts/diff
-        if ($LASTEXITCODE -ne 0) { throw 'Pixel comparison failed.' }
+        if($LASTEXITCODE -eq 2){$referenceQualityFailed=$true;Write-Output 'FAIL: original pixel quality gate. Remaining independent tests will still run; final exit code is 2.'}
+        elseif($LASTEXITCODE -ne 0){throw 'Pixel comparison failed to execute.'}
     }
     if($Gpu){
+        dotnet run --project tests/GpuSampling -c Release --no-build
+        if($LASTEXITCODE -ne 0){throw 'Vulkan sampled image/coverage checks failed.'}
         dotnet run --project tests/Gpu -c Release --no-build;if($LASTEXITCODE -ne 0){throw 'Vulkan device tests failed.'}
         dotnet run --project tests/GpuOptimization -c Release -- $fontPath
         if($LASTEXITCODE -ne 0){throw 'Vulkan exact-byte kernel comparisons failed.'}
         if($fontPath){dotnet run --project tests/Avalonia -c Release --no-build -- $fontPath artifacts/avalonia/tests-gpu --gpu}
         if($LASTEXITCODE -ne 0){throw 'Positioned-text Vulkan comparisons failed.'}
     }
+    if($referenceQualityFailed){exit 2}
 }
 finally { Pop-Location }

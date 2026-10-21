@@ -1,4 +1,4 @@
-> 2026-10-21：最新 [Avalonia 使用面与优化报告](AVALONIA-OPTIMIZATION.md) 包含定位文字/滚动、CPU、内存、冷启动与接入缺口。通用 CPU/PNG/Vulkan/OCR 的较早同日测量见 [通用优化报告](OPTIMIZATION-2026-10-21.md)。下文保留 2026-10-12 的测量与当时评估。
+> 2026-10-21 最新交付：[测试报告](TEST-REPORT-2026-10-21.md)、[CPU/内存/滤镜性能](PERFORMANCE-FINAL-2026-10-21.md)、[Vulkan GPU 对照](PERFORMANCE-GPU-FINAL-2026-10-21.md)、[剩余缺口](COMPLETION-TRACKER.md)。完整 Avalonia 替换仍未通过验收。此前 [Avalonia 调用回放](AVALONIA-OPTIMIZATION.md) 与 [通用优化报告](OPTIMIZATION-2026-10-21.md) 保留为历史，下文仍是 2026-10-12 的测量。
 
 # SimdSkia 性能与继续投入评估：2026-10-12
 

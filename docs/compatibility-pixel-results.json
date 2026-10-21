@@ -1,0 +1,1088 @@
+{
+  "Backend": "CPU raster, including 16x16 antialiasing",
+  "Passed": false,
+  "Scenes": [
+    {
+      "Scene": "blend-Bgra8888-Opaque",
+      "MaxChannelError": 1,
+      "MeanAbsoluteError": 0.0498046875,
+      "DifferentPixels": 612,
+      "Threshold": 1,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "blend-Bgra8888-Premul",
+      "MaxChannelError": 1,
+      "MeanAbsoluteError": 0.0498046875,
+      "DifferentPixels": 612,
+      "Threshold": 1,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "blend-Bgra8888-Unpremul",
+      "MaxChannelError": 1,
+      "MeanAbsoluteError": 0.0703125,
+      "DifferentPixels": 864,
+      "Threshold": 1,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "blend-Rgba8888-Opaque",
+      "MaxChannelError": 1,
+      "MeanAbsoluteError": 0.0498046875,
+      "DifferentPixels": 612,
+      "Threshold": 1,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "blend-Rgba8888-Premul",
+      "MaxChannelError": 1,
+      "MeanAbsoluteError": 0.0498046875,
+      "DifferentPixels": 612,
+      "Threshold": 1,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "blend-Rgba8888-Unpremul",
+      "MaxChannelError": 1,
+      "MeanAbsoluteError": 0.0703125,
+      "DifferentPixels": 864,
+      "Threshold": 1,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "chinese-Bgra8888-Opaque",
+      "MaxChannelError": 62,
+      "MeanAbsoluteError": 0.6686197916666666,
+      "DifferentPixels": 259,
+      "Threshold": 32,
+      "FailedChannels": 47,
+      "Passed": false
+    },
+    {
+      "Scene": "chinese-Bgra8888-Premul",
+      "MaxChannelError": 62,
+      "MeanAbsoluteError": 0.6686197916666666,
+      "DifferentPixels": 259,
+      "Threshold": 32,
+      "FailedChannels": 47,
+      "Passed": false
+    },
+    {
+      "Scene": "chinese-Bgra8888-Unpremul",
+      "MaxChannelError": 61,
+      "MeanAbsoluteError": 0.6807454427083334,
+      "DifferentPixels": 258,
+      "Threshold": 32,
+      "FailedChannels": 47,
+      "Passed": false
+    },
+    {
+      "Scene": "chinese-Rgba8888-Opaque",
+      "MaxChannelError": 61,
+      "MeanAbsoluteError": 0.6871744791666666,
+      "DifferentPixels": 257,
+      "Threshold": 32,
+      "FailedChannels": 46,
+      "Passed": false
+    },
+    {
+      "Scene": "chinese-Rgba8888-Premul",
+      "MaxChannelError": 61,
+      "MeanAbsoluteError": 0.6871744791666666,
+      "DifferentPixels": 257,
+      "Threshold": 32,
+      "FailedChannels": 46,
+      "Passed": false
+    },
+    {
+      "Scene": "chinese-Rgba8888-Unpremul",
+      "MaxChannelError": 61,
+      "MeanAbsoluteError": 0.6807454427083334,
+      "DifferentPixels": 258,
+      "Threshold": 32,
+      "FailedChannels": 47,
+      "Passed": false
+    },
+    {
+      "Scene": "clear-Bgra8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "clear-Bgra8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "clear-Bgra8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "clear-Rgba8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "clear-Rgba8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "clear-Rgba8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "clear-then-blend-Bgra8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 1,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "clear-then-blend-Bgra8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 1,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "clear-then-blend-Bgra8888-Unpremul",
+      "MaxChannelError": 1,
+      "MeanAbsoluteError": 0.03125,
+      "DifferentPixels": 384,
+      "Threshold": 1,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "clear-then-blend-Rgba8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 1,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "clear-then-blend-Rgba8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 1,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "clear-then-blend-Rgba8888-Unpremul",
+      "MaxChannelError": 1,
+      "MeanAbsoluteError": 0.03125,
+      "DifferentPixels": 384,
+      "Threshold": 1,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "clip-Bgra8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "clip-Bgra8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "clip-Bgra8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "clip-Rgba8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "clip-Rgba8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "clip-Rgba8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "evenodd-Bgra8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "evenodd-Bgra8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "evenodd-Bgra8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "evenodd-Rgba8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "evenodd-Rgba8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "evenodd-Rgba8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "fractional-Bgra8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "fractional-Bgra8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "fractional-Bgra8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "fractional-Rgba8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "fractional-Rgba8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "fractional-Rgba8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "gradient-Bgra8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 1,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "gradient-Bgra8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 1,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "gradient-Bgra8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 1,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "gradient-Rgba8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 1,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "gradient-Rgba8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 1,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "gradient-Rgba8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 1,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "image-Bgra8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "image-Bgra8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "image-Bgra8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "image-Rgba8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "image-Rgba8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "image-Rgba8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "inverted-Bgra8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "inverted-Bgra8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "inverted-Bgra8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "inverted-Rgba8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "inverted-Rgba8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "inverted-Rgba8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "mirror-Bgra8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "mirror-Bgra8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "mirror-Bgra8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "mirror-Rgba8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "mirror-Rgba8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "mirror-Rgba8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "path-aa-Bgra8888-Opaque",
+      "MaxChannelError": 66,
+      "MeanAbsoluteError": 0.3225911458333333,
+      "DifferentPixels": 162,
+      "Threshold": 32,
+      "FailedChannels": 24,
+      "Passed": false
+    },
+    {
+      "Scene": "path-aa-Bgra8888-Premul",
+      "MaxChannelError": 66,
+      "MeanAbsoluteError": 0.3225911458333333,
+      "DifferentPixels": 162,
+      "Threshold": 32,
+      "FailedChannels": 24,
+      "Passed": false
+    },
+    {
+      "Scene": "path-aa-Bgra8888-Unpremul",
+      "MaxChannelError": 66,
+      "MeanAbsoluteError": 0.3236490885416667,
+      "DifferentPixels": 161,
+      "Threshold": 32,
+      "FailedChannels": 24,
+      "Passed": false
+    },
+    {
+      "Scene": "path-aa-Rgba8888-Opaque",
+      "MaxChannelError": 65,
+      "MeanAbsoluteError": 0.3245442708333333,
+      "DifferentPixels": 163,
+      "Threshold": 32,
+      "FailedChannels": 24,
+      "Passed": false
+    },
+    {
+      "Scene": "path-aa-Rgba8888-Premul",
+      "MaxChannelError": 65,
+      "MeanAbsoluteError": 0.3245442708333333,
+      "DifferentPixels": 163,
+      "Threshold": 32,
+      "FailedChannels": 24,
+      "Passed": false
+    },
+    {
+      "Scene": "path-aa-Rgba8888-Unpremul",
+      "MaxChannelError": 66,
+      "MeanAbsoluteError": 0.3236490885416667,
+      "DifferentPixels": 161,
+      "Threshold": 32,
+      "FailedChannels": 24,
+      "Passed": false
+    },
+    {
+      "Scene": "rect-aa-Bgra8888-Opaque",
+      "MaxChannelError": 1,
+      "MeanAbsoluteError": 0.00634765625,
+      "DifferentPixels": 78,
+      "Threshold": 2,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "rect-aa-Bgra8888-Premul",
+      "MaxChannelError": 1,
+      "MeanAbsoluteError": 0.00634765625,
+      "DifferentPixels": 78,
+      "Threshold": 2,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "rect-aa-Bgra8888-Unpremul",
+      "MaxChannelError": 1,
+      "MeanAbsoluteError": 0.006673177083333333,
+      "DifferentPixels": 78,
+      "Threshold": 2,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "rect-aa-Rgba8888-Opaque",
+      "MaxChannelError": 1,
+      "MeanAbsoluteError": 0.00634765625,
+      "DifferentPixels": 78,
+      "Threshold": 2,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "rect-aa-Rgba8888-Premul",
+      "MaxChannelError": 1,
+      "MeanAbsoluteError": 0.00634765625,
+      "DifferentPixels": 78,
+      "Threshold": 2,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "rect-aa-Rgba8888-Unpremul",
+      "MaxChannelError": 1,
+      "MeanAbsoluteError": 0.006673177083333333,
+      "DifferentPixels": 78,
+      "Threshold": 2,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "rectangle-Bgra8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "rectangle-Bgra8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "rectangle-Bgra8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "rectangle-Rgba8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "rectangle-Rgba8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "rectangle-Rgba8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "rotation-Bgra8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "rotation-Bgra8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "rotation-Bgra8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "rotation-Rgba8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "rotation-Rgba8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "rotation-Rgba8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "source-Bgra8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 1,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "source-Bgra8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 1,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "source-Bgra8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 1,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "source-Rgba8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 1,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "source-Rgba8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 1,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "source-Rgba8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 1,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "stroke-Bgra8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "stroke-Bgra8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "stroke-Bgra8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "stroke-Rgba8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "stroke-Rgba8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "stroke-Rgba8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "transform-Bgra8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "transform-Bgra8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "transform-Bgra8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "transform-Rgba8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "transform-Rgba8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "transform-Rgba8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "transparent-clear-Bgra8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "transparent-clear-Bgra8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "transparent-clear-Bgra8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "transparent-clear-Rgba8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "transparent-clear-Rgba8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "transparent-clear-Rgba8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "zero-area-Bgra8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "zero-area-Bgra8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "zero-area-Bgra8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "zero-area-Rgba8888-Opaque",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "zero-area-Rgba8888-Premul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    },
+    {
+      "Scene": "zero-area-Rgba8888-Unpremul",
+      "MaxChannelError": 0,
+      "MeanAbsoluteError": 0,
+      "DifferentPixels": 0,
+      "Threshold": 0,
+      "FailedChannels": 0,
+      "Passed": true
+    }
+  ],
+  "BehaviorProbes": 25,
+  "BehaviorDifferences": []
+}

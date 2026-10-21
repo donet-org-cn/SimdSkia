@@ -73,6 +73,7 @@ public readonly record struct DrawingCommand(CommandKind Kind, RectF Rectangle, 
     public CoverageClip? CoverageClip {get;init;}
     public RectF? ImageSource {get;init;}
     public ImageSampling Sampling {get;init;}
+    public bool NearestLowerBoundary {get;init;}
     public static DrawingCommand Clear(Rgba32 color) => new(CommandKind.Clear, default, Matrix3.Identity, new(color, CompositeMode.Source));
     public static DrawingCommand FillRectangle(RectF rect, Matrix3 transform, Paint paint) => new(CommandKind.FillRectangle, rect, transform, paint);
 }

@@ -20,11 +20,11 @@ public class SKBitmap : SKObject
     public SKBitmap Copy() => new(Info,Buffer.Clone());
     public static SKBitmap Decode(byte[] buffer){ArgumentNullException.ThrowIfNull(buffer);return Decode(buffer.AsSpan());}
     public static SKBitmap Decode(ReadOnlySpan<byte> buffer)
-    {var pixels=PngCodec.Decode(buffer);return new(new SKImageInfo(pixels.Width,pixels.Height,SKColorType.Rgba8888,SKAlphaType.Unpremul),pixels);}
+    {var pixels=ImageCodec.Decode(buffer);return new(new SKImageInfo(pixels.Width,pixels.Height,SKColorType.Rgba8888,SKAlphaType.Unpremul),pixels);}
     public static SKBitmap Decode(string filename){ArgumentNullException.ThrowIfNull(filename);return Decode(File.ReadAllBytes(filename));}
     public static SKBitmap Decode(Stream stream){ArgumentNullException.ThrowIfNull(stream);using var copy=new MemoryStream();stream.CopyTo(copy);return Decode(copy.ToArray());}
     public SKData Encode(SKEncodedImageFormat format,int quality)
-    {ThrowIfDisposed();if(format!=SKEncodedImageFormat.Png)throw new NotSupportedException("Only PNG encoding is implemented.");if(quality is <0 or >100)throw new ArgumentOutOfRangeException(nameof(quality));return new(PngCodec.Encode(Buffer));}
+    {ThrowIfDisposed();if(quality is <0 or >100)throw new ArgumentOutOfRangeException(nameof(quality));return new(format switch{SKEncodedImageFormat.Png=>PngCodec.Encode(Buffer),SKEncodedImageFormat.Jpeg=>JpegCodec.Encode(Buffer,quality),_=>throw new NotSupportedException("Managed encoding supports PNG and JPEG.")});}
     public static SKBitmap FromImage(SKImage image)
     {
         ArgumentNullException.ThrowIfNull(image);
@@ -56,6 +56,7 @@ public class SKBitmap : SKObject
     public void SetPixel(int x,int y,SKColor color) => Buffer.WritePixel(x,y,color.ToCore());
     public void Erase(SKColor color)
     {
+        if(color.Alpha==0)color=SKColor.Empty;
         var pixels=Buffer;
         for (int y=0;y<pixels.Height;y++) for (int x=0;x<pixels.Width;x++) pixels.WritePixel(x,y,color.ToCore());
     }

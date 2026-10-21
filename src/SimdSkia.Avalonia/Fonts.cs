@@ -21,9 +21,9 @@ internal sealed class FontData
     internal FontStyle Style {get;}
     internal FontStretch Stretch {get;}
     internal byte[] Digest {get;}
-    internal FontData(ReadOnlySpan<byte> data)
+    internal FontData(ReadOnlySpan<byte> data,int faceIndex=0)
     {
-        Digest=SHA256.HashData(data);Font=new(data);Family=ReadName(Font,16)??ReadName(Font,1)??throw new InvalidDataException("The font has no family name.");
+        Font=new(data,faceIndex);using(var stream=Font.OpenStream())Digest=SHA256.HashData(stream);Family=ReadName(Font,16)??ReadName(Font,1)??throw new InvalidDataException("The font has no family name.");
         Weight=FontWeight.Normal;Stretch=FontStretch.Normal;
         if(Font.TryGetTable("OS/2",out var table)&&table.Length>=8)
         {Weight=(FontWeight)BinaryPrimitives.ReadUInt16BigEndian(table.Span[4..]);Stretch=(FontStretch)BinaryPrimitives.ReadUInt16BigEndian(table.Span[6..]);}
@@ -66,7 +66,7 @@ internal sealed class FontManager:IFontManagerImpl
     private readonly FontData[] fonts;
     internal FontManager(IEnumerable<string> paths)
     {
-        fonts=paths.Select(p=>new FontData(File.ReadAllBytes(p))).ToArray();
+        fonts=paths.SelectMany(p=>{var data=File.ReadAllBytes(p);return Enumerable.Range(0,FontCollection.Count(data)).Select(i=>new FontData(data,i));}).ToArray();
         if(fonts.Length==0)throw new ArgumentException("Register at least one supported TrueType font in SimdSkiaOptions.FontFiles.");
     }
     public string GetDefaultFontFamilyName()=>fonts[0].Family;

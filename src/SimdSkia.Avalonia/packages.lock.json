@@ -29,6 +29,11 @@
         "resolved": "12.1.4",
         "contentHash": "9ajC+Ff+U9S21JJKGbJgnwp9fY+zwJG+bSEC//o/vJU2M6IEMRGp+D1+AUoqTR79FAA/iDYgf4f4EF4PZKhZsg=="
       },
+      "JpegLibrary": {
+        "type": "Transitive",
+        "resolved": "0.4.32",
+        "contentHash": "Lv11HXsyGZxuRUG/0sw+3itw930/c08VkEVXDPin819yheN3Y3YpWQYccs1dW+sBlsGs9S4Y4q6DzyBCctsEeQ=="
+      },
       "MicroCom.Runtime": {
         "type": "Transitive",
         "resolved": "0.11.6",
@@ -46,6 +51,7 @@
       "simdskia.imaging": {
         "type": "Project",
         "dependencies": {
+          "JpegLibrary": "[0.4.32, 0.4.32]",
           "SimdSkia.Core": "[1.0.0, )"
         }
       },

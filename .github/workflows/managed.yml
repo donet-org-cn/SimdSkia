@@ -20,6 +20,8 @@ jobs:
         shell: pwsh
         run: ./tools/fetch-test-font.ps1
       - run: dotnet run --project tests/Features -c Release --no-build -- baseline/fonts/ZenOldMincho-Regular.ttf
+      - run: dotnet run --project tests/Imaging -c Release --no-build
+      - run: python tools/verify-managed-encoding.py
       - run: dotnet run --project tests/Optimization -c Release --no-build -- baseline/fonts/ZenOldMincho-Regular.ttf
       - run: dotnet run --project tests/Avalonia -c Release --no-build -- baseline/fonts/ZenOldMincho-Regular.ttf
       - name: Fetch licensed Simplified Chinese UI fixture
@@ -38,6 +40,8 @@ jobs:
         run: |
           $env:DOTNET_EnableHWIntrinsic = '0'
           dotnet tests/Optimization/bin/Release/net8.0/Optimization.dll baseline/fonts/ZenOldMincho-Regular.ttf
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet tests/Imaging/bin/Release/net8.0/Imaging.dll
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           dotnet tests/Avalonia/bin/Release/net8.0/SimdSkia.Avalonia.Tests.dll baseline/fonts/ZenOldMincho-Regular.ttf
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

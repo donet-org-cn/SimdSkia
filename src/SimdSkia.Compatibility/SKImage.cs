@@ -20,6 +20,6 @@ public class SKImage : SKObject
     }
     internal SKBitmap CopyBitmap() { ThrowIfDisposed(); return new(info,pixels.Clone()); }
     public SKData Encode(SKEncodedImageFormat format,int quality)
-    {ThrowIfDisposed();if(format!=SKEncodedImageFormat.Png)throw new NotSupportedException("Only PNG encoding is implemented.");if(quality is <0 or >100)throw new ArgumentOutOfRangeException(nameof(quality));return new(SimdSkia.Imaging.PngCodec.Encode(pixels));}
+    {ThrowIfDisposed();if(quality is <0 or >100)throw new ArgumentOutOfRangeException(nameof(quality));return new(format switch{SKEncodedImageFormat.Png=>SimdSkia.Imaging.PngCodec.Encode(pixels),SKEncodedImageFormat.Jpeg=>SimdSkia.Imaging.JpegCodec.Encode(pixels,quality),_=>throw new NotSupportedException("Managed encoding supports PNG and JPEG.")});}
     protected override void Dispose(bool disposing) => pixels.Dispose();
 }

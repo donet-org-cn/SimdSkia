@@ -20,7 +20,7 @@ public static class ManagedZlib
         if(expectedLength<0||expectedLength>256*1024*1024)throw new NotSupportedException("Image inflation exceeds the configured 256 MiB limit.");
         var output=new byte[expectedLength];Decode(encoded,output);return output;
     }
-    internal static void Decode(ReadOnlySpan<byte> encoded,Span<byte> output)
+    internal static void Decode(ReadOnlySpan<byte> encoded,Span<byte> output,bool prefix=false)
     {
         int expectedLength=output.Length;
         if(encoded.Length<6||(encoded[0]&15)!=8||(encoded[0]>>4)>7||((encoded[0]<<8)|encoded[1])%31!=0)throw new InvalidDataException("Invalid zlib header.");
@@ -33,8 +33,8 @@ public static class ManagedZlib
             if(kind==0)
             {
                 reader.Align();int size=reader.Read(16),inverse=reader.Read(16);if((size^inverse)!=65535)throw new InvalidDataException("Invalid stored DEFLATE block.");
-                if(size>output.Length-position)throw new InvalidDataException("Inflation exceeds declared image size.");
-                reader.ReadBytes(output.Slice(position,size));position+=size;continue;
+                if(size>output.Length-position){if(prefix){reader.ReadBytes(output[position..]);return;}throw new InvalidDataException("Inflation exceeds declared image size.");}
+                reader.ReadBytes(output.Slice(position,size));position+=size;if(prefix&&position==output.Length)return;continue;
             }
             Huffman literal,distance;
             if(kind==1)
@@ -65,17 +65,18 @@ public static class ManagedZlib
             while(true)
             {
                 int symbol=literal.Decode(ref reader);if(symbol==256)break;
-                if(symbol<256){if(position==output.Length)throw new InvalidDataException("Inflation exceeds image size.");output[position++]=(byte)symbol;continue;}
+                if(symbol<256){if(position==output.Length){if(prefix)return;throw new InvalidDataException("Inflation exceeds image size.");}output[position++]=(byte)symbol;if(prefix&&position==output.Length)return;continue;}
                 if(symbol>285)throw new InvalidDataException("Reserved length symbol.");
                 int length=LengthBase[symbol-257]+reader.Read(LengthBits[symbol-257]);int ds=distance.Decode(ref reader);
                 if(ds>=30)throw new InvalidDataException("Reserved distance symbol.");
                 int offset=DistanceBase[ds]+reader.Read(DistanceBits[ds]);
-                if(offset>window||offset>position||length>output.Length-position)throw new InvalidDataException("Invalid DEFLATE back-reference.");
-                if(offset==1){output.Slice(position,length).Fill(output[position-1]);position+=length;continue;}
+                if(offset>window||offset>position)throw new InvalidDataException("Invalid DEFLATE back-reference.");
+                if(length>output.Length-position){if(prefix)length=output.Length-position;else throw new InvalidDataException("Invalid DEFLATE back-reference.");}
+                if(offset==1){output.Slice(position,length).Fill(output[position-1]);position+=length;if(prefix&&position==output.Length)return;continue;}
                 int copied=0;
                 while(copied<length)
                 {int count=Math.Min(offset+copied,length-copied);output.Slice(position-offset,count).CopyTo(output.Slice(position+copied,count));copied+=count;}
-                position+=length;
+                position+=length;if(prefix&&position==output.Length)return;
             }
         }while(!final);
         reader.Align();if(reader.BytePosition!=encoded.Length-6||position!=expectedLength)throw new InvalidDataException("Unexpected DEFLATE length or trailing payload.");
@@ -93,6 +94,59 @@ public static class ManagedZlib
             data.Slice(position,size).CopyTo(output.AsSpan(destination));position+=size;destination+=size;
         }while(position<data.Length);
         BinaryPrimitives.WriteUInt32BigEndian(output.AsSpan(destination),Adler(data));return output;
+    }
+    /// <summary>Bounded-window greedy LZ77 with RFC 1951 fixed Huffman codes, entirely managed.</summary>
+    public static byte[] Encode(ReadOnlySpan<byte> data,int searchDepth=32)
+    {
+        if(searchDepth is <1 or >256)throw new ArgumentOutOfRangeException(nameof(searchDepth));
+        var heads=System.Buffers.ArrayPool<int>.Shared.Rent(65536);var previous=System.Buffers.ArrayPool<int>.Shared.Rent(32768);
+        try
+        {
+            heads.AsSpan(0,65536).Fill(-1);var bits=new DeflateWriter();bits.Byte(0x78);bits.Byte(0x01);bits.Write(3,3); // final, fixed Huffman block
+            int position=0;
+            while(position<data.Length)
+            {
+                int length=0,distance=0;
+                if(position<=data.Length-3)
+                {
+                    int hash=Hash(data,position),candidate=heads[hash];previous[position&32767]=candidate;heads[hash]=position;
+                    int limit=Math.Min(258,data.Length-position),attempts=searchDepth;
+                    while(candidate>=Math.Max(0,position-32768)&&attempts-->0)
+                    {
+                        if(candidate>=position)break;int count=0;
+                        while(count<=limit-8&&BinaryPrimitives.ReadUInt64LittleEndian(data[(candidate+count)..])==BinaryPrimitives.ReadUInt64LittleEndian(data[(position+count)..]))count+=8;
+                        while(count<limit&&data[candidate+count]==data[position+count])count++;
+                        if(count>length&&count>=3){length=count;distance=position-candidate;if(count==limit)break;}
+                        int next=previous[candidate&32767];if(next>=candidate)break;candidate=next;
+                    }
+                }
+                if(length<3){bits.Symbol(data[position]);position++;continue;}
+                int li=0;while(li<LengthBase.Length-1&&length>=LengthBase[li+1])li++;
+                bits.Symbol(257+li);bits.Write(length-LengthBase[li],LengthBits[li]);
+                int di=0;while(di<DistanceBase.Length-1&&distance>=DistanceBase[di+1])di++;
+                bits.Write(Reverse(di,5),5);bits.Write(distance-DistanceBase[di],DistanceBits[di]);
+                for(int i=1;i<length&&position+i<=data.Length-3;i++)
+                {int hash=Hash(data,position+i);previous[(position+i)&32767]=heads[hash];heads[hash]=position+i;}
+                position+=length;
+            }
+            bits.Symbol(256);bits.Align();uint checksum=Adler(data);bits.Byte((byte)(checksum>>24));bits.Byte((byte)(checksum>>16));bits.Byte((byte)(checksum>>8));bits.Byte((byte)checksum);
+            var result=bits.Result();long storedLength=data.Length+Math.Max(1,(data.Length+65534L)/65535)*5+6;
+            return result.Length<storedLength?result:EncodeStored(data);
+        }
+        finally{System.Buffers.ArrayPool<int>.Shared.Return(heads);System.Buffers.ArrayPool<int>.Shared.Return(previous);}
+    }
+    private static int Hash(ReadOnlySpan<byte> data,int p)=>(int)(unchecked(((uint)data[p]|((uint)data[p+1]<<8)|((uint)data[p+2]<<16))*2654435761u)>>16);
+    private static int Reverse(int code,int length){int result=0;for(int i=0;i<length;i++){result=(result<<1)|(code&1);code>>=1;}return result;}
+    private sealed class DeflateWriter
+    {
+        private readonly System.Buffers.ArrayBufferWriter<byte> output=new(16384);private uint buffer;private int count;
+        internal void Byte(byte value){var span=output.GetSpan(1);span[0]=value;output.Advance(1);}
+        internal void Write(int value,int length)
+        {buffer|=(uint)value<<count;count+=length;while(count>=8){Byte((byte)buffer);buffer>>=8;count-=8;}}
+        internal void Symbol(int symbol)
+        {int length=symbol<144?8:symbol<256?9:symbol<280?7:8,code=symbol<144?0x30+symbol:symbol<256?0x190+symbol-144:symbol<280?symbol-256:0xc0+symbol-280;Write(Reverse(code,length),length);}
+        internal void Align(){if(count!=0){Byte((byte)buffer);buffer=0;count=0;}}
+        internal byte[] Result()=>output.WrittenSpan.ToArray();
     }
     private static uint Adler(ReadOnlySpan<byte> data)
     {

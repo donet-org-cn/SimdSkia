@@ -1,0 +1,484 @@
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  PixelCompare -> F:\simdSkia\tools\PixelCompare\bin\Release\net8.0\PixelCompare.dll
+  ApiAudit -> F:\simdSkia\tools\ApiAudit\bin\Release\net8.0\ApiAudit.dll
+  AvaloniaControls.Reference -> F:\simdSkia\tests\AvaloniaControls.Reference\bin\Release\net8.0\AvaloniaControls.Reference.dll
+  AvaloniaAudit -> F:\simdSkia\tools\AvaloniaAudit\bin\Release\net8.0\AvaloniaAudit.dll
+  SimdSkia.Core -> F:\simdSkia\src\SimdSkia.Core\bin\Release\net8.0\SimdSkia.Core.dll
+  SimdSkia.Cpu -> F:\simdSkia\src\SimdSkia.Cpu\bin\Release\net8.0\SimdSkia.Cpu.dll
+  SimdSkia.Text -> F:\simdSkia\src\SimdSkia.Text\bin\Release\net8.0\SimdSkia.Text.dll
+  SimdSkia.Imaging -> F:\simdSkia\src\SimdSkia.Imaging\bin\Release\net8.0\SimdSkia.Imaging.dll
+  SimdSkia.Gpu -> F:\simdSkia\src\SimdSkia.Gpu\bin\Release\net8.0\SimdSkia.Gpu.dll
+  Filters -> F:\simdSkia\benchmarks\Filters\bin\Release\net8.0\Filters.dll
+  GpuSampling -> F:\simdSkia\tests\GpuSampling\bin\Release\net8.0\GpuSampling.dll
+  GpuOptimization -> F:\simdSkia\tests\GpuOptimization\bin\Release\net8.0\SimdSkia.GpuOptimization.Tests.dll
+  SimdSkia.Compatibility -> F:\simdSkia\src\SimdSkia.Compatibility\bin\Release\net8.0\SimdSkia.Compatibility.dll
+  SimdSkia.Avalonia -> F:\simdSkia\src\SimdSkia.Avalonia\bin\Release\net8.0\SimdSkia.Avalonia.dll
+  ManagedRenderer -> F:\simdSkia\tests\ManagedRenderer\bin\Release\net8.0\ManagedRenderer.dll
+  CpuBench -> F:\simdSkia\tools\CpuBench\bin\Release\net8.0\CpuBench.dll
+  Imaging -> F:\simdSkia\tests\Imaging\bin\Release\net8.0\Imaging.dll
+  SimdSkia.Tests -> F:\simdSkia\tests\SimdSkia.Tests\bin\Release\net8.0\SimdSkia.Tests.dll
+  AvaloniaText -> F:\simdSkia\examples\AvaloniaText\bin\Release\net8.0\AvaloniaText.dll
+  AvaloniaControls -> F:\simdSkia\tests\AvaloniaControls\bin\Release\net8.0\SimdSkia.Avalonia.Controls.Tests.dll
+  AvaloniaControls -> F:\simdSkia\examples\AvaloniaControls\bin\Release\net8.0\AvaloniaControls.dll
+  Avalonia -> F:\simdSkia\tests\Avalonia\bin\Release\net8.0\SimdSkia.Avalonia.Tests.dll
+  Optimization -> F:\simdSkia\tests\Optimization\bin\Release\net8.0\Optimization.dll
+  Features -> F:\simdSkia\examples\Features\bin\Release\net8.0\Features.dll
+  Gpu -> F:\simdSkia\tests\Gpu\bin\Release\net8.0\Gpu.dll
+  Features -> F:\simdSkia\tests\Features\bin\Release\net8.0\Features.dll
+  Rectangle -> F:\simdSkia\examples\Rectangle\bin\Release\net8.0\Rectangle.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:02.33
+PASS Bitmap -> canvas -> clear -> rect -> every pixel
+PASS Rgba8888 and Bgra8888 byte order
+PASS Padded rows and last row byte count
+PASS Half-pixel edges follow baseline rounding
+PASS Opaque metadata preserves Src and Clear physical alpha
+PASS Premultiplied storage and unpremultiply
+PASS Alpha zero storage is canonical black
+PASS SourceOver on opaque destination
+PASS Source replaces alpha
+PASS Clear blend replaces pixels with transparent
+PASS Transparent source leaves destination
+PASS Straight alpha SourceOver
+PASS Device bounds clip rectangle
+PASS Huge offscreen coordinates safely clipped
+PASS Empty geometry has no coverage
+PASS Save returns previous count and restore restores matrix
+PASS Clear ignores transform
+PASS Affine translate-scale renders
+PASS Singular affine matrix has empty coverage
+PASS Matrix inverse round trip
+PASS Bitmap survives canvas disposal
+PASS Canvas retains pixel storage after bitmap disposal
+PASS Surface owns canvas lifetime
+PASS Surface snapshot owns independent pixels after disposal
+PASS Image conversion rejects disposed images and null
+PASS Bitmap copy preserves stride and independent bytes
+PASS Disposed paint rejects drawing
+PASS Coordinate validation
+PASS Invalid allocation and checked overflow
+PASS Unsupported features throw before mutation
+PASS Unknown formats and native handles fail explicitly
+PASS Perspective and nonfinite matrices rejected atomically
+PASS sRGB metadata supported; disposed profiles rejected
+PASS Color packing and value equality
+PASS Backend unknown command fails explicitly
+PASS Warm drawing loop has zero thread allocations
+36/36 tests passed.
+PASS Winding and even-odd holes
+PASS Curve fill, implicit close, path snapshots
+PASS AA fractional coverage
+PASS Curve AA agrees with independent area integration
+PASS Paint retains shader data and applies shader opacity
+PASS Miter stroke and butt line
+PASS Saved clip and shader
+PASS Bitmap nearest sampling and opacity
+PASS PNG roundtrip and lifecycle
+PASS Managed DEFLATE stored blocks and checksums
+PASS Independent fixed-Huffman DEFLATE fixture
+PASS SIMD clear agrees with scalar for formats, stride, alpha, and tails
+PASS Managed Chinese/Latin TrueType glyphs and text
+[
+  {
+    "name": "png-0-8-adam0",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-0-8-adam1",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-0-16-adam0",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-0-16-adam1",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-2-8-adam0",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-2-8-adam1",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-2-16-adam0",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-2-16-adam1",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-4-8-adam0",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-4-8-adam1",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-4-16-adam0",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-4-16-adam1",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-6-8-adam0",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-6-8-adam1",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-6-16-adam0",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-6-16-adam1",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-0-1-adam0",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-0-1-adam1",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-0-2-adam0",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-0-2-adam1",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-0-4-adam0",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-0-4-adam1",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-3-1-adam0",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-3-1-adam1",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-3-2-adam0",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-3-2-adam1",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-3-4-adam0",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "png-3-4-adam1",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "jpeg-RGB-progressiveFalse-sampling0",
+    "maximum": 2,
+    "rmse": 0.1270001270001905
+  },
+  {
+    "name": "jpeg-RGB-progressiveFalse-sampling1",
+    "maximum": 2,
+    "rmse": 0.408105120797716
+  },
+  {
+    "name": "jpeg-RGB-progressiveFalse-sampling2",
+    "maximum": 2,
+    "rmse": 0.42204338297241367
+  },
+  {
+    "name": "jpeg-RGB-progressiveTrue-sampling0",
+    "maximum": 2,
+    "rmse": 0.1270001270001905
+  },
+  {
+    "name": "jpeg-RGB-progressiveTrue-sampling1",
+    "maximum": 2,
+    "rmse": 0.408105120797716
+  },
+  {
+    "name": "jpeg-RGB-progressiveTrue-sampling2",
+    "maximum": 2,
+    "rmse": 0.42204338297241367
+  },
+  {
+    "name": "jpeg-L-progressiveFalse-sampling0",
+    "maximum": 1,
+    "rmse": 0.09729871876449238
+  },
+  {
+    "name": "jpeg-L-progressiveTrue-sampling0",
+    "maximum": 1,
+    "rmse": 0.09729871876449238
+  },
+  {
+    "name": "jpeg-CMYK-progressiveFalse-sampling0",
+    "maximum": 1,
+    "rmse": 0.056175441470485366
+  },
+  {
+    "name": "jpeg-CMYK-progressiveTrue-sampling0",
+    "status": "UNSUPPORTED - rejected"
+  },
+  {
+    "name": "png-srgb-icc",
+    "maximum": 0,
+    "rmse": 0
+  },
+  {
+    "name": "jpeg-srgb-icc",
+    "maximum": 2,
+    "rmse": 0.122789001339411
+  },
+  {
+    "name": "png-display-p3-to-srgb-icc",
+    "maximum": 1,
+    "rmse": 0.10756778090804452
+  }
+]
+PASS: 484 independent PNG/Adam7/16-bit/ICC/JPEG/compatibility/corruption assertions.
+PASS 7845 exact-byte optimization checks (frozen scalar renderer, stride, formats, alpha, clips, inverse fills, curves, cache eviction/mutation). Independent zlib/PNG fixtures and checksum rejection passed. SIMD hardware: True
+PASS 595 Avalonia text-chain / cache / lifecycle checks. Behavior snapshot: artifacts/avalonia/tests-managed
+PASS: 8109 real Avalonia, pixel, geometry, shaping, SIMD and lifetime assertions.
+{
+  "engine": "SimdSkia",
+  "scenario": "controls",
+  "frames": 5,
+  "scale": 1,
+  "opacityMode": "full group",
+  "width": 1000,
+  "height": 720,
+  "millisecondsPerFrame": 1.27914,
+  "framesPerSecond": 781.7752552496208,
+  "p50Ms": 1.1388,
+  "p95Ms": 1.7917,
+  "p99Ms": 1.7917,
+  "maximumFrameMs": 1.7917,
+  "gc0": 0,
+  "gc1": 0,
+  "gc2": 0,
+  "cpuMillisecondsPerFrame": 0,
+  "cpuPercentOneCore": 0,
+  "allocatedBytesPerFrame": 50752,
+  "workingSetMiB": 204.375,
+  "privateMiB": 159.28125,
+  "peakProcessWorkingSetMiB": 221.90625,
+  "workingSetBeforeMiB": 205.1484375,
+  "privateBeforeMiB": 160.27734375,
+  "managedHeapUsedMiB": 28.821990966796875,
+  "managedRetainedAfterGcMiB": 28.60875701904297,
+  "firstRenderMs": 20.363,
+  "fontSha256": "A42B620140F493DB42F741351DFBF343C0936D58588EE8004B8B2A218D997FF1",
+  "runtime": "8.0.32",
+  "processors": 12,
+  "os": "Microsoft Windows 10.0.26300"
+}
+PASS: 3072 pixels verified; PPM saved to F:\simdSkia\artifacts\rectangle.ppm
+37 public types; 425 API entries; SimdSkia.Compatibility, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+202 public types; 3235 API entries; SkiaSharp, Version=3.119.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756
+Matching: 425/3235; missing or different: 2810; added or different: 0
+Rendered 120 CPU scenes to F:\simdSkia\artifacts\managed
+Rendered 120 CPU scenes to F:\simdSkia\artifacts\reference
+PASS Winding and even-odd holes
+PASS Curve fill, implicit close, path snapshots
+PASS AA fractional coverage
+PASS Curve AA agrees with independent area integration
+PASS Paint retains shader data and applies shader opacity
+PASS Miter stroke and butt line
+PASS Saved clip and shader
+PASS Bitmap nearest sampling and opacity
+PASS PNG roundtrip and lifecycle
+PASS Managed DEFLATE stored blocks and checksums
+PASS Independent fixed-Huffman DEFLATE fixture
+PASS SIMD clear agrees with scalar for formats, stride, alpha, and tails
+PASS Managed Chinese/Latin TrueType glyphs and text
+PASS Decode native-encoded compressed PNG fixtures
+PASS blend-Bgra8888-Opaque: max=1, changedPixels=612, threshold=1
+PASS blend-Bgra8888-Premul: max=1, changedPixels=612, threshold=1
+PASS blend-Bgra8888-Unpremul: max=1, changedPixels=864, threshold=1
+PASS blend-Rgba8888-Opaque: max=1, changedPixels=612, threshold=1
+PASS blend-Rgba8888-Premul: max=1, changedPixels=612, threshold=1
+PASS blend-Rgba8888-Unpremul: max=1, changedPixels=864, threshold=1
+FAIL chinese-Bgra8888-Opaque: max=62, changedPixels=259, threshold=32
+FAIL chinese-Bgra8888-Premul: max=62, changedPixels=259, threshold=32
+FAIL chinese-Bgra8888-Unpremul: max=61, changedPixels=258, threshold=32
+FAIL chinese-Rgba8888-Opaque: max=61, changedPixels=257, threshold=32
+FAIL chinese-Rgba8888-Premul: max=61, changedPixels=257, threshold=32
+FAIL chinese-Rgba8888-Unpremul: max=61, changedPixels=258, threshold=32
+PASS clear-Bgra8888-Opaque: max=0, changedPixels=0, threshold=0
+PASS clear-Bgra8888-Premul: max=0, changedPixels=0, threshold=0
+PASS clear-Bgra8888-Unpremul: max=0, changedPixels=0, threshold=0
+PASS clear-Rgba8888-Opaque: max=0, changedPixels=0, threshold=0
+PASS clear-Rgba8888-Premul: max=0, changedPixels=0, threshold=0
+PASS clear-Rgba8888-Unpremul: max=0, changedPixels=0, threshold=0
+PASS clear-then-blend-Bgra8888-Opaque: max=0, changedPixels=0, threshold=1
+PASS clear-then-blend-Bgra8888-Premul: max=0, changedPixels=0, threshold=1
+PASS clear-then-blend-Bgra8888-Unpremul: max=1, changedPixels=384, threshold=1
+PASS clear-then-blend-Rgba8888-Opaque: max=0, changedPixels=0, threshold=1
+PASS clear-then-blend-Rgba8888-Premul: max=0, changedPixels=0, threshold=1
+PASS clear-then-blend-Rgba8888-Unpremul: max=1, changedPixels=384, threshold=1
+PASS clip-Bgra8888-Opaque: max=0, changedPixels=0, threshold=0
+PASS clip-Bgra8888-Premul: max=0, changedPixels=0, threshold=0
+PASS clip-Bgra8888-Unpremul: max=0, changedPixels=0, threshold=0
+PASS clip-Rgba8888-Opaque: max=0, changedPixels=0, threshold=0
+PASS clip-Rgba8888-Premul: max=0, changedPixels=0, threshold=0
+PASS clip-Rgba8888-Unpremul: max=0, changedPixels=0, threshold=0
+PASS evenodd-Bgra8888-Opaque: max=0, changedPixels=0, threshold=0
+PASS evenodd-Bgra8888-Premul: max=0, changedPixels=0, threshold=0
+PASS evenodd-Bgra8888-Unpremul: max=0, changedPixels=0, threshold=0
+PASS evenodd-Rgba8888-Opaque: max=0, changedPixels=0, threshold=0
+PASS evenodd-Rgba8888-Premul: max=0, changedPixels=0, threshold=0
+PASS evenodd-Rgba8888-Unpremul: max=0, changedPixels=0, threshold=0
+PASS fractional-Bgra8888-Opaque: max=0, changedPixels=0, threshold=0
+PASS fractional-Bgra8888-Premul: max=0, changedPixels=0, threshold=0
+PASS fractional-Bgra8888-Unpremul: max=0, changedPixels=0, threshold=0
+PASS fractional-Rgba8888-Opaque: max=0, changedPixels=0, threshold=0
+PASS fractional-Rgba8888-Premul: max=0, changedPixels=0, threshold=0
+PASS fractional-Rgba8888-Unpremul: max=0, changedPixels=0, threshold=0
+PASS gradient-Bgra8888-Opaque: max=0, changedPixels=0, threshold=1
+PASS gradient-Bgra8888-Premul: max=0, changedPixels=0, threshold=1
+PASS gradient-Bgra8888-Unpremul: max=0, changedPixels=0, threshold=1
+PASS gradient-Rgba8888-Opaque: max=0, changedPixels=0, threshold=1
+PASS gradient-Rgba8888-Premul: max=0, changedPixels=0, threshold=1
+PASS gradient-Rgba8888-Unpremul: max=0, changedPixels=0, threshold=1
+PASS image-Bgra8888-Opaque: max=0, changedPixels=0, threshold=0
+PASS image-Bgra8888-Premul: max=0, changedPixels=0, threshold=0
+PASS image-Bgra8888-Unpremul: max=0, changedPixels=0, threshold=0
+PASS image-Rgba8888-Opaque: max=0, changedPixels=0, threshold=0
+PASS image-Rgba8888-Premul: max=0, changedPixels=0, threshold=0
+PASS image-Rgba8888-Unpremul: max=0, changedPixels=0, threshold=0
+PASS inverted-Bgra8888-Opaque: max=0, changedPixels=0, threshold=0
+PASS inverted-Bgra8888-Premul: max=0, changedPixels=0, threshold=0
+PASS inverted-Bgra8888-Unpremul: max=0, changedPixels=0, threshold=0
+PASS inverted-Rgba8888-Opaque: max=0, changedPixels=0, threshold=0
+PASS inverted-Rgba8888-Premul: max=0, changedPixels=0, threshold=0
+PASS inverted-Rgba8888-Unpremul: max=0, changedPixels=0, threshold=0
+PASS mirror-Bgra8888-Opaque: max=0, changedPixels=0, threshold=0
+PASS mirror-Bgra8888-Premul: max=0, changedPixels=0, threshold=0
+PASS mirror-Bgra8888-Unpremul: max=0, changedPixels=0, threshold=0
+PASS mirror-Rgba8888-Opaque: max=0, changedPixels=0, threshold=0
+PASS mirror-Rgba8888-Premul: max=0, changedPixels=0, threshold=0
+PASS mirror-Rgba8888-Unpremul: max=0, changedPixels=0, threshold=0
+FAIL path-aa-Bgra8888-Opaque: max=66, changedPixels=162, threshold=32
+FAIL path-aa-Bgra8888-Premul: max=66, changedPixels=162, threshold=32
+FAIL path-aa-Bgra8888-Unpremul: max=66, changedPixels=161, threshold=32
+FAIL path-aa-Rgba8888-Opaque: max=65, changedPixels=163, threshold=32
+FAIL path-aa-Rgba8888-Premul: max=65, changedPixels=163, threshold=32
+FAIL path-aa-Rgba8888-Unpremul: max=66, changedPixels=161, threshold=32
+PASS rect-aa-Bgra8888-Opaque: max=1, changedPixels=78, threshold=2
+PASS rect-aa-Bgra8888-Premul: max=1, changedPixels=78, threshold=2
+PASS rect-aa-Bgra8888-Unpremul: max=1, changedPixels=78, threshold=2
+PASS rect-aa-Rgba8888-Opaque: max=1, changedPixels=78, threshold=2
+PASS rect-aa-Rgba8888-Premul: max=1, changedPixels=78, threshold=2
+PASS rect-aa-Rgba8888-Unpremul: max=1, changedPixels=78, threshold=2
+PASS rectangle-Bgra8888-Opaque: max=0, changedPixels=0, threshold=0
+PASS rectangle-Bgra8888-Premul: max=0, changedPixels=0, threshold=0
+PASS rectangle-Bgra8888-Unpremul: max=0, changedPixels=0, threshold=0
+PASS rectangle-Rgba8888-Opaque: max=0, changedPixels=0, threshold=0
+PASS rectangle-Rgba8888-Premul: max=0, changedPixels=0, threshold=0
+PASS rectangle-Rgba8888-Unpremul: max=0, changedPixels=0, threshold=0
+PASS rotation-Bgra8888-Opaque: max=0, changedPixels=0, threshold=0
+PASS rotation-Bgra8888-Premul: max=0, changedPixels=0, threshold=0
+PASS rotation-Bgra8888-Unpremul: max=0, changedPixels=0, threshold=0
+PASS rotation-Rgba8888-Opaque: max=0, changedPixels=0, threshold=0
+PASS rotation-Rgba8888-Premul: max=0, changedPixels=0, threshold=0
+PASS rotation-Rgba8888-Unpremul: max=0, changedPixels=0, threshold=0
+PASS source-Bgra8888-Opaque: max=0, changedPixels=0, threshold=1
+PASS source-Bgra8888-Premul: max=0, changedPixels=0, threshold=1
+PASS source-Bgra8888-Unpremul: max=0, changedPixels=0, threshold=1
+PASS source-Rgba8888-Opaque: max=0, changedPixels=0, threshold=1
+PASS source-Rgba8888-Premul: max=0, changedPixels=0, threshold=1
+PASS source-Rgba8888-Unpremul: max=0, changedPixels=0, threshold=1
+PASS stroke-Bgra8888-Opaque: max=0, changedPixels=0, threshold=0
+PASS stroke-Bgra8888-Premul: max=0, changedPixels=0, threshold=0
+PASS stroke-Bgra8888-Unpremul: max=0, changedPixels=0, threshold=0
+PASS stroke-Rgba8888-Opaque: max=0, changedPixels=0, threshold=0
+PASS stroke-Rgba8888-Premul: max=0, changedPixels=0, threshold=0
+PASS stroke-Rgba8888-Unpremul: max=0, changedPixels=0, threshold=0
+PASS transform-Bgra8888-Opaque: max=0, changedPixels=0, threshold=0
+PASS transform-Bgra8888-Premul: max=0, changedPixels=0, threshold=0
+PASS transform-Bgra8888-Unpremul: max=0, changedPixels=0, threshold=0
+PASS transform-Rgba8888-Opaque: max=0, changedPixels=0, threshold=0
+PASS transform-Rgba8888-Premul: max=0, changedPixels=0, threshold=0
+PASS transform-Rgba8888-Unpremul: max=0, changedPixels=0, threshold=0
+PASS transparent-clear-Bgra8888-Opaque: max=0, changedPixels=0, threshold=0
+PASS transparent-clear-Bgra8888-Premul: max=0, changedPixels=0, threshold=0
+PASS transparent-clear-Bgra8888-Unpremul: max=0, changedPixels=0, threshold=0
+PASS transparent-clear-Rgba8888-Opaque: max=0, changedPixels=0, threshold=0
+PASS transparent-clear-Rgba8888-Premul: max=0, changedPixels=0, threshold=0
+PASS transparent-clear-Rgba8888-Unpremul: max=0, changedPixels=0, threshold=0
+PASS zero-area-Bgra8888-Opaque: max=0, changedPixels=0, threshold=0
+PASS zero-area-Bgra8888-Premul: max=0, changedPixels=0, threshold=0
+PASS zero-area-Bgra8888-Unpremul: max=0, changedPixels=0, threshold=0
+PASS zero-area-Rgba8888-Opaque: max=0, changedPixels=0, threshold=0
+PASS zero-area-Rgba8888-Premul: max=0, changedPixels=0, threshold=0
+PASS zero-area-Rgba8888-Unpremul: max=0, changedPixels=0, threshold=0
+PASS: 25 baseline behavior probes; 0 differences.
+FAIL: original pixel quality gate. Remaining independent tests will still run; final exit code is 2.
+{"checks":445,"maximumError":2,"maximumRmse":0.2581540752211363,"device":"NVIDIA GeForce GTX 1050 Ti","passed":true,"scope":"Actual Vulkan device filtering/coverage \u002B fence/readback; independent CPU scalar math; two formats, three alpha/composite modes, AA, rotation/mirror, fractional crops, stride and fine curves"}
+Vulkan device: NVIDIA GeForce GTX 1050 Ti; software=False
+PASS rectangle: maximum channel error 0
+PASS path-AA: maximum channel error 0
+PASS texture-cache-clip-source-disposed: maximum channel error 0
+PASS gradient: maximum channel error 0
+PASS miter-stroke-AA: maximum channel error 0
+PASS texture content invalidation and queued snapshots
+PASS Chinese/Latin glyph paths: maximum channel error 0
+PASS automatic submission across 128-command batch boundary: maximum channel error 0
+PASS completed-frame texture eviction
+{"Backend":"Vulkan compute (device coverage and composition)","DeviceName":"NVIDIA GeForce GTX 1050 Ti","IsSoftwareDevice":false,"CompletedBatches":16,"CachedTextures":32,"LastSubmitMilliseconds":0.0369,"LastCompletionMilliseconds":0.1205,"ThreadConstraintVerified":true,"ChineseVerified":true,"TextureVkImageVerified":true}
+PASS 313 GPU checks (309 exact-byte comparisons, 3 binning limits, 1 unsupported glyph rejection; tiles, winding, AA, inverse fills, clipping, shaders, cache, stride, initialization, CJK).
+PASS 599 Avalonia text-chain / cache / lifecycle checks. Behavior snapshot: artifacts/avalonia/tests-gpu

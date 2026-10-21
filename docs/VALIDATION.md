@@ -1,5 +1,9 @@
 # 验证：2026-10-21
 
+本轮最终结果见 [测试报告](TEST-REPORT-2026-10-21.md)。已运行 Release、原版 API/像素、实际 Avalonia/Win32、CPU/GPU、全硬件回退、PNG/JPEG/ICC、TTC、压缩与依赖隔离。功能回归通过，完整兼容性仍失败；`verify.ps1 -Reference -Gpu` 在执行全部检查后返回 2，失败像素行不会被跳过。CPU/GPU 性能及内存见 [最终报告](PERFORMANCE-FINAL-2026-10-21.md)，本地完整日志 `artifacts/completion/delivery-validation.log`。
+
+以下为同日此前的历史验收记录。
+
 最新续轮通过 6581 项真实 Avalonia/字形检查（硬件与 DOTNET_EnableHWIntrinsic=0），7845 项 CPU/编解码及 595 项旧文字链双模式通过；313 项 Vulkan 含新增字形命令明确拒绝、实际 Win32 呈现、生产依赖隔离通过。原版 22 份硬裁剪夹具一致，24 组独立文字及 3 个完整 UI 像素 gate 仍失败，阈值未放宽。最终 36 进程 CPU/内存/P95/P99/首绘和 SHA 清单见[续轮报告](AVALONIA-TEXT-CACHE.md)。验证日志在 `artifacts/text-cache-verification.log`。
 
 ## 前轮接入验收（历史记录）

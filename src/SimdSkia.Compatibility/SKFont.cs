@@ -17,9 +17,9 @@ public class SKTypeface : SKObject
     private SKTypeface(TrueTypeFont font)=>data=font;
     protected override void Dispose(bool disposing)=>data=null;
     public static SKTypeface FromFile(string path,int index=0)
-    {ArgumentNullException.ThrowIfNull(path);if(index!=0)throw new NotSupportedException("Font collection indexes are not supported.");return new(new(File.ReadAllBytes(path)));}
+    {ArgumentNullException.ThrowIfNull(path);return new(new(File.ReadAllBytes(path),index));}
     public static SKTypeface FromStream(Stream stream,int index=0)
-    {ArgumentNullException.ThrowIfNull(stream);if(index!=0)throw new NotSupportedException("Font collection indexes are not supported.");using var copy=new MemoryStream();stream.CopyTo(copy);return new(new(copy.ToArray()));}
+    {ArgumentNullException.ThrowIfNull(stream);using var copy=new MemoryStream();stream.CopyTo(copy);return new(new(copy.ToArray(),index));}
     public static SKTypeface Default
     {
         get

@@ -21,7 +21,7 @@ public sealed class PixelBuffer : IDisposable
     /// <summary>Rents bounded reusable storage and initializes all bytes before exposing it.</summary>
     public static PixelBuffer Rent(int width,int height,PixelFormat format=PixelFormat.Bgra8888,AlphaFormat alpha=AlphaFormat.Premultiplied)
     {
-        var buffer=new PixelBuffer(width,height,format,alpha,0,true);buffer.data!.AsSpan().Clear();
+        var buffer=new PixelBuffer(width,height,format,alpha,0,true);buffer.data!.AsSpan(0,checked(buffer.RowBytes*buffer.Height)).Clear();
         if(alpha==AlphaFormat.Opaque)for(int y=0;y<height;y++)for(int x=0;x<width;x++)buffer.data![y*buffer.RowBytes+x*4+3]=255;
         return buffer;
     }

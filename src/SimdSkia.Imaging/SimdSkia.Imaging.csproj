@@ -1,1 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk"><ItemGroup><ProjectReference Include="../SimdSkia.Core/SimdSkia.Core.csproj" /></ItemGroup></Project>
+<Project Sdk="Microsoft.NET.Sdk"><ItemGroup><ProjectReference Include="../SimdSkia.Core/SimdSkia.Core.csproj" /></ItemGroup><ItemGroup>
+  <PackageReference Include="JpegLibrary" Version="[0.4.32]" />
+</ItemGroup><ItemGroup>
+  <None Include="../../docs/licenses/JpegLibrary-MIT.txt" Link="licenses/JpegLibrary-MIT.txt" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="licenses" />
+  <None Include="../../docs/licenses/JpegLibrary-THIRD-PARTY-NOTICES.md" Link="licenses/JpegLibrary-THIRD-PARTY-NOTICES.md" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="licenses" />
+  <None Include="../../docs/licenses/Apache-2.0.txt" Link="licenses/Apache-2.0.txt" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="licenses" />
+</ItemGroup></Project>

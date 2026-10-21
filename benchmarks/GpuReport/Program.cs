@@ -94,7 +94,8 @@ foreach(var size in keys.Select(k=>(k.Width,k.Height)).Distinct())
     WriteChart(size.Width,size.Height);
 }
 text.AppendLine("## 解读边界\n\n- 每个‘op’是一整帧 GPU round-trip：绘制全部命令 + flush 提交 + fence 等待 + 主机回读拷贝。rectangles/blend 每帧 65 条命令（1 clear+64 draw），chinese 含 4 行文字，其余 1 项。几何/字体/纹理准备不在计时内；每帧的命令录制、提交、等待与回读在计时内。\n- 双方目标像素格式 RGBA8888/Premul，同一 GPU 上各自独立初始化 Vulkan（原版用 graphics queue + GRContext 光栅后端；SimdSkia 用 compute queue + 自研 compute shader 管线）。\n- 固定场景允许正常复用纹理/缓存（SimdSkia 纹理缓存 ≤32 个/64MiB LRU）；curve-changing/chinese-changing 场景每帧移动 1/16 像素、97 个位置循环，强制覆盖率/文字缓存持续未命中。变化场景像素 gate 检查 frame=0。\n- 质量门槛以原版 GPU 输出为基准逐通道比较；AA/字体必须检查本轮相同尺寸的像素 gate；失败的时间保留为诊断数据。未提高容差，也未降低画质。\n- B/op 是线程托管分配，不含 native malloc 与显存。private/working set 是整个进程，包含 runtime、Vulkan 驱动映射、native/字体缓存和先前场景，不能当显存或纯渲染缓冲内存公平排名；peak working set 是进程历史峰值。\n- P95 是实际单帧延迟，包含 GC/调度/驱动抖动；耗时列是批均值中位数，两者定义不同。\n- 帧时间由 CPU 计时（Stopwatch）测得，包含每帧回读同步；驱动内部排队可能引入噪声。样本不控制 OS power plan/Turbo/其他用户进程，不给所有硬件的优势承诺。\n");
-Directory.CreateDirectory(Path.GetDirectoryName(markdownPath)!);File.WriteAllText(markdownPath,text.ToString());Console.WriteLine($"Report: {markdownPath}; {rows.Count} engine/workload rows.");return 0;
+var measured=rows.Where(r=>r.Engine=="simd").ToArray();text.AppendLine($"\nGPU pixel acceptance: {measured.Count(r=>r.PixelPass)}/{measured.Length}. Failed rows remain diagnostic; no threshold was relaxed.");
+Directory.CreateDirectory(Path.GetDirectoryName(markdownPath)!);File.WriteAllText(markdownPath,text.ToString());Console.WriteLine($"Report: {markdownPath}; {rows.Count} engine/workload rows.");return measured.All(r=>r.PixelPass)?0:2;
 
 void WriteChart(int width,int height)
 {

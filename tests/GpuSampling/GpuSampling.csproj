@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../../src/SimdSkia.Cpu/SimdSkia.Cpu.csproj" /><ProjectReference Include="../../src/SimdSkia.Gpu/SimdSkia.Gpu.csproj" /></ItemGroup>
+</Project>

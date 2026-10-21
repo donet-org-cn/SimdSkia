@@ -21,7 +21,7 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
     private readonly List<Queued> pending=[];
     private readonly Dictionary<PixelBuffer,ImageEntry> imageCache=[];
     private readonly List<Texture> retiredTextures=[];
-    private readonly Dictionary<(PathGeometry Geometry,Matrix3 Transform),EdgeEntry> edgeCache=[];
+    private readonly Dictionary<(PathGeometry Geometry,Matrix3 Transform,float Tolerance),EdgeEntry> edgeCache=[];
     private bool disposed,faulted;
     private long useCounter;
     private long edgeBytes;
@@ -38,6 +38,7 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
         public float[] Edges=>Path?.Edges??[];
         public float[] Data=>Path?.Tiles?.Data??Edges;
     }
+    private static int EdgePayload(Queued item)=>checked((item.Data.Length*4+checked((item.Command.CoverageClip?.Width??0)*(item.Command.CoverageClip?.Height??0))+15)&~15);
     private sealed class ImageEntry
     {
         public required Texture Texture;public required byte[] Snapshot;public long Used;
@@ -137,8 +138,10 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
     {
         Validate();if(!Enum.IsDefined(command.Kind)||!Enum.IsDefined(command.Paint.Composite))throw new NotSupportedException("Unknown Vulkan drawing command/composite mode.");
         if(command.Kind==CommandKind.DrawGlyphRun)throw new NotSupportedException("Vulkan glyph masks are not implemented.");
-        if(command.CoverageClip is not null||command.ImageSource is not null||command.Sampling!=ImageSampling.Nearest||command.CurveTolerance!=0.125f)
-            throw new NotSupportedException("Vulkan coverage clips, cropped/filtered sampling and custom curve tolerance are not implemented.");
+        if(command.Kind==CommandKind.Clear&&command.CoverageClip is not null)throw new NotSupportedException("Clear with a coverage clip is undefined; use a Source rectangle.");
+        if(!Enum.IsDefined(command.Sampling))throw new NotSupportedException("Unknown Vulkan image sampling mode.");
+        if(!float.IsFinite(command.CurveTolerance)||command.CurveTolerance<=0)throw new ArgumentOutOfRangeException(nameof(command.CurveTolerance));
+        if(command.CoverageClip is {} mask&&(long)mask.Width*mask.Height>64*1024*1024)throw new NotSupportedException("A coverage clip exceeds the 64 MiB upload budget.");
         if(!command.Transform.IsFinite||!command.Transform.IsAffine)throw new NotSupportedException("Vulkan drawing requires a finite affine transform.");
         if(!command.Rectangle.IsFinite)throw new ArgumentException("Rectangle coordinates must be finite.");
         if(command.Clip is {} clip&&!clip.IsFinite)throw new ArgumentException("Clip coordinates must be finite.");
@@ -149,12 +152,15 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
         if(command.Kind==CommandKind.FillPath)
         {
             var geometry=command.Path??throw new ArgumentException("Path geometry missing.");
-            edges=ResolveEdges(geometry,command.Transform);
+            edges=ResolveEdges(geometry,command.Transform,command.CurveTolerance);
         }
         Texture? texture=null;
         if(command.Kind==CommandKind.DrawImage)
         {
             var image=command.Image??throw new ArgumentException("Image pixels missing.");image.ThrowIfDisposed();
+            var source=command.ImageSource??new RectF(0,0,image.Width,image.Height);
+            if(!source.IsFinite||source.IsEmpty||source.Left<0||source.Top<0||source.Right>image.Width||source.Bottom>image.Height)throw new ArgumentOutOfRangeException(nameof(command.ImageSource));
+            if(command.Rectangle.IsEmpty)return;
             if(!imageCache.TryGetValue(image,out var entry)||!MatchesSnapshot(image,entry.Snapshot))
             {
                 // The stale texture may still be referenced by queued commands in this batch;
@@ -177,17 +183,17 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
         }
         pending.Add(new(command with {Image=null},edges,texture));
     }
-    private EdgeEntry ResolveEdges(PathGeometry geometry,Matrix3 transform)
+    private EdgeEntry ResolveEdges(PathGeometry geometry,Matrix3 transform,float tolerance)
     {
-        if(edgeCache.TryGetValue((geometry,transform),out var cached)){cached.Used=++useCounter;return cached;}
-        var contours=geometry.Flatten(transform);
+        if(edgeCache.TryGetValue((geometry,transform,tolerance),out var cached)){cached.Used=++useCounter;return cached;}
+        var contours=geometry.Flatten(transform,tolerance);
         int count=0;foreach(var contour in contours)for(int i=0;i<contour.Length;i++)if(contour[i]!=contour[(i+1)%contour.Length])count++;
         var edges=new float[checked(count*4)];int at=0;
         foreach(var contour in contours)for(int i=0;i<contour.Length;i++)
         {var a=contour[i];var b=contour[(i+1)%contour.Length];if(a==b)continue;edges[at++]=a.X;edges[at++]=a.Y;edges[at++]=b.X;edges[at++]=b.Y;}
         var entry=new EdgeEntry{Geometry=geometry,Edges=edges,Tiles=optimizedCoverage?TiledEdges.Create(contours,edges,target.Width,target.Height):null,Used=++useCounter};
         edgeBytes+=entry.Bytes;
-        edgeCache.Add((geometry,transform),entry);
+        edgeCache.Add((geometry,transform,tolerance),entry);
         foreach(var victim in edgeCache.OrderBy(e=>e.Value.Used).ToArray())
         {if(edgeCache.Count<=64&&edgeBytes<=16*1024*1024)break;edgeBytes-=victim.Value.Bytes;edgeCache.Remove(victim.Key);}
         return entry;
@@ -203,7 +209,7 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
         Validate();if(pending.Count==0)return;
         bool submitted=false,completed=false;
         int edgeStride=256,paramStride=256;
-        int edgeBytesNeeded=pending.Sum(p=>((p.Data.Length*4+255)&~255))+edgeStride,paramBytesNeeded=pending.Count*paramStride+paramStride;
+        int edgeBytesNeeded=pending.Sum(p=>((EdgePayload(p)+255)&~255))+edgeStride,paramBytesNeeded=pending.Count*paramStride+paramStride;
         try
         {
             if(edgesArena is null||edgesArena.Size<edgeBytesNeeded)
@@ -221,19 +227,21 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
             Vk.vkCmdBindPipeline(command,1,pipeline);
             foreach(var texture in imageCache.Values.Select(e=>e.Texture).Concat(retiredTextures).Prepend(emptyTexture!).Where(t=>!t.Uploaded))RecordTextureUpload(texture);
             var buffers=stackalloc Vk.DescriptorBuffer[4];var writes=stackalloc Vk.WriteDescriptor[4];int setIndex=0,edgeOffset=0,paramOffset=0;
-            Span<uint> words=stackalloc uint[46];
+            Span<uint> words=stackalloc uint[58];
             foreach(var item in pending)
             {
                 var cmd=item.Command;
                 if(cmd.Kind!=CommandKind.Clear&&!cmd.Transform.TryInvert(out _))continue;
-                int edgeSize=item.Data.Length*4;var edges=empty!;int edgeBase=0;
+                int edgeSize=EdgePayload(item);var edges=empty!;int edgeBase=0;
                 if(edgeSize>0)
                 {
                     edgeBase=(edgeOffset+255)&~255;
-                    MemoryMarshal.AsBytes(item.Data.AsSpan()).CopyTo(edgesArena!.Bytes.Slice(edgeBase,edgeSize));
+                    var payload=edgesArena!.Bytes.Slice(edgeBase,edgeSize);MemoryMarshal.AsBytes(item.Data.AsSpan()).CopyTo(payload);
+                    if(item.Command.CoverageClip is {} coverage)
+                    {var bytes=payload[(item.Data.Length*4)..];bytes.Clear();for(int y=0;y<coverage.Height;y++)coverage.GetRow(coverage.Top+y).CopyTo(bytes.Slice(y*coverage.Width,coverage.Width));}
                     edges=edgesArena;edgeOffset=edgeBase+edgeSize;
                 }
-                int paramBase=(paramOffset+255)&~255;var parameters=paramsArena!;int paramSize=46*4;Prepare(item,words);words.CopyTo(MemoryMarshal.Cast<byte,uint>(parameters.Bytes.Slice(paramBase,paramSize)));paramOffset=paramBase+paramSize;
+                int paramBase=(paramOffset+255)&~255;var parameters=paramsArena!;int paramSize=58*4;Prepare(item,words);words.CopyTo(MemoryMarshal.Cast<byte,uint>(parameters.Bytes.Slice(paramBase,paramSize)));paramOffset=paramBase+paramSize;
                 ulong set=descriptorSets![setIndex++];
                 buffers[0]=output!.Descriptor;
                 buffers[1]=new(){Buffer=edges.Handle,Offset=(ulong)(edges==empty?0:edgeBase),Range=(ulong)(edgeSize>0?edgeSize:edges.Size)};
@@ -283,15 +291,19 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
         words[19]=(uint)(item.Texture?.Width??1);words[20]=(uint)(item.Texture?.Height??1);
         (cmd.Kind==CommandKind.FillPath?cmd.ShaderTransform??cmd.Transform:cmd.Transform).TryInvert(out var inverse);floats[22]=inverse.M00;floats[23]=inverse.M01;floats[24]=inverse.M02;floats[25]=inverse.M10;floats[26]=inverse.M11;floats[27]=inverse.M12;
         if(cmd.Paint.Shader is LinearGradient gradient){words[16]=1;words[17]=Pack(gradient.StartColor);words[18]=Pack(gradient.EndColor);floats[28]=gradient.Start.X;floats[29]=gradient.Start.Y;floats[30]=gradient.End.X;floats[31]=gradient.End.Y;}
-        if(cmd.Kind==CommandKind.FillRectangle&&cmd.Transform.M01==0&&cmd.Transform.M10==0)
+        if(cmd.Kind is CommandKind.FillRectangle or CommandKind.DrawImage&&cmd.Transform.M01==0&&cmd.Transform.M10==0)
         {
             words[32]=1;var a=cmd.Transform.Map(rect.Left,rect.Top);var b=cmd.Transform.Map(rect.Right,rect.Bottom);
-            floats[33]=MathF.Floor(MathF.Min(a.X,b.X)+.5f);floats[34]=MathF.Floor(MathF.Min(a.Y,b.Y)+.5f);floats[35]=MathF.Floor(MathF.Max(a.X,b.X)+.5f);floats[36]=MathF.Floor(MathF.Max(a.Y,b.Y)+.5f);
+            float Edge(float v)=>cmd.Kind==CommandKind.DrawImage?cmd.Paint.Antialias?v:MathF.Ceiling(v-.5f):MathF.Floor(v+.5f);
+            floats[33]=Edge(MathF.Min(a.X,b.X));floats[34]=Edge(MathF.Min(a.Y,b.Y));floats[35]=Edge(MathF.Max(a.X,b.X));floats[36]=Edge(MathF.Max(a.Y,b.Y));
         }
         ComputeBounds(cmd,item.Edges,clip,rect,out var originX,out var originY,out var extentX,out var extentY);
         words[37]=(uint)originX;words[38]=(uint)originY;words[39]=(uint)extentX;words[40]=(uint)extentY;
         if(item.Path?.Tiles is {} tiles){words[41]=(uint)tiles.Columns;words[42]=(uint)tiles.Rows;words[43]=(uint)tiles.Left;words[44]=(uint)tiles.Top;}
         words[45]=optimizedCoverage?1u:0u;
+        var source=cmd.ImageSource??new RectF(0,0,words[19],words[20]);floats[46]=source.Left;floats[47]=source.Top;floats[48]=source.Right;floats[49]=source.Bottom;
+        words[50]=cmd.ImageSource is not null||cmd.Sampling!=ImageSampling.Nearest||cmd.NearestLowerBoundary?(uint)cmd.Sampling+1:0;words[51]=cmd.NearestLowerBoundary?1u:0u;
+        if(cmd.CoverageClip is {} coverage){words[52]=(uint)item.Data.Length;words[53]=unchecked((uint)coverage.Left);words[54]=unchecked((uint)coverage.Top);words[55]=(uint)coverage.Width;words[56]=(uint)coverage.Height;words[57]=1;}
     }
     private void ComputeBounds(in DrawingCommand cmd,float[] edges,RectF clip,RectF rect,out int originX,out int originY,out int extentX,out int extentY)
     {

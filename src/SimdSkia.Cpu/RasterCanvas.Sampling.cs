@@ -74,7 +74,7 @@ public sealed partial class RasterCanvas
         using var snapshot=image.GetPixelSpan().Overlaps(target.GetPixelSpan())?image.Clone():null;
         image=snapshot??image;
         if(TryBlit(command,source,image))return;
-        if(TryDrawAxisSampled(command,source,image,inverse))return;
+        if(!command.NearestLowerBoundary&&TryDrawAxisSampled(command,source,image,inverse))return;
         if(!imageRectangles.TryGetValue(command.Rectangle,out var geometry))
         {geometry=PathGeometry.Rectangle(command.Rectangle);if(imageRectangles.Count>=16)imageRectangles.Clear();imageRectangles.Add(command.Rectangle,geometry);}
         var mask=GetMask(geometry,command);var rect=command.Rectangle;
@@ -86,7 +86,7 @@ public sealed partial class RasterCanvas
             {
                 byte coverage=ClipCoverage(run.Coverage,x,run.Y,command.CoverageClip);if(coverage==0)continue;
                 var p=inverse.Map(x+.5f,run.Y+.5f);
-                var sample=Sample(image,source.Left+(p.X-rect.Left)*sx-.5f,source.Top+(p.Y-rect.Top)*sy-.5f,command.Sampling,source);
+                var sample=Sample(image,source.Left+(p.X-rect.Left)*sx-.5f,source.Top+(p.Y-rect.Top)*sy-.5f,command.Sampling,source,command.NearestLowerBoundary);
                 CompositePremultiplied(row.Slice(x*4,4),sample,command.Paint.Color.A,coverage,command.Paint.Composite);
             }
         }
@@ -162,7 +162,7 @@ public sealed partial class RasterCanvas
         return true;
     }
     // Filtering takes place in premultiplied space so transparent colored texels cannot bleed.
-    private static Rgba32 Sample(PixelBuffer image,float x,float y,ImageSampling sampling,RectF source)
+    private static Rgba32 Sample(PixelBuffer image,float x,float y,ImageSampling sampling,RectF source,bool nearestLowerBoundary=false)
     {
         int left=(int)MathF.Floor(source.Left),top=(int)MathF.Floor(source.Top),right=(int)MathF.Ceiling(source.Right)-1,bottom=(int)MathF.Ceiling(source.Bottom)-1;
         Rgba32 Read(int ix,int iy)
@@ -172,7 +172,7 @@ public sealed partial class RasterCanvas
             if(image.Alpha==AlphaFormat.Straight){r=PixelBuffer.Multiply(r,a);g=PixelBuffer.Multiply(g,a);b=PixelBuffer.Multiply(b,a);}
             return new(r,g,b,a);
         }
-        if(sampling==ImageSampling.Nearest)return Read((int)MathF.Floor(x+.5f),(int)MathF.Floor(y+.5f));
+        if(sampling==ImageSampling.Nearest)return nearestLowerBoundary?Read((int)MathF.Ceiling(x+.5f)-1,(int)MathF.Ceiling(y+.5f)-1):Read((int)MathF.Floor(x+.5f),(int)MathF.Floor(y+.5f));
         int ix=(int)MathF.Floor(x),iy=(int)MathF.Floor(y);float fx=x-ix,fy=y-iy;
         float r=0,g=0,b=0,a=0;
         if(sampling==ImageSampling.Bilinear)

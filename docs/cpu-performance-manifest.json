@@ -1,0 +1,416 @@
+﻿{
+    "SceneSha256":  "1DF146B2FF3CF43BEBF64BD630D60D8E762800D4F396C58D4FBF74833C52C709",
+    "Backend":  "CPU software; real Avalonia controls, layout/templates, RenderTargetBitmap + ImmediateRenderer; no window-present or GPU timing",
+    "Configurations":  [
+                           {
+                               "Scene":  "controls",
+                               "Scale":  "1"
+                           },
+                           {
+                               "Scene":  "scroll",
+                               "Scale":  "1"
+                           },
+                           {
+                               "Scene":  "controls",
+                               "Scale":  "1.5"
+                           }
+                       ],
+    "WarmupSeconds":  2.5,
+    "FontSha256":  "A42B620140F493DB42F741351DFBF343C0936D58588EE8004B8B2A218D997FF1",
+    "Files":  [
+                  {
+                      "Engine":  "before",
+                      "Name":  "Avalonia.Base.dll",
+                      "Sha256":  "FFAF5263F964EA313ED29361C0DC86ED20FA7FDA1473AEFA687FDE3A90622F8D"
+                  },
+                  {
+                      "Engine":  "before",
+                      "Name":  "Avalonia.Controls.dll",
+                      "Sha256":  "E8547664A40243B2D2A25FF828676D1F4A4B92FD2A829B7E8AE669FA584E784D"
+                  },
+                  {
+                      "Engine":  "before",
+                      "Name":  "Avalonia.DesignerSupport.dll",
+                      "Sha256":  "B7F92BBE2F3FCA66C51840AAC6074FB2B8B193016B710EEA516E5780E2DB157D"
+                  },
+                  {
+                      "Engine":  "before",
+                      "Name":  "Avalonia.Dialogs.dll",
+                      "Sha256":  "0EC8E87B945042B764F1B95A39E19CA66C9301392CEA1DD42D57088DE8E9B766"
+                  },
+                  {
+                      "Engine":  "before",
+                      "Name":  "Avalonia.dll",
+                      "Sha256":  "8A40C0D3449C815C4933753277A225822DADF2615CB4318092AA806E51F8989D"
+                  },
+                  {
+                      "Engine":  "before",
+                      "Name":  "Avalonia.Headless.dll",
+                      "Sha256":  "395836E379D7365DF686ABCB70375EF61BDB72D565E90CF5EE97C1D65DD610BF"
+                  },
+                  {
+                      "Engine":  "before",
+                      "Name":  "Avalonia.Markup.dll",
+                      "Sha256":  "3432255CFD5097079DB25DCAA428161C673F26CC1235C209DE90B1EC1C2648BE"
+                  },
+                  {
+                      "Engine":  "before",
+                      "Name":  "Avalonia.Markup.Xaml.dll",
+                      "Sha256":  "1AE78663406C421F6D2E674DE2E36E481800E6FE6FCFFB1CCD91D70C4AC51095"
+                  },
+                  {
+                      "Engine":  "before",
+                      "Name":  "Avalonia.Metal.dll",
+                      "Sha256":  "EE0FB78EA230A6B772BC7C0E6A5F2BB5BB90F27AF713EF8DB247228937898587"
+                  },
+                  {
+                      "Engine":  "before",
+                      "Name":  "Avalonia.MicroCom.dll",
+                      "Sha256":  "0FC84BF41612CB4363BA293F7ACEEE1B522694D7802E1D8D4E170A02EAFCFF5B"
+                  },
+                  {
+                      "Engine":  "before",
+                      "Name":  "Avalonia.OpenGL.dll",
+                      "Sha256":  "5799A29126F563ACFFE6964A7CC079978AEC05799D3262F1AA8471AD0F6EA99B"
+                  },
+                  {
+                      "Engine":  "before",
+                      "Name":  "Avalonia.Remote.Protocol.dll",
+                      "Sha256":  "CA68614FFE3539BD6CCF6B3BE7F80B6D189AFFFAF2A70EFB95AC2B7928AF17ED"
+                  },
+                  {
+                      "Engine":  "before",
+                      "Name":  "Avalonia.Themes.Fluent.dll",
+                      "Sha256":  "8526C2367C360FF55E3792D1D95257106C4A905EBBF12A5E60C9E28C0B9F0C1C"
+                  },
+                  {
+                      "Engine":  "before",
+                      "Name":  "Avalonia.Vulkan.dll",
+                      "Sha256":  "10A2336B567D6C2A9A9D8C609D2739874C0B59A2B0B174D433F5E9143D719052"
+                  },
+                  {
+                      "Engine":  "before",
+                      "Name":  "SimdSkia.Avalonia.Controls.Tests.dll",
+                      "Sha256":  "6DA652095408C12000CFCC347E3DE857EE991F4BAF61BE4D9275229E18715910"
+                  },
+                  {
+                      "Engine":  "before",
+                      "Name":  "SimdSkia.Avalonia.dll",
+                      "Sha256":  "1CD28D505B11FCB7E009F75B42B532C42745A0639AD5355DFC6703057F4A0FC1"
+                  },
+                  {
+                      "Engine":  "before",
+                      "Name":  "SimdSkia.Core.dll",
+                      "Sha256":  "38031C1F297F446A4734C042B8A36BBBFD17D698947F8A981A0FDF95887DCFD5"
+                  },
+                  {
+                      "Engine":  "before",
+                      "Name":  "SimdSkia.Cpu.dll",
+                      "Sha256":  "F7DC7637486152F9B2455E636894614A362E9D8A3D401A7F50F20E6E2E29329F"
+                  },
+                  {
+                      "Engine":  "before",
+                      "Name":  "SimdSkia.Imaging.dll",
+                      "Sha256":  "43D8CF5A02E4F26CF2C19A236D5D7920064537B72901D4216A8C9D555336B414"
+                  },
+                  {
+                      "Engine":  "before",
+                      "Name":  "SimdSkia.Text.dll",
+                      "Sha256":  "0B054F2D315B9F60E83CEB7850DAEE1E43343FB7FCEB65FF85A324CC59A56854"
+                  },
+                  {
+                      "Engine":  "after",
+                      "Name":  "Avalonia.Base.dll",
+                      "Sha256":  "FFAF5263F964EA313ED29361C0DC86ED20FA7FDA1473AEFA687FDE3A90622F8D"
+                  },
+                  {
+                      "Engine":  "after",
+                      "Name":  "Avalonia.Controls.dll",
+                      "Sha256":  "E8547664A40243B2D2A25FF828676D1F4A4B92FD2A829B7E8AE669FA584E784D"
+                  },
+                  {
+                      "Engine":  "after",
+                      "Name":  "Avalonia.DesignerSupport.dll",
+                      "Sha256":  "B7F92BBE2F3FCA66C51840AAC6074FB2B8B193016B710EEA516E5780E2DB157D"
+                  },
+                  {
+                      "Engine":  "after",
+                      "Name":  "Avalonia.Dialogs.dll",
+                      "Sha256":  "0EC8E87B945042B764F1B95A39E19CA66C9301392CEA1DD42D57088DE8E9B766"
+                  },
+                  {
+                      "Engine":  "after",
+                      "Name":  "Avalonia.dll",
+                      "Sha256":  "8A40C0D3449C815C4933753277A225822DADF2615CB4318092AA806E51F8989D"
+                  },
+                  {
+                      "Engine":  "after",
+                      "Name":  "Avalonia.Headless.dll",
+                      "Sha256":  "395836E379D7365DF686ABCB70375EF61BDB72D565E90CF5EE97C1D65DD610BF"
+                  },
+                  {
+                      "Engine":  "after",
+                      "Name":  "Avalonia.Markup.dll",
+                      "Sha256":  "3432255CFD5097079DB25DCAA428161C673F26CC1235C209DE90B1EC1C2648BE"
+                  },
+                  {
+                      "Engine":  "after",
+                      "Name":  "Avalonia.Markup.Xaml.dll",
+                      "Sha256":  "1AE78663406C421F6D2E674DE2E36E481800E6FE6FCFFB1CCD91D70C4AC51095"
+                  },
+                  {
+                      "Engine":  "after",
+                      "Name":  "Avalonia.Metal.dll",
+                      "Sha256":  "EE0FB78EA230A6B772BC7C0E6A5F2BB5BB90F27AF713EF8DB247228937898587"
+                  },
+                  {
+                      "Engine":  "after",
+                      "Name":  "Avalonia.MicroCom.dll",
+                      "Sha256":  "0FC84BF41612CB4363BA293F7ACEEE1B522694D7802E1D8D4E170A02EAFCFF5B"
+                  },
+                  {
+                      "Engine":  "after",
+                      "Name":  "Avalonia.OpenGL.dll",
+                      "Sha256":  "5799A29126F563ACFFE6964A7CC079978AEC05799D3262F1AA8471AD0F6EA99B"
+                  },
+                  {
+                      "Engine":  "after",
+                      "Name":  "Avalonia.Remote.Protocol.dll",
+                      "Sha256":  "CA68614FFE3539BD6CCF6B3BE7F80B6D189AFFFAF2A70EFB95AC2B7928AF17ED"
+                  },
+                  {
+                      "Engine":  "after",
+                      "Name":  "Avalonia.Themes.Fluent.dll",
+                      "Sha256":  "8526C2367C360FF55E3792D1D95257106C4A905EBBF12A5E60C9E28C0B9F0C1C"
+                  },
+                  {
+                      "Engine":  "after",
+                      "Name":  "Avalonia.Vulkan.dll",
+                      "Sha256":  "10A2336B567D6C2A9A9D8C609D2739874C0B59A2B0B174D433F5E9143D719052"
+                  },
+                  {
+                      "Engine":  "after",
+                      "Name":  "SimdSkia.Avalonia.Controls.Tests.dll",
+                      "Sha256":  "7AD112A8D710630C2C686458CAD5839148EBB4ABAC7D68499647663F202E53F0"
+                  },
+                  {
+                      "Engine":  "after",
+                      "Name":  "SimdSkia.Avalonia.dll",
+                      "Sha256":  "F20D9044B5AFCE7412FD2D65E17D6060E6E45307DDBD23FA2FE6EC652A82818D"
+                  },
+                  {
+                      "Engine":  "after",
+                      "Name":  "SimdSkia.Core.dll",
+                      "Sha256":  "91C1C7FE741410C59A06F079644AF739F8BDE66A6544C9B818BCFC0AF02B095C"
+                  },
+                  {
+                      "Engine":  "after",
+                      "Name":  "SimdSkia.Cpu.dll",
+                      "Sha256":  "976FCF00CA2DDCCABFD53CB18A466225E53C302AA621FDD557FD01FBB8F7E6C8"
+                  },
+                  {
+                      "Engine":  "after",
+                      "Name":  "SimdSkia.Imaging.dll",
+                      "Sha256":  "D85214F4A8B1158B40DBBF8BACF6A10311D7CD014340089CD9D43B0D169A8468"
+                  },
+                  {
+                      "Engine":  "after",
+                      "Name":  "SimdSkia.Text.dll",
+                      "Sha256":  "E4401B22BC0596FF83A61F599030CA23888F6223256B3221E0B189BCFF1ADD11"
+                  },
+                  {
+                      "Engine":  "reference",
+                      "Name":  "Avalonia.Base.dll",
+                      "Sha256":  "FFAF5263F964EA313ED29361C0DC86ED20FA7FDA1473AEFA687FDE3A90622F8D"
+                  },
+                  {
+                      "Engine":  "reference",
+                      "Name":  "Avalonia.Controls.dll",
+                      "Sha256":  "E8547664A40243B2D2A25FF828676D1F4A4B92FD2A829B7E8AE669FA584E784D"
+                  },
+                  {
+                      "Engine":  "reference",
+                      "Name":  "Avalonia.DesignerSupport.dll",
+                      "Sha256":  "B7F92BBE2F3FCA66C51840AAC6074FB2B8B193016B710EEA516E5780E2DB157D"
+                  },
+                  {
+                      "Engine":  "reference",
+                      "Name":  "Avalonia.Dialogs.dll",
+                      "Sha256":  "0EC8E87B945042B764F1B95A39E19CA66C9301392CEA1DD42D57088DE8E9B766"
+                  },
+                  {
+                      "Engine":  "reference",
+                      "Name":  "Avalonia.dll",
+                      "Sha256":  "8A40C0D3449C815C4933753277A225822DADF2615CB4318092AA806E51F8989D"
+                  },
+                  {
+                      "Engine":  "reference",
+                      "Name":  "Avalonia.HarfBuzz.dll",
+                      "Sha256":  "14FFE168DF425D036DF710EF2C08B57D823B91106D5992B145159EBD750E5FDD"
+                  },
+                  {
+                      "Engine":  "reference",
+                      "Name":  "Avalonia.Headless.dll",
+                      "Sha256":  "395836E379D7365DF686ABCB70375EF61BDB72D565E90CF5EE97C1D65DD610BF"
+                  },
+                  {
+                      "Engine":  "reference",
+                      "Name":  "Avalonia.Markup.dll",
+                      "Sha256":  "3432255CFD5097079DB25DCAA428161C673F26CC1235C209DE90B1EC1C2648BE"
+                  },
+                  {
+                      "Engine":  "reference",
+                      "Name":  "Avalonia.Markup.Xaml.dll",
+                      "Sha256":  "1AE78663406C421F6D2E674DE2E36E481800E6FE6FCFFB1CCD91D70C4AC51095"
+                  },
+                  {
+                      "Engine":  "reference",
+                      "Name":  "Avalonia.Metal.dll",
+                      "Sha256":  "EE0FB78EA230A6B772BC7C0E6A5F2BB5BB90F27AF713EF8DB247228937898587"
+                  },
+                  {
+                      "Engine":  "reference",
+                      "Name":  "Avalonia.MicroCom.dll",
+                      "Sha256":  "0FC84BF41612CB4363BA293F7ACEEE1B522694D7802E1D8D4E170A02EAFCFF5B"
+                  },
+                  {
+                      "Engine":  "reference",
+                      "Name":  "Avalonia.OpenGL.dll",
+                      "Sha256":  "5799A29126F563ACFFE6964A7CC079978AEC05799D3262F1AA8471AD0F6EA99B"
+                  },
+                  {
+                      "Engine":  "reference",
+                      "Name":  "Avalonia.Remote.Protocol.dll",
+                      "Sha256":  "CA68614FFE3539BD6CCF6B3BE7F80B6D189AFFFAF2A70EFB95AC2B7928AF17ED"
+                  },
+                  {
+                      "Engine":  "reference",
+                      "Name":  "Avalonia.Skia.dll",
+                      "Sha256":  "A79B0D0FAE895E306EFF279FDED37EB7825F95745F9A89954480637ABF387273"
+                  },
+                  {
+                      "Engine":  "reference",
+                      "Name":  "Avalonia.Themes.Fluent.dll",
+                      "Sha256":  "8526C2367C360FF55E3792D1D95257106C4A905EBBF12A5E60C9E28C0B9F0C1C"
+                  },
+                  {
+                      "Engine":  "reference",
+                      "Name":  "Avalonia.Vulkan.dll",
+                      "Sha256":  "10A2336B567D6C2A9A9D8C609D2739874C0B59A2B0B174D433F5E9143D719052"
+                  },
+                  {
+                      "Engine":  "reference",
+                      "Name":  "AvaloniaControls.Reference.dll",
+                      "Sha256":  "E15A860AAC4875298A9924987C022E5730C923E115D40CB39AAF2477A85633C1"
+                  },
+                  {
+                      "Engine":  "reference",
+                      "Name":  "HarfBuzzSharp.dll",
+                      "Sha256":  "55E72AC23263F8E12484F3435E02EC22FAC9EFF6E6D169BB0A8C246BE6B99D29"
+                  },
+                  {
+                      "Engine":  "reference",
+                      "Name":  "SkiaSharp.dll",
+                      "Sha256":  "03A164AC1097F84793632DF806DA91E2829F0FCA65D8F2B922E45554AB083296"
+                  },
+                  {
+                      "Engine":  "default",
+                      "Name":  "Avalonia.Base.dll",
+                      "Sha256":  "FFAF5263F964EA313ED29361C0DC86ED20FA7FDA1473AEFA687FDE3A90622F8D"
+                  },
+                  {
+                      "Engine":  "default",
+                      "Name":  "Avalonia.Controls.dll",
+                      "Sha256":  "E8547664A40243B2D2A25FF828676D1F4A4B92FD2A829B7E8AE669FA584E784D"
+                  },
+                  {
+                      "Engine":  "default",
+                      "Name":  "Avalonia.DesignerSupport.dll",
+                      "Sha256":  "B7F92BBE2F3FCA66C51840AAC6074FB2B8B193016B710EEA516E5780E2DB157D"
+                  },
+                  {
+                      "Engine":  "default",
+                      "Name":  "Avalonia.Dialogs.dll",
+                      "Sha256":  "0EC8E87B945042B764F1B95A39E19CA66C9301392CEA1DD42D57088DE8E9B766"
+                  },
+                  {
+                      "Engine":  "default",
+                      "Name":  "Avalonia.dll",
+                      "Sha256":  "8A40C0D3449C815C4933753277A225822DADF2615CB4318092AA806E51F8989D"
+                  },
+                  {
+                      "Engine":  "default",
+                      "Name":  "Avalonia.HarfBuzz.dll",
+                      "Sha256":  "14FFE168DF425D036DF710EF2C08B57D823B91106D5992B145159EBD750E5FDD"
+                  },
+                  {
+                      "Engine":  "default",
+                      "Name":  "Avalonia.Headless.dll",
+                      "Sha256":  "395836E379D7365DF686ABCB70375EF61BDB72D565E90CF5EE97C1D65DD610BF"
+                  },
+                  {
+                      "Engine":  "default",
+                      "Name":  "Avalonia.Markup.dll",
+                      "Sha256":  "3432255CFD5097079DB25DCAA428161C673F26CC1235C209DE90B1EC1C2648BE"
+                  },
+                  {
+                      "Engine":  "default",
+                      "Name":  "Avalonia.Markup.Xaml.dll",
+                      "Sha256":  "1AE78663406C421F6D2E674DE2E36E481800E6FE6FCFFB1CCD91D70C4AC51095"
+                  },
+                  {
+                      "Engine":  "default",
+                      "Name":  "Avalonia.Metal.dll",
+                      "Sha256":  "EE0FB78EA230A6B772BC7C0E6A5F2BB5BB90F27AF713EF8DB247228937898587"
+                  },
+                  {
+                      "Engine":  "default",
+                      "Name":  "Avalonia.MicroCom.dll",
+                      "Sha256":  "0FC84BF41612CB4363BA293F7ACEEE1B522694D7802E1D8D4E170A02EAFCFF5B"
+                  },
+                  {
+                      "Engine":  "default",
+                      "Name":  "Avalonia.OpenGL.dll",
+                      "Sha256":  "5799A29126F563ACFFE6964A7CC079978AEC05799D3262F1AA8471AD0F6EA99B"
+                  },
+                  {
+                      "Engine":  "default",
+                      "Name":  "Avalonia.Remote.Protocol.dll",
+                      "Sha256":  "CA68614FFE3539BD6CCF6B3BE7F80B6D189AFFFAF2A70EFB95AC2B7928AF17ED"
+                  },
+                  {
+                      "Engine":  "default",
+                      "Name":  "Avalonia.Skia.dll",
+                      "Sha256":  "A79B0D0FAE895E306EFF279FDED37EB7825F95745F9A89954480637ABF387273"
+                  },
+                  {
+                      "Engine":  "default",
+                      "Name":  "Avalonia.Themes.Fluent.dll",
+                      "Sha256":  "8526C2367C360FF55E3792D1D95257106C4A905EBBF12A5E60C9E28C0B9F0C1C"
+                  },
+                  {
+                      "Engine":  "default",
+                      "Name":  "Avalonia.Vulkan.dll",
+                      "Sha256":  "10A2336B567D6C2A9A9D8C609D2739874C0B59A2B0B174D433F5E9143D719052"
+                  },
+                  {
+                      "Engine":  "default",
+                      "Name":  "AvaloniaControls.Reference.dll",
+                      "Sha256":  "E15A860AAC4875298A9924987C022E5730C923E115D40CB39AAF2477A85633C1"
+                  },
+                  {
+                      "Engine":  "default",
+                      "Name":  "HarfBuzzSharp.dll",
+                      "Sha256":  "55E72AC23263F8E12484F3435E02EC22FAC9EFF6E6D169BB0A8C246BE6B99D29"
+                  },
+                  {
+                      "Engine":  "default",
+                      "Name":  "SkiaSharp.dll",
+                      "Sha256":  "03A164AC1097F84793632DF806DA91E2829F0FCA65D8F2B922E45554AB083296"
+                  }
+              ],
+    "Frames":  600,
+    "ProgramSha256":  "0966DEA7FC47B67DE761B8A66D297DC13C2FB74D3108B866C2DB5BD1C0ECA855",
+    "Forks":  3,
+    "Font":  "F:\\simdSkia\\baseline\\fonts\\ZCOOLXiaoWei-Regular.ttf"
+}

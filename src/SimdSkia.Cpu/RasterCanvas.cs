@@ -184,7 +184,7 @@ public sealed partial class RasterCanvas : ICanvasBackend
     }
     private void DrawImage(in DrawingCommand command)
     {
-        if(command.ImageSource is not null||command.Sampling!=ImageSampling.Nearest||command.CoverageClip is not null){DrawSampledImage(command);return;}
+        if(command.ImageSource is not null||command.Sampling!=ImageSampling.Nearest||command.CoverageClip is not null||command.NearestLowerBoundary){DrawSampledImage(command);return;}
         var image=command.Image??throw new ArgumentException("Image command requires pixels.");image.ThrowIfDisposed();
         if(!command.Transform.TryInvert(out var inverse))return;var rect=command.Rectangle;if(rect.IsEmpty)return;
         if(command.Transform.IsAffine&&command.Transform.M01==0&&command.Transform.M10==0&&!command.Paint.Antialias&&!image.GetPixelSpan().Overlaps(target.GetPixelSpan()))

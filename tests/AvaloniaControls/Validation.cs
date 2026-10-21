@@ -25,7 +25,7 @@ internal static class Validation
     {try{action();}catch(T){assertions++;return;}throw new InvalidOperationException(message);}
     internal static void Run(Window host,Control scene,RenderTargetBitmap bitmap,string font,string output)
     {
-        RunDrawingChecks();RunCompositorOracle();RunGeometry();RunShaping(font);RunLifetime();assertions+=GlyphValidation.Run();
+        RunDrawingChecks();RunCompositorOracle();RunGeometry();RunShaping(font);RunLifetime();assertions+=GlyphValidation.Run();assertions+=CompletionValidation.Run();assertions+=CollectionValidation.Run(font);
         AvaloniaHeadlessPlatform.ForceRenderTimerTick(2);using var frame=host.CaptureRenderedFrame();Assert(frame is not null&&frame.PixelSize.Width>0,"Real window compositor did not present a framebuffer.");
         var button=scene.GetVisualDescendants().OfType<Button>().First();int clicked=0;button.Click+=(_,_)=>clicked++;
         var point=button.TranslatePoint(new Point(button.Bounds.Width/2,button.Bounds.Height/2),host)??throw new InvalidOperationException("Button coordinate mapping failed.");
@@ -89,10 +89,10 @@ internal static class Validation
             using var scaled=Factory.CreateRenderTargetBitmap(new(32,24),new(96*scale,96*scale));using(var context=scaled.CreateDrawingContext()){context.Clear(Colors.Transparent);context.DrawRectangle(Brushes.Red,null,new Rect(2,2,4,4));}
             Assert(Pixel(scaled,(int)(3*scale),(int)(3*scale)).R==255&&Pixel(scaled,0,0).A==0,"DPI scaling was not applied exactly once.");
         }
-        var before=Bytes(image);using(var context=image.CreateDrawingContext())Throws<NotSupportedException>(()=>context.DrawRectangle(Brushes.Red,null,new Rect(0,0,8,8),new BoxShadows(new BoxShadow{Blur=3,Color=Colors.Black})),"Unsupported shadow silently succeeded.");
+        var before=Bytes(image);using(var context=image.CreateDrawingContext())Throws<ArgumentOutOfRangeException>(()=>context.DrawRectangle(Brushes.Red,null,new Rect(0,0,8,8),new BoxShadows(new BoxShadow{Blur=double.NaN,Color=Colors.Black})),"Invalid shadow parameters silently succeeded.");
         Assert(before.AsSpan().SequenceEqual(Bytes(image)),"A rejected draw modified destination pixels.");
         using(var context=image.CreateDrawingContext())
-        {Assert(context is IDrawingContextImplWithEffects,"Missing effect interface would let Avalonia silently ignore visual effects.");Throws<NotSupportedException>(()=>((IDrawingContextImplWithEffects)context).PushEffect(new Rect(0,0,8,8),new BlurEffect{Radius=2}),"Unsupported effect was ignored.");Throws<NotSupportedException>(()=>context.Transform=new Matrix(1,0,.1,0,1,0,0,0,1),"Perspective transform was silently flattened.");}
+        {Assert(context is IDrawingContextImplWithEffects,"Missing effect interface would let Avalonia silently ignore visual effects.");Throws<ArgumentOutOfRangeException>(()=>((IDrawingContextImplWithEffects)context).PushEffect(new Rect(0,0,8,8),new BlurEffect{Radius=double.NaN}),"Invalid effect was ignored.");Throws<NotSupportedException>(()=>context.Transform=new Matrix(1,0,.1,0,1,0,0,0,1),"Perspective transform was silently flattened.");}
         var region=Factory.CreateRegion();region.AddRect(new(){Left=1,Top=1,Right=10,Bottom=10});region.AddRect(new(){Left=5,Top=5,Right=15,Bottom=15});
         Assert(region.Contains(new(12,12))&&!region.Contains(new(20,20))&&region.Rects.Sum(r=>(r.Right-r.Left)*(r.Bottom-r.Top))==156,"Region union double-counted its intersection.");region.Dispose();Throws<ObjectDisposedException>(()=>region.Reset(),"Disposed region remained usable.");
     }

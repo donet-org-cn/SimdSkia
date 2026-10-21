@@ -52,6 +52,7 @@ try {
     $manifest.Complete=$true
     $manifest|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $outputPath 'run.json') -Encoding UTF8
     dotnet benchmarks/GpuReport/bin/Release/net8.0/GpuReport.dll $outputPath $Report
+    if($LASTEXITCODE -eq 2){Write-Output 'Measurements completed; native GPU pixel quality gate FAILED. Reports retain failed rows.';exit 2}
     if($LASTEXITCODE -ne 0){throw 'Report generation failed.'}
 }
 finally{$env:DOTNET_TieredCompilation=$savedTier;$env:DOTNET_ReadyToRun=$savedR2R;$env:DOTNET_gcServer=$savedServer;Pop-Location}

@@ -1,6 +1,10 @@
 # 依赖与许可证
 
-新增可选第七模块 `SimdSkia.Avalonia`：`Avalonia 12.1.4`（MIT，控件平台契约）、`Clipper2 2.0.0`（BSL-1.0，布尔几何/描边）；传递包 `Avalonia.BuildServices 11.3.2`、`Avalonia.Remote.Protocol 12.1.4`、`MicroCom.Runtime 0.11.6`（MIT，构建/协议/托管 interop）。这五个固定包没有原生运行资产，不调用 Skia/HarfBuzz 进行绘制/排版；原六模块的零 NuGet 约束保持。许可副本在 `docs/licenses`，适配层输出携带 Avalonia/Clipper 通知。
+当前生产依赖：Core/Cpu/Text/Gpu 没有 NuGet 包。Imaging 新增精确 `[0.4.32]` 的 **JpegLibrary**（MIT，纯 C# JPEG 熵编码、IDCT 和编码器；net8 使用其 net6 托管资产，没有传递包或 native 资产），Compatibility 与 Avalonia 适配层传递引用该包。字体和编解码全部 C# 的要求保持；此前“六模块零包”是历史实现状态，现已变更。
+
+JpegLibrary 固定源码提交 `d4dcb149dd4cd4a18994bf5bf9009f5691e39e75`，来自 [上游](https://github.com/yigolden-oss/JpegLibrary/tree/d4dcb149dd4cd4a18994bf5bf9009f5691e39e75)。其第三方通知包含 2018 SixLabors.ImageSharp 的 Apache-2.0 归属，不代表引用当前 ImageSharp 包。随 Imaging 输出和打包保留 `JpegLibrary-MIT.txt`、`JpegLibrary-THIRD-PARTY-NOTICES.md`、`Apache-2.0.txt`；锁文件记录包内容哈希。四分量渐进解码有经夹具发现的上游扫描 flush 问题，本引擎显式拒绝，详见最新测试报告。
+
+可选第七模块 `SimdSkia.Avalonia` 另用 `Avalonia 12.1.4`（MIT，控件平台契约）、`Clipper2 2.0.0`（BSL-1.0，布尔几何/描边）；传递包 `Avalonia.BuildServices 11.3.2`、`Avalonia.Remote.Protocol 12.1.4`、`MicroCom.Runtime 0.11.6`（MIT，构建/协议/托管 interop）。包括 JPEG 共六个固定纯托管包，不调用 Skia/HarfBuzz 绘制或排版。许可副本在 `docs/licenses`，适配层输出携带上游通知。
 
 真实 UI 示例另用 `Avalonia.Themes.Fluent 12.1.4`（MIT，托管主题资源）。`Avalonia.Win32`、`Avalonia.Headless` 的固定 12.1.4 包仅通过 PackageDownload 取托管 DLL，未解析 ANGLE/HarfBuzz 传递依赖；Win32 自身调用操作系统 API。无头初始化仅用于示例/测试，固定契约的私有入口明确记录在 `HeadlessHost.cs`。隔离 `AvaloniaControls.Reference` 才安装官方 Avalonia.Skia/Avalonia.HarfBuzz 和其原生组件。生产引用图和输出由 `check-production-dependencies.ps1` 检查。
 
@@ -8,7 +12,7 @@
 
 以下为原六模块和此前隔离测试依赖记录；其中“Avalonia 仅探针/非产品”的描述不包含新适配层。
 
-产品 Core/Cpu/Text/Imaging/Gpu/Compatibility 六个程序集没有第三方 NuGet 包。字体、排版、图片编解码均由 C# 实现，不调用 Skia、FreeType、HarfBuzz、System.Drawing 或 native zlib。GPU 按用户授权调用系统 Vulkan loader/驱动，shader 是 GLSL/SPIR-V。
+以下旧记录中的原六程序集无包状态已由上述 JPEG 接入替代。字体、排版、图片编解码均由 C# 实现，不调用 Skia、FreeType、HarfBuzz、System.Drawing 或 native zlib。GPU 按用户授权调用系统 Vulkan loader/驱动，shader 是 GLSL/SPIR-V。
 
 | 组件 | 用途 | 许可证/原生性质 | 产品关系 |
 | --- | --- | --- | --- |

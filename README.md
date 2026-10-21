@@ -1,12 +1,14 @@
 # SimdSkia
 
-独立 C# 2D 引擎，内部使用 SimdSkia，源码兼容层使用 SkiaSharp.SK*。固定基线是 Avalonia.Skia 12.1.4 实际解析的 SkiaSharp 3.119.4。六个生产模块没有 NuGet 包依赖，不使用 Google Skia 绘图。
+独立 C# 2D 引擎，内部使用 SimdSkia，源码兼容层使用 SkiaSharp.SK*。固定基线是 Avalonia.Skia 12.1.4 实际解析的 SkiaSharp 3.119.4。不使用 Google Skia 绘图；字体、排版和编解码都是 C#。Core/Cpu/Text/Gpu 无 NuGet 包，Imaging/Compatibility 使用固定版本纯托管 JpegLibrary；可选 Avalonia 层另有纯托管依赖，见 [许可证与依赖](docs/DEPENDENCIES.md)。
 
-路径、抗锯齿、基本中英文 TrueType 字体/排版、纯 C# PNG 编解码、SIMD 填充/合成/PNG 和 Vulkan 离屏后端现在均有真实实现。这是明确范围的实现，并非所有 SkiaSharp API、字体/图片格式或 Avalonia 集成已经完成。
+路径、抗锯齿、基本中英文 glyf TTF/TTC 字体、PNG/JPEG/部分 ICC、图像/视觉画刷、模糊/阴影、SIMD 与 Vulkan 离屏均有真实实现。**完整 Avalonia 替换尚未通过验收**：文字/曲线及部分新功能画质仍失败，通用字体排版与 Vulkan 窗口等仍有缺口。
+
+最新交付：[测试报告](docs/TEST-REPORT-2026-10-21.md)、[CPU/内存/滤镜性能](docs/PERFORMANCE-FINAL-2026-10-21.md)、[原版 Vulkan GPU 对比](docs/PERFORMANCE-GPU-FINAL-2026-10-21.md)、[实现范围与缺口](docs/IMPLEMENTATION-DETAILS-2026-10-21.md)。报告保留未通过项，不承诺替代原版强名称程序集。
 
 2026-10-21 的 CPU、GPU、真实 OCR、CPU 时间和内存对比见 [本轮优化报告](docs/OPTIMIZATION-2026-10-21.md)。保留优化前数据及失败的画质检查。
 
-最新 [真实 Avalonia 接入](docs/AVALONIA-INTEGRATION.md)：`UseSimdSkia` 已运行 Avalonia 12.1.4 的实际控件与 Win32 软件窗口。[字形/首绘续轮优化](docs/AVALONIA-TEXT-CACHE.md)：100% 控件 1.49→1.08 ms，首绘 89.2→18.6 ms；列表约 0.43 ms。原版默认仍约 0.85 ms，工作集约 118 vs 96 MiB。6581 项控件/字形断言通过，整页画质 gate 仍未通过；完整 API、字体/编解码及窗口 GPU 仍有缺口。报告保留 CPU、内存、首绘、两种原版 opacity 配置和失败差异，不承诺原版程序集二进制替换。
+[真实 Avalonia 接入](docs/AVALONIA-INTEGRATION.md)：`UseSimdSkia` 已运行实际控件与 Win32 软件窗口，8109 项控件/字形/滤镜/字体集合断言通过。较早的[字形/首绘优化](docs/AVALONIA-TEXT-CACHE.md)及通用报告保留为历史数据；当前结论以本轮报告为准。
 
 ```powershell
 dotnet build SimdSkia.sln -c Release

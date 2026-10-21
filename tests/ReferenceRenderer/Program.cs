@@ -1,6 +1,7 @@
 using Scenes;
 using SkiaSharp;
 
+if(args.Length==2&&args[0]=="--encode-probe"){EncodeProbe.Run(args[1]);return;}
 if(args.Length==2&&args[0]=="--behavior-only"){Directory.CreateDirectory(args[1]);Behavior.Record(args[1]);return;}
 if(args.Contains("--benchmark")){ClearBenchmark.Run();return;}
 

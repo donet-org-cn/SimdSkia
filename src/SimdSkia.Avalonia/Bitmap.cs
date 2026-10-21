@@ -22,10 +22,9 @@ internal sealed class Bitmap:IRenderTargetBitmapImpl,IWriteableBitmapImpl,IDrawi
     {if(!double.IsFinite(dpi.X)||!double.IsFinite(dpi.Y)||dpi.X<=0||dpi.Y<=0)throw new ArgumentOutOfRangeException(nameof(dpi));this.pixels=pixels;Dpi=dpi;PixelSize=new(pixels.Width,pixels.Height);}
     public void Save(Stream stream,BitmapEncoderOptions options)
     {
-        if(options is not PngBitmapEncoderOptions png)throw new NotSupportedException("The managed backend currently encodes PNG only.");
-        if(png.CompressionLevel!=System.IO.Compression.CompressionLevel.NoCompression&&png.CompressionLevel!=System.IO.Compression.CompressionLevel.Optimal)
-            throw new NotSupportedException("The managed PNG writer currently supports stored DEFLATE; custom compression levels are not implemented.");
-        stream.Write(PngCodec.Encode(Pixels));
+        if(options is JpegBitmapEncoderOptions jpeg){stream.Write(JpegCodec.Encode(Pixels,jpeg.Quality));return;}
+        if(options is not PngBitmapEncoderOptions png)throw new NotSupportedException("Managed encoding supports PNG and JPEG.");
+        stream.Write(PngCodec.Encode(Pixels,png.CompressionLevel));
     }
     public ILockedFramebuffer Lock()=>new Locked(Pixels,Dpi,()=>Interlocked.Increment(ref version));
     public IDrawingContextImpl CreateDrawingContext()

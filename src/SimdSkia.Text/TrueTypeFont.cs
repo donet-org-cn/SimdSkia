@@ -31,10 +31,11 @@ public sealed class TrueTypeFont
         table=default;return false;
     }
     public Stream OpenStream()=>new MemoryStream(bytes,0,bytes.Length,false,false);
-    public TrueTypeFont(ReadOnlySpan<byte> data)
+    public TrueTypeFont(ReadOnlySpan<byte> data):this(data,0) { }
+    public TrueTypeFont(ReadOnlySpan<byte> data,int faceIndex)
     {
-        bytes=data.ToArray();if(bytes.Length<12)throw new InvalidDataException("Truncated font.");
-        uint magic=U32(0);if(magic==0x74746366)throw new NotSupportedException("TrueType collections are not supported yet.");
+        bytes=FontCollection.Extract(data,faceIndex);if(bytes.Length<12)throw new InvalidDataException("Truncated font.");
+        uint magic=U32(0);
         if(magic!=0x00010000&&magic!=0x74727565)throw new NotSupportedException("Only TrueType glyf fonts are supported; CFF/WOFF require separate parsers.");
         int count=U16(4);Check(12,checked(count*16));
         for(int i=0;i<count;i++)

@@ -43,14 +43,16 @@ AppBuilder.Configure<App>()
 | 软件窗口 | Win32 framebuffer、离屏层、保存 PNG、present 计数；锁定期间持有存储 | Vulkan 窗口 swapchain、GPU 控件合成、GPU interop |
 | 几何 | 矩形、椭圆、每角独立圆角、二/三次曲线、SVG 椭圆弧、填充规则、布尔组合、变换、命中测试、距离与裁取 | 透视变换、精确匹配原版所有几何数值边界 |
 | 描边 | flat/round/square cap，miter/round/bevel join，虚线和零长度圆点；可变 pen 与几何编辑使缓存失效 | 特殊无效参数的所有原版容错行为 |
-| 裁剪及合成 | 矩形、AA 圆角、几何和区域并集裁剪；分组透明度、离屏层、opacity mask | SrcOver/Src 以外的图片 blend；效果与 box shadow 明确抛异常 |
-| 画刷 | 单色、多停点线性/径向/锥形渐变，Pad/Repeat/Reflect、画刷变换 | ImageBrush、VisualBrush、acrylic/material；复杂退化渐变行为未全部对照 |
-| 图片 | RGBA/BGRA、三种 Alpha、stride、位图范围内的非空源裁切、nearest/bilinear/Mitchell、可写位图、缩放、锁定 | 超出源范围的裁切拒绝；PNG 之外的编解码、Adam7、ICC、宽色域 |
-| 字体 | 明确注册的 glyf TTF；cmap4/12、轮廓、字体表、字体回退、基本中英文 LTR、字形定位与下划线交点 | TTC/CFF/变量/彩色字体、hint VM、复杂脚本、mark、RTL、通用 GSUB、语言特性；合成 bold/oblique 拒绝，需登记实际相应字体文件 |
+| 裁剪及合成 | 矩形、AA 圆角、几何/区域裁剪；分组透明度、ROI 离屏层、opacity mask；Blur/DropShadow/内外 BoxShadow | SrcOver/Src 以外图片 blend；圆角阴影画质仍失败；未知效果拒绝 |
+| 画刷 | 单色、多停点渐变，Pad/Repeat/Reflect、变换；ImageBrush/VisualBrush、tile/flip/stretch/source/destination | 高 DPI 图案仍有原版差异；acrylic/material 和复杂退化渐变未完成 |
+| 图片 | RGBA/BGRA、三种 Alpha、stride、源裁切、nearest/bilinear/Mitchell、缩放/锁定；PNG Adam7/16 位/部分 ICC 与 C# JPEG | 四分量渐进 JPEG 拒绝；部分 ICC 未验收；WebP/GIF/BMP/APNG 和无 profile 的宽色域未实现 |
+| 字体 | glyf TTF/TTC v1/v2、face 选择、cmap4/12、轮廓、字体表/回退、基本中英文 LTR、定位与下划线交点 | CFF/变量/彩色字体、hint VM、复杂脚本、mark、RTL、通用 GSUB；合成 bold/oblique 拒绝，需实际字体文件 |
 | 字距 | 默认 Latin/DFLT `kern` 的 GPOS pair1/2、pair extension 与旧 kern0；15 份原版中英文字形/cluster/advance/offset 夹具通过 | 消耗第二字形的 GPOS pair、GDEF filtering、device/variation 与其他 lookup 显式拒绝；不是完整 OpenType shaper |
 | 用户自绘 | 标准 Avalonia DrawingContext | 请求 `ISkiaSharpApiLeaseFeature` 等 Skia 专属接口的控件需要迁移 |
 
-可选扩展查询返回 null 表示没有该扩展，不伪造 Skia 句柄。效果接口由适配层显式实现并拒绝：若完全不实现该接口，Avalonia 的 `PlatformDrawingContext` 会忽略 effect，这种情况已用测试防止。所有未知绘制状态应在修改像素前报错。
+最新边界、命令与验收见 [本轮实现说明](IMPLEMENTATION-DETAILS-2026-10-21.md)、[测试报告](TEST-REPORT-2026-10-21.md)。高 DPI 画刷、圆角阴影仍有原版画质失败；字体集合不代表 CFF/hint/复杂排版已完成。
+
+可选扩展查询返回 null 表示没有该扩展，不伪造 Skia 句柄。效果接口由适配层显式实现；现在支持 Blur 和 DropShadow，其他未知效果仍抛异常，防止 Avalonia 因未实现效果接口而静默忽略绘制。
 
 接口来自 Avalonia 的私有渲染契约。普通 NuGet `ref` 程序集故意阻止第三方实现这些接口；适配层编译时引用同包未修改的 `lib/net8.0` 运行时程序集，启动时检查精确版本。未修改、签名或伪造 Avalonia 程序集。这与 SkiaSharp 兼容层的 425/3235 项清单是两条接入途径：运行这份 Avalonia 示例不意味着缺失的 SK* API 已补齐。
 

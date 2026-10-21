@@ -8,6 +8,23 @@ float f(int i){return uintBitsToFloat(p[i]);}
 uvec4 unpackColor(uint c){return uvec4(c&255u,(c>>8)&255u,(c>>16)&255u,c>>24);}
 uint packColor(uvec4 c){return c.x|(c.y<<8)|(c.z<<16)|(c.w<<24);}
 uint multiplyAlpha(uint value,uint alpha){return (value*alpha+127u)/255u;}
+uvec4 imagePma(ivec2 at){
+    ivec2 lo=ivec2(floor(vec2(f(46),f(47)))),hi=ivec2(ceil(vec2(f(48),f(49))))-1;
+    uvec4 c=uvec4(roundEven(texelFetch(imageTexture,clamp(at,lo,hi),0)*255.0));
+    c.rgb=uvec3(multiplyAlpha(c.r,c.a),multiplyAlpha(c.g,c.a),multiplyAlpha(c.b,c.a));return c;
+}
+float mitchell(float x){x=abs(x);return x<1.0?(7.0*x*x*x-12.0*x*x+16.0/3.0)/6.0:x<2.0?(-7.0/3.0*x*x*x+12.0*x*x-20.0*x+32.0/3.0)/6.0:0.0;}
+uvec4 sampledImage(vec2 q){
+    vec2 coordinate=vec2(f(46),f(47))+(q-vec2(f(12),f(13)))*((vec2(f(48),f(49))-vec2(f(46),f(47)))/(vec2(f(14),f(15))-vec2(f(12),f(13))))-vec2(.5);
+    if(p[50]==1u)return imagePma(p[51]!=0u?ivec2(ceil(coordinate+vec2(.5)))-1:ivec2(floor(coordinate+vec2(.5))));
+    ivec2 origin=ivec2(floor(coordinate));vec2 fraction=coordinate-floor(coordinate);precise vec4 result=vec4(0);
+    int first=p[50]==3u?-1:0,last=p[50]==3u?2:1;
+    for(int y=first;y<=last;y++)for(int x=first;x<=last;x++){
+        precise float weight=p[50]==3u?mitchell(float(x)-fraction.x)*mitchell(float(y)-fraction.y):(x==0?1.0-fraction.x:fraction.x)*(y==0?1.0-fraction.y:fraction.y);
+        result+=vec4(imagePma(origin+ivec2(x,y)))*weight;
+    }
+    uint a=uint(clamp(roundEven(result.a),0.0,255.0));return uvec4(clamp(roundEven(result.rgb),vec3(0),vec3(a)),a);
+}
 vec2 localPoint(vec2 point){return vec2(f(22)*point.x+f(23)*point.y+f(24),f(25)*point.x+f(26)*point.y+f(27));}
 uint edgeStart=0u,edgeCount=0u;
 vec4 edgeAt(uint i){
@@ -17,6 +34,7 @@ vec4 edgeAt(uint i){
 bool inside(vec2 point){
     if(point.x<f(8)||point.y<f(9)||point.x>=f(10)||point.y>=f(11))return false;
     if(p[2]==1u||p[2]==3u){
+        if(p[2]==3u&&p[32]==1u)return point.x>=f(33)&&point.y>=f(34)&&point.x<f(35)&&point.y<f(36);
         if(p[2]==1u&&p[5]==1u&&p[32]==1u)return point.x>=f(33)&&point.y>=f(34)&&point.x<f(35)&&point.y<f(36);
         vec2 q=localPoint(point);return q.x>=f(12)&&q.y>=f(13)&&q.x<f(14)&&q.y<f(15);
     }
@@ -116,8 +134,23 @@ void main(){
     else for(uint y=0u;y<samples;y++)for(uint x=0u;x<samples;x++)if(inside(origin+(vec2(x,y)+vec2(.5))/float(samples)))covered++;
     if(covered==0u)return;
     uint coverage=(covered*255u+samples*samples/2u)/(samples*samples);
+    if(p[57]!=0u){
+        ivec2 at=ivec2(pixel)-ivec2(int(p[53]),int(p[54]));
+        if(any(lessThan(at,ivec2(0)))||any(greaterThanEqual(at,ivec2(p[55],p[56]))))return;
+        uint offset=uint(at.y)*p[55]+uint(at.x),word=p[52]+offset/4u;
+        uint clip=(floatBitsToUint(edges[word/4u][word%4u])>>((offset%4u)*8u))&255u;
+        coverage=multiplyAlpha(coverage,clip);if(coverage==0u)return;
+    }
     vec2 q=localPoint(origin+vec2(.5));
     if(p[2]==3u){
+      if(p[50]!=0u){
+        uvec4 texel=sampledImage(q),destination=unpackColor(pixels[index]);uint scale=multiplyAlpha(color.a,coverage),alpha=multiplyAlpha(texel.a,scale);
+        uint remain=p[3]==0u?255u-alpha:255u-coverage;
+        if(p[3]==2u)texel=uvec4(0);
+        uvec4 source=uvec4(multiplyAlpha(texel.r,scale),multiplyAlpha(texel.g,scale),multiplyAlpha(texel.b,scale),multiplyAlpha(texel.a,scale));
+        uvec4 result=source+uvec4(multiplyAlpha(destination.r,remain),multiplyAlpha(destination.g,remain),multiplyAlpha(destination.b,remain),multiplyAlpha(destination.a,remain));
+        pixels[index]=packColor(min(result,uvec4(255)));return;
+      }
         vec2 uv=(q-vec2(f(12),f(13)))/vec2(f(14)-f(12),f(15)-f(13));
         uvec2 at=uvec2(clamp(uv*vec2(p[19],p[20]),vec2(0),vec2(p[19]-1u,p[20]-1u)));
         uint opacity=color.a;color=uvec4(roundEven(texelFetch(imageTexture,ivec2(at),0)*255.0));color.a=multiplyAlpha(color.a,opacity);

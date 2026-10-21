@@ -63,7 +63,8 @@ Test("PNG roundtrip and lifecycle",()=>
     for(int y=0;y<7;y++)for(int x=0;x<9;x++)b.SetPixel(x,y,new SKColor((byte)(x*20),(byte)(y*30),(byte)(x+y),(byte)(x*20+y)));
     using var data=b.Encode(SKEncodedImageFormat.Png,100);using var decoded=SKBitmap.Decode(data.ToArray());
     for(int y=0;y<7;y++)for(int x=0;x<9;x++)Equal(b.GetPixel(x,y),decoded.GetPixel(x,y));
-    var corrupt=data.ToArray();corrupt[20]^=1;Throws<InvalidDataException>(()=>SKBitmap.Decode(corrupt));Throws<NotSupportedException>(()=>b.Encode(SKEncodedImageFormat.Jpeg,100));
+    var corrupt=data.ToArray();corrupt[20]^=1;Throws<InvalidDataException>(()=>SKBitmap.Decode(corrupt));Throws<NotSupportedException>(()=>b.Encode(SKEncodedImageFormat.Webp,100));
+    using var jpeg=b.Encode(SKEncodedImageFormat.Jpeg,95);using var jpegDecoded=SKBitmap.Decode(jpeg.ToArray());Equal(jpegDecoded.Width,b.Width);Equal(jpegDecoded.Height,b.Height);
     using var image=SKImage.FromBitmap(b);using var imageData=image.Encode(SKEncodedImageFormat.Png,100);True(imageData.Size>0);
 });
 Test("Managed DEFLATE stored blocks and checksums",()=>
