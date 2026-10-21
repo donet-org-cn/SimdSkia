@@ -1,5 +1,7 @@
 # 进度：2026-10-21
 
+启动体验修复：AOT 两种后端改为 `WinExe`，普通 AvaloniaControls 示例在 Windows 同样使用 GUI 子系统。重新发布通用 x64/AVX2 共 4 个 exe，子系统均为 2，AOT/重定向输出/与原版发布物像素一致检查全部通过；旧性能二进制与哈希保留，GUI 新包位于 `artifacts/aot-gui`。[验证记录](aot-gui-validation.json)
+
 Native AOT 续轮已完成：共享源码的 SimdSkia / 原版 Avalonia Win32 窗口，通用 x64 与 x86-64-v3 两套实际发布，共 90 次正式进程测量。v3 控件 1000×720：1.396 vs 原版默认 1.059 ms，工作集 85.7 vs 60.5 MiB；完整运行包 25.68 vs 41.10 MiB。通用版 SimdSkia 为 3.422 ms，不能把 v3 成绩当作通用 x64 成绩。8109 项回归通过，15/15 跨 ISA 固定输出逐字节相同；新整页画质 0/20 通过，完整替换仍 FAIL。详见 [AOT 实测报告](AVALONIA-AOT-COMPARISON.md) 与 [可运行程序](../examples/AvaloniaAot/README.md)。
 
 本轮交付：图像/视觉画刷、Blur/DropShadow/内外阴影、ROI 层缓冲、Gaussian AVX2、TTC face、Adam7/16 位/部分 ICC、纯 C# JPEG 与 PNG LZ77 压缩、Vulkan 裁切/采样/覆盖裁剪均有实际代码。8109 项真实 UI、484 项图片、7845 项 CPU、595 项文字在硬件及全标量通过；Vulkan 新 445 项和旧 313 项通过。**完整兼容仍 FAIL**：425/3235 SK 项匹配、完整 UI 0/3、新功能 59/114、原版 GPU 12/24；Vulkan 窗口和通用字体排版尚缺。详见 [测试报告](TEST-REPORT-2026-10-21.md)、[CPU/内存/滤镜](PERFORMANCE-FINAL-2026-10-21.md)、[GPU](PERFORMANCE-GPU-FINAL-2026-10-21.md) 和 [逐项进度](COMPLETION-TRACKER.md)。

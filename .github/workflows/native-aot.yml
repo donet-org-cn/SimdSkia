@@ -26,11 +26,10 @@ jobs:
       - name: Run actual Win32 AOT controls and pixel probes
         shell: pwsh
         run: |
-          & artifacts/aot-comparison/publish/simd/AvaloniaAot.SimdSkia.exe --hidden --output artifacts/aot-comparison/smoke-simd --warmup 0 --seconds 0.2
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          & artifacts/aot-comparison/publish/original/AvaloniaAot.Original.exe --hidden --output artifacts/aot-comparison/smoke-original --warmup 0 --seconds 0.2
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           foreach ($name in @('simd','original')) {
+            $project = if ($name -eq 'simd') { 'SimdSkia' } else { 'Original' }
+            $process = Start-Process -FilePath "artifacts/aot-comparison/publish/$name/AvaloniaAot.$project.exe" -ArgumentList "--hidden --output artifacts/aot-comparison/smoke-$name --warmup 0 --seconds 0.2" -WindowStyle Hidden -Wait -PassThru -RedirectStandardOutput "artifacts/aot-comparison/smoke-$name.stdout.txt" -RedirectStandardError "artifacts/aot-comparison/smoke-$name.stderr.txt"
+            if ($process.ExitCode -ne 0) { Get-Content "artifacts/aot-comparison/smoke-$name.stderr.txt"; exit $process.ExitCode }
             $metrics = Get-Content "artifacts/aot-comparison/smoke-$name/metrics.json" -Raw | ConvertFrom-Json
             if (!$metrics.nativeAot -or !$metrics.imageBrushProbePassed -or $metrics.frames -le 0) { throw "AOT runtime probe failed: $name" }
             if ($metrics.loadedModules -match '^(coreclr|clrjit|clr|mscorwks|mscorsvr)\.dll$') { throw "JIT runtime loaded: $name" }

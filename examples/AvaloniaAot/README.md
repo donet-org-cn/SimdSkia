@@ -5,6 +5,8 @@ SimdSkia 版使用 `.UseSimdSkia`；Original 版使用原版 `.UseSkia().UseHarf
 固定 Avalonia 12.1.4、SkiaSharp 3.119.4、HarfBuzzSharp 8.3.1.3、.NET 10。
 窗口均使用 Win32 软件呈现，未测 GPU。SimdSkia 发布物不包含 Skia/HarfBuzz/ANGLE 原生组件。
 
+Windows 现在以 `WinExe`（GUI 子系统）构建，双击 exe 不创建额外命令行窗口。自动测量通过父进程重定向 stdout/stderr，仍可读取 READY 和测量结果。新版运行包位于 `artifacts/aot-gui/portable`、`artifacts/aot-gui/v3`，各有两种后端；旧性能目录保留实测时的控制台版本和哈希。Windows 普通 AvaloniaControls 示例同样改为 WinExe，其他系统保留原构建方式。
+
 ## 发布与交互运行
 
 在仓库根目录执行，需要 .NET 10 SDK、Windows x64 和 MSVC C++ 桌面工具链/Windows SDK。
@@ -12,10 +14,10 @@ SimdSkia 版使用 `.UseSimdSkia`；Original 版使用原版 `.UseSkia().UseHarf
 
 ```powershell
 powershell -NoProfile -File tools/fetch-avalonia-font.ps1
-dotnet publish examples/AvaloniaAot/SimdSkia/AvaloniaAot.SimdSkia.csproj -c Release -o artifacts/aot-comparison/publish/simd
-dotnet publish examples/AvaloniaAot/Original/AvaloniaAot.Original.csproj -c Release -o artifacts/aot-comparison/publish/original
-& artifacts/aot-comparison/publish/simd/AvaloniaAot.SimdSkia.exe
-& artifacts/aot-comparison/publish/original/AvaloniaAot.Original.exe
+dotnet publish examples/AvaloniaAot/SimdSkia/AvaloniaAot.SimdSkia.csproj -c Release -o artifacts/aot-gui/portable/simd
+dotnet publish examples/AvaloniaAot/Original/AvaloniaAot.Original.csproj -c Release -o artifacts/aot-gui/portable/original
+& artifacts/aot-gui/portable/simd/AvaloniaAot.SimdSkia.exe
+& artifacts/aot-gui/portable/original/AvaloniaAot.Original.exe
 ```
 
 默认显示可交互窗口，包含按钮、输入框、复选框、中英文文字、圆角、曲线、渐变、图片和透明组。

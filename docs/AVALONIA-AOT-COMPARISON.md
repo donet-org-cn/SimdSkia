@@ -1,5 +1,7 @@
 # Avalonia Native AOT：体积、速度、CPU 与内存实测
 
+后续启动体验修复：项目已改为 `WinExe`，新版交互运行包位于 `artifacts/aot-gui/portable` 与 `artifacts/aot-gui/v3`，启动不再创建命令行窗口。本报告的数字、旧 exe、ZIP 和 SHA 保留为提交 aff1d69 时的实测快照；新版 GUI 包进行了启动、输出重定向和像素回归，未将旧数字冒充其重新测量结果。当前构建和运行方式见 [示例说明](../examples/AvaloniaAot/README.md)。
+
 交付两份真实 Win32 软件窗口程序：共享相同中英文控件、Fluent 主题、字体、布局与基准代码，分别使用 SimdSkia 和原版 Avalonia.Skia。两边均实际 Native AOT 发布和运行，不使用 JIT 数字替代 AOT。
 
 **应用与对照测量已完成，完整 Avalonia 替换仍未通过画质验收。** 本文保留失败的像素门槛与原版默认配置；这些速度数字不代表画质已经相同。
