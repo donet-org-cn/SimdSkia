@@ -1,0 +1,34 @@
+{
+  "utc": "2026-10-21T14:04:22Z",
+  "os": "Windows-11-10.0.26300-SP0",
+  "processors": 12,
+  "physicalMemoryBytes": 34286309376,
+  "forks": 3,
+  "seconds": 5,
+  "warmupSeconds": 2,
+  "resourceSamplingIntervalMs": 25,
+  "instructionSet": "v3",
+  "sdk": "10.0.402",
+  "sourceCommit": "177a28609ba6acd96206f6a2ee89dd12ea9485d2",
+  "sourceStatus": [
+    " M README.md",
+    " M docs/AVALONIA-INTEGRATION.md",
+    " M docs/DEPENDENCIES.md",
+    " M src/SimdSkia.Avalonia/TileBrushes.cs",
+    "?? .github/workflows/native-aot.yml",
+    "?? examples/AvaloniaAot/",
+    "?? tools/report-avalonia-aot.py",
+    "?? tools/run-avalonia-aot.py"
+  ],
+  "binaries": {
+    "simd": {
+      "path": "F:\\simdSkia\\artifacts\\aot-comparison\\publish-v3\\simd\\AvaloniaAot.SimdSkia.exe",
+      "sha256": "63bf7a328a4a188fcafbbacd55bc4a75a615ffe5c8032cd848668d6b1505fdb4"
+    },
+    "original": {
+      "path": "F:\\simdSkia\\artifacts\\aot-comparison\\publish-v3\\original\\AvaloniaAot.Original.exe",
+      "sha256": "726a63eb3f46934dc3abdebf5254f561d4f03e5f2f716bf5db0db9d4e03be664"
+    }
+  },
+  "sourceSnapshotSha256": "18c4c6111924b43edd60fabe2a3abc159bf30a8ab211fc04acdf57cce120323e"
+}

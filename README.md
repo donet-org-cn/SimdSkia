@@ -1,5 +1,7 @@
 # SimdSkia
 
+新增 [Avalonia Native AOT 双后端程序](examples/AvaloniaAot/README.md)：相同控件分别使用 SimdSkia 与原版，提供 Windows x64 通用及 AVX2 版本，实际比较完整发布体积、启动/绘制速度、CPU 和内存。结果见 [AOT 实测报告](docs/AVALONIA-AOT-COMPARISON.md)；既有报告是另一套 JIT/离屏基准，数据不混用。
+
 独立 C# 2D 引擎，内部使用 SimdSkia，源码兼容层使用 SkiaSharp.SK*。固定基线是 Avalonia.Skia 12.1.4 实际解析的 SkiaSharp 3.119.4。不使用 Google Skia 绘图；字体、排版和编解码都是 C#。Core/Cpu/Text/Gpu 无 NuGet 包，Imaging/Compatibility 使用固定版本纯托管 JpegLibrary；可选 Avalonia 层另有纯托管依赖，见 [许可证与依赖](docs/DEPENDENCIES.md)。
 
 路径、抗锯齿、基本中英文 glyf TTF/TTC 字体、PNG/JPEG/部分 ICC、图像/视觉画刷、模糊/阴影、SIMD 与 Vulkan 离屏均有真实实现。**完整 Avalonia 替换尚未通过验收**：文字/曲线及部分新功能画质仍失败，通用字体排版与 Vulkan 窗口等仍有缺口。

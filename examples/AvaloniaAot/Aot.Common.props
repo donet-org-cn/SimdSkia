@@ -1,0 +1,30 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PublishAot>true</PublishAot>
+    <SelfContained>true</SelfContained>
+    <OptimizationPreference>Speed</OptimizationPreference>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <IlcGenerateStackTraceData>true</IlcGenerateStackTraceData>
+    <TrimmerSingleWarn>false</TrimmerSingleWarn>
+    <JsonSerializerIsReflectionEnabledByDefault>false</JsonSerializerIsReflectionEnabledByDefault>
+    <!-- Optional separate artifact: deliberately raises the minimum CPU requirement. -->
+    <IlcInstructionSet Condition="'$(ComparisonIsa)' == 'v3'">x86-64-v3</IlcInstructionSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.4]" />
+    <!-- Only the managed Win32 implementation: software presentation uses Windows APIs. -->
+    <PackageDownload Include="Avalonia.Win32" Version="[12.1.4]" />
+    <Reference Include="$(NuGetPackageRoot)/avalonia.win32/12.1.4/lib/net8.0/*.dll" />
+    <Compile Include="../Shared/*.cs" Link="%(Filename)%(Extension)" />
+    <Compile Include="../../../tests/AvaloniaControls/ControlScene.cs" Link="ControlScene.cs" />
+    <None Include="../../../baseline/fonts/ZCOOLXiaoWei-Regular.ttf" Link="fonts/ZCOOLXiaoWei-Regular.ttf" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <None Include="../../../docs/licenses/ZCOOLXiaoWei-OFL.txt" Link="licenses/ZCOOLXiaoWei-OFL.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <None Include="../../../docs/licenses/Avalonia-MIT.txt" Link="licenses/Avalonia-MIT.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+  <Target Name="RequireSharedFont" BeforeTargets="PrepareForBuild" Condition="!Exists('../../../baseline/fonts/ZCOOLXiaoWei-Regular.ttf')">
+    <Error Text="Fetch the shared OFL font first: powershell -File tools/fetch-avalonia-font.ps1" />
+  </Target>
+</Project>

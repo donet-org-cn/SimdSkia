@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Aot.Common.props" />
+  <PropertyGroup><DefineConstants>$(DefineConstants);MANAGED</DefineConstants></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../../../src/SimdSkia.Avalonia/SimdSkia.Avalonia.csproj" /></ItemGroup>
+</Project>

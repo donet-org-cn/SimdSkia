@@ -1,5 +1,7 @@
 # Avalonia 12.1.4 实际接入：2026-10-21
 
+新增可独立发布的 [Native AOT 对照应用](../examples/AvaloniaAot/README.md)，包含 SimdSkia 与原版两个共享源码的真实 Win32 程序。使用固定 .NET 10，兼容层补充了图像画刷内部 getter 的精确裁剪元数据保留；AOT 运行实际检查 ImageBrush 像素与原生依赖隔离。完整体积、CPU、内存、速度和画质结果见 [AOT 报告](AVALONIA-AOT-COMPARISON.md)。
+
 新增 `src/SimdSkia.Avalonia`。它注册 Avalonia 自身的绘图、字体和排版服务，现已运行真正的 Button、TextBox、CheckBox、TextBlock、Border、Image 和 Path。控件、样式、布局和输入仍由 Avalonia 执行，绘制不加载 Avalonia.Skia、SkiaSharp、HarfBuzzSharp、FreeType 或 ANGLE。
 
 已经验证真实 Win32 软件窗口完成 framebuffer 呈现，以及无头窗口的鼠标点击、中文输入、150% DPI 切换、窗口尺寸变化和重绘。这是可运行的受测子集，完整应用替换还存在下表所列缺口。当前窗口后端是 CPU；既有 Vulkan compute 仍是另一条离屏路径。

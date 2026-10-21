@@ -1,0 +1,43 @@
+name: Windows Native AOT smoke
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+jobs:
+  aot:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Fetch pinned OFL font
+        shell: pwsh
+        run: ./tools/fetch-avalonia-font.ps1
+      - name: Publish both portable x64 backends (AOT diagnostics are errors)
+        shell: pwsh
+        run: |
+          dotnet publish examples/AvaloniaAot/SimdSkia/AvaloniaAot.SimdSkia.csproj -c Release -o artifacts/aot-comparison/publish/simd
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet publish examples/AvaloniaAot/Original/AvaloniaAot.Original.csproj -c Release -o artifacts/aot-comparison/publish/original
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Run actual Win32 AOT controls and pixel probes
+        shell: pwsh
+        run: |
+          & artifacts/aot-comparison/publish/simd/AvaloniaAot.SimdSkia.exe --hidden --output artifacts/aot-comparison/smoke-simd --warmup 0 --seconds 0.2
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & artifacts/aot-comparison/publish/original/AvaloniaAot.Original.exe --hidden --output artifacts/aot-comparison/smoke-original --warmup 0 --seconds 0.2
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          foreach ($name in @('simd','original')) {
+            $metrics = Get-Content "artifacts/aot-comparison/smoke-$name/metrics.json" -Raw | ConvertFrom-Json
+            if (!$metrics.nativeAot -or !$metrics.imageBrushProbePassed -or $metrics.frames -le 0) { throw "AOT runtime probe failed: $name" }
+            if ($metrics.loadedModules -match '^(coreclr|clrjit|clr|mscorwks|mscorsvr)\.dll$') { throw "JIT runtime loaded: $name" }
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-aot-smoke
+          path: artifacts/aot-comparison/smoke-*
+          if-no-files-found: ignore

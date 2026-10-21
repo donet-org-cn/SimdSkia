@@ -1,5 +1,7 @@
 # 依赖与许可证
 
+新增 `examples/AvaloniaAot` 是 .NET 10 Native AOT / Win32 软件窗口对照，继续固定 Avalonia/Fluent 12.1.4。SimdSkia 版只使用上述托管渲染依赖和操作系统 API；Original 版单独引用 Avalonia.Skia 12.1.4、SkiaSharp 3.119.4、Avalonia.HarfBuzz 12.1.4、HarfBuzzSharp 8.3.1.3，仅此对照进程携带原版原生 DLL。两边均携带同一 OFL 字体与许可证，Original 还携带包内 SkiaSharp/HarfBuzzSharp LICENSE；体积清单逐文件记录。Native AOT 的 .NET 10 运行时随 C# 程序静态编译链接，不要求用户额外安装 .NET。基准父程序为 Python 标准库，Windows 资源 API 仅用于测量；报告差异图的 zlib 不进入产品引用图。
+
 当前生产依赖：Core/Cpu/Text/Gpu 没有 NuGet 包。Imaging 新增精确 `[0.4.32]` 的 **JpegLibrary**（MIT，纯 C# JPEG 熵编码、IDCT 和编码器；net8 使用其 net6 托管资产，没有传递包或 native 资产），Compatibility 与 Avalonia 适配层传递引用该包。字体和编解码全部 C# 的要求保持；此前“六模块零包”是历史实现状态，现已变更。
 
 JpegLibrary 固定源码提交 `d4dcb149dd4cd4a18994bf5bf9009f5691e39e75`，来自 [上游](https://github.com/yigolden-oss/JpegLibrary/tree/d4dcb149dd4cd4a18994bf5bf9009f5691e39e75)。其第三方通知包含 2018 SixLabors.ImageSharp 的 Apache-2.0 归属，不代表引用当前 ImageSharp 包。随 Imaging 输出和打包保留 `JpegLibrary-MIT.txt`、`JpegLibrary-THIRD-PARTY-NOTICES.md`、`Apache-2.0.txt`；锁文件记录包内容哈希。四分量渐进解码有经夹具发现的上游扫描 flush 问题，本引擎显式拒绝，详见最新测试报告。

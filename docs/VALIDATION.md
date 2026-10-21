@@ -1,5 +1,7 @@
 # 验证：2026-10-21
 
+新增真实 Windows Native AOT 验证：[详细报告](AVALONIA-AOT-COMPARISON.md)。4 份发布物（两种渲染器 × 两种 ISA）均成功生成原生代码，90 个正式进程运行检查 AOT 标志、PE 头、真实 Fluent 模板、字体、ImageBrush 像素及模块隔离；原有 8109 项控件回归通过。15/15 跨 ISA 图像逐字节相同；原版整页画质门槛 0/20，通过性能测量不代表通过替换验收。新增 CI 是 Windows AOT 编译/运行 smoke，不能当作共享云主机性能基准。
+
 本轮最终结果见 [测试报告](TEST-REPORT-2026-10-21.md)。已运行 Release、原版 API/像素、实际 Avalonia/Win32、CPU/GPU、全硬件回退、PNG/JPEG/ICC、TTC、压缩与依赖隔离。功能回归通过，完整兼容性仍失败；`verify.ps1 -Reference -Gpu` 在执行全部检查后返回 2，失败像素行不会被跳过。CPU/GPU 性能及内存见 [最终报告](PERFORMANCE-FINAL-2026-10-21.md)，本地完整日志 `artifacts/completion/delivery-validation.log`。
 
 以下为同日此前的历史验收记录。
