@@ -8,6 +8,8 @@ preview.3 修复文字图集在半透明覆盖裁剪下提前合成重叠字形�
 
 桌面包 `SimdSkia.Avalonia.Desktop`，可选 GPU 包 `SimdSkia.Avalonia.Gpu`，版本均为 `0.1.0-preview.3`；发布结果见 [NuGet 记录](NUGET-PREVIEW.md)。无需重新编译 Avalonia。
 
+11 个预览包已公开下载并与 CI 内容核对一致，[发布流水线](https://github.com/hnlyf168/SimdSkia/actions/runs/39648463806)成功。仅 NuGet.org 源、全新缓存下，包内 CPU/GPU 双文件示例均编译 0 警告/0 错误；公开包的完整控件窗口另在 GTX 1050 Ti 上通过，实际完成 132 条 GPU 命令、2 次原生交换链呈现、0 条不支持命令的 CPU 回退、6 条 CPU 图层命令。日志位于 `artifacts/nuget-public-preview3-demo` 和 `artifacts/nuget-public-preview3-desktop`。
+
 ```csharp
 using SimdSkia.Avalonia;
 // 三平台 CPU
@@ -62,7 +64,7 @@ Windows x64、i7-8700K/12 逻辑处理器、GTX 1050 Ti、.NET 10 JIT。窗口�
 
 窗口在 Windows 测量时放到屏幕外，以上是渲染/提交/完成服务成本，**不是显示器 FPS、端到端输入延迟或原版 SkiaSharp 性能对比**。这是一组 JIT 数据；Native AOT 的功能验证不作为此性能结论。不同后端的曲线 AA 仍有差异，表格不能宣称同原版逐像素等价胜出。此前原版对比保持在各自报告中，不混用时间范围。
 
-优化过程原始数据保留：Direct2D 从首轮约 11.7 ms 降至约 1.95 ms。文字默认使用有界 C# 图集，内容哈希有完整轮廓/位置校验防碰撞，不按布局对象地址强行缓存。GPU 上传只裁切实际图像采样范围，保留小数源坐标及采样边界；Vulkan 纹理 LRU 从 32 项改为 256 项，64 MiB 数据预算不变；显式不可变纹理避免重复扫描。所有变化先通过相应像素测试再测量。
+早期原型约 11.7 ms，当前修复版约 2.05 ms。早期 GPU 轮廓模式与当前 C# 图集模式的文字覆盖率不同，这组阶段值只记录调优轨迹，不作为固定画质下的独立胜出结论。文字图集有界，内容哈希有完整轮廓/位置校验防碰撞，不按布局对象地址强行缓存。GPU 上传只裁切实际图像采样范围，保留小数源坐标及采样边界；Vulkan 纹理 LRU 从 32 项改为 256 项，64 MiB 数据预算不变；显式不可变纹理避免重复扫描。所有变化先通过相应像素测试再测量。
 
 复现：
 

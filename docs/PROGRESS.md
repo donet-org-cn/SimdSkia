@@ -1,5 +1,7 @@
 # 进度：2026-10-22
 
+最终发布：11 个 `0.1.0-preview.3` 包已从 NuGet.org 公开下载，DLL/README 与成功发布的 CI 产物一致。公开包的 CPU/GPU README 程序在私有缓存中编译通过，公开 Direct2D 包的真实控件窗口通过；不依赖本地引擎 ProjectReference。[发布记录](NUGET-PREVIEW.md)
+
 preview.3 修复重叠文字的半透明覆盖裁剪顺序与滚动缓存；GPU 硬件集成断言 12172 项通过，含先复现失败再修复的回归。修复版的三平台 JIT、Native AOT 及真实包窗口已全部通过 [CI 39647833834](https://github.com/hnlyf168/SimdSkia/actions/runs/39647833834)；本机 Direct2D/Vulkan AOT 硬件也再次通过。修复版九进程 JIT 控件 P50：CPU 3.539 / Direct2D 2.049 / Vulkan 21.437 ms，工作集 114.5 / 176.1 / 216.6 MiB；完整数据、实际截图、公开发布及限制见[交付报告](DESKTOP-GPU-2026-10-22.md)。
 
 新增 preview.2：三平台桌面统一入口、Linux/macOS 托管系统字体发现、Windows Direct2D/D3D11 原生交换链、Avalonia Vulkan 回读绘图已实际实现。三平台 JIT 窗口 CI 通过；本机三后端均在呈现后 resize 通过。Direct2D 硬件 54 项、GPU 集成 12124 项、字形合批 60 项与原回归通过。三进程 JIT 控件 P50：CPU 3.569 / Direct2D 1.948 / Vulkan 20.972 ms；工作集 114.0 / 175.4 / 217.0 MiB。默认文字图集由 C# 生成，GPU 合成；不把 CPU 图层算成 GPU 光栅化。Native AOT、包消费和公开发布作为独立检查持续记录。[完整报告](DESKTOP-GPU-2026-10-22.md)

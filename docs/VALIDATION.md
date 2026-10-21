@@ -1,5 +1,7 @@
 # 验证：2026-10-22
 
+公开消费最终检查：11 个 `0.1.0-preview.3` 下载与 CI DLL/README 内容核对通过；仅 NuGet.org 源、全新缓存恢复的 CPU/GPU README 双文件项目各自编译 0 警告/0 错误。公开包的 Direct2D 完整控件窗口在 GTX 1050 Ti 上创建并在首帧后缩放，完成 132 条 GPU 命令和 2 次原生呈现；0 条不支持命令的回退，6 条独立记录的 CPU 图层命令。发布 CI、实际版本和下载 SHA 见[公开验证证据](evidence/nuget-preview3-2026-10-22.json)。
+
 preview.3：覆盖裁剪与重叠文字的顺序回归先验证旧代码失败，再验证新代码在两后端/两格式、透明度/覆盖率和滚动坐标组合通过，总计 12172 项 GPU 集成断言。修复版三平台 JIT、Native AOT、真实 nupkg 窗口已全部通过 [CI 39647833834](https://github.com/hnlyf168/SimdSkia/actions/runs/39647833834)；本机 AOT CPU/Direct2D/Vulkan 控件和真实 Direct2D 包窗口再次通过。包内完整双文件程序的 CPU/GPU 配置编译通过。旧版整页画质和完整 API 缺口仍未改判为通过。
 
 preview.2 源码验收：Release 全解决方案 0 警告/错误，原有 36 行为、484 图片、7845 优化、595 文字、8109 控件和三组 Vulkan 回归通过；Windows 字体通过。新 Direct2D 54 硬件检查、GPU 集成 12124 断言、60 个逐字节字形批次和 framebuffer 提交失败清理检查通过。真实 CPU/Direct2D/Vulkan 窗口均执行首次呈现后的 resize；三平台 JIT CI 已通过，Native AOT/包消费另验。性能与限制见 [本轮报告](DESKTOP-GPU-2026-10-22.md)。

@@ -2,7 +2,9 @@
 
 ## 第三预览版 0.1.0-preview.3
 
-修复 GPU 文字图集在覆盖裁剪下的重叠合成顺序与滚动缓存，继续提供 11 个包。推荐安装 `SimdSkia.Avalonia.Desktop`，GPU 另加 `SimdSkia.Avalonia.Gpu`，两者版本均为 `0.1.0-preview.3`；完整使用方式在[首页](../README.md)。preview.2 标签和包保持原样，新代码通过独立检查后发布 preview.3。实际公开下载验证另行记录。
+**已公开发布。** 11 个 `0.1.0-preview.3` 包均已实际下载，DLL 和 README 与发布 CI 产物逐字节一致，[发布流水线 39648463806](https://github.com/hnlyf168/SimdSkia/actions/runs/39648463806)全部成功。修复 GPU 文字图集在覆盖裁剪下的重叠合成顺序与滚动缓存；preview.2 标签和包保持原样。推荐安装 [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.0-preview.3)，GPU 另加 [SimdSkia.Avalonia.Gpu](https://www.nuget.org/packages/SimdSkia.Avalonia.Gpu/0.1.0-preview.3)，两者版本均为 `0.1.0-preview.3`；完整使用方式在[首页](../README.md)。公开下载核对见[发布证据](evidence/nuget-preview3-2026-10-22.json)。
+
+已从已发布的包内 README 提取完整程序，在仅 NuGet.org 源、全新缓存下完成 CPU 和 Direct2D 配置的恢复与编译，两者均 0 警告/0 错误。另从 NuGet.org 恢复 CrossPlatform 控件示例，检查全部 SimdSkia 依赖来自包，在本机 GTX 1050 Ti 上实际创建、呈现及缩放 Direct2D 窗口通过。原始记录为 `artifacts/nuget-public-preview3-demo` 和 `artifacts/nuget-public-preview3-desktop`。
 
 ## 第二预览版 0.1.0-preview.2
 
