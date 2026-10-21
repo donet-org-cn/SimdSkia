@@ -1,0 +1,59 @@
+param(
+    [string]$Output='artifacts/performance/latest',
+    [string]$Font='baseline/fonts/ZenOldMincho-Regular.ttf',
+    [int]$Forks=3,
+    [int]$Samples=7,
+    [int]$SampleMilliseconds=60,
+    [int]$WarmupMilliseconds=100,
+    [string]$Sizes='256x256,1024x768',
+    [string]$Scenes='',
+    [string]$Report='docs/PERFORMANCE.md'
+)
+$ErrorActionPreference='Stop'
+$workspacePath=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+Push-Location -LiteralPath $workspacePath
+$savedTier=$env:DOTNET_TieredCompilation
+$savedR2R=$env:DOTNET_ReadyToRun
+$savedServer=$env:DOTNET_gcServer
+try {
+    if($Forks -lt 1 -or $Forks -gt 20){throw 'Fork count outside 1..20.'}
+    if(-not(Test-Path -LiteralPath $Font)){throw 'Missing real font. Run tools/fetch-test-font.ps1 or supply -Font.'}
+    if(-not(Test-Path -LiteralPath baseline/skiasharp.3.119.4/lib/net6.0/SkiaSharp.dll)){throw 'Run tools/fetch-baseline.ps1 -IncludeWindowsReferenceRuntime.'}
+    foreach($project in @('benchmarks/Managed','benchmarks/Reference','benchmarks/Report')){dotnet build $project -c Release --nologo;if($LASTEXITCODE -ne 0){throw ('Build failed: '+$project)}}
+    $outputPath=[IO.Path]::GetFullPath((Join-Path $workspacePath $Output))
+    if(Test-Path -LiteralPath (Join-Path $outputPath 'run.json')){throw 'Output contains an earlier run. Supply a new -Output directory; existing evidence is preserved.'}
+    New-Item -ItemType Directory -Path $outputPath -Force | Out-Null
+    $fontPath=(Resolve-Path -LiteralPath $Font).Path
+    $fixturePath=Join-Path $outputPath 'fixtures'
+    $managedPath=Join-Path $workspacePath 'benchmarks/Managed/bin/Release/net8.0/SimdSkia.Benchmark.Managed.dll'
+    $referencePath=Join-Path $workspacePath 'benchmarks/Reference/bin/Release/net8.0/SimdSkia.Benchmark.Reference.dll'
+    $env:DOTNET_TieredCompilation='0'
+    $env:DOTNET_ReadyToRun='0'
+    $env:DOTNET_gcServer='0'
+    dotnet $referencePath --make-fixtures --fixtures $fixturePath --sizes $Sizes --font $fontPath
+    if($LASTEXITCODE -ne 0){throw 'Reference fixture generation failed.'}
+    $sceneArguments=@();if($Scenes){$sceneArguments=@('--scenes',$Scenes)}
+    $jobs=@()
+    $random=[Random]::new(20261012)
+    for($fork=0;$fork -lt $Forks;$fork++){
+        $order=@('original','scalar','simd')
+        for($i=$order.Count-1;$i -gt 0;$i--){$j=$random.Next($i+1);$temporary=$order[$i];$order[$i]=$order[$j];$order[$j]=$temporary}
+        foreach($engine in $order){$jobs+=@{Engine=$engine;Fork=$fork}}
+    }
+    $sourceHashes=[ordered]@{};foreach($sourceFile in @(rg --files src -g '*.cs' -g '*.csproj' -g '*.comp' -g '*.spv' -g '!**/obj/**' -g '!**/bin/**')){$sourceHashes[$sourceFile]=(Get-FileHash -LiteralPath $sourceFile).Hash}
+    $manifest=[ordered]@{ProductSourceSha256=$sourceHashes;Date=(Get-Date -Format 'yyyy-MM-dd');StartedUtc=[DateTimeOffset]::UtcNow.ToString('o');Backend='CPU only';Baseline='SkiaSharp 3.119.4';Forks=$Forks;Samples=$Samples;TargetSampleMilliseconds=$SampleMilliseconds;WarmupMilliseconds=$WarmupMilliseconds;Sizes=$Sizes;Scenes=$Scenes;Font=$fontPath;FontSha256=(Get-FileHash -LiteralPath $fontPath).Hash;Seed=20261012;TieredCompilation=0;ReadyToRun=0;ServerGc=0;JobOrder=$jobs;Complete=$false}
+    $manifest|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $outputPath 'run.json') -Encoding UTF8
+    foreach($job in $jobs){
+        $jobPath=Join-Path $outputPath ($job.Engine+'-'+$job.Fork)
+        $programPath=if($job.Engine -eq 'original'){$referencePath}else{$managedPath}
+        Write-Output ('Running '+$job.Engine+' fork '+$job.Fork)
+        dotnet $programPath --engine $job.Engine --fork $job.Fork --out $jobPath --fixtures $fixturePath --font $fontPath --sizes $Sizes --samples $Samples --sample-ms $SampleMilliseconds --warmup-ms $WarmupMilliseconds @sceneArguments 2>&1 | Tee-Object -FilePath (Join-Path $outputPath ($job.Engine+'-'+$job.Fork+'.log'))
+        if($LASTEXITCODE -ne 0){throw ('Benchmark failed: '+$job.Engine+' fork '+$job.Fork)}
+    }
+    foreach($sourceFile in $sourceHashes.Keys){if((Get-FileHash -LiteralPath $sourceFile).Hash -ne $sourceHashes[$sourceFile]){throw ('Product source changed during measurement: '+$sourceFile)}}
+    $manifest.Complete=$true
+    $manifest|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $outputPath 'run.json') -Encoding UTF8
+    dotnet benchmarks/Report/bin/Release/net8.0/Report.dll $outputPath $Report
+    if($LASTEXITCODE -ne 0){throw 'Report generation failed.'}
+}
+finally{$env:DOTNET_TieredCompilation=$savedTier;$env:DOTNET_ReadyToRun=$savedR2R;$env:DOTNET_gcServer=$savedServer;Pop-Location}

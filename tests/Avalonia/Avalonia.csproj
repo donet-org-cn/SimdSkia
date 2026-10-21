@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><AssemblyName>SimdSkia.Avalonia.Tests</AssemblyName></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../../src/SimdSkia.Compatibility/SimdSkia.Compatibility.csproj" /></ItemGroup>
+  <ItemGroup><Compile Remove="Reference/**" /></ItemGroup>
+</Project>

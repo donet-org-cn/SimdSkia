@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><AssemblyName>SimdSkia.Gpu</AssemblyName><RootNamespace>SimdSkia.Gpu</RootNamespace><AllowUnsafeBlocks>true</AllowUnsafeBlocks></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../src/SimdSkia.Core/SimdSkia.Core.csproj" />
+    <Compile Include="../../../src/SimdSkia.Gpu/VulkanNative.cs" Link="VulkanNative.cs" />
+    <EmbeddedResource Include="../../../src/SimdSkia.Gpu/Shaders/renderer.spv" LogicalName="SimdSkia.Gpu.Shaders.renderer.spv" />
+  </ItemGroup>
+</Project>

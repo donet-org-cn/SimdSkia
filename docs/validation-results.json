@@ -1,0 +1,49 @@
+﻿{
+    "VerificationDate":  "2026-10-12",
+    "Platform":  "Windows 10.0.26300 x64",
+    "Sdk":  "10.0.401",
+    "Target":  "net8.0",
+    "BaselineSkiaSharp":  "3.119.4",
+    "BuildErrors":  0,
+    "BuildWarnings":  0,
+    "CoreTests":  {
+                      "Total":  36,
+                      "Passed":  36
+                  },
+    "FeatureTests":  {
+                         "Total":  14,
+                         "Failed":  0
+                     },
+    "SimdScalarFallbackTested":  true,
+    "SimdCombinations":  150,
+    "NativeCpuPixelScenes":  {
+                                 "Total":  120,
+                                 "Passed":  108,
+                                 "Failed":  12,
+                                 "StrictAllPassed":  false,
+                                 "KnownFailingFeatures":  [
+                                                              "curve AA coverage",
+                                                              "text grayscale coverage"
+                                                          ]
+                             },
+    "BehaviorProbes":  25,
+    "BehaviorDifferences":  0,
+    "ApiMatches":  403,
+    "ApiMissing":  2832,
+    "ApiExtraOrChanged":  0,
+    "Vulkan":  {
+                   "Backend":  "Vulkan compute (device coverage and composition)",
+                   "DeviceName":  "NVIDIA GeForce GTX 1050 Ti",
+                   "IsSoftwareDevice":  false,
+                   "CompletedBatches":  16,
+                   "CachedTextures":  32,
+                   "LastSubmitMilliseconds":  0.0524,
+                   "LastCompletionMilliseconds":  0.1539,
+                   "ThreadConstraintVerified":  true,
+                   "ChineseVerified":  true,
+                   "TextureVkImageVerified":  true
+               },
+    "LinuxExecuted":  false,
+    "ProductionNuGetDependencies":  0,
+    "FullCompatibilityEstablished":  false
+}

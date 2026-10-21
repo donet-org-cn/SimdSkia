@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Target.local.props" />
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>SimdSkia.Ocr.CompatibilityProbe</AssemblyName>
+    <LangVersion>preview</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Core/Core.csproj" />
+    <ProjectReference Include="../../../src/SimdSkia.Compatibility/SimdSkia.Compatibility.csproj" />
+    <Compile Include="$(QcxtRoot)/src/Qcxt.OCR.SkiaSharp/SkiaOcrExtensions.cs" Link="SkiaOcrExtensions.cs" />
+  </ItemGroup>
+</Project>

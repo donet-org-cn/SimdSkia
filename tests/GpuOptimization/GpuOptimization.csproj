@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><AssemblyName>SimdSkia.GpuOptimization.Tests</AssemblyName></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/SimdSkia.Gpu/SimdSkia.Gpu.csproj" />
+    <ProjectReference Include="../../src/SimdSkia.Text/SimdSkia.Text.csproj" />
+  </ItemGroup>
+</Project>

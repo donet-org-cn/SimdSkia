@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/SimdSkia.Compatibility/SimdSkia.Compatibility.csproj" />
+    <Compile Include="../Shared/Scenes.cs" Link="Scenes.cs" />
+    <Compile Include="../Shared/Behavior.cs" Link="Behavior.cs" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><AssemblyName>SimdSkia.Benchmark.GpuHostCached</AssemblyName></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Compatibility/Compatibility.csproj" />
+    <Compile Include="../../../benchmarks/GpuManaged/Program.cs" Link="Program.cs" />
+    <Compile Include="../../../benchmarks/GpuShared/*.cs" LinkBase="GpuShared" />
+    <Compile Include="../../../benchmarks/Shared/Contracts.cs" Link="Contracts.cs" />
+  </ItemGroup>
+</Project>

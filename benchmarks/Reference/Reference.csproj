@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><AssemblyName>SimdSkia.Benchmark.Reference</AssemblyName><DefineConstants>$(DefineConstants);ORIGINAL</DefineConstants></PropertyGroup>
+  <ItemGroup>
+    <Reference Include="SkiaSharp"><HintPath>../../baseline/skiasharp.3.119.4/lib/net6.0/SkiaSharp.dll</HintPath></Reference>
+    <None Include="../../baseline/skiasharp.nativeassets.win32.3.119.4/runtimes/win-x64/native/libSkiaSharp.dll" Link="libSkiaSharp.dll" CopyToOutputDirectory="PreserveNewest" Condition="$([MSBuild]::IsOSPlatform('Windows')) and '$(NETCoreSdkRuntimeIdentifier)' == 'win-x64'" />
+    <Compile Include="../Shared/*.cs" LinkBase="Shared" />
+  </ItemGroup>
+</Project>

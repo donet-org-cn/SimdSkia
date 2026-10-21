@@ -1,0 +1,134 @@
+#version 450
+layout(local_size_x=8,local_size_y=8) in;
+layout(std430,binding=0) buffer Target { uint pixels[]; };
+layout(std430,binding=1) readonly buffer Edges { vec4 edges[]; };
+layout(std430,binding=2) readonly buffer Params { uint p[]; };
+layout(binding=3) uniform sampler2D imageTexture;
+float f(int i){return uintBitsToFloat(p[i]);}
+uvec4 unpackColor(uint c){return uvec4(c&255u,(c>>8)&255u,(c>>16)&255u,c>>24);}
+uint packColor(uvec4 c){return c.x|(c.y<<8)|(c.z<<16)|(c.w<<24);}
+uint multiplyAlpha(uint value,uint alpha){return (value*alpha+127u)/255u;}
+vec2 localPoint(vec2 point){return vec2(f(22)*point.x+f(23)*point.y+f(24),f(25)*point.x+f(26)*point.y+f(27));}
+uint edgeStart=0u,edgeCount=0u;
+vec4 edgeAt(uint i){
+    uint at=edgeStart+i;
+    return p[41]==0u?edges[at]:edges[uint(edges[at/4u][at%4u])];
+}
+bool inside(vec2 point){
+    if(point.x<f(8)||point.y<f(9)||point.x>=f(10)||point.y>=f(11))return false;
+    if(p[2]==1u||p[2]==3u){
+        if(p[2]==1u&&p[5]==1u&&p[32]==1u)return point.x>=f(33)&&point.y>=f(34)&&point.x<f(35)&&point.y<f(36);
+        vec2 q=localPoint(point);return q.x>=f(12)&&q.y>=f(13)&&q.x<f(14)&&q.y<f(15);
+    }
+    int winding=0;
+    for(uint i=0u;i<edgeCount;i++){
+        vec4 e=edgeAt(i);
+        if((e.y<=point.y&&e.w>point.y)||(e.w<=point.y&&e.y>point.y)){
+            float crossing=e.x+(point.y-e.y)*(e.z-e.x)/(e.w-e.y);
+            if(crossing<=point.x)winding+=e.w>e.y?1:-1;
+        }
+    }
+    bool filled=(p[6]&1u)==1u?(winding&1)!=0:winding!=0;
+    return p[6]>=2u?!filled:filled;
+}
+uint prefixLanes(int first){return first<=0?0x01010101u:first>=4?0u:0x01010101u<<uint(first*8);}
+uvec4 nonzeroLanes(uvec4 value){
+    value^=uvec4(0x80808080u);
+    return (((value&uvec4(0x7f7f7f7fu))+uvec4(0x7f7f7f7fu))|value)&uvec4(0x80808080u);
+}
+uint pathSamples(vec2 origin,uint samples){
+    uvec4 clipBits=uvec4(0x80808080u);
+    float first=.5/float(samples),last=(float(samples)-.5)/float(samples);
+    if(origin.x+first<f(8)||origin.x+last>=f(10)){
+        clipBits=uvec4(0u);
+        for(uint x=0u;x<samples;x++){
+            float sx=origin.x+(float(x)+.5)/float(samples);
+            if(sx>=f(8)&&sx<f(10))clipBits[x/4u]|=0x80u<<((x%4u)*8u);
+        }
+    }
+    uint result=0u;
+    for(uint y=0u;y<samples;y++){
+        float sy=origin.y+(float(y)+.5)/float(samples);
+        if(sy<f(9)||sy>=f(11))continue;
+        // Four independent signed byte counters per uint. Bias 128 prevents inter-lane
+        // carry/borrow: this kernel is selected only for fewer than 128 candidate edges.
+        uvec4 winding=uvec4(0x80808080u);
+        for(uint i=0u;i<edgeCount;i++){
+            vec4 e=edgeAt(i);
+            if((e.y<=sy&&e.w>sy)||(e.w<=sy&&e.y>sy)){
+                float crossing=e.x+(sy-e.y)*(e.z-e.x)/(e.w-e.y);
+                if(!(crossing<=origin.x+last))continue;
+                int at=crossing<=origin.x+first?0:int(ceil((crossing-origin.x)*float(samples)-.5));
+                uvec4 increment=uvec4(prefixLanes(at),prefixLanes(at-4),prefixLanes(at-8),prefixLanes(at-12));
+                if(e.w>e.y)winding+=increment;else winding-=increment;
+            }
+        }
+        uvec4 filled=(p[6]&1u)!=0u?(winding&uvec4(0x01010101u))<<7u:nonzeroLanes(winding);
+        if(p[6]>=2u)filled^=uvec4(0x80808080u);
+        ivec4 counts=bitCount(filled&clipBits);result+=uint(counts.x+counts.y+counts.z+counts.w);
+    }
+    return result;
+}
+void main(){
+    uvec2 local=gl_GlobalInvocationID.xy;if(local.x>=p[39]||local.y>=p[40])return;
+    uvec2 pixel=uvec2(p[37],p[38])+local;if(pixel.x>=p[0]||pixel.y>=p[1])return;
+    edgeCount=p[7];
+    if(p[41]!=0u){
+        uvec2 tile=pixel/8u;
+        if(tile.x<p[43]||tile.y<p[44]||tile.x>=p[43]+p[41]||tile.y>=p[44]+p[42])edgeCount=0u;
+        else{vec4 header=edges[p[7]+(tile.y-p[44])*p[41]+tile.x-p[43]];edgeStart=uint(header.x);edgeCount=uint(header.y);}
+    }
+    uint index=pixel.y*p[0]+pixel.x;
+    uvec4 color=unpackColor(p[4]);
+    if(p[2]==0u){color.rgb=uvec3(multiplyAlpha(color.r,color.a),multiplyAlpha(color.g,color.a),multiplyAlpha(color.b,color.a));pixels[index]=packColor(color);return;}
+    uint samples=p[5],covered=0u;
+    vec2 origin=vec2(pixel);
+    bool boundary=samples>1u;
+    if(p[2]==2u&&boundary){
+        boundary=false;
+        for(uint i=0u;i<edgeCount;i++){
+            vec4 e=edgeAt(i);
+            if(max(e.x,e.z)>=origin.x&&min(e.x,e.z)<=origin.x+1.0&&max(e.y,e.w)>=origin.y&&min(e.y,e.w)<=origin.y+1.0){boundary=true;break;}
+        }
+        // Clip may introduce an edge independently of path geometry.
+        if(origin.x<f(8)&&origin.x+1.0>f(8)||origin.x<f(10)&&origin.x+1.0>f(10)||origin.y<f(9)&&origin.y+1.0>f(9)||origin.y<f(11)&&origin.y+1.0>f(11))boundary=true;
+    }
+    if(p[45]!=0u&&p[2]==1u&&p[32]==1u&&samples>1u){
+        // Axis-aligned rectangles are separable. Evaluate the same inverse transform,
+        // clip tests and sample coordinates, retaining strict ties and mirrored axes.
+        uint cx=0u,cy=0u;
+        float first=.5/float(samples),last=(float(samples)-.5)/float(samples);
+        vec2 lo=localPoint(origin+vec2(first)),hi=localPoint(origin+vec2(last));
+        if(origin.x+first>=f(8)&&origin.x+last<f(10)&&min(lo.x,hi.x)>=f(12)&&max(lo.x,hi.x)<f(14))cx=samples;
+        else for(uint x=0u;x<samples;x++){
+            vec2 pt=origin+vec2((float(x)+.5)/float(samples),.5);vec2 qx=localPoint(pt);
+            if(pt.x>=f(8)&&pt.x<f(10)&&qx.x>=f(12)&&qx.x<f(14))cx++;
+        }
+        if(origin.y+first>=f(9)&&origin.y+last<f(11)&&min(lo.y,hi.y)>=f(13)&&max(lo.y,hi.y)<f(15))cy=samples;
+        else for(uint y=0u;y<samples;y++){
+            vec2 pt=origin+vec2(.5,(float(y)+.5)/float(samples));vec2 qy=localPoint(pt);
+            if(pt.y>=f(9)&&pt.y<f(11)&&qy.y>=f(13)&&qy.y<f(15))cy++;
+        }
+        covered=cx*cy;
+    }
+    else if(!boundary)covered=inside(origin+vec2(.5))?samples*samples:0u;
+    else if(p[45]!=0u&&p[2]==2u&&samples==16u&&edgeCount<128u)covered=pathSamples(origin,samples);
+    else for(uint y=0u;y<samples;y++)for(uint x=0u;x<samples;x++)if(inside(origin+(vec2(x,y)+vec2(.5))/float(samples)))covered++;
+    if(covered==0u)return;
+    uint coverage=(covered*255u+samples*samples/2u)/(samples*samples);
+    vec2 q=localPoint(origin+vec2(.5));
+    if(p[2]==3u){
+        vec2 uv=(q-vec2(f(12),f(13)))/vec2(f(14)-f(12),f(15)-f(13));
+        uvec2 at=uvec2(clamp(uv*vec2(p[19],p[20]),vec2(0),vec2(p[19]-1u,p[20]-1u)));
+        uint opacity=color.a;color=uvec4(roundEven(texelFetch(imageTexture,ivec2(at),0)*255.0));color.a=multiplyAlpha(color.a,opacity);
+    }else if(p[16]!=0u){
+        vec2 start=vec2(f(28),f(29)),delta=vec2(f(30),f(31))-start;
+        float denominator=dot(delta,delta),t=denominator==0.0?1.0:clamp(dot(q-start,delta)/denominator,0.0,1.0);
+        uint opacity=color.a;color=uvec4(roundEven(mix(vec4(unpackColor(p[17])),vec4(unpackColor(p[18])),t)));color.a=multiplyAlpha(color.a,opacity);
+    }
+    uvec4 destination=unpackColor(pixels[index]);uint alpha=multiplyAlpha(color.a,coverage);
+    uint remain=p[3]==0u?255u-alpha:255u-coverage;
+    if(p[3]==2u){color=uvec4(0u);alpha=0u;}
+    uvec4 result=uvec4(multiplyAlpha(destination.r,remain)+multiplyAlpha(color.r,alpha),multiplyAlpha(destination.g,remain)+multiplyAlpha(color.g,alpha),multiplyAlpha(destination.b,remain)+multiplyAlpha(color.b,alpha),multiplyAlpha(destination.a,remain)+alpha);
+    pixels[index]=packColor(min(result,uvec4(255u)));
+}

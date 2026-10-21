@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><AssemblyName>SimdSkia.Compatibility</AssemblyName><RootNamespace>SkiaSharp</RootNamespace></PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../../src/SimdSkia.Compatibility/*.cs" LinkBase="Compatibility" />
+    <ProjectReference Include="../../../src/SimdSkia.Core/SimdSkia.Core.csproj" />
+    <ProjectReference Include="../../../src/SimdSkia.Cpu/SimdSkia.Cpu.csproj" />
+    <ProjectReference Include="../../../src/SimdSkia.Text/SimdSkia.Text.csproj" />
+    <ProjectReference Include="../../../src/SimdSkia.Imaging/SimdSkia.Imaging.csproj" />
+    <ProjectReference Include="../Gpu/Gpu.csproj" />
+  </ItemGroup>
+</Project>

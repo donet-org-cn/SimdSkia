@@ -1,0 +1,27 @@
+**/bin/
+**/obj/
+artifacts/
+baseline/
+results/
+
+# Local tools, editor state, and generated output
+**/__pycache__/
+*.py[cod]
+*.log
+*.tmp
+*.opt-tmp
+.vs/
+.idea/
+*.suo
+*.user
+.DS_Store
+Thumbs.db
+.env
+.env.*
+!.env.example
+
+# One-off local diagnostic projects
+/Probe.cs
+/ProbeVk.csproj
+
+benchmarks/Ocr/Target.local.props

@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Compatibility/Compatibility.csproj" />
+    <Compile Include="../../../tests/Gpu/Program.cs" Link="Program.cs" />
+  </ItemGroup>
+</Project>

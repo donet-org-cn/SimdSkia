@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Target.local.props" />
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>SimdSkia.Ocr.Managed</AssemblyName>
+    <LangVersion>preview</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Core/Core.csproj" />
+    <ProjectReference Include="../../../src/SimdSkia.Compatibility/SimdSkia.Compatibility.csproj" />
+    <Compile Include="../Shared/*.cs" LinkBase="Shared" />
+    <Compile Include="$(QcxtRoot)/samples/OCRSample/PpmImage.cs" Link="PpmImage.cs" />
+  </ItemGroup>
+</Project>

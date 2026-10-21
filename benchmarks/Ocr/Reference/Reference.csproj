@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Target.local.props" />
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>SimdSkia.Ocr.Reference</AssemblyName>
+    <LangVersion>preview</LangVersion>
+    <DefineConstants>$(DefineConstants);ORIGINAL</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Core/Core.csproj" />
+    <Reference Include="SkiaSharp">
+      <HintPath>$(TargetSkiaRoot)/lib/net10.0/SkiaSharp.dll</HintPath>
+    </Reference>
+    <None Include="$(TargetNativeSkiaRoot)/runtimes/win-x64/native/libSkiaSharp.dll" Link="libSkiaSharp.dll" CopyToOutputDirectory="PreserveNewest" />
+    <Compile Include="$(QcxtRoot)/src/Qcxt.OCR.SkiaSharp/SkiaOcrExtensions.cs" Link="SkiaOcrExtensions.cs" />
+    <Compile Include="../Shared/*.cs" LinkBase="Shared" />
+    <Compile Include="$(QcxtRoot)/samples/OCRSample/PpmImage.cs" Link="PpmImage.cs" />
+  </ItemGroup>
+</Project>

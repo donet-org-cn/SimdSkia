@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><AssemblyName>SimdSkia.Benchmark.Managed</AssemblyName></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../../src/SimdSkia.Compatibility/SimdSkia.Compatibility.csproj" /><Compile Include="../Shared/*.cs" LinkBase="Shared" /></ItemGroup>
+</Project>

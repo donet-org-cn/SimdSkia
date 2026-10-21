@@ -1,0 +1,3399 @@
+{
+  "Date": "2026-10-21T09:12:51.2625732+00:00",
+  "AvaloniaAssembly": "Avalonia.Skia",
+  "InputSha256": "A79B0D0FAE895E306EFF279FDED37EB7825F95745F9A89954480637ABF387273",
+  "ReplacementSha256": "DB99486EB4E62BA87E85EE62439D29D75119E810BE2963116E96CED3AFD3F1E9",
+  "UsedSkiaTypes": 92,
+  "PresentSkiaTypes": 33,
+  "MatchedSkiaMemberReferences": 120,
+  "MissingSkiaMemberReferences": 226,
+  "HarfBuzzMemberReferences": 0,
+  "Caveat": "IL references, including properties as accessor methods. Metadata presence is not a behavior or integration pass. Inherited members outside the replacement assembly are not resolved. Constants inlined by the C# compiler are absent. No native library is loaded.",
+  "Types": [
+    {
+      "Type": "SkiaSharp.GRBackendRenderTarget",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.GRBackendState",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.GRBackendTexture",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.GRContext",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.GRContextOptions",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.GRGlFramebufferInfo",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.GRGlGetProcedureAddressDelegate",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.GRGlInterface",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.GRGlTextureInfo",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.GRMtlBackendContext",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.GRMtlTextureInfo",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.GRRecordingContext",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.GRSurfaceOrigin",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.GRVkAlloc",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.GRVkBackendContext",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.GRVkGetProcedureAddressDelegate",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.GRVkImageInfo",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKAlphaType",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKBitmap",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKBitmapReleaseDelegate",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKBlendMode",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKClipOperation",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKCodec",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKColor",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKColorF",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKColorFilter",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKColorSpace",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKColorType",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKCubicResampler",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKData",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKFilterMode",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKFont",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKFontEdging",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKFontHinting",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKFontManager",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKFontStyle",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKFontStyleSet",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKFontStyleSlant",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKFontStyleWeight",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKFontStyleWidth",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SkiaExtensions",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKImage",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKImageCachingHint",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKImageFilter",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKImageInfo",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKJpegEncoderOptions",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKManagedStream",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKMipmapMode",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKNativeObject",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKPaint",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKPath",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKPath\u002BIterator",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKPathAddMode",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKPathArcSize",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKPathDirection",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKPathEffect",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKPathFillType",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKPathMeasure",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKPathOp",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKPathVerb",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKPicture",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKPictureRecorder",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKPixelGeometry",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKPixmap",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKPngEncoderFilterFlags",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKPngEncoderOptions",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKPoint",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKPositionedRunBuffer",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKRect",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKRectI",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKRegion",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKRegion\u002BRectIterator",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKRegionOperation",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKRoundRect",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKRunBuffer",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKSamplingOptions",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKShader",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKShaderTileMode",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKSizeI",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKStream",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKStreamAsset",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKStrokeCap",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKStrokeJoin",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKSurface",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKSurfaceProperties",
+      "Present": false
+    },
+    {
+      "Type": "SkiaSharp.SKTextAlign",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKTextBlob",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKTextBlobBuilder",
+      "Present": true
+    },
+    {
+      "Type": "SkiaSharp.SKTypeface",
+      "Present": true
+    }
+  ],
+  "Members": [
+    {
+      "Type": "SkiaSharp.SKPath",
+      "Signature": "SkiaSharp.SKPath.get_TightBounds\u00600():SkiaSharp.SKRect;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.CombinedGeometryImpl..ctor",
+        "Avalonia.Skia.GeometryGroupImpl..ctor",
+        "Avalonia.Skia.GeometryImpl.GetRenderBounds",
+        "Avalonia.Skia.GeometryImpl\u002BPathCache.get_RenderBounds",
+        "Avalonia.Skia.StreamGeometryImpl..ctor",
+        "Avalonia.Skia.StreamGeometryImpl\u002BStreamContext.Dispose",
+        "Avalonia.Skia.TransformedGeometryImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRect",
+      "Signature": "SkiaSharp.SKRect.Union\u00600(SkiaSharp.SKRect):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.CombinedGeometryImpl..ctor",
+        "Avalonia.Skia.DrawingContextImpl.AreaCastingShadowInHole"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPath",
+      "Signature": "SkiaSharp.SKPath.Op\u00600(SkiaSharp.SKPath,SkiaSharp.SKPathOp):SkiaSharp.SKPath;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.CombinedGeometryImpl.TryCreate"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKSurface",
+      "Signature": "SkiaSharp.SKSurface.get_Canvas\u00600():SkiaSharp.SKCanvas;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl..ctor",
+        "Avalonia.Skia.FramebufferRenderTarget.CreateDrawingContext",
+        "Avalonia.Skia.GlRenderTarget\u002BGlGpuSession.Dispose",
+        "Avalonia.Skia.Metal.SkiaMetalGpu\u002BSkiaMetalRenderSession.Dispose",
+        "Avalonia.Skia.SurfaceRenderTarget..ctor",
+        "Avalonia.Skia.SurfaceRenderTarget.Blit",
+        "Avalonia.Skia.Vulkan.VulkanSkiaRenderTarget\u002BVulkanSkiaRenderSession.Dispose"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.Clear\u00600(SkiaSharp.SKColor):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.Clear"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRect",
+      "Signature": "SkiaSharp.SKRect.get_Width\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.ConfigureSceneBrushContentWithPicture",
+        "Avalonia.Skia.DrawingContextImpl.DrawBitmap",
+        "Avalonia.Skia.GlyphRunImpl..ctor",
+        "Avalonia.Skia.Helpers.ImageSavingHelper.SavePicture"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRect",
+      "Signature": "SkiaSharp.SKRect.get_Height\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.ConfigureSceneBrushContentWithPicture",
+        "Avalonia.Skia.DrawingContextImpl.DrawBitmap",
+        "Avalonia.Skia.GlyphRunImpl..ctor",
+        "Avalonia.Skia.Helpers.ImageSavingHelper.SavePicture"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKColor",
+      "Signature": "SkiaSharp.SKColor..ctor\u00600(System.Byte,System.Byte,System.Byte,System.Byte):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.CreateAcrylicPaint",
+        "Avalonia.Skia.DrawingContextImpl.CreateEffect",
+        "Avalonia.Skia.DrawingContextImpl.CreatePaint",
+        "Avalonia.Skia.DrawingContextImpl.DrawBitmap",
+        "Avalonia.Skia.DrawingContextImpl\u002BBoxShadowFilter.Create",
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKColor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPaint",
+      "Signature": "SkiaSharp.SKPaint.set_Color\u00600(SkiaSharp.SKColor):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.ConfigureSceneBrushContentWithPicture",
+        "Avalonia.Skia.DrawingContextImpl.CreatePaint",
+        "Avalonia.Skia.DrawingContextImpl.DrawBitmap",
+        "Avalonia.Skia.DrawingContextImpl\u002BBoxShadowFilter.Create",
+        "Avalonia.Skia.DrawingContextImpl\u002BPaintState.Dispose"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPaint",
+      "Signature": "SkiaSharp.SKPaint.set_BlendMode\u00600(SkiaSharp.SKBlendMode):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.CreateAcrylicPaint",
+        "Avalonia.Skia.DrawingContextImpl.DrawBitmap",
+        "Avalonia.Skia.DrawingContextImpl.PopOpacityMask"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPaint",
+      "Signature": "SkiaSharp.SKPaint.set_IsAntialias\u00600(System.Boolean):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.CreateAcrylicPaint",
+        "Avalonia.Skia.DrawingContextImpl.CreatePaint",
+        "Avalonia.Skia.DrawingContextImpl.DrawBitmap",
+        "Avalonia.Skia.DrawingContextImpl\u002BBoxShadowFilter.Create"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.DrawLine\u00600(System.Single,System.Single,System.Single,System.Single,SkiaSharp.SKPaint):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.DrawLine"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.DrawPath\u00600(SkiaSharp.SKPath,SkiaSharp.SKPaint):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.DrawGeometry"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRect",
+      "Signature": "SkiaSharp.SKRect.Inflate\u00600(System.Single,System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.AreaCastingShadowInHole",
+        "Avalonia.Skia.DrawingContextImpl.DrawRectangle"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRect",
+      "Signature": "SkiaSharp.SKRect.Offset\u00600(System.Single,System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.AreaCastingShadowInHole"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRoundRect",
+      "Signature": "SkiaSharp.SKRoundRect.SetRectRadii\u00600(SkiaSharp.SKRect,SkiaSharp.SKPoint[]):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.DrawRectangle",
+        "Avalonia.Skia.DrawingContextImpl.PushClip",
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKRoundRect",
+        "Avalonia.Skia.SKRoundRectCache.GetAndSetRadii"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.DrawRoundRect\u00600(SkiaSharp.SKRoundRect,SkiaSharp.SKPaint):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.DrawRectangle"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.DrawRect\u00600(SkiaSharp.SKRect,SkiaSharp.SKPaint):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.DrawRectangle"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.Save\u00600():System.Int32;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.DrawRectangle",
+        "Avalonia.Skia.DrawingContextImpl.PushClip",
+        "Avalonia.Skia.DrawingContextImpl.PushGeometryClip",
+        "Avalonia.Skia.FramebufferRenderTarget.CreateDrawingContext"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRoundRect",
+      "Signature": "SkiaSharp.SKRoundRect.get_Rect\u00600():SkiaSharp.SKRect;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.DrawRectangle"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRoundRect",
+      "Signature": "SkiaSharp.SKRoundRect.get_Radii\u00600():SkiaSharp.SKPoint[];instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.DrawRectangle"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRoundRect",
+      "Signature": "SkiaSharp.SKRoundRect.Inflate\u00600(System.Single,System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.DrawRectangle"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.ClipRoundRect\u00600(SkiaSharp.SKRoundRect,SkiaSharp.SKClipOperation,System.Boolean):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.DrawRectangle",
+        "Avalonia.Skia.DrawingContextImpl.PushClip"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.ClipRect\u00600(SkiaSharp.SKRect,SkiaSharp.SKClipOperation,System.Boolean):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.DrawRectangle",
+        "Avalonia.Skia.DrawingContextImpl.PushClip"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRoundRect",
+      "Signature": "SkiaSharp.SKRoundRect.Deflate\u00600(System.Single,System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.DrawRectangle"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRoundRect",
+      "Signature": "SkiaSharp.SKRoundRect..ctor\u00600(SkiaSharp.SKRect):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.DrawRectangle"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.DrawRoundRectDifference\u00600(SkiaSharp.SKRoundRect,SkiaSharp.SKRoundRect,SkiaSharp.SKPaint):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.DrawRectangle"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.DrawRegion\u00600(SkiaSharp.SKRegion,SkiaSharp.SKPaint):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.DrawRegion"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.DrawOval\u00600(SkiaSharp.SKRect,SkiaSharp.SKPaint):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.DrawEllipse"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.DrawText\u00600(SkiaSharp.SKTextBlob,System.Single,System.Single,SkiaSharp.SKPaint):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.DrawGlyphRun"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.ClipRegion\u00600(SkiaSharp.SKRegion,SkiaSharp.SKClipOperation):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.PushClip"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.Restore\u00600():System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.RestoreCanvas"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.SaveLayer\u00600(SkiaSharp.SKRect,SkiaSharp.SKPaint):System.Int32;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.PushEffect",
+        "Avalonia.Skia.DrawingContextImpl.PushLayer",
+        "Avalonia.Skia.DrawingContextImpl.PushOpacity",
+        "Avalonia.Skia.DrawingContextImpl.PushOpacityMask"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPaint",
+      "Signature": "SkiaSharp.SKPaint..ctor\u00600():System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.PushOpacity"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKColorF",
+      "Signature": "SkiaSharp.SKColorF..ctor\u00600(System.Single,System.Single,System.Single,System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.PushOpacity"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPaint",
+      "Signature": "SkiaSharp.SKPaint.set_ColorF\u00600(SkiaSharp.SKColorF):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.PushOpacity"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.SaveLayer\u00600(SkiaSharp.SKPaint):System.Int32;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.PopOpacityMask",
+        "Avalonia.Skia.DrawingContextImpl.PushEffect",
+        "Avalonia.Skia.DrawingContextImpl.PushOpacity"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.ClipPath\u00600(SkiaSharp.SKPath,SkiaSharp.SKClipOperation,System.Boolean):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.PushGeometryClip"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.get_TotalMatrix\u00600():SkiaSharp.SKMatrix;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.PushOpacityMask",
+        "Avalonia.Skia.DrawingContextImpl\u002BSkiaLeaseFeature\u002BApiLease..ctor",
+        "Avalonia.Skia.SurfaceRenderTarget.Blit"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.SetMatrix\u00600(SkiaSharp.SKMatrix\u0026):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.PopOpacityMask",
+        "Avalonia.Skia.DrawingContextImpl\u002BSkiaLeaseFeature\u002BApiLease.Dispose",
+        "Avalonia.Skia.SurfaceRenderTarget.Blit"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.DrawPaint\u00600(SkiaSharp.SKPaint):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.PopOpacityMask"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.get_TotalMatrix44\u00600():SkiaSharp.SKMatrix44;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.get_Transform"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.SetMatrix\u00600(SkiaSharp.SKMatrix44\u0026):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.set_Transform"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKShader",
+      "Signature": "SkiaSharp.SKShader.CreateLinearGradient\u00600(SkiaSharp.SKPoint,SkiaSharp.SKPoint,SkiaSharp.SKColor[],System.Single[],SkiaSharp.SKShaderTileMode):SkiaSharp.SKShader;instance=False",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.ConfigureGradientBrush"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPaint",
+      "Signature": "SkiaSharp.SKPaint.set_Shader\u00600(SkiaSharp.SKShader):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.ConfigureGradientBrush",
+        "Avalonia.Skia.DrawingContextImpl.ConfigureSceneBrushContentWithPicture",
+        "Avalonia.Skia.DrawingContextImpl.ConfigureTileBrush",
+        "Avalonia.Skia.DrawingContextImpl.CreateAcrylicPaint",
+        "Avalonia.Skia.DrawingContextImpl\u002BPaintState.Dispose"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKShader",
+      "Signature": "SkiaSharp.SKShader.CreateLinearGradient\u00600(SkiaSharp.SKPoint,SkiaSharp.SKPoint,SkiaSharp.SKColor[],System.Single[],SkiaSharp.SKShaderTileMode,SkiaSharp.SKMatrix):SkiaSharp.SKShader;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.ConfigureGradientBrush"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKShader",
+      "Signature": "SkiaSharp.SKShader.CreateRadialGradient\u00600(SkiaSharp.SKPoint,System.Single,SkiaSharp.SKColor[],System.Single[],SkiaSharp.SKShaderTileMode):SkiaSharp.SKShader;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.ConfigureGradientBrush"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKShader",
+      "Signature": "SkiaSharp.SKShader.CreateRadialGradient\u00600(SkiaSharp.SKPoint,System.Single,SkiaSharp.SKColor[],System.Single[],SkiaSharp.SKShaderTileMode,SkiaSharp.SKMatrix):SkiaSharp.SKShader;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.ConfigureGradientBrush"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKShader",
+      "Signature": "SkiaSharp.SKShader.CreateTwoPointConicalGradient\u00600(SkiaSharp.SKPoint,System.Single,SkiaSharp.SKPoint,System.Single,SkiaSharp.SKColor[],System.Single[],SkiaSharp.SKShaderTileMode):SkiaSharp.SKShader;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.ConfigureGradientBrush"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKShader",
+      "Signature": "SkiaSharp.SKShader.CreateTwoPointConicalGradient\u00600(SkiaSharp.SKPoint,System.Single,SkiaSharp.SKPoint,System.Single,SkiaSharp.SKColor[],System.Single[],SkiaSharp.SKShaderTileMode,SkiaSharp.SKMatrix):SkiaSharp.SKShader;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.ConfigureGradientBrush"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKShader",
+      "Signature": "SkiaSharp.SKShader.CreateColor\u00600(SkiaSharp.SKColor):SkiaSharp.SKShader;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.ConfigureGradientBrush",
+        "Avalonia.Skia.DrawingContextImpl.CreateAcrylicPaint"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKShader",
+      "Signature": "SkiaSharp.SKShader.CreateCompose\u00600(SkiaSharp.SKShader,SkiaSharp.SKShader):SkiaSharp.SKShader;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.ConfigureGradientBrush",
+        "Avalonia.Skia.DrawingContextImpl.CreateAcrylicPaint"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPoint",
+      "Signature": "SkiaSharp.SKPoint.get_X\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.ConfigureGradientBrush",
+        "Avalonia.Skia.GeometryImpl.TryGetPointAndTangentAtDistance",
+        "Avalonia.Skia.GeometryImpl.TryGetPointAtDistance"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPoint",
+      "Signature": "SkiaSharp.SKPoint.get_Y\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.ConfigureGradientBrush",
+        "Avalonia.Skia.GeometryImpl.TryGetPointAndTangentAtDistance",
+        "Avalonia.Skia.GeometryImpl.TryGetPointAtDistance"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix",
+      "Signature": "SkiaSharp.SKMatrix.CreateRotationDegrees\u00600(System.Single,System.Single,System.Single):SkiaSharp.SKMatrix;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.ConfigureGradientBrush"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix",
+      "Signature": "SkiaSharp.SKMatrix.PreConcat\u00600(SkiaSharp.SKMatrix):SkiaSharp.SKMatrix;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.ConfigureGradientBrush",
+        "Avalonia.Skia.DrawingContextImpl.ConfigureTileBrush"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKShader",
+      "Signature": "SkiaSharp.SKShader.CreateSweepGradient\u00600(SkiaSharp.SKPoint,SkiaSharp.SKColor[],System.Single[],SkiaSharp.SKMatrix):SkiaSharp.SKShader;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.ConfigureGradientBrush"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix",
+      "Signature": "SkiaSharp.SKMatrix.CreateIdentity\u00600():SkiaSharp.SKMatrix;instance=False",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.ConfigureTileBrush"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix",
+      "Signature": "SkiaSharp.SKMatrix.CreateTranslation\u00600(System.Single,System.Single):SkiaSharp.SKMatrix;instance=False",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.ConfigureTileBrush"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix",
+      "Signature": "SkiaSharp.SKMatrix.CreateScale\u00600(System.Single,System.Single):SkiaSharp.SKMatrix;instance=False",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.ConfigureTileBrush",
+        "Avalonia.Skia.Helpers.ImageSavingHelper.SavePicture"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix",
+      "Signature": "SkiaSharp.SKMatrix.Concat\u00600(SkiaSharp.SKMatrix\u0026,SkiaSharp.SKMatrix,SkiaSharp.SKMatrix):System.Void;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.ConfigureTileBrush"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKImage",
+      "Signature": "SkiaSharp.SKImage.ToShader\u00600(SkiaSharp.SKShaderTileMode,SkiaSharp.SKShaderTileMode,SkiaSharp.SKMatrix):SkiaSharp.SKShader;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.ConfigureTileBrush"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKColor",
+      "Signature": "SkiaSharp.SKColor.Empty:SkiaSharp.SKColor",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.ConfigureSceneBrushContentWithPicture",
+        "Avalonia.Skia.WriteableBitmapImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPicture",
+      "Signature": "SkiaSharp.SKPicture.get_CullRect\u00600():SkiaSharp.SKRect;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.ConfigureSceneBrushContentWithPicture",
+        "Avalonia.Skia.Helpers.ImageSavingHelper.SavePicture"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRect",
+      "Signature": "SkiaSharp.SKRect..ctor\u00600(System.Single,System.Single,System.Single,System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.ConfigureSceneBrushContentWithPicture",
+        "Avalonia.Skia.PictureRenderTarget.CreateDrawingContext",
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKRect"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPicture",
+      "Signature": "SkiaSharp.SKPicture.ToShader\u00600(SkiaSharp.SKShaderTileMode,SkiaSharp.SKShaderTileMode,SkiaSharp.SKMatrix,SkiaSharp.SKRect):SkiaSharp.SKShader;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.ConfigureSceneBrushContentWithPicture"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKColorFilter",
+      "Signature": "SkiaSharp.SKColorFilter.CreateTable\u00600(System.Byte[],System.Byte[],System.Byte[],System.Byte[]):SkiaSharp.SKColorFilter;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.CreateAlphaColorFilter"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKBitmap",
+      "Signature": "SkiaSharp.SKBitmap.Decode\u00600(System.IO.Stream):SkiaSharp.SKBitmap;instance=False",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.CreateAcrylicPaint"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKShader",
+      "Signature": "SkiaSharp.SKShader.CreateBitmap\u00600(SkiaSharp.SKBitmap,SkiaSharp.SKShaderTileMode,SkiaSharp.SKShaderTileMode):SkiaSharp.SKShader;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.CreateAcrylicPaint"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKShader",
+      "Signature": "SkiaSharp.SKShader.WithColorFilter\u00600(SkiaSharp.SKColorFilter):SkiaSharp.SKShader;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.CreateAcrylicPaint"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPaint",
+      "Signature": "SkiaSharp.SKPaint.set_IsStroke\u00600(System.Boolean):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.TryCreatePaint",
+        "Avalonia.Skia.Helpers.SKPathHelper.CreateStrokedPath"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPaint",
+      "Signature": "SkiaSharp.SKPaint.set_StrokeWidth\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.TryCreatePaint",
+        "Avalonia.Skia.Helpers.SKPathHelper.CreateStrokedPath"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPaint",
+      "Signature": "SkiaSharp.SKPaint.set_StrokeCap\u00600(SkiaSharp.SKStrokeCap):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.TryCreatePaint",
+        "Avalonia.Skia.Helpers.SKPathHelper.CreateStrokedPath"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPaint",
+      "Signature": "SkiaSharp.SKPaint.set_StrokeJoin\u00600(SkiaSharp.SKStrokeJoin):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.TryCreatePaint",
+        "Avalonia.Skia.Helpers.SKPathHelper.CreateStrokedPath"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPaint",
+      "Signature": "SkiaSharp.SKPaint.set_StrokeMiter\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.TryCreatePaint",
+        "Avalonia.Skia.Helpers.SKPathHelper.CreateStrokedPath"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPaint",
+      "Signature": "SkiaSharp.SKPaint.set_PathEffect\u00600(SkiaSharp.SKPathEffect):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.TryCreatePaint",
+        "Avalonia.Skia.Helpers.SKPathHelper.CreateStrokedPath"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPaint",
+      "Signature": "SkiaSharp.SKPaint.set_ImageFilter\u00600(SkiaSharp.SKImageFilter):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.PushEffect",
+        "Avalonia.Skia.DrawingContextImpl\u002BBoxShadowFilter.Create"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKImageFilter",
+      "Signature": "SkiaSharp.SKImageFilter.CreateBlur\u00600(System.Single,System.Single):SkiaSharp.SKImageFilter;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.CreateEffect",
+        "Avalonia.Skia.DrawingContextImpl\u002BBoxShadowFilter.Create"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKImageFilter",
+      "Signature": "SkiaSharp.SKImageFilter.CreateDropShadow\u00600(System.Single,System.Single,System.Single,System.Single,SkiaSharp.SKColor):SkiaSharp.SKImageFilter;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl.CreateEffect"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPath",
+      "Signature": "SkiaSharp.SKPath..ctor\u00600():System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.EllipseGeometryImpl..ctor",
+        "Avalonia.Skia.GeometryGroupImpl..ctor",
+        "Avalonia.Skia.GeometryImpl.GetWidenedGeometry",
+        "Avalonia.Skia.GeometryImpl.TryGetSegment",
+        "Avalonia.Skia.GeometryImpl\u002BPathCache..cctor",
+        "Avalonia.Skia.Helpers.SKPathHelper.CreateClosedPath",
+        "Avalonia.Skia.Helpers.SKPathHelper.CreateStrokedPath",
+        "Avalonia.Skia.LineGeometryImpl..ctor",
+        "Avalonia.Skia.PlatformRenderInterface.BuildGlyphRunGeometry",
+        "Avalonia.Skia.RectangleGeometryImpl..ctor",
+        "Avalonia.Skia.StreamGeometryImpl.CreateEmptyPath",
+        "Avalonia.Skia.StreamGeometryImpl\u002BStreamContext.get_Fill"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPath",
+      "Signature": "SkiaSharp.SKPath.AddOval\u00600(SkiaSharp.SKRect,SkiaSharp.SKPathDirection):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.EllipseGeometryImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKTypeface",
+      "Signature": "SkiaSharp.SKTypeface.get_Default\u00600():SkiaSharp.SKTypeface;instance=False",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.FontManagerImpl.GetDefaultFontFamilyName"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKTypeface",
+      "Signature": "SkiaSharp.SKTypeface.get_FamilyName\u00600():System.String;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FontManagerImpl.GetDefaultFontFamilyName",
+        "Avalonia.Skia.SkiaTypeface.get_FamilyName"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKFontManager",
+      "Signature": "SkiaSharp.SKFontManager.CreateDefault\u00600():SkiaSharp.SKFontManager;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FontManagerImpl.GetInstalledFontFamilyNames"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKFontManager",
+      "Signature": "SkiaSharp.SKFontManager.GetFontFamilies\u00600():System.String[];instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FontManagerImpl.GetInstalledFontFamilyNames"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKFontStyle",
+      "Signature": "SkiaSharp.SKFontStyle.get_Normal\u00600():SkiaSharp.SKFontStyle;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FontManagerImpl.TryMatchCharacter"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKFontStyle",
+      "Signature": "SkiaSharp.SKFontStyle.get_Italic\u00600():SkiaSharp.SKFontStyle;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FontManagerImpl.TryMatchCharacter"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKFontStyle",
+      "Signature": "SkiaSharp.SKFontStyle.get_Bold\u00600():SkiaSharp.SKFontStyle;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FontManagerImpl.TryMatchCharacter"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKFontStyle",
+      "Signature": "SkiaSharp.SKFontStyle.get_BoldItalic\u00600():SkiaSharp.SKFontStyle;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FontManagerImpl.TryMatchCharacter"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKFontStyle",
+      "Signature": "SkiaSharp.SKFontStyle..ctor\u00600(SkiaSharp.SKFontStyleWeight,SkiaSharp.SKFontStyleWidth,SkiaSharp.SKFontStyleSlant):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FontManagerImpl.TryCreateGlyphTypeface",
+        "Avalonia.Skia.FontManagerImpl.TryMatchCharacter"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKFontManager",
+      "Signature": "SkiaSharp.SKFontManager.MatchCharacter\u00600(System.String,SkiaSharp.SKFontStyle,System.String[],System.Int32):SkiaSharp.SKTypeface;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FontManagerImpl.TryMatchCharacter"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKFontManager",
+      "Signature": "SkiaSharp.SKFontManager.MatchFamily\u00600(System.String,SkiaSharp.SKFontStyle):SkiaSharp.SKTypeface;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FontManagerImpl.TryCreateGlyphTypeface"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKTypeface",
+      "Signature": "SkiaSharp.SKTypeface.get_IsBold\u00600():System.Boolean;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FontManagerImpl.TryCreateGlyphTypeface"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKTypeface",
+      "Signature": "SkiaSharp.SKTypeface.get_IsItalic\u00600():System.Boolean;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FontManagerImpl.TryCreateGlyphTypeface"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKTypeface",
+      "Signature": "SkiaSharp.SKTypeface.FromStream\u00600(System.IO.Stream,System.Int32):SkiaSharp.SKTypeface;instance=False",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.FontManagerImpl.TryCreateGlyphTypeface"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKFontManager",
+      "Signature": "SkiaSharp.SKFontManager.GetFontStyles\u00600(System.String):SkiaSharp.SKFontStyleSet;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FontManagerImpl.TryGetFamilyTypefaces"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKFontStyleSet",
+      "Signature": "SkiaSharp.SKFontStyleSet.get_Count\u00600():System.Int32;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FontManagerImpl.TryGetFamilyTypefaces"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKFontStyleSet",
+      "Signature": "SkiaSharp.SKFontStyleSet.GetEnumerator\u00600():System.Collections.Generic.IEnumerator\u00601\u003CSkiaSharp.SKFontStyle\u003E;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FontManagerImpl.TryGetFamilyTypefaces"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKFontStyle",
+      "Signature": "SkiaSharp.SKFontStyle.get_Slant\u00600():SkiaSharp.SKFontStyleSlant;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FontManagerImpl.TryGetFamilyTypefaces",
+        "Avalonia.Skia.SkiaTypeface..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKFontStyle",
+      "Signature": "SkiaSharp.SKFontStyle.get_Weight\u00600():System.Int32;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FontManagerImpl.TryGetFamilyTypefaces"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKFontStyle",
+      "Signature": "SkiaSharp.SKFontStyle.get_Width\u00600():System.Int32;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FontManagerImpl.TryGetFamilyTypefaces"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKFontManager",
+      "Signature": "SkiaSharp.SKFontManager.get_Default\u00600():SkiaSharp.SKFontManager;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FontManagerImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKImageInfo",
+      "Signature": "SkiaSharp.SKImageInfo..ctor\u00600(System.Int32,System.Int32,SkiaSharp.SKColorType,SkiaSharp.SKAlphaType):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.FramebufferRenderTarget.CreateDrawingContext",
+        "Avalonia.Skia.ImmutableBitmap..ctor",
+        "Avalonia.Skia.SurfaceRenderTarget.MakeImageInfo",
+        "Avalonia.Skia.WriteableBitmapImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.RestoreToCount\u00600(System.Int32):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.FramebufferRenderTarget.CreateDrawingContext",
+        "Avalonia.Skia.PictureRenderTarget.CreateDrawingContext",
+        "Avalonia.Skia.SurfaceRenderTarget.CreateDrawingContext"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.ResetMatrix\u00600():System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.FramebufferRenderTarget.CreateDrawingContext",
+        "Avalonia.Skia.PictureRenderTarget.CreateDrawingContext",
+        "Avalonia.Skia.SurfaceRenderTarget.Blit",
+        "Avalonia.Skia.SurfaceRenderTarget.CreateDrawingContext"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKImageInfo",
+      "Signature": "SkiaSharp.SKImageInfo.get_Width\u00600():System.Int32;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.FramebufferRenderTarget.AreImageInfosCompatible",
+        "Avalonia.Skia.FramebufferRenderTarget.CreateSurface",
+        "Avalonia.Skia.FramebufferRenderTarget\u002BPixelFormatConversionShim..ctor",
+        "Avalonia.Skia.ImmutableBitmap..ctor",
+        "Avalonia.Skia.WriteableBitmapImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKImageInfo",
+      "Signature": "SkiaSharp.SKImageInfo.get_Height\u00600():System.Int32;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.FramebufferRenderTarget.AreImageInfosCompatible",
+        "Avalonia.Skia.FramebufferRenderTarget.CreateSurface",
+        "Avalonia.Skia.FramebufferRenderTarget\u002BPixelFormatConversionShim..ctor",
+        "Avalonia.Skia.ImmutableBitmap..ctor",
+        "Avalonia.Skia.WriteableBitmapImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKImageInfo",
+      "Signature": "SkiaSharp.SKImageInfo.get_ColorType\u00600():SkiaSharp.SKColorType;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.FramebufferRenderTarget.AreImageInfosCompatible",
+        "Avalonia.Skia.FramebufferRenderTarget\u002BPixelFormatConversionShim..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKSurfaceProperties",
+      "Signature": "SkiaSharp.SKSurfaceProperties..ctor\u00600(SkiaSharp.SKPixelGeometry):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FboSkiaSurface..ctor",
+        "Avalonia.Skia.FramebufferRenderTarget.CreateSurface",
+        "Avalonia.Skia.FramebufferRenderTarget\u002BPixelFormatConversionShim..ctor",
+        "Avalonia.Skia.GlRenderTarget..cctor",
+        "Avalonia.Skia.SurfaceRenderTarget.CreateSurface"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKSurface",
+      "Signature": "SkiaSharp.SKSurface.Create\u00600(SkiaSharp.SKImageInfo,System.IntPtr,System.Int32,SkiaSharp.SKSurfaceProperties):SkiaSharp.SKSurface;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FramebufferRenderTarget.CreateSurface",
+        "Avalonia.Skia.FramebufferRenderTarget\u002BPixelFormatConversionShim..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKNativeObject",
+      "Signature": "SkiaSharp.SKNativeObject.Dispose\u00600():System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl\u002BBoxShadowFilter.Dispose",
+        "Avalonia.Skia.FboSkiaSurface.Dispose",
+        "Avalonia.Skia.FramebufferRenderTarget.FreeSurface",
+        "Avalonia.Skia.FramebufferRenderTarget\u002BPixelFormatConversionShim..ctor",
+        "Avalonia.Skia.FramebufferRenderTarget\u002BPixelFormatConversionShim.Dispose",
+        "Avalonia.Skia.GeometryImpl\u002BPathCache.Dispose",
+        "Avalonia.Skia.GeometryImpl\u002BPathCache.UpdateIfNeeded",
+        "Avalonia.Skia.GlRenderTarget\u002BGlGpuSession.Dispose",
+        "Avalonia.Skia.GlSkiaGpu.Dispose",
+        "Avalonia.Skia.GlSkiaImportedImage\u002B\u003C\u003Ec__DisplayClass9_0.\u003CTakeSnapshot\u003Eb__0",
+        "Avalonia.Skia.GlyphRunImpl\u002B\u003C\u003Ec.\u003C.ctor\u003Eb__4_0",
+        "Avalonia.Skia.Helpers.ImageSavingHelper.SaveImage",
+        "Avalonia.Skia.Helpers.SKPathHelper.CreateStrokedPath",
+        "Avalonia.Skia.ImmutableBitmap..ctor",
+        "Avalonia.Skia.ImmutableBitmap.Dispose",
+        "Avalonia.Skia.Metal.SkiaMetalGpu.Dispose",
+        "Avalonia.Skia.Metal.SkiaMetalGpu\u002BSkiaMetalRenderSession.Dispose",
+        "Avalonia.Skia.Metal.SkiaMetalGpu\u002BSkiaMetalRenderTarget.BeginRenderingSession",
+        "Avalonia.Skia.PictureRenderTarget.Dispose",
+        "Avalonia.Skia.PictureRenderTarget\u002B\u003C\u003Ec__DisplayClass6_0.\u003CCreateDrawingContext\u003Eb__0",
+        "Avalonia.Skia.SkiaRegionImpl.Dispose",
+        "Avalonia.Skia.SkiaTypeface.Dispose",
+        "Avalonia.Skia.SurfaceRenderTarget.Dispose",
+        "Avalonia.Skia.SurfaceRenderTarget\u002BSkiaSurfaceWrapper.Dispose",
+        "Avalonia.Skia.Vulkan.VulkanSkiaRenderTarget\u002BVulkanSkiaRenderSession.Dispose",
+        "Avalonia.Skia.WriteableBitmapImpl..ctor",
+        "Avalonia.Skia.WriteableBitmapImpl.Dispose",
+        "Avalonia.Skia.WriteableBitmapImpl.Draw"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPath",
+      "Signature": "SkiaSharp.SKPath.set_FillType\u00600(SkiaSharp.SKPathFillType):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.GeometryGroupImpl..ctor",
+        "Avalonia.Skia.StreamGeometryImpl.CreateEmptyPath",
+        "Avalonia.Skia.StreamGeometryImpl\u002BStreamContext.SetFillRule"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPath",
+      "Signature": "SkiaSharp.SKPath.AddPath\u00600(SkiaSharp.SKPath,SkiaSharp.SKPathAddMode):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.GeometryGroupImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPathMeasure",
+      "Signature": "SkiaSharp.SKPathMeasure..ctor\u00600(SkiaSharp.SKPath,System.Boolean,System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.GeometryImpl.get_CachedPathMeasure"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPathMeasure",
+      "Signature": "SkiaSharp.SKPathMeasure.get_Length\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.GeometryImpl.get_ContourLength"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPath",
+      "Signature": "SkiaSharp.SKPath.Contains\u00600(System.Single,System.Single):System.Boolean;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.GeometryImpl.PathContainsCore"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPathMeasure",
+      "Signature": "SkiaSharp.SKPathMeasure.GetPosition\u00600(System.Single,SkiaSharp.SKPoint\u0026):System.Boolean;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.GeometryImpl.TryGetPointAtDistance"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPathMeasure",
+      "Signature": "SkiaSharp.SKPathMeasure.GetPositionAndTangent\u00600(System.Single,SkiaSharp.SKPoint\u0026,SkiaSharp.SKPoint\u0026):System.Boolean;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.GeometryImpl.TryGetPointAndTangentAtDistance"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPathMeasure",
+      "Signature": "SkiaSharp.SKPathMeasure.GetSegment\u00600(System.Single,System.Single,SkiaSharp.SKPath,System.Boolean):System.Boolean;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.GeometryImpl.TryGetSegment"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKFont",
+      "Signature": "SkiaSharp.SKFont.GetGlyphWidths\u00600(System.ReadOnlySpan\u00601\u003CSystem.UInt16\u003E,System.Span\u00601\u003CSystem.Single\u003E,System.Span\u00601\u003CSkiaSharp.SKRect\u003E,SkiaSharp.SKPaint):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.GlyphRunImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPoint",
+      "Signature": "SkiaSharp.SKPoint..ctor\u00600(System.Single,System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.GlyphRunImpl..ctor",
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKPoint"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRect",
+      "Signature": "SkiaSharp.SKRect.get_Left\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.GlyphRunImpl..ctor",
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaLtrbRect",
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaRect"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRect",
+      "Signature": "SkiaSharp.SKRect.get_Top\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.GlyphRunImpl..ctor",
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaLtrbRect",
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaRect"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKFont",
+      "Signature": "SkiaSharp.SKFont.set_ForceAutoHinting\u00600(System.Boolean):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.GlyphRunImpl.CreateFont"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKFont",
+      "Signature": "SkiaSharp.SKFont.set_Hinting\u00600(SkiaSharp.SKFontHinting):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.GlyphRunImpl.CreateFont",
+        "Avalonia.Skia.PlatformRenderInterface.BuildGlyphRunGeometry"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKFont",
+      "Signature": "SkiaSharp.SKFont.set_Subpixel\u00600(System.Boolean):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.GlyphRunImpl.CreateFont"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKFont",
+      "Signature": "SkiaSharp.SKFont.set_Edging\u00600(SkiaSharp.SKFontEdging):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.GlyphRunImpl.CreateFont"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKFont",
+      "Signature": "SkiaSharp.SKFont.set_BaselineSnap\u00600(System.Boolean):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.GlyphRunImpl.CreateFont"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKTextBlob",
+      "Signature": "SkiaSharp.SKTextBlob.GetIntercepts\u00600(System.Single,System.Single,SkiaSharp.SKPaint):System.Single[];instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.GlyphRunImpl.GetIntersections"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SkiaExtensions",
+      "Signature": "SkiaSharp.SkiaExtensions.ToGlSizedFormat\u00600(SkiaSharp.SKColorType):System.UInt32;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FboSkiaSurface..ctor",
+        "Avalonia.Skia.GlRenderTarget.BeginRenderingSession"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRGlFramebufferInfo",
+      "Signature": "SkiaSharp.GRGlFramebufferInfo..ctor\u00600(System.UInt32,System.UInt32):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FboSkiaSurface..ctor",
+        "Avalonia.Skia.GlRenderTarget.BeginRenderingSession"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRBackendRenderTarget",
+      "Signature": "SkiaSharp.GRBackendRenderTarget..ctor\u00600(System.Int32,System.Int32,System.Int32,System.Int32,SkiaSharp.GRGlFramebufferInfo):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FboSkiaSurface..ctor",
+        "Avalonia.Skia.GlRenderTarget.BeginRenderingSession"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKSurface",
+      "Signature": "SkiaSharp.SKSurface.Create\u00600(SkiaSharp.GRContext,SkiaSharp.GRBackendRenderTarget,SkiaSharp.GRSurfaceOrigin,SkiaSharp.SKColorType,SkiaSharp.SKSurfaceProperties):SkiaSharp.SKSurface;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FboSkiaSurface..ctor",
+        "Avalonia.Skia.GlRenderTarget.BeginRenderingSession"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.Clear\u00600():System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.FboSkiaSurface.Blit"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.Flush\u00600():System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.FboSkiaSurface.Blit",
+        "Avalonia.Skia.GlRenderTarget\u002BGlGpuSession.Dispose",
+        "Avalonia.Skia.Metal.SkiaMetalGpu\u002BSkiaMetalRenderSession.Dispose",
+        "Avalonia.Skia.SurfaceRenderTarget.Blit",
+        "Avalonia.Skia.Vulkan.VulkanSkiaRenderTarget\u002BVulkanSkiaRenderSession.Dispose"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRContext",
+      "Signature": "SkiaSharp.GRContext.ResetContext\u00600(SkiaSharp.GRBackendState):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl\u002BSkiaLeaseFeature\u002BApiLease\u002BPlatformApiLease.Dispose",
+        "Avalonia.Skia.GlRenderTarget.BeginRenderingSession",
+        "Avalonia.Skia.Vulkan.VulkanSkiaExternalObjectsFeature\u002BImage.SnapshotWithSemaphores",
+        "Avalonia.Skia.Vulkan.VulkanSkiaRenderTarget.BeginRenderingSession"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRContext",
+      "Signature": "SkiaSharp.GRContext.GetMaxSurfaceSampleCount\u00600(SkiaSharp.SKColorType):System.Int32;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.GlRenderTarget.BeginRenderingSession"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRGlTextureInfo",
+      "Signature": "SkiaSharp.GRGlTextureInfo..ctor\u00600(System.UInt32,System.UInt32,System.UInt32):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.GlSkiaImportedImage.TryCreateImage"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRBackendTexture",
+      "Signature": "SkiaSharp.GRBackendTexture..ctor\u00600(System.Int32,System.Int32,System.Boolean,SkiaSharp.GRGlTextureInfo):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.GlSkiaImportedImage.TryCreateImage"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKImage",
+      "Signature": "SkiaSharp.SKImage.FromAdoptedTexture\u00600(SkiaSharp.GRContext,SkiaSharp.GRBackendTexture,SkiaSharp.GRSurfaceOrigin,SkiaSharp.SKColorType):SkiaSharp.SKImage;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.GlSkiaImportedImage.TryCreateImage"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRGlTextureInfo",
+      "Signature": "SkiaSharp.GRGlTextureInfo..ctor\u00600(System.UInt32,System.UInt32):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.GlSkiaImportedImage.TryCreateImage"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRContext",
+      "Signature": "SkiaSharp.GRContext.Flush\u00600():System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl\u002BSkiaLeaseFeature\u002BApiLease\u002BPlatformApiLease..ctor",
+        "Avalonia.Skia.GlRenderTarget\u002BGlGpuSession.Dispose",
+        "Avalonia.Skia.GlSkiaImportedImage.TakeSnapshot",
+        "Avalonia.Skia.Metal.SkiaMetalExternalObjectsFeature\u002BImportedImage.SnapshotWithTimelineSemaphores",
+        "Avalonia.Skia.Metal.SkiaMetalGpu\u002BSkiaMetalRenderSession.Dispose",
+        "Avalonia.Skia.Vulkan.VulkanSkiaExternalObjectsFeature\u002BImage.SnapshotWithSemaphores",
+        "Avalonia.Skia.Vulkan.VulkanSkiaRenderTarget\u002BVulkanSkiaRenderSession.Dispose"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRGlInterface",
+      "Signature": "SkiaSharp.GRGlInterface.Create\u00600():SkiaSharp.GRGlInterface;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.GlSkiaGpu..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRGlGetProcedureAddressDelegate",
+      "Signature": "SkiaSharp.GRGlGetProcedureAddressDelegate..ctor\u00600(System.Object,System.IntPtr):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.GlSkiaGpu..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRGlInterface",
+      "Signature": "SkiaSharp.GRGlInterface.CreateGles\u00600(SkiaSharp.GRGlGetProcedureAddressDelegate):SkiaSharp.GRGlInterface;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.GlSkiaGpu..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRGlInterface",
+      "Signature": "SkiaSharp.GRGlInterface.CreateOpenGl\u00600(SkiaSharp.GRGlGetProcedureAddressDelegate):SkiaSharp.GRGlInterface;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.GlSkiaGpu..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRContextOptions",
+      "Signature": "SkiaSharp.GRContextOptions..ctor\u00600():System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.GlSkiaGpu..ctor",
+        "Avalonia.Skia.Metal.SkiaMetalGpu..ctor",
+        "Avalonia.Skia.Vulkan.VulkanSkiaGpu..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRContextOptions",
+      "Signature": "SkiaSharp.GRContextOptions.set_AvoidStencilBuffers\u00600(System.Boolean):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.GlSkiaGpu..ctor",
+        "Avalonia.Skia.Metal.SkiaMetalGpu..ctor",
+        "Avalonia.Skia.Vulkan.VulkanSkiaGpu..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRContext",
+      "Signature": "SkiaSharp.GRContext.CreateGl\u00600(SkiaSharp.GRGlInterface,SkiaSharp.GRContextOptions):SkiaSharp.GRContext;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.GlSkiaGpu..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRContext",
+      "Signature": "SkiaSharp.GRContext.SetResourceCacheLimit\u00600(System.Int64):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.GlSkiaGpu..ctor",
+        "Avalonia.Skia.Metal.SkiaMetalGpu..ctor",
+        "Avalonia.Skia.Vulkan.VulkanSkiaGpu..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRContext",
+      "Signature": "SkiaSharp.GRContext.AbandonContext\u00600(System.Boolean):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.GlSkiaGpu.Dispose"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKManagedStream",
+      "Signature": "SkiaSharp.SKManagedStream..ctor\u00600(System.IO.Stream):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.ImmutableBitmap..ctor",
+        "Avalonia.Skia.WriteableBitmapImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKData",
+      "Signature": "SkiaSharp.SKData.Create\u00600(SkiaSharp.SKStream):SkiaSharp.SKData;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.ImmutableBitmap..ctor",
+        "Avalonia.Skia.WriteableBitmapImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKBitmap",
+      "Signature": "SkiaSharp.SKBitmap.Decode\u00600(SkiaSharp.SKData):SkiaSharp.SKBitmap;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.ImmutableBitmap..ctor",
+        "Avalonia.Skia.WriteableBitmapImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKBitmap",
+      "Signature": "SkiaSharp.SKBitmap.SetImmutable\u00600():System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.ImmutableBitmap..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKImage",
+      "Signature": "SkiaSharp.SKImage.FromBitmap\u00600(SkiaSharp.SKBitmap):SkiaSharp.SKImage;instance=False",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.ImmutableBitmap..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKImage",
+      "Signature": "SkiaSharp.SKImage.get_Width\u00600():System.Int32;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.ImmutableBitmap..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKImage",
+      "Signature": "SkiaSharp.SKImage.get_Height\u00600():System.Int32;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.ImmutableBitmap..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKImageInfo",
+      "Signature": "SkiaSharp.SKImageInfo..ctor\u00600(System.Int32,System.Int32,SkiaSharp.SKColorType):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.ImmutableBitmap..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKBitmap",
+      "Signature": "SkiaSharp.SKBitmap..ctor\u00600(SkiaSharp.SKImageInfo):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.ImmutableBitmap..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKBitmap",
+      "Signature": "SkiaSharp.SKBitmap.PeekPixels\u00600():SkiaSharp.SKPixmap;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.ImmutableBitmap..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKImage",
+      "Signature": "SkiaSharp.SKImage.ScalePixels\u00600(SkiaSharp.SKPixmap,SkiaSharp.SKSamplingOptions):System.Boolean;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.ImmutableBitmap..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCodec",
+      "Signature": "SkiaSharp.SKCodec.Create\u00600(SkiaSharp.SKData):SkiaSharp.SKCodec;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.ImmutableBitmap..ctor",
+        "Avalonia.Skia.WriteableBitmapImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCodec",
+      "Signature": "SkiaSharp.SKCodec.get_Info\u00600():SkiaSharp.SKImageInfo;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.ImmutableBitmap..ctor",
+        "Avalonia.Skia.WriteableBitmapImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCodec",
+      "Signature": "SkiaSharp.SKCodec.GetScaledDimensions\u00600(System.Single):SkiaSharp.SKSizeI;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.ImmutableBitmap..ctor",
+        "Avalonia.Skia.WriteableBitmapImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKSizeI",
+      "Signature": "SkiaSharp.SKSizeI.get_Width\u00600():System.Int32;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.ImmutableBitmap..ctor",
+        "Avalonia.Skia.WriteableBitmapImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKSizeI",
+      "Signature": "SkiaSharp.SKSizeI.get_Height\u00600():System.Int32;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.ImmutableBitmap..ctor",
+        "Avalonia.Skia.WriteableBitmapImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKImageInfo",
+      "Signature": "SkiaSharp.SKImageInfo..ctor\u00600(System.Int32,System.Int32):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.ImmutableBitmap..ctor",
+        "Avalonia.Skia.WriteableBitmapImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKBitmap",
+      "Signature": "SkiaSharp.SKBitmap.Decode\u00600(SkiaSharp.SKCodec,SkiaSharp.SKImageInfo):SkiaSharp.SKBitmap;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.ImmutableBitmap..ctor",
+        "Avalonia.Skia.WriteableBitmapImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKBitmap",
+      "Signature": "SkiaSharp.SKBitmap.get_Width\u00600():System.Int32;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.ImmutableBitmap..ctor",
+        "Avalonia.Skia.WriteableBitmapImpl..ctor",
+        "Avalonia.Skia.WriteableBitmapImpl\u002BBitmapFramebuffer.get_Size"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKBitmap",
+      "Signature": "SkiaSharp.SKBitmap.get_Height\u00600():System.Int32;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.ImmutableBitmap..ctor",
+        "Avalonia.Skia.WriteableBitmapImpl..ctor",
+        "Avalonia.Skia.WriteableBitmapImpl\u002BBitmapFramebuffer.get_Size"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKBitmap",
+      "Signature": "SkiaSharp.SKBitmap.Resize\u00600(SkiaSharp.SKImageInfo,SkiaSharp.SKSamplingOptions):SkiaSharp.SKBitmap;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.ImmutableBitmap..ctor",
+        "Avalonia.Skia.WriteableBitmapImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKBitmap",
+      "Signature": "SkiaSharp.SKBitmap..ctor\u00600():System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.ImmutableBitmap..ctor",
+        "Avalonia.Skia.WriteableBitmapImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKBitmap",
+      "Signature": "SkiaSharp.SKBitmap.TryAllocPixels\u00600(SkiaSharp.SKImageInfo):System.Boolean;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.ImmutableBitmap..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKBitmap",
+      "Signature": "SkiaSharp.SKBitmap.GetPixels\u00600():System.IntPtr;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.FramebufferRenderTarget\u002BPixelFormatConversionShim..ctor",
+        "Avalonia.Skia.ImmutableBitmap..ctor",
+        "Avalonia.Skia.ImmutableBitmap.Lock",
+        "Avalonia.Skia.WriteableBitmapImpl.GetSnapshot",
+        "Avalonia.Skia.WriteableBitmapImpl\u002BBitmapFramebuffer.get_Address"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKBitmap",
+      "Signature": "SkiaSharp.SKBitmap.get_RowBytes\u00600():System.Int32;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.FramebufferRenderTarget\u002BPixelFormatConversionShim..ctor",
+        "Avalonia.Skia.ImmutableBitmap..ctor",
+        "Avalonia.Skia.ImmutableBitmap.Lock",
+        "Avalonia.Skia.WriteableBitmapImpl.GetSnapshot",
+        "Avalonia.Skia.WriteableBitmapImpl\u002BBitmapFramebuffer.get_RowBytes"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCanvas",
+      "Signature": "SkiaSharp.SKCanvas.DrawImage\u00600(SkiaSharp.SKImage,SkiaSharp.SKRect,SkiaSharp.SKRect,SkiaSharp.SKSamplingOptions,SkiaSharp.SKPaint):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.ImmutableBitmap.Draw",
+        "Avalonia.Skia.SurfaceRenderTarget.Draw",
+        "Avalonia.Skia.WriteableBitmapImpl.Draw"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKBitmap",
+      "Signature": "SkiaSharp.SKBitmap.get_ColorType\u00600():SkiaSharp.SKColorType;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.FramebufferRenderTarget\u002BPixelFormatConversionShim..ctor",
+        "Avalonia.Skia.ImmutableBitmap.get_Format",
+        "Avalonia.Skia.ImmutableBitmap.Lock",
+        "Avalonia.Skia.WriteableBitmapImpl.get_Format",
+        "Avalonia.Skia.WriteableBitmapImpl\u002BBitmapFramebuffer.get_Format"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKBitmap",
+      "Signature": "SkiaSharp.SKBitmap.get_AlphaType\u00600():SkiaSharp.SKAlphaType;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.ImmutableBitmap.get_AlphaFormat",
+        "Avalonia.Skia.ImmutableBitmap.Lock",
+        "Avalonia.Skia.WriteableBitmapImpl.get_AlphaFormat",
+        "Avalonia.Skia.WriteableBitmapImpl\u002BBitmapFramebuffer.get_AlphaFormat"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPath",
+      "Signature": "SkiaSharp.SKPath.MoveTo\u00600(SkiaSharp.SKPoint):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.Helpers.SKPathHelper.CreateClosedPath",
+        "Avalonia.Skia.LineGeometryImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPath",
+      "Signature": "SkiaSharp.SKPath.LineTo\u00600(SkiaSharp.SKPoint):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.Helpers.SKPathHelper.CreateClosedPath",
+        "Avalonia.Skia.LineGeometryImpl..ctor",
+        "Avalonia.Skia.StreamGeometryImpl\u002BStreamContext.EndFigure"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPictureRecorder",
+      "Signature": "SkiaSharp.SKPictureRecorder..ctor\u00600():System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.PictureRenderTarget.CreateDrawingContext"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPictureRecorder",
+      "Signature": "SkiaSharp.SKPictureRecorder.BeginRecording\u00600(SkiaSharp.SKRect):SkiaSharp.SKCanvas;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.PictureRenderTarget.CreateDrawingContext"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKImageInfo",
+      "Signature": "SkiaSharp.SKImageInfo.PlatformColorType:SkiaSharp.SKColorType",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.Helpers.PixelFormatHelper.ResolveColorType",
+        "Avalonia.Skia.PlatformRenderInterface..ctor",
+        "Avalonia.Skia.RenderTargetBitmapImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKFont",
+      "Signature": "SkiaSharp.SKFont.GetGlyphPath\u00600(System.UInt16):SkiaSharp.SKPath;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.PlatformRenderInterface.BuildGlyphRunGeometry"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPath",
+      "Signature": "SkiaSharp.SKPath.get_IsEmpty\u00600():System.Boolean;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.PlatformRenderInterface.BuildGlyphRunGeometry"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPath",
+      "Signature": "SkiaSharp.SKPath.AddPath\u00600(SkiaSharp.SKPath,System.Single,System.Single,SkiaSharp.SKPathAddMode):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.PlatformRenderInterface.BuildGlyphRunGeometry"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPath",
+      "Signature": "SkiaSharp.SKPath.AddRect\u00600(SkiaSharp.SKRect,SkiaSharp.SKPathDirection):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.RectangleGeometryImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRRecordingContext",
+      "Signature": "SkiaSharp.GRRecordingContext.get_MaxRenderTargetSize\u00600():System.Int32;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaContext..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRegion",
+      "Signature": "SkiaSharp.SKRegion.Op\u00600(System.Int32,System.Int32,System.Int32,System.Int32,SkiaSharp.SKRegionOperation):System.Boolean;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaRegionImpl.AddRect"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRegion",
+      "Signature": "SkiaSharp.SKRegion.SetEmpty\u00600():System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaRegionImpl.Reset"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRegion",
+      "Signature": "SkiaSharp.SKRegion.get_IsEmpty\u00600():System.Boolean;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaRegionImpl.get_IsEmpty"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRegion",
+      "Signature": "SkiaSharp.SKRegion.get_Bounds\u00600():SkiaSharp.SKRectI;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaRegionImpl.get_Bounds"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRegion",
+      "Signature": "SkiaSharp.SKRegion.CreateRectIterator\u00600():SkiaSharp.SKRegion\u002BRectIterator;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaRegionImpl.get_Rects"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRegion\u002BRectIterator",
+      "Signature": "SkiaSharp.SKRegion\u002BRectIterator.Next\u00600(SkiaSharp.SKRectI\u0026):System.Boolean;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaRegionImpl.get_Rects"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRectI",
+      "Signature": "SkiaSharp.SKRectI..ctor\u00600(System.Int32,System.Int32,System.Int32,System.Int32):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaRegionImpl.Intersects",
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKRectI"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRegion",
+      "Signature": "SkiaSharp.SKRegion.Intersects\u00600(SkiaSharp.SKRectI):System.Boolean;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaRegionImpl.Intersects"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRegion",
+      "Signature": "SkiaSharp.SKRegion.Contains\u00600(System.Int32,System.Int32):System.Boolean;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaRegionImpl.Contains"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRegion",
+      "Signature": "SkiaSharp.SKRegion..ctor\u00600():System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaRegionImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKSamplingOptions",
+      "Signature": "SkiaSharp.SKSamplingOptions..ctor\u00600(SkiaSharp.SKFilterMode,SkiaSharp.SKMipmapMode):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKSamplingOptions"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKCubicResampler",
+      "Signature": "SkiaSharp.SKCubicResampler.Mitchell:SkiaSharp.SKCubicResampler",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKSamplingOptions"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKSamplingOptions",
+      "Signature": "SkiaSharp.SKSamplingOptions..ctor\u00600(SkiaSharp.SKCubicResampler):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKSamplingOptions"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRoundRect",
+      "Signature": "SkiaSharp.SKRoundRect..ctor\u00600():System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKRoundRect",
+        "Avalonia.Skia.SKRoundRectCache.GetAndSetRadii"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRect",
+      "Signature": "SkiaSharp.SKRect.get_Right\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaLtrbRect",
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaRect"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRect",
+      "Signature": "SkiaSharp.SKRect.get_Bottom\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaLtrbRect",
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaRect"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRectI",
+      "Signature": "SkiaSharp.SKRectI.get_Left\u00600():System.Int32;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaLtrbPixelRect",
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaPixelRect"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRectI",
+      "Signature": "SkiaSharp.SKRectI.get_Top\u00600():System.Int32;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaLtrbPixelRect",
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaPixelRect"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRectI",
+      "Signature": "SkiaSharp.SKRectI.get_Right\u00600():System.Int32;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaLtrbPixelRect",
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaPixelRect"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRectI",
+      "Signature": "SkiaSharp.SKRectI.get_Bottom\u00600():System.Int32;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaLtrbPixelRect",
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaPixelRect"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix",
+      "Signature": "SkiaSharp.SKMatrix.set_ScaleX\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix",
+      "Signature": "SkiaSharp.SKMatrix.set_SkewX\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix",
+      "Signature": "SkiaSharp.SKMatrix.set_TransX\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix",
+      "Signature": "SkiaSharp.SKMatrix.set_SkewY\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix",
+      "Signature": "SkiaSharp.SKMatrix.set_ScaleY\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix",
+      "Signature": "SkiaSharp.SKMatrix.set_TransY\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix",
+      "Signature": "SkiaSharp.SKMatrix.set_Persp0\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix",
+      "Signature": "SkiaSharp.SKMatrix.set_Persp1\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix",
+      "Signature": "SkiaSharp.SKMatrix.set_Persp2\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Signature": "SkiaSharp.SKMatrix44..ctor\u00600():System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKMatrix44"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Signature": "SkiaSharp.SKMatrix44.set_M00\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKMatrix44"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Signature": "SkiaSharp.SKMatrix44.set_M01\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKMatrix44"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Signature": "SkiaSharp.SKMatrix44.set_M02\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKMatrix44"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Signature": "SkiaSharp.SKMatrix44.set_M03\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKMatrix44"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Signature": "SkiaSharp.SKMatrix44.set_M10\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKMatrix44"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Signature": "SkiaSharp.SKMatrix44.set_M11\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKMatrix44"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Signature": "SkiaSharp.SKMatrix44.set_M12\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKMatrix44"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Signature": "SkiaSharp.SKMatrix44.set_M13\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKMatrix44"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Signature": "SkiaSharp.SKMatrix44.set_M20\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKMatrix44"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Signature": "SkiaSharp.SKMatrix44.set_M21\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKMatrix44"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Signature": "SkiaSharp.SKMatrix44.set_M22\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKMatrix44"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Signature": "SkiaSharp.SKMatrix44.set_M23\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKMatrix44"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Signature": "SkiaSharp.SKMatrix44.set_M30\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKMatrix44"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Signature": "SkiaSharp.SKMatrix44.set_M31\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKMatrix44"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Signature": "SkiaSharp.SKMatrix44.set_M32\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKMatrix44"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Signature": "SkiaSharp.SKMatrix44.set_M33\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToSKMatrix44"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix",
+      "Signature": "SkiaSharp.SKMatrix.get_ScaleX\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix",
+      "Signature": "SkiaSharp.SKMatrix.get_SkewY\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix",
+      "Signature": "SkiaSharp.SKMatrix.get_Persp0\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix",
+      "Signature": "SkiaSharp.SKMatrix.get_SkewX\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix",
+      "Signature": "SkiaSharp.SKMatrix.get_ScaleY\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix",
+      "Signature": "SkiaSharp.SKMatrix.get_Persp1\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix",
+      "Signature": "SkiaSharp.SKMatrix.get_TransX\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix",
+      "Signature": "SkiaSharp.SKMatrix.get_TransY\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix",
+      "Signature": "SkiaSharp.SKMatrix.get_Persp2\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Signature": "SkiaSharp.SKMatrix44.get_M00\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Signature": "SkiaSharp.SKMatrix44.get_M01\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Signature": "SkiaSharp.SKMatrix44.get_M03\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Signature": "SkiaSharp.SKMatrix44.get_M10\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Signature": "SkiaSharp.SKMatrix44.get_M11\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Signature": "SkiaSharp.SKMatrix44.get_M13\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Signature": "SkiaSharp.SKMatrix44.get_M30\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Signature": "SkiaSharp.SKMatrix44.get_M31\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKMatrix44",
+      "Signature": "SkiaSharp.SKMatrix44.get_M33\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.ToAvaloniaMatrix"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPath",
+      "Signature": "SkiaSharp.SKPath..ctor\u00600(SkiaSharp.SKPath):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.SkiaSharpExtensions.Clone"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKTypeface",
+      "Signature": "SkiaSharp.SKTypeface.get_FontWeight\u00600():System.Int32;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaTypeface..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKTypeface",
+      "Signature": "SkiaSharp.SKTypeface.get_FontStyle\u00600():SkiaSharp.SKFontStyle;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaTypeface..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKTypeface",
+      "Signature": "SkiaSharp.SKTypeface.get_FontWidth\u00600():System.Int32;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaTypeface..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKFont",
+      "Signature": "SkiaSharp.SKFont..ctor\u00600(SkiaSharp.SKTypeface,System.Single,System.Single,System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.SkiaTypeface.CreateSKFont"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKFont",
+      "Signature": "SkiaSharp.SKFont.set_LinearMetrics\u00600(System.Boolean):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.SkiaTypeface.CreateSKFont"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKFont",
+      "Signature": "SkiaSharp.SKFont.set_Embolden\u00600(System.Boolean):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.SkiaTypeface.CreateSKFont"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKTypeface",
+      "Signature": "SkiaSharp.SKTypeface.TryGetTableData\u00600(System.UInt32,System.Byte[]\u0026):System.Boolean;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaTypeface.TryGetTable"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKTypeface",
+      "Signature": "SkiaSharp.SKTypeface.OpenStream\u00600():SkiaSharp.SKStreamAsset;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaTypeface.TryGetStream"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKStream",
+      "Signature": "SkiaSharp.SKStream.get_Length\u00600():System.Int32;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaTypeface.TryGetStream"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKStream",
+      "Signature": "SkiaSharp.SKStream.Read\u00600(System.Byte[],System.Int32):System.Int32;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SkiaTypeface.TryGetStream"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPaint",
+      "Signature": "SkiaSharp.SKPaint.Reset\u00600():System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.DrawingContextImpl\u002BBoxShadowFilter.Create",
+        "Avalonia.Skia.DrawingContextImpl\u002BBoxShadowFilter.Dispose",
+        "Avalonia.Skia.DrawingContextImpl\u002BPaintWrapper.Dispose",
+        "Avalonia.Skia.SKPaintCache.ReturnReset"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPoint",
+      "Signature": "SkiaSharp.SKPoint.set_X\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.SKRoundRectCache.GetAndSetRadii"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPoint",
+      "Signature": "SkiaSharp.SKPoint.set_Y\u00600(System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.SKRoundRectCache.GetAndSetRadii"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRoundRect",
+      "Signature": "SkiaSharp.SKRoundRect.SetEmpty\u00600():System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SKRoundRectCache.ReturnReset"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKSurface",
+      "Signature": "SkiaSharp.SKSurface.Create\u00600(SkiaSharp.GRContext,System.Boolean,SkiaSharp.SKImageInfo,SkiaSharp.SKSurfaceProperties):SkiaSharp.SKSurface;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SurfaceRenderTarget.CreateSurface"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKSurface",
+      "Signature": "SkiaSharp.SKSurface.Create\u00600(SkiaSharp.SKImageInfo,SkiaSharp.SKSurfaceProperties):SkiaSharp.SKSurface;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SurfaceRenderTarget.CreateSurface"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKSurface",
+      "Signature": "SkiaSharp.SKSurface.Draw\u00600(SkiaSharp.SKCanvas,System.Single,System.Single,SkiaSharp.SKPaint):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.SurfaceRenderTarget.Blit"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKSurface",
+      "Signature": "SkiaSharp.SKSurface.Snapshot\u00600():SkiaSharp.SKImage;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.FramebufferRenderTarget\u002BPixelFormatConversionShim.CopySurface",
+        "Avalonia.Skia.Metal.SkiaMetalExternalObjectsFeature\u002BImportedImage.SnapshotWithTimelineSemaphores",
+        "Avalonia.Skia.SurfaceRenderTarget.SnapshotImage",
+        "Avalonia.Skia.Vulkan.VulkanSkiaExternalObjectsFeature\u002BImage.SnapshotWithSemaphores"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKImage",
+      "Signature": "SkiaSharp.SKImage.ToRasterImage\u00600(System.Boolean):SkiaSharp.SKImage;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Helpers.ImageSavingHelper.SaveImage",
+        "Avalonia.Skia.SurfaceRenderTarget.CreateNonAffinedSnapshot"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPath",
+      "Signature": "SkiaSharp.SKPath.Transform\u00600(SkiaSharp.SKMatrix\u0026):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.TransformedGeometryImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKImageInfo",
+      "Signature": "SkiaSharp.SKImageInfo.get_BytesSize\u00600():System.Int32;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.WriteableBitmapImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKImageInfo",
+      "Signature": "SkiaSharp.SKImageInfo.get_RowBytes\u00600():System.Int32;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.FramebufferRenderTarget\u002BPixelFormatConversionShim.CopySurface",
+        "Avalonia.Skia.WriteableBitmapImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKBitmap",
+      "Signature": "SkiaSharp.SKBitmap.InstallPixels\u00600(SkiaSharp.SKImageInfo,System.IntPtr,System.Int32,SkiaSharp.SKBitmapReleaseDelegate,System.Object):System.Boolean;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.WriteableBitmapImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKBitmap",
+      "Signature": "SkiaSharp.SKBitmap.Erase\u00600(SkiaSharp.SKColor):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.WriteableBitmapImpl..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKBitmap",
+      "Signature": "SkiaSharp.SKBitmap.get_Info\u00600():SkiaSharp.SKImageInfo;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.FramebufferRenderTarget\u002BPixelFormatConversionShim..ctor",
+        "Avalonia.Skia.WriteableBitmapImpl.GetSnapshot"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKImage",
+      "Signature": "SkiaSharp.SKImage.FromPixels\u00600(SkiaSharp.SKImageInfo,System.IntPtr,System.Int32):SkiaSharp.SKImage;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.WriteableBitmapImpl.GetSnapshot"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKBitmapReleaseDelegate",
+      "Signature": "SkiaSharp.SKBitmapReleaseDelegate..ctor\u00600(System.Object,System.IntPtr):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.WriteableBitmapImpl..cctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPathEffect",
+      "Signature": "SkiaSharp.SKPathEffect.CreateDash\u00600(System.Single[],System.Single):SkiaSharp.SKPathEffect;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Helpers.DrawingContextHelper.TryCreateDashEffect"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKImage",
+      "Signature": "SkiaSharp.SKImage.PeekPixels\u00600():SkiaSharp.SKPixmap;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Helpers.ImageSavingHelper.SaveImage"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPixmap",
+      "Signature": "SkiaSharp.SKPixmap.Encode\u00600(SkiaSharp.SKPngEncoderOptions):SkiaSharp.SKData;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Helpers.ImageSavingHelper.SaveImage"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPixmap",
+      "Signature": "SkiaSharp.SKPixmap.Encode\u00600(SkiaSharp.SKJpegEncoderOptions):SkiaSharp.SKData;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Helpers.ImageSavingHelper.SaveImage"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKData",
+      "Signature": "SkiaSharp.SKData.SaveTo\u00600(System.IO.Stream):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.Helpers.ImageSavingHelper.SaveImage"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPngEncoderOptions",
+      "Signature": "SkiaSharp.SKPngEncoderOptions..ctor\u00600(SkiaSharp.SKPngEncoderFilterFlags,System.Int32):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Helpers.ImageSavingHelper.ToSkia"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKJpegEncoderOptions",
+      "Signature": "SkiaSharp.SKJpegEncoderOptions..ctor\u00600(System.Int32):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Helpers.ImageSavingHelper.ToSkia"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKSizeI",
+      "Signature": "SkiaSharp.SKSizeI..ctor\u00600(System.Int32,System.Int32):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Helpers.ImageSavingHelper.SavePicture"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKImage",
+      "Signature": "SkiaSharp.SKImage.FromPicture\u00600(SkiaSharp.SKPicture,SkiaSharp.SKSizeI,SkiaSharp.SKMatrix):SkiaSharp.SKImage;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Helpers.ImageSavingHelper.SavePicture"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPath",
+      "Signature": "SkiaSharp.SKPath.CreateIterator\u00600(System.Boolean):SkiaSharp.SKPath\u002BIterator;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Helpers.SKPathHelper.CreateClosedPath"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPath",
+      "Signature": "SkiaSharp.SKPath.Close\u00600():System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.Helpers.SKPathHelper.CreateClosedPath",
+        "Avalonia.Skia.StreamGeometryImpl\u002BStreamContext.EndFigure"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPath",
+      "Signature": "SkiaSharp.SKPath.QuadTo\u00600(SkiaSharp.SKPoint,SkiaSharp.SKPoint):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.Helpers.SKPathHelper.CreateClosedPath"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPath",
+      "Signature": "SkiaSharp.SKPath.CubicTo\u00600(SkiaSharp.SKPoint,SkiaSharp.SKPoint,SkiaSharp.SKPoint):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.Helpers.SKPathHelper.CreateClosedPath"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPath\u002BIterator",
+      "Signature": "SkiaSharp.SKPath\u002BIterator.ConicWeight\u00600():System.Single;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Helpers.SKPathHelper.CreateClosedPath"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPath",
+      "Signature": "SkiaSharp.SKPath.ConicTo\u00600(SkiaSharp.SKPoint,SkiaSharp.SKPoint,System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Helpers.SKPathHelper.CreateClosedPath"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPath\u002BIterator",
+      "Signature": "SkiaSharp.SKPath\u002BIterator.Next\u00600(SkiaSharp.SKPoint[]):SkiaSharp.SKPathVerb;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Helpers.SKPathHelper.CreateClosedPath"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPaint",
+      "Signature": "SkiaSharp.SKPaint.GetFillPath\u00600(SkiaSharp.SKPath,SkiaSharp.SKPath):System.Boolean;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Helpers.SKPathHelper.CreateStrokedPath"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPaint",
+      "Signature": "SkiaSharp.SKPaint.get_PathEffect\u00600():SkiaSharp.SKPathEffect;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Helpers.SKPathHelper.CreateStrokedPath"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRVkBackendContext",
+      "Signature": "SkiaSharp.GRVkBackendContext..ctor\u00600():System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Vulkan.VulkanSkiaGpu..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRVkBackendContext",
+      "Signature": "SkiaSharp.GRVkBackendContext.set_VkInstance\u00600(System.IntPtr):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Vulkan.VulkanSkiaGpu..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRVkBackendContext",
+      "Signature": "SkiaSharp.GRVkBackendContext.set_VkPhysicalDevice\u00600(System.IntPtr):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Vulkan.VulkanSkiaGpu..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRVkBackendContext",
+      "Signature": "SkiaSharp.GRVkBackendContext.set_VkDevice\u00600(System.IntPtr):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Vulkan.VulkanSkiaGpu..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRVkBackendContext",
+      "Signature": "SkiaSharp.GRVkBackendContext.set_VkQueue\u00600(System.IntPtr):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Vulkan.VulkanSkiaGpu..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRVkBackendContext",
+      "Signature": "SkiaSharp.GRVkBackendContext.set_GraphicsQueueIndex\u00600(System.UInt32):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Vulkan.VulkanSkiaGpu..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRVkGetProcedureAddressDelegate",
+      "Signature": "SkiaSharp.GRVkGetProcedureAddressDelegate..ctor\u00600(System.Object,System.IntPtr):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Vulkan.VulkanSkiaGpu..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRVkBackendContext",
+      "Signature": "SkiaSharp.GRVkBackendContext.set_GetProcedureAddress\u00600(SkiaSharp.GRVkGetProcedureAddressDelegate):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Vulkan.VulkanSkiaGpu..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRContext",
+      "Signature": "SkiaSharp.GRContext.CreateVulkan\u00600(SkiaSharp.GRVkBackendContext,SkiaSharp.GRContextOptions):SkiaSharp.GRContext;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Vulkan.VulkanSkiaGpu..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRVkImageInfo",
+      "Signature": "SkiaSharp.GRVkImageInfo.set_CurrentQueueFamily\u00600(System.UInt32):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Vulkan.VulkanSkiaExternalObjectsFeature\u002BImage.SnapshotWithSemaphores",
+        "Avalonia.Skia.Vulkan.VulkanSkiaRenderTarget.BeginRenderingSession"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRVkImageInfo",
+      "Signature": "SkiaSharp.GRVkImageInfo.set_Format\u00600(System.UInt32):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Vulkan.VulkanSkiaExternalObjectsFeature\u002BImage.SnapshotWithSemaphores",
+        "Avalonia.Skia.Vulkan.VulkanSkiaRenderTarget.BeginRenderingSession"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRVkImageInfo",
+      "Signature": "SkiaSharp.GRVkImageInfo.set_Image\u00600(System.UInt64):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Vulkan.VulkanSkiaExternalObjectsFeature\u002BImage.SnapshotWithSemaphores",
+        "Avalonia.Skia.Vulkan.VulkanSkiaRenderTarget.BeginRenderingSession"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRVkImageInfo",
+      "Signature": "SkiaSharp.GRVkImageInfo.set_ImageLayout\u00600(System.UInt32):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Vulkan.VulkanSkiaExternalObjectsFeature\u002BImage.SnapshotWithSemaphores",
+        "Avalonia.Skia.Vulkan.VulkanSkiaRenderTarget.BeginRenderingSession"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRVkImageInfo",
+      "Signature": "SkiaSharp.GRVkImageInfo.set_ImageTiling\u00600(System.UInt32):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Vulkan.VulkanSkiaExternalObjectsFeature\u002BImage.SnapshotWithSemaphores",
+        "Avalonia.Skia.Vulkan.VulkanSkiaRenderTarget.BeginRenderingSession"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRVkImageInfo",
+      "Signature": "SkiaSharp.GRVkImageInfo.set_ImageUsageFlags\u00600(System.UInt32):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Vulkan.VulkanSkiaExternalObjectsFeature\u002BImage.SnapshotWithSemaphores",
+        "Avalonia.Skia.Vulkan.VulkanSkiaRenderTarget.BeginRenderingSession"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRVkImageInfo",
+      "Signature": "SkiaSharp.GRVkImageInfo.set_LevelCount\u00600(System.UInt32):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Vulkan.VulkanSkiaExternalObjectsFeature\u002BImage.SnapshotWithSemaphores",
+        "Avalonia.Skia.Vulkan.VulkanSkiaRenderTarget.BeginRenderingSession"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRVkImageInfo",
+      "Signature": "SkiaSharp.GRVkImageInfo.set_SampleCount\u00600(System.UInt32):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Vulkan.VulkanSkiaExternalObjectsFeature\u002BImage.SnapshotWithSemaphores",
+        "Avalonia.Skia.Vulkan.VulkanSkiaRenderTarget.BeginRenderingSession"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRVkImageInfo",
+      "Signature": "SkiaSharp.GRVkImageInfo.set_Protected\u00600(System.Boolean):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Vulkan.VulkanSkiaExternalObjectsFeature\u002BImage.SnapshotWithSemaphores",
+        "Avalonia.Skia.Vulkan.VulkanSkiaRenderTarget.BeginRenderingSession"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRVkAlloc",
+      "Signature": "SkiaSharp.GRVkAlloc.set_Memory\u00600(System.UInt64):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Vulkan.VulkanSkiaExternalObjectsFeature\u002BImage.SnapshotWithSemaphores",
+        "Avalonia.Skia.Vulkan.VulkanSkiaRenderTarget.BeginRenderingSession"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRVkAlloc",
+      "Signature": "SkiaSharp.GRVkAlloc.set_Size\u00600(System.UInt64):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Vulkan.VulkanSkiaExternalObjectsFeature\u002BImage.SnapshotWithSemaphores",
+        "Avalonia.Skia.Vulkan.VulkanSkiaRenderTarget.BeginRenderingSession"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRVkImageInfo",
+      "Signature": "SkiaSharp.GRVkImageInfo.set_Alloc\u00600(SkiaSharp.GRVkAlloc):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Vulkan.VulkanSkiaExternalObjectsFeature\u002BImage.SnapshotWithSemaphores",
+        "Avalonia.Skia.Vulkan.VulkanSkiaRenderTarget.BeginRenderingSession"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRBackendRenderTarget",
+      "Signature": "SkiaSharp.GRBackendRenderTarget..ctor\u00600(System.Int32,System.Int32,SkiaSharp.GRVkImageInfo):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Vulkan.VulkanSkiaExternalObjectsFeature\u002BImage.SnapshotWithSemaphores",
+        "Avalonia.Skia.Vulkan.VulkanSkiaRenderTarget.BeginRenderingSession"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKColorSpace",
+      "Signature": "SkiaSharp.SKColorSpace.CreateSrgb\u00600():SkiaSharp.SKColorSpace;instance=False",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.Vulkan.VulkanSkiaExternalObjectsFeature\u002BImage.SnapshotWithSemaphores",
+        "Avalonia.Skia.Vulkan.VulkanSkiaRenderTarget.BeginRenderingSession"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKSurface",
+      "Signature": "SkiaSharp.SKSurface.Create\u00600(SkiaSharp.GRContext,SkiaSharp.GRBackendRenderTarget,SkiaSharp.GRSurfaceOrigin,SkiaSharp.SKColorType,SkiaSharp.SKColorSpace):SkiaSharp.SKSurface;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Vulkan.VulkanSkiaExternalObjectsFeature\u002BImage.SnapshotWithSemaphores",
+        "Avalonia.Skia.Vulkan.VulkanSkiaRenderTarget.BeginRenderingSession"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRMtlBackendContext",
+      "Signature": "SkiaSharp.GRMtlBackendContext..ctor\u00600():System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Metal.SkiaMetalGpu..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRMtlBackendContext",
+      "Signature": "SkiaSharp.GRMtlBackendContext.set_DeviceHandle\u00600(System.IntPtr):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Metal.SkiaMetalGpu..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRMtlBackendContext",
+      "Signature": "SkiaSharp.GRMtlBackendContext.set_QueueHandle\u00600(System.IntPtr):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Metal.SkiaMetalGpu..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRContext",
+      "Signature": "SkiaSharp.GRContext.CreateMetal\u00600(SkiaSharp.GRMtlBackendContext,SkiaSharp.GRContextOptions):SkiaSharp.GRContext;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Metal.SkiaMetalGpu..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKBitmap",
+      "Signature": "SkiaSharp.SKBitmap..ctor\u00600(System.Int32,System.Int32,System.Boolean):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.FramebufferRenderTarget\u002BPixelFormatConversionShim..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKBitmap",
+      "Signature": "SkiaSharp.SKBitmap.CanCopyTo\u00600(SkiaSharp.SKColorType):System.Boolean;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FramebufferRenderTarget\u002BPixelFormatConversionShim..ctor"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKImage",
+      "Signature": "SkiaSharp.SKImage.ReadPixels\u00600(SkiaSharp.SKImageInfo,System.IntPtr,System.Int32,System.Int32,System.Int32,SkiaSharp.SKImageCachingHint):System.Boolean;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.FramebufferRenderTarget\u002BPixelFormatConversionShim.CopySurface"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKTextBlobBuilder",
+      "Signature": "SkiaSharp.SKTextBlobBuilder.AllocatePositionedRun\u00600(SkiaSharp.SKFont,System.Int32,System.Nullable\u00601\u003CSkiaSharp.SKRect\u003E):SkiaSharp.SKPositionedRunBuffer;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.GlyphRunImpl\u002B\u003C\u003Ec__DisplayClass14_0.\u003CGetTextBlob\u003Eb__0"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPositionedRunBuffer",
+      "Signature": "SkiaSharp.SKPositionedRunBuffer.SetPositions\u00600(System.ReadOnlySpan\u00601\u003CSkiaSharp.SKPoint\u003E):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.GlyphRunImpl\u002B\u003C\u003Ec__DisplayClass14_0.\u003CGetTextBlob\u003Eb__0"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKRunBuffer",
+      "Signature": "SkiaSharp.SKRunBuffer.SetGlyphs\u00600(System.ReadOnlySpan\u00601\u003CSystem.UInt16\u003E):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.GlyphRunImpl\u002B\u003C\u003Ec__DisplayClass14_0.\u003CGetTextBlob\u003Eb__0"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKTextBlobBuilder",
+      "Signature": "SkiaSharp.SKTextBlobBuilder.Build\u00600():SkiaSharp.SKTextBlob;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.GlyphRunImpl\u002B\u003C\u003Ec__DisplayClass14_0.\u003CGetTextBlob\u003Eb__0"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPictureRecorder",
+      "Signature": "SkiaSharp.SKPictureRecorder.EndRecording\u00600():SkiaSharp.SKPicture;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.PictureRenderTarget\u002B\u003C\u003Ec__DisplayClass6_0.\u003CCreateDrawingContext\u003Eb__0"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPath",
+      "Signature": "SkiaSharp.SKPath.MoveTo\u00600(System.Single,System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.StreamGeometryImpl\u002BStreamContext.ArcTo",
+        "Avalonia.Skia.StreamGeometryImpl\u002BStreamContext.BeginFigure",
+        "Avalonia.Skia.StreamGeometryImpl\u002BStreamContext.CubicBezierTo",
+        "Avalonia.Skia.StreamGeometryImpl\u002BStreamContext.LineTo",
+        "Avalonia.Skia.StreamGeometryImpl\u002BStreamContext.QuadraticBezierTo"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPath",
+      "Signature": "SkiaSharp.SKPath.LineTo\u00600(System.Single,System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.StreamGeometryImpl\u002BStreamContext.LineTo"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPath",
+      "Signature": "SkiaSharp.SKPath.ArcTo\u00600(System.Single,System.Single,System.Single,SkiaSharp.SKPathArcSize,SkiaSharp.SKPathDirection,System.Single,System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.StreamGeometryImpl\u002BStreamContext.ArcTo"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPath",
+      "Signature": "SkiaSharp.SKPath.CubicTo\u00600(System.Single,System.Single,System.Single,System.Single,System.Single,System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.StreamGeometryImpl\u002BStreamContext.CubicBezierTo"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKPath",
+      "Signature": "SkiaSharp.SKPath.QuadTo\u00600(System.Single,System.Single,System.Single,System.Single):System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.StreamGeometryImpl\u002BStreamContext.QuadraticBezierTo"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKBitmap",
+      "Signature": "SkiaSharp.SKBitmap.NotifyPixelsChanged\u00600():System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.WriteableBitmapImpl\u002BBitmapFramebuffer.Dispose"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRContext",
+      "Signature": "SkiaSharp.GRContext.Flush\u00600(System.Boolean,System.Boolean):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Metal.SkiaMetalExternalObjectsFeature\u002BImportedImage.SnapshotWithTimelineSemaphores"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRMtlTextureInfo",
+      "Signature": "SkiaSharp.GRMtlTextureInfo..ctor\u00600(System.IntPtr):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Metal.SkiaMetalExternalObjectsFeature\u002BImportedImage.SnapshotWithTimelineSemaphores",
+        "Avalonia.Skia.Metal.SkiaMetalGpu\u002BSkiaMetalRenderTarget.BeginRenderingSession"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.GRBackendRenderTarget",
+      "Signature": "SkiaSharp.GRBackendRenderTarget..ctor\u00600(System.Int32,System.Int32,SkiaSharp.GRMtlTextureInfo):System.Void;instance=True",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Metal.SkiaMetalExternalObjectsFeature\u002BImportedImage.SnapshotWithTimelineSemaphores",
+        "Avalonia.Skia.Metal.SkiaMetalGpu\u002BSkiaMetalRenderTarget.BeginRenderingSession"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKSurface",
+      "Signature": "SkiaSharp.SKSurface.Create\u00600(SkiaSharp.GRContext,SkiaSharp.GRBackendRenderTarget,SkiaSharp.GRSurfaceOrigin,SkiaSharp.SKColorType):SkiaSharp.SKSurface;instance=False",
+      "PresentInManagedMetadata": false,
+      "Callers": [
+        "Avalonia.Skia.Metal.SkiaMetalExternalObjectsFeature\u002BImportedImage.SnapshotWithTimelineSemaphores",
+        "Avalonia.Skia.Metal.SkiaMetalGpu\u002BSkiaMetalRenderTarget.BeginRenderingSession"
+      ]
+    },
+    {
+      "Type": "SkiaSharp.SKSurface",
+      "Signature": "SkiaSharp.SKSurface.Flush\u00600():System.Void;instance=True",
+      "PresentInManagedMetadata": true,
+      "Callers": [
+        "Avalonia.Skia.Metal.SkiaMetalGpu\u002BSkiaMetalRenderSession.Dispose"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><AssemblyName>SimdSkia.Benchmark.GpuManaged</AssemblyName></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/SimdSkia.Compatibility/SimdSkia.Compatibility.csproj" />
+    <Compile Include="../GpuShared/*.cs" LinkBase="GpuShared" />
+    <Compile Include="../Shared/Contracts.cs" Link="Contracts.cs" />
+  </ItemGroup>
+</Project>
