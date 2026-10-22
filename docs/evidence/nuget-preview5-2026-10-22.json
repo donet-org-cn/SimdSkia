@@ -2,9 +2,9 @@
   "version": "0.1.0-preview.5",
   "tag": "v0.1.0-preview.5",
   "sourceCommit": "c12c3db16dda9b5fa7505a146bf1b948d3311934",
-  "checkedUtc": "2026-10-22T08:25:04.335306+00:00",
-  "status": "uploaded_waiting_public_download_verification",
-  "publicAvailabilityVerified": false,
+  "checkedUtc": "2026-10-22T08:30:03.251299+00:00",
+  "status": "public_download_and_ci_dll_readme_verified",
+  "publicAvailabilityVerified": true,
   "nupkgCount": 11,
   "workflow": "https://github.com/hnlyf168/SimdSkia/actions/runs/39746371476",
   "ci": [
@@ -13,7 +13,7 @@
       "name": "NuGet preview",
       "sourceCommit": "c12c3db16dda9b5fa7505a146bf1b948d3311934",
       "url": "https://github.com/hnlyf168/SimdSkia/actions/runs/39746371476",
-      "conclusion": null,
+      "conclusion": "success",
       "jobs": [
         {
           "id": 119715733408,
@@ -23,7 +23,7 @@
         {
           "id": 119716843975,
           "name": "publish",
-          "conclusion": null
+          "conclusion": "success"
         }
       ]
     },
@@ -206,7 +206,85 @@
       }
     }
   ],
-  "publicVerification": [],
+  "publicVerification": [
+    {
+      "id": "SimdSkia.Gpu",
+      "version": "0.1.0-preview.5",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.gpu/0.1.0-preview.5/simdskia.gpu.0.1.0-preview.5.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "2bb80ad11fbfcdba94e4df176af9fd0465f2a50e404edf63e86990ca76efbbd6"
+    },
+    {
+      "id": "SimdSkia.Avalonia.Gpu",
+      "version": "0.1.0-preview.5",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.avalonia.gpu/0.1.0-preview.5/simdskia.avalonia.gpu.0.1.0-preview.5.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "8bc7f2eef94b220072264b5ef006960a0eb952e058b873364e04b334f2796ac4"
+    },
+    {
+      "id": "SimdSkia",
+      "version": "0.1.0-preview.5",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia/0.1.0-preview.5/simdskia.0.1.0-preview.5.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "e37b65aab0a4123caf13a3dcaa184f1a9fc4d60eb8440da2d6dd7783ad9ebd74"
+    },
+    {
+      "id": "SimdSkia.Core",
+      "version": "0.1.0-preview.5",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.core/0.1.0-preview.5/simdskia.core.0.1.0-preview.5.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "0a70d576a4d9fa7f55e994b02c3db45437546b1f2d82bf3b814c0cfff58937ca"
+    },
+    {
+      "id": "SimdSkia.Text",
+      "version": "0.1.0-preview.5",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.text/0.1.0-preview.5/simdskia.text.0.1.0-preview.5.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "f25aeaf22c63342ae2c6244911490ce856d21f4e37c9f277928fa09c173585b5"
+    },
+    {
+      "id": "SimdSkia.Imaging",
+      "version": "0.1.0-preview.5",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.imaging/0.1.0-preview.5/simdskia.imaging.0.1.0-preview.5.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "77619d6ba56ca1d48593af9f339d059dc9a06fc8206adca811c7a1fef5e1f4bf"
+    },
+    {
+      "id": "SimdSkia.Avalonia.Desktop",
+      "version": "0.1.0-preview.5",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.avalonia.desktop/0.1.0-preview.5/simdskia.avalonia.desktop.0.1.0-preview.5.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "7fe0d472376546bbf67efe4d0b19cd0f0204f212c8b1f40ae628052aad6420dd"
+    },
+    {
+      "id": "SimdSkia.Cpu",
+      "version": "0.1.0-preview.5",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.cpu/0.1.0-preview.5/simdskia.cpu.0.1.0-preview.5.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "c799057a4df431593c958a27163bcacca5d2c9c35985776fad74c99b3034c541"
+    },
+    {
+      "id": "SimdSkia.Gpu.Direct2D",
+      "version": "0.1.0-preview.5",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.gpu.direct2d/0.1.0-preview.5/simdskia.gpu.direct2d.0.1.0-preview.5.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "8b0315656b0b2bb4f88625360c11c0fda36d38caca929db9e2cb2727d08c8230"
+    },
+    {
+      "id": "SimdSkia.Avalonia",
+      "version": "0.1.0-preview.5",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.avalonia/0.1.0-preview.5/simdskia.avalonia.0.1.0-preview.5.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "bcf1066a27b4188d0426c50de86b8434e042e4b6bef4ff3a64ed715973dfb534"
+    },
+    {
+      "id": "SimdSkia.Compatibility",
+      "version": "0.1.0-preview.5",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.compatibility/0.1.0-preview.5/simdskia.compatibility.0.1.0-preview.5.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "d5d6bc5495cf3737e696824c98fd01ae92782dfac29a7b8653d46241ee1aa9e3"
+    }
+  ],
   "actualCiNativeAotConsumer": {
     "NativeAot": true,
     "Frames": 1,

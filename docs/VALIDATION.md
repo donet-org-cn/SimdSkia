@@ -1,5 +1,7 @@
 # 验证：2026-10-22
 
+preview.5 已公开发布：全部 11 个包实际下载，DLL/README 与 CI 产物逐字节一致。发布 CI、三平台托管/标量回归、三平台 JIT/AOT/nupkg 实际窗口及 Windows 双后端 AOT 全部成功；本机真实包的 CPU/Direct2D/Vulkan 控件窗口也通过。渲染源码与下述性能报告中的优化提交一致，发布仅更改版本、锁定和说明；没有把冷启动包窗口的完成时间当作性能成绩。[发布证据](evidence/nuget-preview5-2026-10-22.json) / [安装与版本](NUGET-PREVIEW.md)
+
 最新 Vulkan 源码验证与性能见 [专项报告](VULKAN-OPTIMIZATION-2026-10-22.md) / [完整证据](evidence/vulkan-round3-2026-10-22.json)。整套 Release 构建 0 警告/错误；540 GPU 检查含 531 组逐字节比较、16 位绕数界限、缓存颜色/clip/覆盖遮罩/渐变、数量与字节预算、在途资源、BGRA/stride/Upload 与时间戳。590 采样、12174 GPU 集成、344 Direct2D、60 字形合批与字体/失败帧清理通过。
 
 144 张冻结前后 Vulkan 基准帧和实际窗口/离屏 PNG 均完全一致；原版 144 张基准帧稳定。CPU、Direct2D、Vulkan 三个 Windows Native AOT 控件窗口均实际运行、呈现并 resize，Vulkan 时间戳的 AOT JSON 序列化也通过。性能仍用独立 JIT 三轮数据。原版 GPU 12/24、完整画质与 API 的既有缺口保留，`verify.ps1 -Reference -Gpu` 最终返回 2；没有将诊断时间混入性能成绩。

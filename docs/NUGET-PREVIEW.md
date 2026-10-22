@@ -2,7 +2,14 @@
 
 ## 第五预览版 0.1.0-preview.5
 
-**11 个包已上传，等待 NuGet 索引及公开下载核对。** [可信发布流水线](https://github.com/hnlyf168/SimdSkia/actions/runs/39746371476)已完成构建、全部包内容检查、真实 Native AOT 像素/窗口验证及隔离包消费；上传步骤成功。标签 `v0.1.0-preview.5` 固定在 `c12c3db16dda9b5fa7505a146bf1b948d3311934`。下载状态、实际包和测试证据见 [发布记录](evidence/nuget-preview5-2026-10-22.json)；没有把上传成功当作公开可下载。
+**已公开发布，11 个包均已实际下载，DLL 和 README 与发布 CI 产物逐字节一致。** [可信发布流水线](https://github.com/hnlyf168/SimdSkia/actions/runs/39746371476)全部成功，完成构建、全部包内容检查、真实 Native AOT 像素/窗口验证、隔离包消费、上传及公开下载核对。标签 `v0.1.0-preview.5` 固定在 `c12c3db16dda9b5fa7505a146bf1b948d3311934`。下载 SHA、实际包和测试证据见 [发布记录](evidence/nuget-preview5-2026-10-22.json)。
+
+推荐桌面应用统一升级到 `0.1.0-preview.5`，包含本轮 Vulkan 优化；旧 preview.4 内容不变。安装 [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.0-preview.5)，GPU 按需另加 [SimdSkia.Avalonia.Gpu](https://www.nuget.org/packages/SimdSkia.Avalonia.Gpu/0.1.0-preview.5)，完整接入代码见 [首页](../README.md)。
+
+```shell
+dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.0-preview.5
+dotnet add package SimdSkia.Avalonia.Gpu --version 0.1.0-preview.5
+```
 
 本版纳入 [Vulkan 专项优化](VULKAN-OPTIMIZATION-2026-10-22.md)：有界覆盖率缓存、保守分块、宽绕数与专用计算管线、显存输入、BGRA 直接输出、依赖同步，以及可选 GPU 时间戳诊断。11 个包统一版本；Avalonia 继续锁定 12.1.4。实测窗口 P50 22.250→2.316 ms，CPU 为 2.067 ms，内存没有同比改善；完整 API/画质仍未通过。渲染源码与报告中实测提交相同，仅变更版本、依赖锁定和说明，保留实际测量二进制哈希。
 
