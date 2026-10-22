@@ -115,6 +115,19 @@ using(var target=new SimdSkia.Avalonia.FramebufferTarget(framebuffer,_=>failing)
 Check(failing.Disposed,"GPU resources must be disposed after a failed frame.");
 Console.WriteLine("PASS framebuffer failure cleanup and completion accounting");
 
+long presentedBeforePreparation=SimdSkiaDiagnostics.FramesPresented;
+StartupPreparation.Start();var preparation=StartupPreparation.Pending;
+if(System.Runtime.CompilerServices.RuntimeFeature.IsDynamicCodeSupported)
+{
+    Check(preparation is not null,"JIT startup did not schedule preparation.");
+    Parallel.For(0,32,_=>{StartupPreparation.Start();if(!ReferenceEquals(preparation,StartupPreparation.Pending))throw new InvalidOperationException("Startup preparation was scheduled more than once.");});
+    preparation!.GetAwaiter().GetResult();
+    Check(preparation.IsCompletedSuccessfully,"Startup preparation failed.");
+}
+else Check(preparation is null,"Native AOT must skip JIT preparation.");
+Check(SimdSkiaDiagnostics.FramesPresented==presentedBeforePreparation,"Background preparation must never count as a presented window frame.");
+Console.WriteLine("PASS startup preparation, single scheduling and no fake presentation");
+
 static global::Avalonia.Media.IPlatformTypeface CreateTypeface(SimdSkiaSystemFontInfo info)
 {
     var manager = new SimdSkia.Avalonia.FontManager(info.Files, info.DefaultFamily, supportedFacesOnly: true);

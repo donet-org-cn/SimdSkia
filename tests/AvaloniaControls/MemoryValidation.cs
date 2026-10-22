@@ -89,6 +89,18 @@ internal static class MemoryValidation
         replacement.WritePixel(0,0,new(0,0,255,255));
         using var newLease=TileRasterCache.Add(key with{Version=1},replacement);
         Check(oldLease!.ReadPixel(0,0).R==255&&newLease.ReadPixel(0,0).B==255,"Evicting a bitmap version invalidated an existing shader lease.");
+        var geometry=new SimdSkia.Avalonia.StreamGeometry();
+        using(var edit=geometry.Open()){edit.BeginFigure(new(1,2),true);edit.QuadraticBezierTo(new(6,12),new(11,2));edit.EndFigure(true);}
+        var oldBounds=geometry.Bounds;
+        Check(oldBounds==new Rect(1,2,10,5),"Cached geometry bounds must remain tight, including curve extrema.");
+        long beforeBounds=GC.GetAllocatedBytesForCurrentThread();
+        for(int i=0;i<1000;i++)if(geometry.Bounds!=oldBounds)throw new InvalidOperationException("Immutable bounds changed.");
+        Check(GC.GetAllocatedBytesForCurrentThread()-beforeBounds<=64,"Repeated immutable bounds queries allocate.");
+        using(var edit=geometry.Open()){edit.BeginFigure(new(-5,-3),true);edit.LineTo(new(20,14));edit.LineTo(new(-5,14));edit.EndFigure(true);}
+        Check(geometry.Bounds==new Rect(-5,-3,25,17),"Editing geometry did not invalidate its cached bounds.");
+        var clone=(SimdSkia.Avalonia.Geometry)geometry.Clone();
+        Check(clone.Bounds==geometry.Bounds,"Cloned geometry lost its bounds.");
+        Parallel.For(0,64,_=>{if(clone.Bounds!=new Rect(-5,-3,25,17))throw new InvalidOperationException("Concurrent bounds query changed geometry.");});checks++;
         return checks;
     }
 

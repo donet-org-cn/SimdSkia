@@ -31,6 +31,7 @@ internal static class Program
 #if MANAGED
         builder.UseSimdSkia(o=>
         {
+            o.EnableStartupPreparation=!args.Contains("--no-preparation");
             if(Font.Length!=0)o.FontFiles.Add(Path.GetFullPath(Font));
             if(Backend!="cpu")o.UseGpu(Backend=="vulkan"?SimdSkiaGpuBackend.Vulkan:Backend=="direct2d"?SimdSkiaGpuBackend.Direct2D:throw new ArgumentException("Unknown backend"),allowCpuFallback:true);
         });

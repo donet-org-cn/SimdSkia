@@ -16,10 +16,21 @@ internal class Geometry : IGeometryImpl
     internal SPath StrokePath {get;set;}
     private readonly record struct StrokeKey(double Width,PenLineCap Cap,PenLineJoin Join,double Miter,ImmutableDashStyle? Dash);
     private readonly Dictionary<StrokeKey,Geometry> strokes=[];
-    internal void Replace(SPath path,SPath stroke){Path=path;StrokePath=stroke;strokes.Clear();}
+    private sealed record CachedBounds(SPath Path,Rect Bounds);
+    private CachedBounds? bounds;
+    internal void Replace(SPath path,SPath stroke){Path=path;StrokePath=stroke;strokes.Clear();Volatile.Write(ref bounds,null);}
     internal Geometry(SPath path,SPath? stroke=null){Path=path;StrokePath=stroke??path;}
     internal virtual void Validate() { }
-    public Rect Bounds {get{Validate();return ConvertTo.Rect(StrokePath.GetTightBounds(Matrix3.Identity));}}
+    public Rect Bounds
+    {
+        get
+        {
+            Validate();var path=StrokePath;var cached=Volatile.Read(ref bounds);
+            if(cached is not null&&ReferenceEquals(cached.Path,path))return cached.Bounds;
+            var value=ConvertTo.Rect(path.GetTightBounds(Matrix3.Identity));
+            Volatile.Write(ref bounds,new(path,value));return value;
+        }
+    }
     internal PointF[][] Contours=>StrokePath.Flatten(Matrix3.Identity,0.015625f);
     public double ContourLength=>Edges().Sum(e=>e.Length);
     private IEnumerable<(PointF A,PointF B,double Length)> Edges()

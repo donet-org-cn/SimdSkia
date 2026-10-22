@@ -58,7 +58,16 @@ internal static class GlyphCoverageCache
         if(luminance>=0)
         {
             var table=GlyphMaskGamma.Table(luminance);
-            foreach(ref var placement in batch.Glyphs.AsSpan())placement=placement with{Mask=Correct(placement.Mask,table)};
+            foreach(ref var placement in batch.Glyphs.AsSpan())
+            {
+                // Packed masks are newly owned by this run. Correct them in place;
+                // unpacked masks still belong to the shared, color-free glyph cache.
+                if(packed is not null)
+                {
+                    var data=placement.Mask.Data;for(int i=0;i<data.Length;i++)data[i]=table[data[i]];
+                }
+                else placement=placement with{Mask=Correct(placement.Mask,table)};
+            }
         }
         retained=batch.Bytes;
         if(Enabled&&retained<=MaximumRunBytes)lock(gate)
@@ -90,13 +99,15 @@ internal static class GlyphCoverageCache
         if((long)width*height>512*1024)return null;
         var data=new byte[width*height];var result=new List<Placement>();
         int groupLeft=right,groupTop=bottom,groupRight=left,groupBottom=top;
-        void Flush()
+        void Flush(bool final=false)
         {
             if(groupLeft>=groupRight||groupTop>=groupBottom)return;
-            int w=groupRight-groupLeft,h=groupBottom-groupTop;var packed=new byte[w*h];
-            for(int y=0;y<h;y++)data.AsSpan((groupTop-top+y)*width+groupLeft-left,w).CopyTo(packed.AsSpan(y*w,w));
+            int w=groupRight-groupLeft,h=groupBottom-groupTop;
+            bool transfer=final&&groupLeft==left&&groupTop==top&&groupRight==right&&groupBottom==bottom;
+            var packed=transfer?data:new byte[w*h];
+            if(!transfer)for(int y=0;y<h;y++)data.AsSpan((groupTop-top+y)*width+groupLeft-left,w).CopyTo(packed.AsSpan(y*w,w));
             result.Add(new(new(0,0,w,h,packed,[],true),groupLeft,groupTop));
-            data.AsSpan().Clear();groupLeft=right;groupTop=bottom;groupRight=left;groupBottom=top;
+            if(!final)data.AsSpan().Clear();groupLeft=right;groupTop=bottom;groupRight=left;groupBottom=top;
         }
         foreach(var p in placements)
         {
@@ -106,7 +117,7 @@ internal static class GlyphCoverageCache
             groupLeft=Math.Min(groupLeft,p.X+p.Mask.Left);groupTop=Math.Min(groupTop,p.Y+p.Mask.Top);
             groupRight=Math.Max(groupRight,p.X+p.Mask.Left+p.Mask.Width);groupBottom=Math.Max(groupBottom,p.Y+p.Mask.Top+p.Mask.Height);
         }
-        Flush();return result.ToArray();
+        Flush(final:true);return result.ToArray();
     }
     private static bool Write(Placement p,byte[] data,int width,int left,int top,bool checkOnly)
     {

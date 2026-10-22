@@ -103,6 +103,26 @@ internal static class GlyphValidation
             }
             Check(table[0]==0&&table[255]==255,"Glyph preblend changed transparent/opaque endpoints.");
         }
+        // Color correction must never mutate the shared, color-free masks or
+        // another luminance's run. Exercise both single and overlapping groups.
+        foreach(float spacing in new[]{4f,16f})
+        {
+            var run=new GlyphRunGeometry([new(outline,new(0,0)),new(outline,new(spacing,0))],Matrix3.Identity);
+            var raw=GlyphCoverageCache.Resolve(run,Matrix3.Identity,true,.015625f,false,-1,out _,out _);
+            var originals=raw.Glyphs.Select(g=>g.Mask.Data.ToArray()).ToArray();
+            for(int luma=0;luma<8;luma++)
+            {
+                var corrected=GlyphCoverageCache.Resolve(run,Matrix3.Identity,true,.015625f,false,luma,out _,out _);
+                var table=GlyphMaskGamma.Table(luma);
+                Check(corrected.Glyphs.Length==raw.Glyphs.Length,"Gamma correction changed the overlap groups.");
+                for(int i=0;i<raw.Glyphs.Length;i++)
+                {
+                    var expected=new byte[originals[i].Length];for(int j=0;j<expected.Length;j++)expected[j]=table[originals[i][j]];
+                    Check(corrected.Glyphs[i].Mask.Data.AsSpan().SequenceEqual(expected),"Glyph mask was corrected twice or used another color's cache.");
+                    Check(raw.Glyphs[i].Mask.Data.AsSpan().SequenceEqual(originals[i]),"Color correction modified a shared raw glyph mask.");
+                }
+            }
+        }
         return count;
     }
 }

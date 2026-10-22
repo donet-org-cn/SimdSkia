@@ -13,6 +13,7 @@ p.add_argument('--managed',type=Path,default=Path('tests/Startup/Managed/bin/Rel
 p.add_argument('--reference',type=Path,default=Path('tests/Startup/Reference/bin/Release/net10.0/win-x64/Startup.Reference.exe'))
 p.add_argument('--before',type=Path)
 p.add_argument('--font',type=Path)
+p.add_argument('--include-preparation-disabled',action='store_true',help='Add the same managed executable with background preparation disabled; all other settings remain identical.')
 p.add_argument('--runs',type=int,default=3)
 p.add_argument('--backends',nargs='+',default=['cpu'],choices=['cpu','direct2d','vulkan'])
 args=p.parse_args()
@@ -64,14 +65,16 @@ def find_window(pid):
 
 variants=[('after-'+b,args.managed,b) for b in args.backends]+[('reference',args.reference,'cpu')]
 if args.before:variants=[('before-'+b,args.before,b) for b in args.backends]+variants
+if args.include_preparation_disabled:variants += [('disabled-'+b,args.managed,b) for b in args.backends]
 files=sorted({path.resolve() for _,exe,_ in variants for path in [exe,*exe.parent.glob('*.dll'),*exe.parent.glob('*.runtimeconfig.json'),*exe.parent.glob('*.deps.json')]})
 hashes={str(path):hashlib.sha256(path.read_bytes()).hexdigest() for path in files}
-(args.output/'manifest.json').write_text(json.dumps({'runtimeFileSha256':hashes,'font':str(args.font) if args.font else 'Microsoft YaHei UI','runtimeEnvironment':{key:os.environ.get(key) for key in ['DOTNET_TieredCompilation','DOTNET_TieredPGO','DOTNET_EnableHWIntrinsic']}},indent=2)+'\n',encoding='utf-8')
+(args.output/'manifest.json').write_text(json.dumps({'runtimeFileSha256':hashes,'includePreparationDisabled':args.include_preparation_disabled,'font':str(args.font) if args.font else 'Microsoft YaHei UI','runtimeEnvironment':{key:os.environ.get(key) for key in ['DOTNET_TieredCompilation','DOTNET_TieredPGO','DOTNET_EnableHWIntrinsic']}},indent=2)+'\n',encoding='utf-8')
 rows=[]
 for run in range(args.runs):
     for name,exe,backend in variants[run%len(variants):]+variants[:run%len(variants)]:
         dest=args.output/f'{name}-{run+1}';dest.mkdir()
         cmd=[str(exe.resolve()),'--output',str(dest.resolve()),'--backend',backend]
+        if name.startswith('disabled-'):cmd+=['--no-preparation']
         if args.font:cmd+=['--font',str(args.font.resolve())]
         with (dest/'process.log').open('wb') as log:
             start=time.perf_counter();process=subprocess.Popen(cmd,stdout=log,stderr=subprocess.STDOUT,creationflags=0x08000000)
