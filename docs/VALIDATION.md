@@ -1,6 +1,10 @@
 # 验证：2026-10-22
 
-最新源码 `6c017e7`：[采样/缓存优化、原版对照与窗口报告](OPTIMIZATION-ROUND6-2026-10-22.md) · [完整证据](evidence/optimization-round6-2026-10-22.json)。Release 0 警告/错误；8665 优化和 9664 控件/生命周期检查通过，完全禁用硬件指令也通过；Direct2D 344、GPU 集成 12174、Vulkan 540、GPU 采样 590、平台字体 36。新增双线性舍入/预乘/格式/stride 与裁剪、画刷整行复制及拒绝时不写入、旧缓存淘汰不影响已借用像素，以及重复矩形重绘的分配上限回归。
+最新生产源码 `1438833`：[桌面启动、CPU/GPU 与内存报告](STARTUP-ROUND7-2026-10-22.md) · [完整证据](evidence/startup-round7-2026-10-22.json)。Release 0 警告/错误；8665 优化、9734 控件/生命周期检查和完全标量回退通过。新增精确曲线边界缓存的编辑失效、克隆、并发读及分配检查；字形合批覆盖缓冲在重叠/不重叠与八种亮度下保持原始共享缓存不变。启动准备并发调用只启动一次，不产生窗口帧；无窗口应用和 Native AOT 跳过。
+
+Direct2D 344、Vulkan 540、GPU 采样 590、GPU 集成 12174、平台字体 36、字形合批 60 项通过。三平台[托管/标量](https://github.com/hnlyf168/SimdSkia/actions/runs/39782824212)、[桌面 JIT/AOT/nupkg](https://github.com/hnlyf168/SimdSkia/actions/runs/39782824193)和 [Windows 双实现 AOT](https://github.com/hnlyf168/SimdSkia/actions/runs/39782824150)全部成功，已下载核对 9 条桌面记录与 2 条 AOT 记录。原版功能探针 82/114，旧图像 108/120，SK* API 425/3235；完整控件画质仍失败，`verify.ps1 -Reference -Gpu` 返回 **2**，未降低门槛。尚未发布新 NuGet。以下保留此前记录。
+
+上一轮源码 `6c017e7`：[采样/缓存优化、原版对照与窗口报告](OPTIMIZATION-ROUND6-2026-10-22.md) · [完整证据](evidence/optimization-round6-2026-10-22.json)。Release 0 警告/错误；8665 优化和 9664 控件/生命周期检查通过，完全禁用硬件指令也通过；Direct2D 344、GPU 集成 12174、Vulkan 540、GPU 采样 590、平台字体 36。新增双线性舍入/预乘/格式/stride 与裁剪、画刷整行复制及拒绝时不写入、旧缓存淘汰不影响已借用像素，以及重复矩形重绘的分配上限回归。
 
 三平台[托管及标量](https://github.com/hnlyf168/SimdSkia/actions/runs/39771031055)、[实际 JIT/AOT/nupkg 桌面窗口](https://github.com/hnlyf168/SimdSkia/actions/runs/39771031167)、[Windows 双实现 AOT](https://github.com/hnlyf168/SimdSkia/actions/runs/39771031036)均通过。连续换图三轮与原版像素完全相同；完整控件画质、旧图像和 API 缺口仍存在，完整验证退出码仍为 **2**。本轮未发布 NuGet。以下保留此前记录。
 

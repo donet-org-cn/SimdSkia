@@ -1,6 +1,8 @@
 # SimdSkia.Avalonia
 
-最新 [采样、画刷缓存与窗口对比报告](https://github.com/hnlyf168/SimdSkia/blob/main/docs/OPTIMIZATION-ROUND6-2026-10-22.md)：系统字体控件 **0.793→0.694 ms/帧**；连续更新图片画刷短批次 **7.553→1.681 ms/帧**，该压力场景 GC 后 Private **58.6→27.9 MiB**，原版 **0.729 ms、26.5 MiB**。新增精确双线性 SIMD、抗锯齿计数优化、不透明画刷行复制，修复旧图片版本持有及矩形覆盖图重复缓存。**普通控件内存、滚动、GPU、启动仍有差距，完整画质/API 门槛未通过；尚未发布新 NuGet，下方 preview.5 保持原内容。** 报告区分短批次与稳态测量，保留全部进程指标、失败项及 CPU/GPU 分开对照。
+最新 [桌面启动、CPU/GPU 与内存报告](https://github.com/hnlyf168/SimdSkia/blob/main/docs/STARTUP-ROUND7-2026-10-22.md)：完成 70 次 JIT/AOT 可见启动对照。JIT 白色阶段采样中位数 **CPU 114→61 ms、Direct2D 289→198 ms、Vulkan 363→266 ms**，同机原版 CPU 为 **49 ms**；白屏缩短，尚未完全消除。新增桌面后台准备、精确几何边界复用和字形缓冲优化；系统字体控件 **0.695→0.666 ms/帧**，CPU 窗口每帧托管分配约减少 **17%**。**常驻内存和持续 GPU 性能没有明显改善，完整画质/API 门槛仍未通过；尚未发布新 NuGet，下方 preview.5 保持原内容。** 实际 AOT 首帧两者约 337 ms，发布目录为 **26.99 vs 原版 38.33 MiB**，AOT 工作集/Private 仍较高；报告保留所有进程与画质失败项。
+
+上一轮 [采样、画刷缓存与窗口对比](https://github.com/hnlyf168/SimdSkia/blob/main/docs/OPTIMIZATION-ROUND6-2026-10-22.md)：系统字体控件 **0.793→0.694 ms/帧**；连续更新图片画刷短批次 **7.553→1.681 ms/帧**，该场景 GC 后 Private **58.6→27.9 MiB**，原版 **0.729 ms、26.5 MiB**。历史轮次数据保持原样，不与本轮不同 DPI/采样间隔的结果拼接。
 
 上一轮 [启动、CPU 与内存报告](https://github.com/hnlyf168/SimdSkia/blob/main/docs/STARTUP-PERFORMANCE-2026-10-22.md)：系统字体控件 **1.008→0.800 ms/帧**，工作集 **111.9→94.8 MiB**。CPU 白色阶段估计 **280→218 ms**，原版约 **95 ms**；白屏未消除。这是此前独立测量，不与最新表格拼接计算增益。
 

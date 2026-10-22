@@ -1,6 +1,6 @@
 # 原版与 SimdSkia 性能对比：2026-10-21
 
-最新 Avalonia 实测见 [图片采样、画刷缓存与窗口报告](OPTIMIZATION-ROUND6-2026-10-22.md)，包含原版、优化前后、CPU/内存和失败项；连续换图短批次耗时下降约 78%，GC 后 Private 减少约 30.7 MiB，但仍慢于原版。上一轮 [启动与内存报告](STARTUP-PERFORMANCE-2026-10-22.md) 和本页早期基准保持原始数据。
+最新 Avalonia 实测见 [桌面启动、CPU/GPU 与内存报告](STARTUP-ROUND7-2026-10-22.md)：70 次可见 JIT/AOT 启动、原版与前后 CPU 对照、18 个实际窗口进程。系统字体控件 0.695→0.666 ms/帧、CPU 窗口分配下降约 17%；常驻内存和持续 GPU 性能没有明显改善，画质失败项仍保留。上一轮 [图片采样与画刷缓存报告](OPTIMIZATION-ROUND6-2026-10-22.md) 及本页早期基准保持原始数据，不混用不同轮次的尺寸/DPI/采样间隔。
 
 实际执行：Intel(R) Core(TM) i7-8700K CPU @ 3.70GHz；Microsoft Windows 10.0.26300；.NET 8.0.32 / X64，逻辑 CPU 12。原版包 SkiaSharp 3.119.4。
 每种实现 3 个独立进程；每项每进程 5 批，目标每批 70 ms，预热至少 100 ms 且 3 帧，再校准。进程顺序/场景顺序打乱，串行执行。TieredCompilation=0，ReadyToRun=0，ServerGC=False。

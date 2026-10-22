@@ -1,6 +1,6 @@
 # 原版与 SimdSkia GPU(Vulkan)性能对比：2026-10-21
 
-最新 CPU/Direct2D/Vulkan 实际窗口的 CPU 占用、内存和启动见 [本轮采样/缓存优化报告](OPTIMIZATION-ROUND6-2026-10-22.md)。该轮 GPU 是自身前后对照，不把原版 CPU 当作 GPU 对手；此页原版 GPU 数字属于历史测试。上一轮数据见 [启动与性能报告](STARTUP-PERFORMANCE-2026-10-22.md)。
+最新 CPU/Direct2D/Vulkan 窗口、CPU 占用、内存及 JIT/AOT 启动见 [桌面启动与性能报告](STARTUP-ROUND7-2026-10-22.md)。GPU 为自身前后对照，不把原版 CPU 当作 GPU 对手；此页原版 GPU 数字属于历史测试。上一轮数据见 [采样/缓存优化报告](OPTIMIZATION-ROUND6-2026-10-22.md)。
 
 最新源码的 Vulkan 专项优化、真实窗口 CPU/内存及冻结前后画质验证见 [2026-10-22 报告](VULKAN-OPTIMIZATION-2026-10-22.md)；本页保留早期数据。
 
