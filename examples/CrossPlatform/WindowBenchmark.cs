@@ -11,6 +11,14 @@ internal static class WindowBenchmark
 {
     internal static void Start(Window window,Button button,IClassicDesktopStyleApplicationLifetime desktop)
     {
+        static double Duration(string name,double fallback)
+        {
+            string? text=Environment.GetEnvironmentVariable(name);if(text is null)return fallback;
+            if(!double.TryParse(text,System.Globalization.NumberStyles.Float,System.Globalization.CultureInfo.InvariantCulture,out double value)||!double.IsFinite(value)||value<0||value>120)
+                throw new ArgumentException($"{name} must be in [0, 120] seconds.");
+            return value;
+        }
+        double warmup=Duration("SIMDSKIA_BENCH_WARMUP_SECONDS",2),seconds=Duration("SIMDSKIA_BENCH_MEASURE_SECONDS",3);
         var process=Process.GetCurrentProcess();var clock=Stopwatch.StartNew();
         bool measuring=false;long allocated=0,frames=0,cpuTicks=0;double started=0;long peakWorking=0,peakPrivate=0;int changes=0;
         SimdSkiaGpuStatistics? gpuStart=null;
@@ -20,14 +28,14 @@ internal static class WindowBenchmark
             try
             {
                 button.Content=$"Frame / 帧 {changes++%10}";window.InvalidateVisual();
-                if(!measuring&&clock.Elapsed.TotalSeconds>=2)
+                if(!measuring&&clock.Elapsed.TotalSeconds>=warmup)
                 {
                     process.Refresh();allocated=GC.GetTotalAllocatedBytes(true);cpuTicks=process.TotalProcessorTime.Ticks;frames=SimdSkiaDiagnostics.FramesPresented;
                     gpuStart=SimdSkiaGpuDiagnostics.GetStatistics();started=clock.Elapsed.TotalSeconds;SimdSkiaDiagnostics.BeginFrameTiming();measuring=true;
                 }
                 if(!measuring)return;
                 process.Refresh();peakWorking=Math.Max(peakWorking,process.WorkingSet64);peakPrivate=Math.Max(peakPrivate,process.PrivateMemorySize64);
-                double elapsed=clock.Elapsed.TotalSeconds-started;if(elapsed<3||(SimdSkiaDiagnostics.FramesPresented-frames<60&&elapsed<15))return;
+                double elapsed=clock.Elapsed.TotalSeconds-started;if(elapsed<seconds||(SimdSkiaDiagnostics.FramesPresented-frames<60&&elapsed<Math.Max(15,seconds)))return;
                 timer.Stop();double[] times=SimdSkiaDiagnostics.EndFrameTiming();Array.Sort(times);
                 if(times.Length==0)throw new InvalidOperationException("No completed real-window frames.");
                 var gpu=SimdSkiaGpuDiagnostics.GetStatistics();long cpu=process.TotalProcessorTime.Ticks-cpuTicks;
@@ -38,7 +46,7 @@ internal static class WindowBenchmark
                     json.WriteString("os",RuntimeInformation.OSDescription);json.WriteString("architecture",RuntimeInformation.ProcessArchitecture.ToString());
                     json.WriteString("scene",Program.Controls?"controls":"simple");json.WriteNumber("width",window.ClientSize.Width);json.WriteNumber("height",window.ClientSize.Height);json.WriteNumber("scaling",window.RenderScaling);
                     json.WriteString("presentation",Program.Gpu==SimdSkiaGpuBackend.Direct2D?"native DXGI sequential swapchain; GPU event completion":Program.Gpu==SimdSkiaGpuBackend.Vulkan?"Vulkan fence and pixel readback; OS framebuffer":"CPU OS framebuffer");
-                    json.WriteBoolean("diagnosticCaptureDuringMeasurement",false);json.WriteNumber("warmupSeconds",2);json.WriteNumber("measurementSeconds",elapsed);
+                    json.WriteBoolean("diagnosticCaptureDuringMeasurement",false);json.WriteNumber("warmupSeconds",warmup);json.WriteNumber("measurementSeconds",elapsed);
                     json.WriteBoolean("gpuTimestampProfilingEnabled",SimdSkiaGpuDiagnostics.CaptureVulkanProfiles);
                     json.WriteBoolean("sampleCountSufficient",times.Length>=60);
                     json.WriteNumber("presentedFrames",SimdSkiaDiagnostics.FramesPresented-frames);json.WriteNumber("timedFrames",times.Length);json.WriteNumber("drawingMeanMs",times.Average());json.WriteNumber("drawingP50Ms",times[times.Length/2]);json.WriteNumber("drawingP95Ms",times[(int)Math.Floor((times.Length-1)*.95)]);

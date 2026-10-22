@@ -1,5 +1,9 @@
 # 验证：2026-10-22
 
+本轮生产源码 `1c6af37`：[启动/性能报告](STARTUP-PERFORMANCE-2026-10-22.md) · [完整证据](evidence/startup-performance-2026-10-22.json)。Release 0 警告/错误；8085 标量/优化（新增 240 独立裁剪对照）、8299 控件（含文件 TTC 导出/字形一致性）、36 Windows 平台字体、13 系统字体、344 Direct2D、12174 GPU 集成通过。12 对 CPU 帧与 6 对实际窗口/呈现截图完全相同。三平台[托管/标量](https://github.com/hnlyf168/SimdSkia/actions/runs/39759622776)、[JIT/AOT/nupkg 窗口](https://github.com/hnlyf168/SimdSkia/actions/runs/39759622830)、[Windows 双实现 AOT](https://github.com/hnlyf168/SimdSkia/actions/runs/39759622875)均通过，下载核对 9 条桌面与 2 条双实现 AOT 记录。
+
+性能包含 48 个 CPU 进程、35 次可见启动和 36 个实际 CPU/GPU 窗口进程。短时与较长预热结果均保留，未宣称 GPU 吞吐或动态窗口 CPU 全面改善。原版也采到约 95 ms 白色阶段，SimdSkia CPU 为约 218 ms，白屏尚未消除。整页画质、旧图像和 API 缺口保持，完整验证退出码 **2**。本轮与上一轮内存优化均未发布 NuGet；以下为历史记录。
+
 内存专项源码 `cd9f5d8`：[测试/性能报告](MEMORY-PERFORMANCE-2026-10-22.md) · [逐进程 JSON/哈希/CI 证据](evidence/memory-performance-2026-10-22.json)。Release 0 警告/错误，8245 控件（含渐变连续修改、TTC 共享流、重叠/Dispose、上下文栈复用）、23 平台字体、13/10 Windows 字体、7845 优化、484 图片、590 GPU 采样、540 Vulkan 优化、344 Direct2D、12174 GPU 集成、60 字形合批检查通过。9 对 CPU 帧与 12 对 CPU/Direct2D/Vulkan 窗口截图逐字节相同。
 
 三平台[托管/标量](https://github.com/hnlyf168/SimdSkia/actions/runs/39752120807)、[真实 JIT/AOT/nupkg 窗口](https://github.com/hnlyf168/SimdSkia/actions/runs/39752120567)、[Windows 双实现 AOT](https://github.com/hnlyf168/SimdSkia/actions/runs/39752120609)全部通过，已下载核对 9 条窗口记录。45 个 CPU 对照进程、36 个窗口进程和 6 个独立 JIT 配置诊断完成；不同字体、后端与运行时口径分别记录。原版整页固定字体 0/3、系统字体 0/1，既有图像 108/120，API 425/3235；完整验证仍返回 2。**这批源码优化尚未发布 NuGet，以下 preview.5 发布验收属于此前版本。**
