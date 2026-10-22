@@ -1,5 +1,6 @@
 using System.Buffers.Binary;
 using System.Text;
+using System.Runtime.InteropServices;
 using SimdSkia.Text;
 
 namespace SimdSkia.ControlValidation;
@@ -28,13 +29,19 @@ internal static class CollectionValidation
         for(int face=0;face<2;face++)
         {
             var selected=new TrueTypeFont(ttc,face);Check(selected.Ascender==original.Ascender+face,"TTC selected the wrong face metrics.");
+            var shared=TrueTypeFont.FromOwnedCollection(ttc,face);
+            Check(shared.Ascender==selected.Ascender,"Shared TTC selected the wrong face metrics.");
+            Check(shared.TryGetTable("glyf",out var glyf)&&MemoryMarshal.TryGetArray(glyf,out var segment)&&ReferenceEquals(segment.Array,ttc),"Shared TTC duplicated its file storage.");
             using var stream=selected.OpenStream();var standalone=new byte[stream.Length];stream.ReadExactly(standalone);
+            using var exported=shared.OpenStream();var exportedBytes=new byte[exported.Length];exported.ReadExactly(exportedBytes);
+            Check(exportedBytes.AsSpan().SequenceEqual(standalone),"Shared TTC stream changed the standalone font bytes/checksums.");
             uint checksum=0;for(int i=0;i<standalone.Length;i+=4)checksum=unchecked(checksum+BinaryPrimitives.ReadUInt32BigEndian(standalone.AsSpan(i)));
             Check(checksum==0xb1b0afba,"Extracted sfnt checksum adjustment.");Check(FontCollection.Count(standalone)==1,"Extracted stream still a collection.");
             foreach(var rune in "中文界面测试，OCR AVATAR To 12345".EnumerateRunes())
             {
                 ushort glyph=original.GetGlyph(rune.Value);Check(selected.GetGlyph(rune.Value)==glyph,"TTC cmap selection.");
                 Check(selected.Advance(glyph)==original.Advance(glyph),"TTC advance.");Check(selected.Outline(glyph).Segments.SequenceEqual(original.Outline(glyph).Segments),"TTC altered real CJK/Latin outlines.");
+                Check(shared.GetGlyph(rune.Value)==glyph&&shared.Advance(glyph)==selected.Advance(glyph)&&shared.Outline(glyph).Segments.SequenceEqual(selected.Outline(glyph).Segments),"Shared TTC changed CJK/Latin glyphs or metrics.");
             }
         }
         foreach(int index in new[]{-1,2}){bool rejected=false;try{_ = new TrueTypeFont(ttc,index);}catch(ArgumentOutOfRangeException){rejected=true;}Check(rejected,"TTC invalid face index.");}

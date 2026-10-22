@@ -32,6 +32,38 @@ try
     Check(managerTypeface.FamilyName == found.DefaultFamily, "Discovered files must load into the real Avalonia managed font manager.");
     var again = UnixSystemFonts.Discover([temp]);
     Check(again.Files.SequenceEqual(found.Files) && again.DefaultFamily == found.DefaultFamily, "Discovery order is deterministic.");
+    byte[] boldBytes=(byte[])bytes.Clone();
+    int tableCount=BinaryPrimitives.ReadUInt16BigEndian(boldBytes.AsSpan(4));bool changed=false;
+    for(int i=0;i<tableCount;i++)
+    {
+        var entry=boldBytes.AsSpan(12+i*16,16);
+        if(!entry[..4].SequenceEqual("OS/2"u8))continue;
+        int offset=checked((int)BinaryPrimitives.ReadUInt32BigEndian(entry[8..]));
+        BinaryPrimitives.WriteUInt16BigEndian(boldBytes.AsSpan(offset+4),700);changed=true;break;
+    }
+    Check(changed,"Fixture must provide a real OS/2 weight table.");
+    string boldFile=Path.Combine(temp,"bold.ttf");File.WriteAllBytes(boldFile,boldBytes);
+    var lazy=new SimdSkia.Avalonia.FontManager([valid,boldFile],found.DefaultFamily,supportedFacesOnly:true);
+    Check(lazy.LoadedFaceCount==0,"Installed font discovery must not read glyph data eagerly.");
+    Check(lazy.GetInstalledFontFamilyNames().SequenceEqual([found.DefaultFamily]),"Lazy family enumeration uses actual metadata.");
+    Check(lazy.TryGetFamilyTypefaces(found.DefaultFamily,out var faces)&&faces.Count==2,"All styles remain enumerable before loading.");
+    Check(lazy.LoadedFaceCount==0,"Enumerating families and styles must not load unused faces.");
+    using(var regular=Select(lazy,global::Avalonia.Media.FontWeight.Normal))
+    {
+        Check(regular.Weight==global::Avalonia.Media.FontWeight.Normal,"Regular selection remains correct.");
+        Check(((PlatformTypeface)regular).Data.Font.GetGlyph('中')!=0,"On-demand loading preserves real Chinese outlines.");
+    }
+    Check(lazy.LoadedFaceCount==1,"Only the requested face is loaded.");
+    using(var repeat=Select(lazy,global::Avalonia.Media.FontWeight.Normal))
+        Check(lazy.LoadedFaceCount==1,"Repeated selection reuses the loaded face.");
+    using(var bold=Select(lazy,global::Avalonia.Media.FontWeight.Bold))
+        Check(bold.Weight==global::Avalonia.Media.FontWeight.Bold,"Lazy style selection loads the actual bold face.");
+    Check(lazy.LoadedFaceCount==2,"Both requested styles are now loaded.");
+    var eager=new SimdSkia.Avalonia.FontManager([valid,boldFile],found.DefaultFamily);
+    Check(eager.LoadedFaceCount==2,"Explicit font files keep eager validation semantics.");
+    var changedFile=new SimdSkia.Avalonia.FontManager([boldFile],found.DefaultFamily,supportedFacesOnly:true);
+    File.WriteAllBytes(boldFile,bytes);
+    Throws<IOException>(()=>Select(changedFile,global::Avalonia.Media.FontWeight.Bold));
     Console.WriteLine($"PASS {checks} portable font discovery checks; {found.DefaultFamily}");
 }
 finally { Directory.Delete(temp, true); }
@@ -55,6 +87,12 @@ static global::Avalonia.Media.IPlatformTypeface CreateTypeface(SimdSkiaSystemFon
     var manager = new SimdSkia.Avalonia.FontManager(info.Files, info.DefaultFamily, supportedFacesOnly: true);
     if (!manager.TryCreateGlyphTypeface(info.DefaultFamily, global::Avalonia.Media.FontStyle.Normal, global::Avalonia.Media.FontWeight.Normal, global::Avalonia.Media.FontStretch.Normal, out var typeface)) throw new InvalidOperationException("Cannot load discovered face.");
     return typeface;
+}
+
+static global::Avalonia.Media.IPlatformTypeface Select(SimdSkia.Avalonia.FontManager manager,global::Avalonia.Media.FontWeight weight)
+{
+    if(!manager.TryCreateGlyphTypeface(manager.GetDefaultFontFamilyName(),global::Avalonia.Media.FontStyle.Normal,weight,global::Avalonia.Media.FontStretch.Normal,out var face))throw new InvalidOperationException("Requested face missing.");
+    return face;
 }
 
 sealed class FailureCanvas:SimdSkia.ICanvasBackend

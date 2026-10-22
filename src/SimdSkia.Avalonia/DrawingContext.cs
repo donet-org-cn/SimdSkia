@@ -23,13 +23,32 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
     private CoverageClip? coverageClip;
     private RenderOptions renderOptions;
     private TextOptions textOptions;
-    private readonly Stack<(RectF? Rect,CoverageClip? Coverage)> clips=[];
-    private readonly Stack<RenderOptions> renderStack=[];
-    private readonly Stack<TextOptions> textStack=[];
-    private readonly Stack<Group> groups=[];
+    private readonly FrameScratch scratch=FrameScratch.Rent();
+    private Stack<(RectF? Rect,CoverageClip? Coverage)> clips=>scratch.Clips;
+    private Stack<RenderOptions> renderStack=>scratch.RenderOptions;
+    private Stack<TextOptions> textStack=>scratch.TextOptions;
+    private Stack<Group> groups=>scratch.Groups;
     private RectF? dirty;
     private int originX,originY;
     private readonly record struct Group(string Kind,PixelBuffer? Parent,ICanvasBackend? Canvas,RectF? Clip,CoverageClip? Coverage,byte Opacity,IBrush? Mask,Rect Bounds,RectF? ParentDirty,Matrix3 Matrix,FilterSpec? Filter=null,int OffsetX=0,int OffsetY=0);
+    // Reuse only empty internal storage. Public context wrappers are never
+    // recycled, so a disposed context cannot become valid in a later frame.
+    private sealed class FrameScratch
+    {
+        internal readonly Stack<(RectF? Rect,CoverageClip? Coverage)> Clips=[];
+        internal readonly Stack<RenderOptions> RenderOptions=[];
+        internal readonly Stack<TextOptions> TextOptions=[];
+        internal readonly Stack<Group> Groups=[];
+        private static readonly object gate=new();
+        private static readonly Stack<FrameScratch> pool=new(8);
+        internal static FrameScratch Rent(){lock(gate)return pool.TryPop(out var value)?value:new();}
+        internal static void Return(FrameScratch value)
+        {
+            value.Clips.Clear();value.RenderOptions.Clear();value.TextOptions.Clear();value.Groups.Clear();
+            if(value.Clips.EnsureCapacity(0)>64||value.RenderOptions.EnsureCapacity(0)>64||value.TextOptions.EnsureCapacity(0)>64||value.Groups.EnsureCapacity(0)>16)return;
+            lock(gate)if(pool.Count<8)pool.Push(value);
+        }
+    }
     private static readonly object shapeGate=new();
     private static readonly Dictionary<(RoundedRect Rect,bool Ellipse),Geometry> shapes=[];
     internal DrawingContext(PixelBuffer pixels,Vector dpi,bool scaleToDpi=true,Action<bool>? completed=null,ICanvasBackend? backend=null,bool flushBackend=true)
@@ -45,7 +64,7 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
     private void Execute(DrawingCommand command)
     {
         using var measurement=SimdSkiaDiagnostics.Measure(command.Kind==CommandKind.DrawGlyphRun?"glyph-run":command.Kind==CommandKind.FillPath?command.Paint.Shader is null?"path-solid":"path-gradient":command.Kind==CommandKind.DrawImage?"image":"rectangle");
-        Check();if(rootBackend is not null&&!ReferenceEquals(canvas,rootBackend))SimdSkiaDiagnostics.SoftwareLayerCommand();
+        Check();if(rootBackend is not null and not RasterCanvas&&!ReferenceEquals(canvas,rootBackend))SimdSkiaDiagnostics.SoftwareLayerCommand();
         canvas.Execute(command with {Clip=clip,CoverageClip=coverageClip,CurveTolerance=0.015625f});
         if(groups.Count==0)return;
         var bounds=command.GlyphRun?.Bounds??command.Path?.ControlBounds??command.Rectangle;var m=command.Transform;
@@ -220,7 +239,7 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
                 foreach(var group in groups)if(group.Parent is not null){if(!ReferenceEquals(group.Canvas,rootBackend))group.Canvas?.Dispose();if(!ReferenceEquals(group.Parent,root))group.Parent.Dispose();}
                 groups.Clear();root.Dispose();
             }
-            finally{completed?.Invoke(success);}
+            finally{try{completed?.Invoke(success);}finally{FrameScratch.Return(scratch);}}
         }
         if(unbalanced)throw new InvalidOperationException("Drawing context disposed with unbalanced layers, clips or options.");
     }

@@ -7,6 +7,8 @@ namespace SimdSkia.Text;
 public sealed class TrueTypeFont
 {
     private readonly byte[] bytes;
+    private readonly int collectionFace;
+    private readonly bool isCollection;
     private readonly Dictionary<string,(int Offset,int Length)> tables=[];
     private readonly Dictionary<ushort,PathGeometry> glyphs=[];
     private PairPositioning? positioning;
@@ -30,17 +32,23 @@ public sealed class TrueTypeFont
         if(tables.TryGetValue(tag,out var entry)){table=bytes.AsMemory(entry.Offset,entry.Length);return true;}
         table=default;return false;
     }
-    public Stream OpenStream()=>new MemoryStream(bytes,0,bytes.Length,false,false);
+    public Stream OpenStream()=>isCollection?new MemoryStream(FontCollection.Extract(bytes,collectionFace),false):new MemoryStream(bytes,0,bytes.Length,false,false);
     public TrueTypeFont(ReadOnlySpan<byte> data):this(data,0) { }
-    public TrueTypeFont(ReadOnlySpan<byte> data,int faceIndex)
+    public TrueTypeFont(ReadOnlySpan<byte> data,int faceIndex):this(FontCollection.Extract(data,faceIndex),0,true) { }
+    // The platform font manager owns one immutable file snapshot. TTC faces use
+    // its original table offsets so shared outlines are not copied per face.
+    internal static TrueTypeFont FromOwnedCollection(byte[] data,int faceIndex)=>new(data,faceIndex,true);
+    private TrueTypeFont(byte[] data,int faceIndex,bool owned)
     {
-        bytes=FontCollection.Extract(data,faceIndex);if(bytes.Length<12)throw new InvalidDataException("Truncated font.");
-        uint magic=U32(0);
+        bytes=data;int faces=FontCollection.Count(bytes);if(faceIndex<0||faceIndex>=faces)throw new ArgumentOutOfRangeException(nameof(faceIndex));
+        isCollection=U32(0)==0x74746366;collectionFace=faceIndex;
+        int directory=isCollection?checked((int)U32(12+faceIndex*4)):0;
+        uint magic=U32(directory);
         if(magic!=0x00010000&&magic!=0x74727565)throw new NotSupportedException("Only TrueType glyf fonts are supported; CFF/WOFF require separate parsers.");
-        int count=U16(4);Check(12,checked(count*16));
+        int count=U16(directory+4);Check(directory+12,checked(count*16));
         for(int i=0;i<count;i++)
         {
-            int p=12+i*16;string tag=Encoding.ASCII.GetString(bytes,p,4);int offset=checked((int)U32(p+8)),length=checked((int)U32(p+12));Check(offset,length);
+            int p=directory+12+i*16;string tag=Encoding.ASCII.GetString(bytes,p,4);int offset=checked((int)U32(p+8)),length=checked((int)U32(p+12));Check(offset,length);
             if(!tables.TryAdd(tag,(offset,length)))throw new InvalidDataException("Duplicate font table.");
         }
         if(tables.ContainsKey("fvar")||tables.ContainsKey("gvar"))throw new NotSupportedException("Variable fonts require variation processing.");

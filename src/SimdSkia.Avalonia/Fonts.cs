@@ -20,10 +20,21 @@ internal sealed class FontData
     internal FontWeight Weight {get;}
     internal FontStyle Style {get;}
     internal FontStretch Stretch {get;}
-    internal byte[] Digest {get;}
-    internal FontData(ReadOnlySpan<byte> data,int faceIndex=0)
+    private byte[]? digest;
+    internal byte[] Digest
     {
-        Font=new(data,faceIndex);using(var stream=Font.OpenStream())Digest=SHA256.HashData(stream);Family=ReadName(Font,16)??ReadName(Font,1)??throw new InvalidDataException("The font has no family name.");
+        get
+        {
+            var existing=Volatile.Read(ref digest);if(existing is not null)return existing;
+            using var stream=Font.OpenStream();var computed=SHA256.HashData(stream);
+            return Interlocked.CompareExchange(ref digest,computed,null)??computed;
+        }
+    }
+    internal FontData(ReadOnlySpan<byte> data,int faceIndex=0):this(new TrueTypeFont(data,faceIndex)) { }
+    internal FontData(byte[] ownedData,int faceIndex,bool owned):this(TrueTypeFont.FromOwnedCollection(ownedData,faceIndex)) { }
+    private FontData(TrueTypeFont font)
+    {
+        Font=font;Family=ReadName(Font,16)??ReadName(Font,1)??throw new InvalidDataException("The font has no family name.");
         Weight=FontWeight.Normal;Stretch=FontStretch.Normal;
         if(Font.TryGetTable("OS/2",out var table)&&table.Length>=8)
         {Weight=(FontWeight)BinaryPrimitives.ReadUInt16BigEndian(table.Span[4..]);Stretch=(FontStretch)BinaryPrimitives.ReadUInt16BigEndian(table.Span[6..]);}
@@ -31,7 +42,11 @@ internal sealed class FontData
     }
     private static string? ReadName(TrueTypeFont font,int id)
     {
-        if(!font.TryGetTable("name",out var memory)||memory.Length<6)return null;var data=memory.Span;
+        return font.TryGetTable("name",out var memory)?ReadName(memory.Span,id):null;
+    }
+    internal static string? ReadName(ReadOnlySpan<byte> data,int id)
+    {
+        if(data.Length<6)return null;
         int count=BinaryPrimitives.ReadUInt16BigEndian(data[2..]),offset=BinaryPrimitives.ReadUInt16BigEndian(data[4..]);string? result=null;int best=-1;
         if(count>(data.Length-6)/12)throw new InvalidDataException("Truncated font name records.");
         for(int i=0;i<count;i++)
@@ -63,20 +78,18 @@ internal sealed class PlatformTypeface(FontData data):IPlatformTypeface
 
 internal sealed class FontManager:IFontManagerImpl
 {
-    private readonly FontData[] fonts;
+    private readonly FontEntry[] fonts;
     private readonly string defaultFamily;
+    internal int LoadedFaceCount=>fonts.Count(f=>f.IsLoaded);
     internal FontManager(IEnumerable<string> paths,string? defaultFamily=null,bool supportedFacesOnly=false)
     {
-        var loaded=new List<FontData>();
+        var loaded=new List<FontEntry>();
         foreach(string path in paths)
         {
+            if(supportedFacesOnly){loaded.AddRange(FontEntry.ReadSystemFile(path));continue;}
             var data=File.ReadAllBytes(path);
             for(int i=0;i<FontCollection.Count(data);i++)
-            {
-                try{loaded.Add(new FontData(data,i));}
-                catch(NotSupportedException error) when(supportedFacesOnly)
-                {System.Diagnostics.Trace.WriteLine($"Excluded installed font {path}, face {i}: {error.Message}");}
-            }
+                loaded.Add(new FontEntry(new FontData(data,i,true)));
         }
         fonts=loaded.ToArray();
         if(fonts.Length==0)throw new ArgumentException("Register at least one supported TrueType font in SimdSkiaOptions.FontFiles.");
@@ -86,16 +99,17 @@ internal sealed class FontManager:IFontManagerImpl
     }
     public string GetDefaultFontFamilyName()=>defaultFamily;
     public string[] GetInstalledFontFamilyNames(bool checkForUpdates=false)=>fonts.Select(f=>f.Family).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
-    private IEnumerable<FontData> Order(FontStyle style,FontWeight weight,FontStretch stretch)=>fonts.OrderBy(f=>f.Style==style?0:1).ThenBy(f=>Math.Abs((int)f.Stretch-(int)stretch)).ThenBy(f=>Math.Abs((int)f.Weight-(int)weight));
+    private IEnumerable<FontEntry> Order(FontStyle style,FontWeight weight,FontStretch stretch)=>fonts.OrderBy(f=>f.Style==style?0:1).ThenBy(f=>Math.Abs((int)f.Stretch-(int)stretch)).ThenBy(f=>Math.Abs((int)f.Weight-(int)weight));
     public bool TryCreateGlyphTypeface(string familyName,FontStyle style,FontWeight weight,FontStretch stretch,[NotNullWhen(true)]out IPlatformTypeface? typeface)
-    {var match=Order(style,weight,stretch).FirstOrDefault(f=>f.Family.Equals(familyName,StringComparison.OrdinalIgnoreCase));typeface=match is null?null:new PlatformTypeface(match);return typeface is not null;}
+    {var match=Order(style,weight,stretch).FirstOrDefault(f=>f.Family.Equals(familyName,StringComparison.OrdinalIgnoreCase));typeface=match is null?null:new PlatformTypeface(match.Data);return typeface is not null;}
     public bool TryMatchCharacter(int codepoint,FontStyle style,FontWeight weight,FontStretch stretch,string? family,CultureInfo? culture,[NotNullWhen(true)]out IPlatformTypeface? typeface)
-    {var match=Order(style,weight,stretch).OrderBy(f=>f.Family.Equals(family,StringComparison.OrdinalIgnoreCase)?0:1).FirstOrDefault(f=>f.Font.GetGlyph(codepoint)!=0);typeface=match is null?null:new PlatformTypeface(match);return typeface is not null;}
+    {var match=Order(style,weight,stretch).OrderBy(f=>f.Family.Equals(family,StringComparison.OrdinalIgnoreCase)?0:1).FirstOrDefault(f=>f.Data.Font.GetGlyph(codepoint)!=0);typeface=match is null?null:new PlatformTypeface(match.Data);return typeface is not null;}
     public bool TryCreateGlyphTypeface(Stream stream,FontSimulations simulations,[NotNullWhen(true)]out IPlatformTypeface? typeface)
     {
         if(simulations!=FontSimulations.None)throw new NotSupportedException("Synthetic bold/italic font outlines are not implemented.");
         using var memory=new MemoryStream();stream.CopyTo(memory);var data=memory.GetBuffer().AsSpan(0,(int)memory.Length);var digest=SHA256.HashData(data);
-        var existing=fonts.FirstOrDefault(f=>f.Digest.AsSpan().SequenceEqual(digest));typeface=new PlatformTypeface(existing??new FontData(data));return true;
+        // An external stream need not load unrelated installed fallback files.
+        var existing=fonts.FirstOrDefault(f=>f.IsLoaded&&f.Data.Digest.AsSpan().SequenceEqual(digest));typeface=new PlatformTypeface(existing?.Data??new FontData(data));return true;
     }
     public bool TryGetFamilyTypefaces(string family,[NotNullWhen(true)]out IReadOnlyList<Typeface>? typefaces)
     {var found=fonts.Where(f=>f.Family.Equals(family,StringComparison.OrdinalIgnoreCase)).Select(f=>new Typeface(f.Family,f.Style,f.Weight,f.Stretch)).ToArray();typefaces=found.Length==0?null:found;return typefaces is not null;}

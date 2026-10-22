@@ -105,7 +105,7 @@ internal sealed class FramebufferTarget(IFramebufferRenderTarget surface,Func<Pi
             var format=ConvertTo.Format(locked.Format);var alpha=ConvertTo.Alpha(locked.AlphaFormat);
             if(buffer is null||buffer.Width!=locked.Size.Width||buffer.Height!=locked.Size.Height||buffer.Format!=format||buffer.Alpha!=alpha)
             {backend?.Dispose();backend=null;buffer?.Dispose();buffer=new(locked.Size.Width,locked.Size.Height,format,alpha);retained=false;}
-            if(backend is null&&backendFactory is not null)backend=backendFactory(buffer)??throw new InvalidOperationException("CanvasBackendFactory returned null.");
+            if(backend is null)backend=backendFactory is null?new RasterCanvas(buffer):backendFactory(buffer)??throw new InvalidOperationException("CanvasBackendFactory returned null.");
             properties=new(){PreviousFrameIsRetained=retained};active=true;var pixels=buffer;
             return new DrawingContext(pixels,locked.Dpi,false,success=>
             {

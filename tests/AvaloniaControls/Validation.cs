@@ -25,7 +25,7 @@ internal static class Validation
     {try{action();}catch(T){assertions++;return;}throw new InvalidOperationException(message);}
     internal static void Run(Window host,Control scene,RenderTargetBitmap bitmap,string font,string output)
     {
-        RunDrawingChecks();RunCompositorOracle();RunGeometry();RunShaping(font);RunLifetime();assertions+=GlyphValidation.Run();assertions+=CompletionValidation.Run();assertions+=CollectionValidation.Run(font);assertions+=FeatureProbe.ValidateTileFixtures(output);
+        RunDrawingChecks();RunCompositorOracle();RunGeometry();RunShaping(font);RunLifetime();assertions+=GlyphValidation.Run();assertions+=CompletionValidation.Run();assertions+=CollectionValidation.Run(font);assertions+=FeatureProbe.ValidateTileFixtures(output);assertions+=MemoryValidation.Run();
         AvaloniaHeadlessPlatform.ForceRenderTimerTick(2);using var frame=host.CaptureRenderedFrame();Assert(frame is not null&&frame.PixelSize.Width>0,"Real window compositor did not present a framebuffer.");
         var button=scene.GetVisualDescendants().OfType<Button>().First();int clicked=0;button.Click+=(_,_)=>clicked++;
         var point=button.TranslatePoint(new Point(button.Bounds.Width/2,button.Bounds.Height/2),host)??throw new InvalidOperationException("Button coordinate mapping failed.");

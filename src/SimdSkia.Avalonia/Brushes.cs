@@ -1,15 +1,26 @@
 using Avalonia;
 using Avalonia.Media;
+using System.Runtime.CompilerServices;
 
 namespace SimdSkia.Avalonia;
 
 internal static class BrushFactory
 {
+    private sealed class GradientCache {internal Gradient? Value;}
+    private static readonly ConditionalWeakTable<IGradientBrush,GradientCache> gradients=new();
     internal static Paint Create(IBrush brush,Rect bounds,bool antialias,CompositeMode composite=CompositeMode.SourceOver)
     {
         byte opacity=Opacity(brush.Opacity);
         if(brush is ISolidColorBrush solid){var color=ConvertTo.Color(solid.Color);return new(color with {A=PixelBuffer.Multiply(color.A,opacity)},composite,antialias);}
-        if(brush is IGradientBrush gradient)return new(new(255,255,255,opacity),composite,antialias,new Gradient(gradient,bounds));
+        if(brush is IGradientBrush gradient)
+        {
+            var entry=gradients.GetValue(gradient,static _=>new());
+            lock(entry)
+            {
+                if(entry.Value is null||!entry.Value.Matches(gradient,bounds))entry.Value=new Gradient(gradient,bounds);
+                return new(new(255,255,255,opacity),composite,antialias,entry.Value);
+            }
+        }
         throw new NotSupportedException($"Brush {brush.GetType().FullName} is not implemented (image/visual brushes need a tile pipeline).");
     }
     internal static byte Opacity(double value)
@@ -17,6 +28,10 @@ internal static class BrushFactory
     private sealed class Gradient:IColorShader
     {
         private readonly (double Offset,Rgba32 Color)[] stops;
+        private readonly (double Offset,Rgba32 Color)[] originalStops;
+        private readonly Rect boundsKey;
+        private readonly Matrix transformKey;
+        private readonly RelativePoint transformOriginKey;
         private readonly GradientSpreadMethod spread;
         private readonly Matrix inverse;
         private readonly Point origin,center,end;
@@ -33,7 +48,9 @@ internal static class BrushFactory
         public bool IsOpaque=>stops.Length>0&&stops.All(s=>s.Color.A==255);
         internal Gradient(IGradientBrush brush,Rect bounds)
         {
-            stops=brush.GradientStops.Select(s=>(s.Offset,ConvertTo.Color(s.Color))).OrderBy(s=>s.Offset).ToArray();spread=brush.SpreadMethod;
+            boundsKey=bounds;transformKey=brush.Transform?.Value??Matrix.Identity;transformOriginKey=brush.TransformOrigin;
+            originalStops=brush.GradientStops.Select(s=>(s.Offset,ConvertTo.Color(s.Color))).ToArray();
+            stops=originalStops.OrderBy(s=>s.Offset).ToArray();spread=brush.SpreadMethod;
             if(stops.Any(s=>!double.IsFinite(s.Offset)))throw new ArgumentException("Gradient offsets must be finite.");
             Point Position(RelativePoint p)=>p.ToPixels(bounds.Size)+new Vector(bounds.X,bounds.Y);
             var transform=brush.Transform?.Value??Matrix.Identity;var o=Position(brush.TransformOrigin);
@@ -43,6 +60,20 @@ internal static class BrushFactory
             else if(brush is IRadialGradientBrush radial){kind=1;center=Position(radial.Center);origin=Position(radial.GradientOrigin);rx=radial.RadiusX.ToValue(bounds.Width);ry=radial.RadiusY.ToValue(bounds.Height);}
             else if(brush is IConicGradientBrush conic){kind=2;center=Position(conic.Center);angle=conic.Angle*Math.PI/180;}
             else throw new NotSupportedException("Unknown gradient type.");
+        }
+        internal bool Matches(IGradientBrush brush,Rect bounds)
+        {
+            if(bounds!=boundsKey||brush.SpreadMethod!=spread||(brush.Transform?.Value??Matrix.Identity)!=transformKey||brush.TransformOrigin!=transformOriginKey)return false;
+            var values=brush.GradientStops;if(values.Count!=originalStops.Length)return false;
+            for(int i=0;i<values.Count;i++)if(values[i].Offset!=originalStops[i].Offset||ConvertTo.Color(values[i].Color)!=originalStops[i].Color)return false;
+            Point Position(RelativePoint p)=>p.ToPixels(bounds.Size)+new Vector(bounds.X,bounds.Y);
+            return brush switch
+            {
+                ILinearGradientBrush linear=>kind==0&&origin==Position(linear.StartPoint)&&end==Position(linear.EndPoint),
+                IRadialGradientBrush radial=>kind==1&&center==Position(radial.Center)&&origin==Position(radial.GradientOrigin)&&rx==radial.RadiusX.ToValue(bounds.Width)&&ry==radial.RadiusY.ToValue(bounds.Height),
+                IConicGradientBrush conic=>kind==2&&center==Position(conic.Center)&&angle==conic.Angle*Math.PI/180,
+                _=>false
+            };
         }
         public Rgba32 Sample(float x,float y)
         {
