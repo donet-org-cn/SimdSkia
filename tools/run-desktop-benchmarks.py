@@ -27,6 +27,7 @@ if args.before_executable:engines={'before':args.before_executable.resolve(),**e
 measured_files=sorted({path for executable in engines.values() for path in [executable,*executable.parent.glob('*.dll'),*executable.parent.glob('*.deps.json'),*executable.parent.glob('*.runtimeconfig.json')]})
 hashes={str(path):hashlib.sha256(path.read_bytes()).hexdigest() for path in measured_files}
 manifest={'executable':str(binary),'engines':{key:str(value) for key,value in engines.items()},'executableSha256':hashes[str(binary)],'runtimeFileSha256':hashes,'fontMode':'system' if args.system_fonts else 'fixed file','fontSha256':hashlib.sha256(font.read_bytes()).hexdigest() if font else None,'runs':args.runs,'scene':args.scene,'backends':args.backends,'windowPosition':'offscreen on Windows; measures render/present service time, not visible monitor FPS','note':'GPU timers include fence/event completion; capture disabled during timed frames. CPU glyph atlas construction and CPU layers are recorded, not called GPU rasterization.'}
+manifest['runtimeEnvironment']={key:os.environ.get(key) for key in ['DOTNET_TieredCompilation','DOTNET_TieredPGO','DOTNET_EnableHWIntrinsic','COMPlus_TieredCompilation','COMPlus_TieredPGO','COMPlus_EnableHWIntrinsic']}
 (args.output/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
 rows=[]
 variants=[(engine,backend) for backend in args.backends for engine in engines]

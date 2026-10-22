@@ -1,5 +1,9 @@
 # 验证：2026-10-22
 
+内存专项源码 `cd9f5d8`：[测试/性能报告](MEMORY-PERFORMANCE-2026-10-22.md) · [逐进程 JSON/哈希/CI 证据](evidence/memory-performance-2026-10-22.json)。Release 0 警告/错误，8245 控件（含渐变连续修改、TTC 共享流、重叠/Dispose、上下文栈复用）、23 平台字体、13/10 Windows 字体、7845 优化、484 图片、590 GPU 采样、540 Vulkan 优化、344 Direct2D、12174 GPU 集成、60 字形合批检查通过。9 对 CPU 帧与 12 对 CPU/Direct2D/Vulkan 窗口截图逐字节相同。
+
+三平台[托管/标量](https://github.com/hnlyf168/SimdSkia/actions/runs/39752120807)、[真实 JIT/AOT/nupkg 窗口](https://github.com/hnlyf168/SimdSkia/actions/runs/39752120567)、[Windows 双实现 AOT](https://github.com/hnlyf168/SimdSkia/actions/runs/39752120609)全部通过，已下载核对 9 条窗口记录。45 个 CPU 对照进程、36 个窗口进程和 6 个独立 JIT 配置诊断完成；不同字体、后端与运行时口径分别记录。原版整页固定字体 0/3、系统字体 0/1，既有图像 108/120，API 425/3235；完整验证仍返回 2。**这批源码优化尚未发布 NuGet，以下 preview.5 发布验收属于此前版本。**
+
 preview.5 已公开发布：全部 11 个包实际下载，DLL/README 与 CI 产物逐字节一致。发布 CI、三平台托管/标量回归、三平台 JIT/AOT/nupkg 实际窗口及 Windows 双后端 AOT 全部成功；本机真实包的 CPU/Direct2D/Vulkan 控件窗口也通过。渲染源码与下述性能报告中的优化提交一致，发布仅更改版本、锁定和说明；没有把冷启动包窗口的完成时间当作性能成绩。[发布证据](evidence/nuget-preview5-2026-10-22.json) / [安装与版本](NUGET-PREVIEW.md)
 
 最新 Vulkan 源码验证与性能见 [专项报告](VULKAN-OPTIMIZATION-2026-10-22.md) / [完整证据](evidence/vulkan-round3-2026-10-22.json)。整套 Release 构建 0 警告/错误；540 GPU 检查含 531 组逐字节比较、16 位绕数界限、缓存颜色/clip/覆盖遮罩/渐变、数量与字节预算、在途资源、BGRA/stride/Upload 与时间戳。590 采样、12174 GPU 集成、344 Direct2D、60 字形合批与字体/失败帧清理通过。

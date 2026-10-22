@@ -1,5 +1,7 @@
 # SimdSkia.Avalonia
 
+最新源码的 [内存与性能报告](https://github.com/hnlyf168/SimdSkia/blob/main/docs/MEMORY-PERFORMANCE-2026-10-22.md)：系统字体 CPU 窗口工作集 **252.6→116.0 MiB**，Private **197.6→60.6 MiB**；固定字体 CPU 控件耗时下降 5%–9%，每帧分配减少 66%–70%。含原版、CPU/GPU、三轮进程测量与全部差距。**这批优化已提交源码，尚未发布到 NuGet；下方 preview.5 包保持原内容。**
+
 最新 [Vulkan 专项优化与测试报告](https://github.com/hnlyf168/SimdSkia/blob/main/docs/VULKAN-OPTIMIZATION-2026-10-22.md)：真实控件窗口 P50 22.250→2.316 ms，约快 9.6 倍；同场景 CPU 2.067 ms、Direct2D 1.552 ms。包含 CPU、工作集、Private、分配、原版 GPU 对照及失败项。**本轮优化纳入 preview.5，发布状态见下方发布记录；CPU/内存没有获得同等幅度改善，完整画质/API 验收仍未通过。** 上一轮 CPU 与分配优化见 [历史报告](https://github.com/hnlyf168/SimdSkia/blob/main/docs/PERFORMANCE-COMPATIBILITY-2026-10-22.md)。
 
 独立 C# 2D 引擎，内部使用 `SimdSkia`，源码兼容层保留 `SkiaSharp.SK*`。不使用 Google Skia 绘图；字体、基础排版及图片编解码均由 C# 实现。通过 `SimdSkia.Avalonia` 可以接入 Avalonia，无需重新编译 Avalonia。
