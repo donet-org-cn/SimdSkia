@@ -1,6 +1,8 @@
 # SimdSkia.Avalonia
 
-最新源码的 [内存与性能报告](https://github.com/hnlyf168/SimdSkia/blob/main/docs/MEMORY-PERFORMANCE-2026-10-22.md)：系统字体 CPU 窗口工作集 **252.6→116.0 MiB**，Private **197.6→60.6 MiB**；固定字体 CPU 控件耗时下降 5%–9%，每帧分配减少 66%–70%。含原版、CPU/GPU、三轮进程测量与全部差距。**这批优化已提交源码，尚未发布到 NuGet；下方 preview.5 包保持原内容。**
+最新 [启动、CPU 与内存报告](https://github.com/hnlyf168/SimdSkia/blob/main/docs/STARTUP-PERFORMANCE-2026-10-22.md)：同系统字体控件 **1.008→0.800 ms/帧**，工作集 **111.9→94.8 MiB**，原版默认 **0.911 ms、88.4 MiB**。CPU 启动白色阶段估计 **280→218 ms**，原版也有约 **95 ms**。含 35 次启动、原版对照、CPU/GPU 短时与较长观测、18 对完全相同帧及三平台 AOT 验证。**白屏未消除，GPU 吞吐及动态窗口 CPU 未全面改善，完整画质/API 门槛仍未通过。这批源码尚未发布 NuGet，下方 preview.5 保持原内容。**
+
+上一轮 [内存与性能报告](https://github.com/hnlyf168/SimdSkia/blob/main/docs/MEMORY-PERFORMANCE-2026-10-22.md)：系统字体 CPU 窗口工作集 **252.6→116.0 MiB**，Private **197.6→60.6 MiB**；固定字体 CPU 控件耗时下降 5%–9%，每帧分配减少 66%–70%。该轮优化也尚未发布到 NuGet。
 
 最新 [Vulkan 专项优化与测试报告](https://github.com/hnlyf168/SimdSkia/blob/main/docs/VULKAN-OPTIMIZATION-2026-10-22.md)：真实控件窗口 P50 22.250→2.316 ms，约快 9.6 倍；同场景 CPU 2.067 ms、Direct2D 1.552 ms。包含 CPU、工作集、Private、分配、原版 GPU 对照及失败项。**本轮优化纳入 preview.5，发布状态见下方发布记录；CPU/内存没有获得同等幅度改善，完整画质/API 验收仍未通过。** 上一轮 CPU 与分配优化见 [历史报告](https://github.com/hnlyf168/SimdSkia/blob/main/docs/PERFORMANCE-COMPATIBILITY-2026-10-22.md)。
 
