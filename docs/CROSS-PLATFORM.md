@@ -1,5 +1,7 @@
 # 跨平台桌面接入（0.1.0-preview.3）
 
+最新 main 源码的 Vulkan 性能与限制见 [专项报告](VULKAN-OPTIMIZATION-2026-10-22.md)。Windows 已实测路径覆盖缓存、直接 BGRA 输出、采样和 AOT；Linux 物理 GPU 仍待验证，macOS GPU/Metal 仍未实现。下文保留包版本对应的宿主配置。
+
 新增源码项目 `src/SimdSkia.Avalonia.Desktop`，为固定 Avalonia 12.1.4 提供统一入口：
 
 ```csharp

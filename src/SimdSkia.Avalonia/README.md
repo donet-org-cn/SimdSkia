@@ -1,6 +1,6 @@
 # SimdSkia.Avalonia
 
-最新优化与原版 CPU/Vulkan 实测见 [性能与兼容报告](https://github.com/hnlyf168/SimdSkia/blob/main/docs/PERFORMANCE-COMPATIBILITY-2026-10-22.md)。本轮三个 CPU 控件场景比优化前降低约 9%–12% 耗时，GPU 窗口每帧托管分配减少约 90%–94%；完整 UI 画质和 API 验收仍未全部通过。
+最新 [Vulkan 专项优化与测试报告](https://github.com/hnlyf168/SimdSkia/blob/main/docs/VULKAN-OPTIMIZATION-2026-10-22.md)：真实控件窗口 P50 22.250→2.316 ms，约快 9.6 倍；同场景 CPU 2.067 ms、Direct2D 1.552 ms。包含 CPU、工作集、Private、分配、原版 GPU 对照及失败项。**这是 main 源码的改动，已发布的 preview.4 不包含本轮优化；CPU/内存没有获得同等幅度改善，完整画质/API 验收仍未通过。** 上一轮 CPU 与分配优化见 [历史报告](https://github.com/hnlyf168/SimdSkia/blob/main/docs/PERFORMANCE-COMPATIBILITY-2026-10-22.md)。
 
 独立 C# 2D 引擎，内部使用 `SimdSkia`，源码兼容层保留 `SkiaSharp.SK*`。不使用 Google Skia 绘图；字体、基础排版及图片编解码均由 C# 实现。通过 `SimdSkia.Avalonia` 可以接入 Avalonia，无需重新编译 Avalonia。
 
@@ -127,7 +127,7 @@ Windows 将 `.UseSimdSkiaDesktop()` 改为：
 
 通过 C# 调用系统 Direct2D/D3D11，并使用 DXGI 原生交换链呈现；正常帧不强制回读像素，GPU 完成以事件查询确认。文字默认由 C# 生成并缓存覆盖率纹理，再交 GPU 合成；透明图层、滤镜等仍有 CPU 工作，诊断分别记录。可选择 `GpuOutlines` 进行轮廓 GPU 绘制，该模式当前更慢且文字覆盖率与默认模式不同。
 
-Linux/Windows 可改用 `SimdSkiaGpuBackend.Vulkan`，需硬件 Vulkan 设备；当前通过完成栅栏后回读并交窗口 framebuffer 呈现。**Vulkan 完整控件目前明显慢于 CPU，保持实验性质；macOS 调用 GPU 配置会明确报错。** 不支持的画刷等默认报错；可显式设置 `allowCpuFallback: true`，并通过 `SimdSkiaGpuDiagnostics` 查看原因和数量。详见 [跨平台说明](https://github.com/hnlyf168/SimdSkia/blob/main/docs/CROSS-PLATFORM.md) 和 [本轮性能报告](https://github.com/hnlyf168/SimdSkia/blob/main/docs/DESKTOP-GPU-2026-10-22.md)。
+Linux/Windows 可改用 `SimdSkiaGpuBackend.Vulkan`，需硬件 Vulkan 设备；当前通过完成栅栏后回读并交窗口 framebuffer 呈现。**main 源码优化后，本机完整控件场景约比 CPU 多耗时 12%，保持实验性质；macOS 调用 GPU 配置会明确报错。** 不支持的画刷等默认报错；可显式设置 `allowCpuFallback: true`，并通过 `SimdSkiaGpuDiagnostics` 查看原因、回退数及 Vulkan 覆盖缓存和同步计数。详见 [跨平台说明](https://github.com/hnlyf168/SimdSkia/blob/main/docs/CROSS-PLATFORM.md) 和 [本轮性能报告](https://github.com/hnlyf168/SimdSkia/blob/main/docs/VULKAN-OPTIMIZATION-2026-10-22.md)。
 
 ## 现有 Avalonia 项目如何切换
 
@@ -204,7 +204,7 @@ dotnet run --project examples/AvaloniaControls -c Release -- --window
     dotnet run --project tests/Features -c Release -- baseline/fonts/ZenOldMincho-Regular.ttf
     dotnet run --project examples/Features -c Release -- baseline/fonts/ZenOldMincho-Regular.ttf --gpu
 
-固定 OFL 测试字体含 CJK/拉丁字形；区域字形风格应使用应用自己的中文字体。没有字体时明确失败或标记字体测试未执行，不生成假字形。独立 Vulkan 后端需要系统 loader/驱动：Windows vulkan-1.dll，Linux libvulkan.so.1；支持 64 位小端 RGBA/Premul 离屏目标，窗口通过回读呈现，不提供 Vulkan swapchain 或 Skia GR 句柄替换。Windows Direct2D 另有原生 DXGI 交换链。
+固定 OFL 测试字体含 CJK/拉丁字形；区域字形风格应使用应用自己的中文字体。没有字体时明确失败或标记字体测试未执行，不生成假字形。独立 Vulkan 后端需要系统 loader/驱动：Windows vulkan-1.dll，Linux libvulkan.so.1；main 源码支持 64 位小端 RGBA/BGRA 预乘或 Opaque 存储目标，窗口直接输出 BGRA 并通过回读呈现，不提供 Vulkan swapchain 或 Skia GR 句柄替换。Windows Direct2D 另有原生 DXGI 交换链。
 
 ## 实际验收
 

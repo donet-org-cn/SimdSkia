@@ -1,5 +1,7 @@
 # 原版与 SimdSkia GPU(Vulkan)性能对比：2026-10-21
 
+最新源码的 Vulkan 专项优化、真实窗口 CPU/内存及冻结前后画质验证见 [2026-10-22 报告](VULKAN-OPTIMIZATION-2026-10-22.md)；本页保留早期数据。
+
 > 这是较早同日的数据。新增采样/裁剪后的最终同机对照见 [本轮 GPU 报告](PERFORMANCE-GPU-FINAL-2026-10-21.md)，CPU/内存与已知兼容失败见 [最终汇总](PERFORMANCE-FINAL-2026-10-21.md)。
 
 实际执行：Intel(R) Core(TM) i7-8700K CPU @ 3.70GHz；Microsoft Windows 10.0.26300；.NET 8.0.32 / X64，逻辑 CPU 12。原版包 SkiaSharp 3.119.4。

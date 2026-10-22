@@ -1,5 +1,7 @@
 # 跨平台桌面与 GPU：2026-10-22
 
+最新 main 源码已完成 [Vulkan 专项优化与复测](VULKAN-OPTIMIZATION-2026-10-22.md)：100% DPI 控件 P50 22.250→2.316 ms，仍保留原版画质失败和 CPU/内存数据。本页记录此前 GPU 窗口接入与不同 DPI 的测量。
+
 本轮实现 Avalonia 12.1.4 的 Windows/Linux X11/macOS 统一宿主、纯 C# 已安装字体发现，并将 GPU 实际接入窗口。Windows Direct2D 使用 D3D11 硬件设备与 DXGI 原生交换链，正常帧不强制回读。Windows/Linux Vulkan 使用完成 fence 后回读到系统 framebuffer。macOS 目前使用 CPU，Metal 未实现。
 
 ## 使用

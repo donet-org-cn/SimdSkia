@@ -1,5 +1,9 @@
 # 验证：2026-10-22
 
+最新 Vulkan 源码验证与性能见 [专项报告](VULKAN-OPTIMIZATION-2026-10-22.md) / [完整证据](evidence/vulkan-round3-2026-10-22.json)。整套 Release 构建 0 警告/错误；540 GPU 检查含 531 组逐字节比较、16 位绕数界限、缓存颜色/clip/覆盖遮罩/渐变、数量与字节预算、在途资源、BGRA/stride/Upload 与时间戳。590 采样、12174 GPU 集成、344 Direct2D、60 字形合批与字体/失败帧清理通过。
+
+144 张冻结前后 Vulkan 基准帧和实际窗口/离屏 PNG 均完全一致；原版 144 张基准帧稳定。CPU、Direct2D、Vulkan 三个 Windows Native AOT 控件窗口均实际运行、呈现并 resize，Vulkan 时间戳的 AOT JSON 序列化也通过。性能仍用独立 JIT 三轮数据。原版 GPU 12/24、完整画质与 API 的既有缺口保留，`verify.ps1 -Reference -Gpu` 最终返回 2；没有将诊断时间混入性能成绩。
+
 preview.4 源码验证：[性能与兼容报告](PERFORMANCE-COMPATIBILITY-2026-10-22.md) / [原始证据](evidence/optimization-round2-2026-10-22.json)与历史报告分开。Release 全解决方案 0 警告/0 错误；基础行为 36、图片 484、CPU/编解码 7845、文字 595、实际 Avalonia 8147 项通过；7845/8147 在 `DOTNET_EnableHWIntrinsic=0` 也通过。新增原版图片画刷夹具 38 项，并继续运行完整 114 项功能对照。
 
 实际 GTX 1050 Ti：Direct2D 344、Vulkan 采样 590、Vulkan 优化 313、GPU 集成 12172、字形合批 60 项通过；字体发现 10 项与失败帧清理通过。生产依赖隔离、33 个托管压缩流的独立 zlib 解码通过。Windows Native AOT 的 CPU/Direct2D/Vulkan 三个完整控件窗口均实际创建、呈现、首帧后 resize，`NativeAot=True`；未加载 Skia/HarfBuzz/coreclr/clrjit。这些功能运行不混入 JIT 性能。

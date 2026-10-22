@@ -1,3 +1,5 @@
+> 最新 Vulkan 专项：[完整 CPU/内存、原版 GPU 与画质报告](VULKAN-OPTIMIZATION-2026-10-22.md)。本机 100% DPI 控件 P50 22.250→2.316 ms，自身加速 9.61×，仍比 CPU 多耗时约 12%；CPU 占用及内存没有同比下降。144 张冻结前后基准帧和实际窗口图完全相同，原版 GPU 画质仍 12/24；本轮是 main 源码改动，已发布 preview.4 保持旧内容。
+
 > 2026-10-22 第二轮实测：[性能与兼容报告](PERFORMANCE-COMPATIBILITY-2026-10-22.md)。CPU 控件场景耗时降低 9%–12%；GPU 窗口分配降低 90%/94%，峰值 Private 降低约 39%/40%；图片画刷 38/40。CPU 常驻内存、完整 UI 0/3 和 GPU 12/24 的画质差距仍在，不能把速度改善当成完整替换验收。以下保留各历史轮次。
 
 > 2026-10-21 交付：[测试报告](TEST-REPORT-2026-10-21.md)、[CPU/内存/滤镜性能](PERFORMANCE-FINAL-2026-10-21.md)、[Vulkan GPU 对照](PERFORMANCE-GPU-FINAL-2026-10-21.md)、[剩余缺口](COMPLETION-TRACKER.md)。完整 Avalonia 替换仍未通过验收。此前 [Avalonia 调用回放](AVALONIA-OPTIMIZATION.md) 与 [通用优化报告](OPTIMIZATION-2026-10-21.md) 保留为历史，下文仍是 2026-10-12 的测量。
