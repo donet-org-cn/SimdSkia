@@ -6,6 +6,7 @@ p=argparse.ArgumentParser()
 p.add_argument('--output',type=Path,required=True)
 p.add_argument('--before-directory',type=Path,required=True,help='New common test host paired with frozen old engine DLLs.')
 p.add_argument('--runs',type=int,default=3)
+p.add_argument('--system-fonts',action='store_true',help='Use normal installed-font setup instead of registering the unused control-test font file; the workload draws no text.')
 a=p.parse_args()
 if a.runs<1:raise SystemExit('runs must be positive')
 if (a.output/'manifest.json').exists():raise SystemExit('Use a fresh output directory')
@@ -16,13 +17,15 @@ engines={'before':a.before_directory/'SimdSkia.Avalonia.Controls.Tests.dll',
 files=sorted({p.resolve() for binary in engines.values() for pattern in ['*.dll','*.deps.json','*.runtimeconfig.json'] for p in binary.parent.glob(pattern)})
 hashes={str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
 (a.output/'manifest.json').write_text(json.dumps({'scenario':'160 updates of one 512x512 source / 320x240 ImageBrush tile; 8 warmup updates; CPU only',
-    'engines':{k:str(v.resolve()) for k,v in engines.items()},'runtimeFileSha256':hashes,'runs':a.runs},indent=2)+'\n')
+    'engines':{k:str(v.resolve()) for k,v in engines.items()},'runtimeFileSha256':hashes,'runs':a.runs,
+    'fontSetup':'automatic system discovery; no text or font face selection' if a.system_fonts else 'existing controls worker file-font registration; no text'},indent=2)+'\n')
 rows=[];names=list(engines)
 for run in range(a.runs):
     for name in names[run%3:]+names[:run%3]:
         dest=a.output/f'{name}-{run+1}';dest.mkdir()
         with (dest/'process.log').open('wb') as log:
-            result=subprocess.run(['dotnet',str(engines[name]),'--tile-cache-probe','--output',str(dest)],stdout=log,stderr=subprocess.STDOUT,timeout=90)
+            extra=['--bench','--system-font-family','Microsoft YaHei UI'] if a.system_fonts else []
+            result=subprocess.run(['dotnet',str(engines[name]),'--tile-cache-probe','--output',str(dest),*extra],stdout=log,stderr=subprocess.STDOUT,timeout=90)
         if result.returncode:raise SystemExit(f'Worker failed: {dest}')
         row=json.loads((dest/'metrics.json').read_text());row.update(engine=name,run=run+1);rows.append(row)
         print(f"{name} #{run+1}: {row['millisecondsPerFrame']:.3f}ms, retained {row['managedRetainedAfterGcMiB']:.2f}MiB, private {row['privateMiB']:.1f}MiB",flush=True)

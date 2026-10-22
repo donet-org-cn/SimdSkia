@@ -262,6 +262,23 @@ using(var red=new SKBitmap(128,96))using(var blue=new SKBitmap(128,96))
 }
 checks+=CoverageRunValidation.Run();
 checks+=SamplingValidation.Run();
+// Repainting a stable clipped/shaded rectangle must hit coverage caches, not
+// retain dozens of identical full masks under fresh geometry identities.
+foreach(bool clipped in new[]{false,true})
+{
+    using var pixels=new PixelBuffer(512,256,PixelFormat.Bgra8888,AlphaFormat.Premultiplied);
+    using var canvas=new RasterCanvas(pixels);
+    var clipBytes=new byte[512*256];clipBytes.AsSpan().Fill(239);
+    var command=DrawingCommand.FillRectangle(new(1.25f,.75f,510.625f,254.875f),Matrix3.Identity,
+        new(new(255,255,255,255),CompositeMode.SourceOver,true,clipped?null:new LinearGradient(new(0,0),new(512,0),new(23,157,7,255),new(239,71,213,255))))
+        with{CoverageClip=clipped?new(0,0,512,256,clipBytes):null};
+    for(int i=0;i<20;i++)canvas.Execute(command);
+    long allocated=GC.GetAllocatedBytesForCurrentThread();
+    for(int i=0;i<100;i++)canvas.Execute(command);
+    allocated=GC.GetAllocatedBytesForCurrentThread()-allocated;
+    if(allocated>16384)throw new InvalidOperationException($"Stable rectangle coverage allocated {allocated} bytes after warmup (clip={clipped}).");
+    checks++;
+}
 CpuOptions.EnableSimd=true;
 Directory.CreateDirectory("artifacts");
 File.WriteAllText($"artifacts/optimization-tests-{(System.Numerics.Vector.IsHardwareAccelerated?"hardware":"fallback")}.json",

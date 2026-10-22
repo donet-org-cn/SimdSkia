@@ -91,8 +91,7 @@ public sealed partial class RasterCanvas
         image=snapshot??image;
         if(TryBlit(command,source,image))return;
         if(TryDrawAxisSampled(command,source,image,inverse))return;
-        if(!imageRectangles.TryGetValue(command.Rectangle,out var geometry))
-        {geometry=PathGeometry.Rectangle(command.Rectangle);if(imageRectangles.Count>=16)imageRectangles.Clear();imageRectangles.Add(command.Rectangle,geometry);}
+        var geometry=RectangleGeometry(command.Rectangle);
         var mask=GetMask(geometry,command);var rect=command.Rectangle;
         float sx=(source.Right-source.Left)/(rect.Right-rect.Left),sy=(source.Bottom-source.Top)/(rect.Bottom-rect.Top);
         foreach(var run in mask.Runs)

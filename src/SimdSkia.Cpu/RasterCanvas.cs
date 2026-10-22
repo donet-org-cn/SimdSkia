@@ -11,11 +11,20 @@ public sealed partial class RasterCanvas : ICanvasBackend
     private readonly Dictionary<MaskKey,LinkedListNode<(MaskKey Key,CoverageMask Mask)>> masks=[];
     private readonly LinkedList<(MaskKey Key,CoverageMask Mask)> maskOrder=[];
     private long maskBytes;
-    private readonly Dictionary<RectF,PathGeometry> imageRectangles=[];
+    private readonly Dictionary<RectF,PathGeometry> rectangles=[];
     private int[] imageX=[];
     private long gradientBytes;
     private readonly Dictionary<(IColorShader Gradient,Matrix3 Inverse,int Left,int Right),byte[]> gradientRows=[];
     public RasterCanvas(PixelBuffer target) { ArgumentNullException.ThrowIfNull(target);target.ThrowIfDisposed();this.target=target; }
+    private PathGeometry RectangleGeometry(RectF rectangle)
+    {
+        // Coverage keys include geometry identity. A new path on every redraw
+        // would fill the LRU with identical masks instead of reusing one mask.
+        if(rectangles.TryGetValue(rectangle,out var geometry))return geometry;
+        geometry=PathGeometry.Rectangle(rectangle);
+        if(rectangles.Count>=16)rectangles.Clear();
+        rectangles.Add(rectangle,geometry);return geometry;
+    }
     public void Execute(in DrawingCommand command)
     {
         ObjectDisposedException.ThrowIf(disposed,this);target.ThrowIfDisposed();
@@ -37,7 +46,7 @@ public sealed partial class RasterCanvas : ICanvasBackend
     }
     private void FillRectangle(in DrawingCommand command)
     {
-        if(command.CoverageClip is not null){FillPath(command with {Path=PathGeometry.Rectangle(command.Rectangle)});return;}
+        if(command.CoverageClip is not null){FillPath(command with {Kind=CommandKind.FillPath,Path=RectangleGeometry(command.Rectangle)});return;}
         var rect=command.Rectangle;var matrix=command.Transform;
         if(!rect.IsFinite)throw new ArgumentException("Rectangle coordinates must be finite.");
         rect=new(MathF.Min(rect.Left,rect.Right),MathF.Min(rect.Top,rect.Bottom),MathF.Max(rect.Left,rect.Right),MathF.Max(rect.Top,rect.Bottom));
@@ -81,7 +90,7 @@ public sealed partial class RasterCanvas : ICanvasBackend
                 return;
             }
         }
-        if(command.Paint.Antialias){FillPath(command with {Path=PathGeometry.Rectangle(command.Rectangle)});return;}
+        if(command.Paint.Antialias){FillPath(command with {Kind=CommandKind.FillPath,Path=RectangleGeometry(command.Rectangle)});return;}
         int startX=(int)Math.Clamp(MathF.Floor(left),0,target.Width),startY=(int)Math.Clamp(MathF.Floor(top),0,target.Height);
         int endX=(int)Math.Clamp(MathF.Ceiling(right),0,target.Width),endY=(int)Math.Clamp(MathF.Ceiling(bottom),0,target.Height);
         for(int y=startY;y<endY;y++)
@@ -192,8 +201,7 @@ public sealed partial class RasterCanvas : ICanvasBackend
         if(!command.Transform.TryInvert(out var inverse))return;var rect=command.Rectangle;if(rect.IsEmpty)return;
         if(command.Transform.IsAffine&&command.Transform.M01==0&&command.Transform.M10==0&&!command.Paint.Antialias&&!image.GetPixelSpan().Overlaps(target.GetPixelSpan()))
         {DrawAxisImage(command,inverse,image);return;}
-        if(!imageRectangles.TryGetValue(rect,out var geometry))
-        {geometry=PathGeometry.Rectangle(rect);if(imageRectangles.Count>=16)imageRectangles.Clear();imageRectangles.Add(rect,geometry);}
+        var geometry=RectangleGeometry(rect);
         var mask=GetMask(geometry,command);
         // Source buffers are mutable. Cache geometry only; always read current pixels.
         // Aliased source/destination retain the original immediate pixel traversal.
@@ -265,6 +273,6 @@ public sealed partial class RasterCanvas : ICanvasBackend
         }
     }
     private void Composite(Span<byte> pixel,Paint paint,byte coverage=255)=>SpanCompositor.Apply(pixel,target.Format,target.Alpha,paint,coverage);
-    public void Dispose(){disposed=true;masks.Clear();maskOrder.Clear();maskBytes=0;gradientRows.Clear();gradientBytes=0;imageRectangles.Clear();imageX=[];}
+    public void Dispose(){disposed=true;masks.Clear();maskOrder.Clear();maskBytes=0;gradientRows.Clear();gradientBytes=0;rectangles.Clear();imageX=[];}
     public void Flush(){ObjectDisposedException.ThrowIf(disposed,this);target.ThrowIfDisposed();}
 }
