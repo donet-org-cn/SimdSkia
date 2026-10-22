@@ -61,7 +61,10 @@ public static class PathRasterizer
         Span<int> delta=w<=256?stackalloc int[w+1]:(rentedDelta=ArrayPool<int>.Shared.Rent(w+1));
         int eventCount=(w+64)/64;
         Span<ulong> events=eventCount<=16?stackalloc ulong[eventCount]:(rentedEvents=ArrayPool<ulong>.Shared.Rent(eventCount));
-        int samples=antialias?16:1;
+        // The grid is exactly 1x1 or 16x16. Nonnegative sample indices and
+        // counts can use shifts/masks without variable integer division.
+        int sampleShift=antialias?4:0,samples=1<<sampleShift,totalShift=sampleShift*2,round=(samples*samples)/2;
+        float sampleStep=1f/samples;
         try
         {
             int n=0;
@@ -79,7 +82,7 @@ public static class PathRasterizer
                 if(sparse)events[..eventCount].Clear();
                 for(int sy=0;sy<samples;sy++)
                 {
-                    float sampleY=y+(sy+0.5f)/samples;
+                    float sampleY=y+(sy+0.5f)*sampleStep;
                     while(nextEdge<n&&edges[nextEdge].Minimum<=sampleY)active[activeCount++]=nextEdge++;
                     int retained=0;
                     bool clipped=clip is {} bound&&(sampleY<bound.Top||sampleY>=bound.Bottom);
@@ -101,8 +104,8 @@ public static class PathRasterizer
                         bool inside=(odd?(winding&1)!=0:winding!=0)^inverse;
                         if(inside)
                         {
-                            if(sparse)AddSparseSpan(delta,events,x0,w,previous,next,samples,clip);
-                            else AddSpan(row,delta,x0,w,previous,next,samples,clip);
+                            if(sparse)AddSparseSpan(delta,events,x0,w,previous,next,samples,sampleShift,clip);
+                            else AddSpan(row,delta,x0,w,previous,next,samples,sampleShift,clip);
                         }
                         if(j<count){winding+=crossings[j].Winding;previous=next;}
                     }
@@ -117,7 +120,7 @@ public static class PathRasterizer
                         while(bits!=0)
                         {
                             int x=block*64+BitOperations.TrailingZeroCount(bits);bits&=bits-1;
-                            byte coverage=(byte)((accumulated*255+samples*samples/2)/(samples*samples));
+                            byte coverage=(byte)((accumulated*255+round)>>totalShift);
                             if(x>previous&&coverage!=0)
                             {
                                 var rowRuns=sparseRuns!;
@@ -130,7 +133,7 @@ public static class PathRasterizer
                     }
                 }
                 else for(int x=0;x<w;x++)
-                {accumulated+=delta[x];output[(y-y0)*w+x]=(byte)(((row[x]+accumulated)*255+samples*samples/2)/(samples*samples));}
+                {accumulated+=delta[x];output[(y-y0)*w+x]=(byte)(((row[x]+accumulated)*255+round)>>totalShift);}
             }
         }
         finally
@@ -183,7 +186,7 @@ public static class PathRasterizer
         }
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void AddSpan(Span<int> row,Span<int> delta,int origin,int width,float left,float right,int samples,RectF? clip)
+    private static void AddSpan(Span<int> row,Span<int> delta,int origin,int width,float left,float right,int samples,int sampleShift,RectF? clip)
     {
         left=MathF.Max(left,origin);right=MathF.Min(right,origin+width);
         if(clip is {} c){left=MathF.Max(left,c.Left);right=MathF.Min(right,c.Right);}
@@ -191,13 +194,13 @@ public static class PathRasterizer
         int first=(int)Math.Clamp(MathF.Ceiling(left*samples-0.5f),origin*samples,(origin+width)*samples)-origin*samples;
         int end=(int)Math.Clamp(MathF.Ceiling(right*samples-0.5f),origin*samples,(origin+width)*samples)-origin*samples;
         if(first>=end)return;
-        int a=first/samples,b=(end-1)/samples;
+        int a=first>>sampleShift,b=(end-1)>>sampleShift;
         if(a==b){row[a]+=end-first;return;}
-        row[a]+=samples-first%samples;row[b]+=(end-1)%samples+1;
+        row[a]+=samples-(first&(samples-1));row[b]+=((end-1)&(samples-1))+1;
         if(a+1<b){delta[a+1]+=samples;delta[b]-=samples;}
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void AddSparseSpan(Span<int> delta,Span<ulong> events,int origin,int width,float left,float right,int samples,RectF? clip)
+    private static void AddSparseSpan(Span<int> delta,Span<ulong> events,int origin,int width,float left,float right,int samples,int sampleShift,RectF? clip)
     {
         left=MathF.Max(left,origin);right=MathF.Min(right,origin+width);
         if(clip is {} c){left=MathF.Max(left,c.Left);right=MathF.Min(right,c.Right);}
@@ -205,10 +208,10 @@ public static class PathRasterizer
         int first=(int)Math.Clamp(MathF.Ceiling(left*samples-0.5f),origin*samples,(origin+width)*samples)-origin*samples;
         int end=(int)Math.Clamp(MathF.Ceiling(right*samples-0.5f),origin*samples,(origin+width)*samples)-origin*samples;
         if(first>=end)return;
-        int a=first/samples,b=(end-1)/samples;
+        int a=first>>sampleShift,b=(end-1)>>sampleShift;
         if(a==b)
         {delta[a]+=end-first;delta[a+1]-=end-first;events[a/64]|=1ul<<(a%64);events[(a+1)/64]|=1ul<<((a+1)%64);return;}
-        int start=samples-first%samples,last=(end-1)%samples+1;
+        int start=samples-(first&(samples-1)),last=((end-1)&(samples-1))+1;
         delta[a]+=start;delta[a+1]+=samples-start;delta[b]+=last-samples;delta[b+1]-=last;
         events[a/64]|=1ul<<(a%64);events[(a+1)/64]|=1ul<<((a+1)%64);
         events[b/64]|=1ul<<(b%64);events[(b+1)/64]|=1ul<<((b+1)%64);

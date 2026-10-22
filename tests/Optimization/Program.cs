@@ -261,6 +261,7 @@ using(var red=new SKBitmap(128,96))using(var blue=new SKBitmap(128,96))
     });checks++;
 }
 checks+=CoverageRunValidation.Run();
+checks+=SamplingValidation.Run();
 CpuOptions.EnableSimd=true;
 Directory.CreateDirectory("artifacts");
 File.WriteAllText($"artifacts/optimization-tests-{(System.Numerics.Vector.IsHardwareAccelerated?"hardware":"fallback")}.json",

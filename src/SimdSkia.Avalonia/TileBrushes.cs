@@ -72,7 +72,7 @@ internal sealed partial class DrawingContext
             var brushOrigin=brush.TransformOrigin.ToPixels(bounds.Size)+new Vector(bounds.X,bounds.Y);
             var brushTransform=Matrix.CreateTranslation(-brushOrigin.X,-brushOrigin.Y)*(brush.Transform?.Value??Matrix.Identity)*Matrix.CreateTranslation(brushOrigin.X,brushOrigin.Y);
             if(!visual&&tile.TileMode==TileMode.None)drawing*=Matrix.CreateTranslation(destination.X,destination.Y);
-            var cacheKey=new TileRasterCache.Key((object?)content??bitmap!,bitmap?.Version??0,tile.SourceRect,tile.DestinationRect,tile.Stretch,tile.AlignmentX,tile.AlignmentY,tile.TileMode,bounds.Size,dpi,renderOptions,textOptions);
+            var cacheKey=new TileRasterCache.Key(TileRasterCache.Identity((object?)content??bitmap!),bitmap?.Version??0,tile.SourceRect,tile.DestinationRect,tile.Stretch,tile.AlignmentX,tile.AlignmentY,tile.TileMode,bounds.Size,dpi,renderOptions,textOptions);
             var pixels=TileRasterCache.Get(cacheKey);
             if(pixels is null)
             {
@@ -113,12 +113,17 @@ internal sealed partial class DrawingContext
 
 internal static class TileRasterCache
 {
+    // Keys retain an identity token, not the source bitmap or a scene's visual
+    // tree. A collected source can never match a newly allocated object's key.
+    private static readonly ConditionalWeakTable<object,object> identities=new();
+    internal static object Identity(object source)=>identities.GetValue(source,static _=>new());
     internal readonly record struct Key(object Source,int Version,RelativeRect SourceRect,RelativeRect DestinationRect,Stretch Stretch,AlignmentX AlignmentX,AlignmentY AlignmentY,TileMode Mode,Size Bounds,Vector Dpi,RenderOptions Render,TextOptions Text);
     private sealed record Entry(Key Key,PixelBuffer Pixels,long Bytes);
     private static readonly object gate=new();
     private static readonly Dictionary<Key,LinkedListNode<Entry>> entries=[];
     private static readonly LinkedList<Entry> order=[];
     private static long bytes;
+    internal static (int Count,long Bytes) Statistics {get{lock(gate)return(entries.Count,bytes);}}
     internal static PixelBuffer? Get(Key key)
     {lock(gate){if(!entries.TryGetValue(key,out var entry))return null;order.Remove(entry);order.AddLast(entry);return entry.Value.Pixels.Share();}}
     internal static PixelBuffer Add(Key key,PixelBuffer pixels)
@@ -127,6 +132,16 @@ internal static class TileRasterCache
         lock(gate)
         {
             if(entries.TryGetValue(key,out var existing))return existing.Value.Pixels.Share();
+            // Bitmap versions are monotonic. Old snapshots are no longer
+            // addressable by a future brush draw; keep leases already handed to
+            // shaders alive, but stop retaining obsolete cached versions.
+            for(var node=order.First;node is not null;)
+            {
+                var next=node.Next;
+                if(ReferenceEquals(node.Value.Key.Source,key.Source)&&node.Value.Key.Version!=key.Version)
+                {bytes-=node.Value.Bytes;entries.Remove(node.Value.Key);order.Remove(node);node.Value.Pixels.Dispose();}
+                node=next;
+            }
             if(size<=16*1024*1024)
             {
                 while(entries.Count>=64||bytes+size>16*1024*1024)
@@ -138,8 +153,43 @@ internal static class TileRasterCache
     }
 }
 
-internal sealed class TileShader(PixelBuffer pixels,Matrix inverse,TileMode mode,ImageSampling sampling):IColorShader,IDisposable
+internal sealed class TileShader(PixelBuffer pixels,Matrix inverse,TileMode mode,ImageSampling sampling):IOpaqueRowShader,IDisposable
 {
+    public bool TryCopyOpaqueRow(Span<byte> destination,PixelFormat format,Matrix3 deviceToShader,int x,int y)
+    {
+        // Restrict to exact integer translations. Fractional DPI, transformed
+        // brushes, translucent rows and filtered sampling use Sample unchanged.
+        if(sampling!=ImageSampling.Nearest||mode is not (TileMode.None or TileMode.Tile)||!BitConverter.IsLittleEndian||
+            deviceToShader!=new Matrix3(1,0,deviceToShader.M02,0,1,deviceToShader.M12,0,0,1)||
+            inverse!=Matrix.CreateTranslation(inverse.M31,inverse.M32))return false;
+        static bool Integer(double v)=>Math.Abs(v)<65536&&v==Math.Floor(v);
+        if(!Integer(deviceToShader.M02)||!Integer(deviceToShader.M12)||!Integer(inverse.M31)||!Integer(inverse.M32)||Math.Abs((long)x)>65536||Math.Abs((long)y)>65536)return false;
+        int sourceX=x+(int)deviceToShader.M02+(int)inverse.M31,sourceY=y+(int)deviceToShader.M12+(int)inverse.M32,count=destination.Length/4;
+        if(mode==TileMode.None&&(sourceX<0||sourceY<0||sourceY>=pixels.Height||(long)sourceX+count>pixels.Width))return false;
+        sourceX=Mod(sourceX,pixels.Width);sourceY=Mod(sourceY,pixels.Height);
+        var row=pixels.GetRowSpan(sourceY);
+        // Validate the whole requested row before writing anything. Only exact
+        // opaque pixels avoid the scalar shader's unpremultiply/repremultiply.
+        int first=sourceX;
+        for(int at=0;at<count;)
+        {
+            int take=Math.Min(count-at,pixels.Width-first);
+            var words=System.Runtime.InteropServices.MemoryMarshal.Cast<byte,uint>(row.Slice(first*4,take*4));
+            foreach(uint word in words)if((word&0xff000000)!=0xff000000)return false;
+            at+=take;first=0;
+        }
+        first=sourceX;
+        for(int at=0;at<count;)
+        {
+            int take=Math.Min(count-at,pixels.Width-first);row.Slice(first*4,take*4).CopyTo(destination.Slice(at*4,take*4));at+=take;first=0;
+        }
+        if(format!=pixels.Format)
+        {
+            var words=System.Runtime.InteropServices.MemoryMarshal.Cast<byte,uint>(destination);
+            for(int i=0;i<words.Length;i++){uint value=words[i];words[i]=(value&0xff00ff00)|((value&0xff)<<16)|((value>>16)&0xff);}
+        }
+        return true;
+    }
     private static int Mod(int value,int length){int v=value%length;return v<0?v+length:v;}
     private Rgba32 Read(int x,int y)
     {

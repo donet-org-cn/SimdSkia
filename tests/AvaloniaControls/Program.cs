@@ -38,12 +38,13 @@ if(nativeDefaultOpacity)throw new ArgumentException("Native default opacity meas
 const string engine="Avalonia.Skia";builder.UseSkia().UseHarfBuzz();
 #endif
 builder.SetupWithoutStarting();
+if(args.Contains("--tile-cache-probe")){TileCacheProbe.Run(output);return;}
 FontFamily selectedFamily;
 if(systemFamily.Length==0)
 {
     var collection=new EmbeddedFontCollection(new Uri("fonts:Validation"),new Uri(font));
     if(collection.Count==0)throw new InvalidOperationException("Font file was not registered.");
-    FontManager.Current.AddFontCollection(collection);selectedFamily=collection[0];
+    global::Avalonia.Media.FontManager.Current.AddFontCollection(collection);selectedFamily=collection[0];
 }
 else
 {

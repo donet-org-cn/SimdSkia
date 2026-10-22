@@ -130,6 +130,7 @@ public sealed partial class RasterCanvas
             ?System.Buffers.ArrayPool<byte>.Shared.Rent(checked((end-start)*4)):null;
         float sx=(source.Right-source.Left)/(rect.Right-rect.Left),sy=(source.Bottom-source.Top)/(rect.Bottom-rect.Top);
         bool nearest=command.Sampling==ImageSampling.Nearest;
+        bool vectorBilinear=!nearest&&sampled is not null&&image.Alpha!=AlphaFormat.Straight&&CpuOptions.EnableSimd&&System.Runtime.Intrinsics.X86.Sse41.IsSupported;
         try
         {
             for(int x=start;x<end;x++)
@@ -164,6 +165,13 @@ public sealed partial class RasterCanvas
                     byte coverage=255;
                     if(sampled is null){coverage=Coverage(x);if(coverage==0)continue;}
                     var tap=taps[x-start];Rgba32 color;
+                    if(vectorBilinear)
+                    {
+                        uint pixel=BilinearSampler.Sample(row0,row1,tap.First,tap.Second,tap.Fraction,fy,opaque);
+                        if(image.Format!=target.Format)pixel=(pixel&0xff00ff00)|((pixel&0xff)<<16)|((pixel>>16)&0xff);
+                        System.Buffers.Binary.BinaryPrimitives.WriteUInt32LittleEndian(sampled!.AsSpan((x-start)*4,4),pixel);
+                        continue;
+                    }
                     if(nearest)color=Read(row0,tap.First);
                     else
                     {
@@ -187,7 +195,7 @@ public sealed partial class RasterCanvas
                     {
                         byte coverage=Coverage(x);int next=x+1;
                         if(coverageClip is null){if(x>start&&x<end-1)next=end-1;}
-                        else while(next<end&&Coverage(next)==coverage)next++;
+                        else if(x>start&&x<end-1)next=x+ClipRun(coverageClip,x,y,end-1-x,out _);
                         if(coverage!=0)ImageCompositor.SourceOver(sampled.AsSpan((x-start)*4,(next-x)*4),destination.Slice(x*4,(next-x)*4),PixelBuffer.Multiply(command.Paint.Color.A,coverage),false);
                         x=next;
                     }

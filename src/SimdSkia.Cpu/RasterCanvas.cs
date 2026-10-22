@@ -175,6 +175,9 @@ public sealed partial class RasterCanvas : ICanvasBackend
             var row=target.GetRowSpan(y);
             if(command.Paint.Shader is null)
                 ApplyMasked(row.Slice(start*4,(end-start)*4),start,y,command.Paint,run.Coverage,command.CoverageClip);
+            else if(run.Coverage==255&&command.CoverageClip is null&&command.Paint.Color.A==255&&
+                command.Paint.Composite is CompositeMode.Source or CompositeMode.SourceOver&&
+                command.Paint.Shader is IOpaqueRowShader opaque&&opaque.TryCopyOpaqueRow(row.Slice(start*4,(end-start)*4),target.Format,inverse,start,y))continue;
             else for(int x=start;x<end;x++)
             {
                 var p=inverse.Map(x+.5f,y+.5f);var color=command.Paint.Shader.Sample(p.X,p.Y);
