@@ -71,7 +71,7 @@ jobs:
           exit $p.ExitCode
       - name: Pack and validate all preview modules
         shell: pwsh
-        run: ./tools/pack-preview.ps1 -Version 0.1.0-preview.4 -Output artifacts/desktop-packages
+        run: ./tools/pack-preview.ps1 -Version 0.1.0-preview.5 -Output artifacts/desktop-packages
       - name: Consume actual nupkg on Linux
         if: runner.os == 'Linux'
         run: xvfb-run -a -s '-screen 0 1280x900x24' pwsh -NoProfile -File tools/test-desktop-package.ps1 -Packages artifacts/desktop-packages -SystemFonts

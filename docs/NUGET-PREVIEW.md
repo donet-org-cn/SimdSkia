@@ -1,12 +1,16 @@
 # NuGet 预览版发布
 
+## 第五预览版 0.1.0-preview.5
+
+准备发布，尚未宣称公开可下载。本版纳入 [Vulkan 专项优化](VULKAN-OPTIMIZATION-2026-10-22.md)：有界覆盖率缓存、保守分块、宽绕数与专用计算管线、显存输入、BGRA 直接输出、依赖同步，以及可选 GPU 时间戳诊断。11 个包统一版本；Avalonia 继续锁定 12.1.4。实测窗口 P50 22.250→2.316 ms，CPU 为 2.067 ms，内存没有同比改善；完整 API/画质仍未通过。发布后在此记录新标签、流水线及实际公开下载核对。
+
 ## 第四预览版 0.1.0-preview.4
 
-**11 个包已提交 NuGet.org，公开下载验证等待 20 分钟后超时；上架未确认。** [发布流水线](https://github.com/hnlyf168/SimdSkia/actions/runs/39657888167)的构建、包内容检查、AOT/nupkg 实际窗口与上传已完成；最终公开下载校验失败，因此整个发布流水线不是全绿。已记录 [上传与超时证据](evidence/nuget-preview4-2026-10-22.json)，不能把上传成功当成已经公开可下载。源码标签 `v0.1.0-preview.4` 固定在 `5eef27d936dc72cb0dd61c7074292b3192bf9a30`，旧标签与包不改写。
+**已公开发布。** 本次已实际下载全部 11 包，DLL 和 README 与原 CI 产物逐字节一致，[发布证据](evidence/nuget-preview4-2026-10-22.json)保留最初超时及后来成功下载的记录。[发布流水线](https://github.com/hnlyf168/SimdSkia/actions/runs/39657888167)的构建、包内容检查、AOT/nupkg 实际窗口与上传已完成；当时 NuGet 尚未完成索引，20 分钟公开下载校验超时，因此原流水线仍显示失败，不改写历史。源码标签 `v0.1.0-preview.4` 固定在 `5eef27d936dc72cb0dd61c7074292b3192bf9a30`，旧标签与包不改写。
 
 本轮包含实测 CPU 热点优化、GPU 有界纹理内容复用、Direct2D Opaque Alpha 修正和高 DPI ImageBrush 38/40 修正；不宣称完整兼容。独立 [性能与兼容报告](PERFORMANCE-COMPATIBILITY-2026-10-22.md)包含原版 CPU/Vulkan、新旧窗口、CPU/内存/分配和失败画质项目。三平台回归、实际窗口/AOT/nupkg 与 Windows 双后端 AOT 已全部通过，详见 [验证](VALIDATION.md)及 [9 条 CI 记录](evidence/desktop-preview4-ci-2026-10-22.json)。
 
-已有公开 preview.3 包与标签保持原内容，尚不包含本轮优化。待公开下载校验通过后，新版本统一升级全部 11 个包；桌面应用安装 `SimdSkia.Avalonia.Desktop`，可选 `SimdSkia.Avalonia.Gpu`，使用方式见 [首页](../README.md)。当前可使用上述源码标签或本次 CI 的 `nuget-preview-0.1.0-preview.4` 产物，通过本地 NuGet 源验证。
+preview.4 包与标签保持原内容，不包含后续 Vulkan 专项优化；该优化随 preview.5 发布。桌面应用安装 `SimdSkia.Avalonia.Desktop`，可选 `SimdSkia.Avalonia.Gpu`，使用方式见 [首页](../README.md)。
 
 ## 第三预览版 0.1.0-preview.3
 

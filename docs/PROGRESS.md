@@ -1,8 +1,10 @@
 # 进度：2026-10-22
 
+发布续轮：已从 NuGet.org 实际下载并核对全部 11 个 preview.4 包，DLL/README 与 CI 产物一致；原流水线失败由索引等待超时造成。正在准备 preview.5，纳入下述 Vulkan 专项优化；[版本与发布证据](NUGET-PREVIEW.md)按实际公开下载结果更新。
+
 Vulkan 专项源码优化已完成并实测：[检查、测试与性能报告](VULKAN-OPTIMIZATION-2026-10-22.md)。本机 100% DPI 的真实控件窗口三进程 P50 22.250→2.316 ms（9.61×），CPU 2.067 / Direct2D 1.552 ms；Vulkan 仍慢约 12%，CPU/内存没有同比下降。实现 GPU 有界覆盖率缓存、宽绕数内核、保守分块、uniform/显存输入、BGRA 直接输出、覆盖消除与依赖同步。
 
-540 GPU 检查（531 组精确对照）、590 采样、12174 GPU 集成通过；144 张冻结前后基准帧、实际窗口/离屏截图逐字节相同。CPU/Direct2D/Vulkan 的 Windows AOT 控件窗口与 AOT 时间戳诊断实际运行通过。原版 GPU 仍 12/24 通过，完整验证返回 2；本轮源码尚未发布到 NuGet，preview.4 产物保持原内容。下文保留此前数据。
+540 GPU 检查（531 组精确对照）、590 采样、12174 GPU 集成通过；144 张冻结前后基准帧、实际窗口/离屏截图逐字节相同。CPU/Direct2D/Vulkan 的 Windows AOT 控件窗口与 AOT 时间戳诊断实际运行通过。原版 GPU 仍 12/24 通过，完整验证返回 2；本轮优化将随 preview.5 发布，preview.4 产物保持原内容。下文保留此前数据。
 
 本轮第二次优化：[完整报告](PERFORMANCE-COMPATIBILITY-2026-10-22.md)包含本次重新运行的原版 CPU/Vulkan 对照、36 进程控件测量、18 次窗口测量、CPU/工作集/Private/分配与全部画质失败项。三个 CPU 场景比优化前降低 9%–12% 耗时，最终帧逐字节相同；Direct2D/Vulkan 窗口每帧托管分配减少 90%/94%，峰值 Private 减少约 39%/40%。CPU 窗口 P95 波动未隐藏，CPU 常驻内存差距仍在。
 

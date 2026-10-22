@@ -1,6 +1,6 @@
 # SimdSkia preview
 
-Preview 4 adds measured CPU span/gradient/image optimizations, bounded exact-content GPU texture reuse, and high-DPI ImageBrush corrections. [CPU/GPU, memory and compatibility measurements](https://github.com/hnlyf168/SimdSkia/blob/main/docs/PERFORMANCE-COMPATIBILITY-2026-10-22.md) retain failed quality gates; full compatibility is still incomplete.
+Preview 5 adds bounded Vulkan coverage caching, conservative edge bins, specialized compute pipelines, direct BGRA framebuffer output, overlap-aware barriers and optional GPU timestamp diagnostics. The measured controls window improved from 22.250 to 2.316 ms on a GTX 1050 Ti; CPU was 2.067 ms and memory did not improve proportionally. [Vulkan performance, memory and validation report](https://github.com/hnlyf168/SimdSkia/blob/main/docs/VULKAN-OPTIMIZATION-2026-10-22.md) retains failed native pixel quality gates; full compatibility is still incomplete.
 
 An independent C# 2D renderer. No Google Skia rendering calls. This release is a **preview**: public API coverage, font support and rendering equivalence are incomplete. It is not a binary replacement for the strong-named SkiaSharp assembly.
 
@@ -21,7 +21,7 @@ Packages target .NET 8 or later:
 | SimdSkia.Gpu.Direct2D | Windows hardware Direct2D/D3D11 canvas, C# system API bindings |
 
 ```shell
-dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.0-preview.3
+dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.0-preview.5
 ```
 
 An existing Avalonia 12.1.4 application selects the adapter explicitly:

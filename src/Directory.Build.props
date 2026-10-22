@@ -1,7 +1,7 @@
 <Project>
   <Import Project="../Directory.Build.props" />
   <PropertyGroup>
-    <Version Condition="'$(Version)' == ''">0.1.0-preview.4</Version>
+    <Version Condition="'$(Version)' == ''">0.1.0-preview.5</Version>
     <Authors>hnlyf168</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/hnlyf168/SimdSkia</PackageProjectUrl>
@@ -11,7 +11,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Description>Experimental managed C# 2D rendering components. Preview only; API and rendering compatibility are incomplete. No Google Skia rendering dependency.</Description>
     <PackageTags>SimdSkia;graphics;rendering;managed;preview</PackageTags>
-    <PackageReleaseNotes>Preview 4: measured CPU span/gradient/image optimizations; bounded exact-content GPU texture reuse with lower allocations and memory; corrected high-DPI ImageBrush seams and area coverage (38/40 pinned probes); Direct2D opaque image alpha fix. Windows/Linux X11/macOS desktop hosts; optional Direct2D/Vulkan drawing. Full API, text/curve quality and macOS GPU remain incomplete.</PackageReleaseNotes>
+    <PackageReleaseNotes>Preview 5: Vulkan bounded coverage caching, conservative edge bins, packed winding, specialized compute pipelines, device-local inputs, direct BGRA framebuffer output and overlap-aware barriers. Real controls window P50 improved from 22.250 to 2.316 ms on the measured GTX 1050 Ti, versus CPU 2.067 ms; memory did not improve proportionally. Optional per-dispatch GPU timestamps and cache diagnostics. CPU/Direct2D/Vulkan Native AOT windows verified. Full API, native pixel equivalence and macOS GPU remain incomplete. See the Vulkan optimization report for hardware, quality failures and measurement limits.</PackageReleaseNotes>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>

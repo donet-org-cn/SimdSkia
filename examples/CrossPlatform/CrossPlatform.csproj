@@ -4,7 +4,7 @@
     <OutputType>Exe</OutputType>
     <OutputType Condition="$([MSBuild]::IsOSPlatform('Windows'))">WinExe</OutputType>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-    <SimdSkiaPackageVersion Condition="'$(SimdSkiaPackageVersion)' == ''">0.1.0-preview.4</SimdSkiaPackageVersion>
+    <SimdSkiaPackageVersion Condition="'$(SimdSkiaPackageVersion)' == ''">0.1.0-preview.5</SimdSkiaPackageVersion>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/SimdSkia.Avalonia.Desktop/SimdSkia.Avalonia.Desktop.csproj" Condition="'$(UsePackedSimdSkia)' != 'true'" />
