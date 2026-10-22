@@ -23,9 +23,21 @@ internal static class StartupPreparation
         lock(gate)
         {
             if(pending is not null)return;
-            pending=Task.Run(Prepare);
-            _=pending.ContinueWith(static task=>Trace.TraceError("SimdSkia startup preparation failed: {0}",task.Exception),
-                CancellationToken.None,TaskContinuationOptions.OnlyOnFaulted|TaskContinuationOptions.ExecuteSynchronously,TaskScheduler.Default);
+            // A short-lived thread releases its stack/TLS after preparation and
+            // does not start or keep an otherwise unused thread pool alive.
+            var completion=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            pending=completion.Task;
+            var worker=new Thread(()=>
+            {
+                try{Prepare();completion.SetResult();}
+                catch(Exception error)
+                {
+                    Trace.TraceError("SimdSkia startup preparation failed: {0}",error);
+                    completion.SetException(error);_=completion.Task.Exception;
+                }
+            }){IsBackground=true,Name="SimdSkia.Startup"};
+            try{worker.Start();}
+            catch(Exception error){completion.SetException(error);_=completion.Task.Exception;throw;}
         }
     }
 

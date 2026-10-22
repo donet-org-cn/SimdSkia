@@ -22,6 +22,23 @@ if os.name!='nt':raise SystemExit('Actual Windows desktop required.')
 if args.output.exists():raise SystemExit('Choose a fresh output directory.')
 args.output.mkdir(parents=True)
 user=ctypes.WinDLL('user32',use_last_error=True);gdi=ctypes.WinDLL('gdi32',use_last_error=True)
+psapi=ctypes.WinDLL('psapi',use_last_error=True)
+psapi.EnumProcessModulesEx.argtypes=[W.HANDLE,ctypes.POINTER(W.HMODULE),W.DWORD,ctypes.POINTER(W.DWORD),W.DWORD]
+psapi.EnumProcessModulesEx.restype=W.BOOL
+psapi.GetModuleBaseNameW.argtypes=[W.HANDLE,W.HMODULE,W.LPWSTR,W.DWORD]
+psapi.GetModuleBaseNameW.restype=W.DWORD
+def loaded_modules(process):
+    # Query only after the first content timestamp. RuntimeFeature=false alone
+    # also occurs when an AOT project's intermediate IL is run under dotnet.
+    modules=(W.HMODULE*1024)();needed=W.DWORD();handle=W.HANDLE(int(process._handle))
+    if not psapi.EnumProcessModulesEx(handle,modules,ctypes.sizeof(modules),ctypes.byref(needed),3):raise ctypes.WinError(ctypes.get_last_error())
+    if needed.value>ctypes.sizeof(modules):raise RuntimeError('Module snapshot exceeds its buffer.')
+    names=[]
+    for module in modules[:needed.value//ctypes.sizeof(W.HMODULE)]:
+        name=ctypes.create_unicode_buffer(1024)
+        if not psapi.GetModuleBaseNameW(handle,module,name,len(name)):raise ctypes.WinError(ctypes.get_last_error())
+        names.append(name.value)
+    return names
 user.SetProcessDPIAware()
 user.GetDC.argtypes=[W.HWND];user.GetDC.restype=W.HDC
 user.ReleaseDC.argtypes=[W.HWND,W.HDC]
@@ -93,7 +110,7 @@ for run in range(args.runs):
                         match=all(all(abs(a-b)<=2 for a,b in zip(c,(18,52,86))) for c in rgb)
                         white=all(all(v>=245 for v in c) for c in rgb)
                         samples.append({'ms':(captured-start)*1000,'captureStartedMs':(now-start)*1000,'rgb':rgb,'content':match,'white':white})
-                        if match and content is None:content=captured
+                        if match and content is None:content=captured;modules=loaded_modules(process)
                     time.sleep(.001)
                 if process.poll() is None:process.kill();raise RuntimeError('Startup timed out.')
                 if process.returncode:raise RuntimeError(f'Worker failed: {dest}/process.log')
@@ -103,11 +120,13 @@ for run in range(args.runs):
                 user.ReleaseDC(None,screen)
                 (dest/'screen-samples.json').write_text(json.dumps(samples),encoding='utf-8')
         metrics=json.loads((dest/'metrics.json').read_text(encoding='utf-8'))
+        coreclr=any(name.lower() in {'coreclr.dll','clrjit.dll','clr.dll','mscorwks.dll','mscorsvr.dll'} for name in modules)
+        if metrics['nativeAot']==coreclr:raise RuntimeError('Runtime flag and loaded CLR modules disagree; do not label intermediate IL as Native AOT.')
         white_ms=sum(b['ms']-a['ms'] for a,b in zip(samples,samples[1:]) if a['white'] and not a['content'])
         row={'variant':name,'run':run+1,'visibleMs':(visible-start)*1000,'firstContentMs':(content-start)*1000,
              'visibleToContentMs':(content-visible)*1000,'observedWhiteMs':white_ms,'whiteSamples':sum(s['white'] for s in samples),
              'medianSampleGapMs':statistics.median(b['ms']-a['ms'] for a,b in zip(samples,samples[1:])),
-             'maxSampleGapMs':max(b['ms']-a['ms'] for a,b in zip(samples,samples[1:])),'worker':metrics}
+             'maxSampleGapMs':max(b['ms']-a['ms'] for a,b in zip(samples,samples[1:])),'loadedModules':modules,'worker':metrics}
         rows.append(row);print(f"{name} #{run+1}: visible -> content {row['visibleToContentMs']:.1f}ms; white {white_ms:.1f}ms; launch -> content {row['firstContentMs']:.1f}ms",flush=True)
 summary=[]
 for name,_,_ in variants:

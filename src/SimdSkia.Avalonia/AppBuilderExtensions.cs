@@ -6,7 +6,7 @@ namespace SimdSkia.Avalonia;
 
 public sealed class SimdSkiaOptions
 {
-    /// <summary>Compiles common managed drawing paths on a background worker during JIT startup. No window, font, or GPU context is created. Native AOT skips this work.</summary>
+    /// <summary>Compiles common drawing paths during classic desktop JIT initialization. No window, font, or GPU context is created. Headless applications and Native AOT skip this work.</summary>
     public bool EnableStartupPreparation {get;set;}=true;
     /// <summary>Explicit TrueType glyf fonts; the first family is the default. An empty list discovers supported installed fonts.</summary>
     public IList<string> FontFiles {get;}=new List<string>();
@@ -29,7 +29,6 @@ public static class AppBuilderExtensions
         var options=new SimdSkiaOptions();configure(options);var paths=options.FontFiles.ToArray();var factory=options.CanvasBackendFactory;var nativeFactory=options.NativeRenderTargetFactory;bool prepare=options.EnableStartupPreparation;
         return builder.UseRenderingSubsystem(()=>
         {
-            if(prepare)StartupPreparation.Start();
             AvaloniaLocator.CurrentMutable.Bind<IPlatformRenderInterface>().ToConstant(new RenderInterface(factory,nativeFactory));
             FontManager fontManager;
             if(paths.Length!=0)fontManager=new FontManager(paths);
@@ -39,6 +38,14 @@ public static class AppBuilderExtensions
                 fontManager=new FontManager(system.Files,system.DefaultFamily,supportedFacesOnly:true);
             }
             AvaloniaLocator.CurrentMutable.Bind<IFontManagerImpl>().ToConstant(fontManager);
-        },"SimdSkia.Cpu").UseTextShapingSubsystem(()=>AvaloniaLocator.CurrentMutable.Bind<ITextShaperImpl>().ToConstant(new TextShaper()),"SimdSkia.ManagedText");
+        },"SimdSkia.Cpu").UseTextShapingSubsystem(()=>AvaloniaLocator.CurrentMutable.Bind<ITextShaperImpl>().ToConstant(new TextShaper()),"SimdSkia.ManagedText")
+            .AfterSetup(app=>
+            {
+                // Lifetime is assigned after platform services are initialized.
+                // Prepare before OnFrameworkInitializationCompleted builds the
+                // desktop UI; bitmap/headless users should pay no warmup cost.
+                if(prepare&&app.Instance?.ApplicationLifetime is global::Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime)
+                    StartupPreparation.Start();
+            });
     }
 }

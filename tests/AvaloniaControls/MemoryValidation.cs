@@ -15,6 +15,7 @@ internal static class MemoryValidation
     {
         int checks=0;var factory=AvaloniaLocator.Current.GetRequiredService<IPlatformRenderInterface>();
         void Check(bool value,string reason){if(!value)throw new InvalidOperationException(reason);checks++;}
+        Check(StartupPreparation.Pending is null,"Headless bitmap applications must not start desktop preparation.");
         byte[] Bytes(IReadableBitmapImpl bitmap)
         {using var locked=bitmap.Lock();var bytes=new byte[locked.RowBytes*locked.Size.Height];Marshal.Copy(locked.Address,bytes,0,bytes.Length);return bytes;}
         using var reused=factory.CreateRenderTargetBitmap(new(64,48),new(96,96));
