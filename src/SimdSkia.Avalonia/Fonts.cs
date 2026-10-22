@@ -32,6 +32,7 @@ internal sealed class FontData
     }
     internal FontData(ReadOnlySpan<byte> data,int faceIndex=0):this(new TrueTypeFont(data,faceIndex)) { }
     internal FontData(byte[] ownedData,int faceIndex,bool owned):this(TrueTypeFont.FromOwnedCollection(ownedData,faceIndex)) { }
+    internal FontData(FontSource source,int faceIndex):this(TrueTypeFont.FromInstalledSource(source,faceIndex)) { }
     private FontData(TrueTypeFont font)
     {
         Font=font;Family=ReadName(Font,16)??ReadName(Font,1)??throw new InvalidDataException("The font has no family name.");

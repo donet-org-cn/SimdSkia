@@ -26,6 +26,11 @@ internal static class CollectionValidation
         }
         Check(hhea>=0,"Real font missing hhea.");BinaryPrimitives.WriteInt16BigEndian(ttc.AsSpan(hhea+4),(short)(original.Ascender+1));
         Check(FontCollection.Count(ttc)==2,"TTC face count.");
+        string collectionFile=System.IO.Path.Combine(System.IO.Path.GetTempPath(),"simdskia-collection-"+Guid.NewGuid().ToString("N")+".ttc");
+        File.WriteAllBytes(collectionFile,ttc);
+        try
+        {
+        var fileSource=FontSource.OpenInstalled(collectionFile,ttc.Length,File.GetLastWriteTimeUtc(collectionFile));
         for(int face=0;face<2;face++)
         {
             var selected=new TrueTypeFont(ttc,face);Check(selected.Ascender==original.Ascender+face,"TTC selected the wrong face metrics.");
@@ -35,6 +40,9 @@ internal static class CollectionValidation
             using var stream=selected.OpenStream();var standalone=new byte[stream.Length];stream.ReadExactly(standalone);
             using var exported=shared.OpenStream();var exportedBytes=new byte[exported.Length];exported.ReadExactly(exportedBytes);
             Check(exportedBytes.AsSpan().SequenceEqual(standalone),"Shared TTC stream changed the standalone font bytes/checksums.");
+            var paged=TrueTypeFont.FromInstalledSource(fileSource,face);
+            using var pagedStream=paged.OpenStream();var pagedBytes=new byte[pagedStream.Length];pagedStream.ReadExactly(pagedBytes);
+            Check(pagedBytes.AsSpan().SequenceEqual(standalone),"Paged TTC export changed face selection, bytes or checksums.");
             uint checksum=0;for(int i=0;i<standalone.Length;i+=4)checksum=unchecked(checksum+BinaryPrimitives.ReadUInt32BigEndian(standalone.AsSpan(i)));
             Check(checksum==0xb1b0afba,"Extracted sfnt checksum adjustment.");Check(FontCollection.Count(standalone)==1,"Extracted stream still a collection.");
             foreach(var rune in "中文界面测试，OCR AVATAR To 12345".EnumerateRunes())
@@ -42,8 +50,11 @@ internal static class CollectionValidation
                 ushort glyph=original.GetGlyph(rune.Value);Check(selected.GetGlyph(rune.Value)==glyph,"TTC cmap selection.");
                 Check(selected.Advance(glyph)==original.Advance(glyph),"TTC advance.");Check(selected.Outline(glyph).Segments.SequenceEqual(original.Outline(glyph).Segments),"TTC altered real CJK/Latin outlines.");
                 Check(shared.GetGlyph(rune.Value)==glyph&&shared.Advance(glyph)==selected.Advance(glyph)&&shared.Outline(glyph).Segments.SequenceEqual(selected.Outline(glyph).Segments),"Shared TTC changed CJK/Latin glyphs or metrics.");
+                Check(paged.GetGlyph(rune.Value)==glyph&&paged.Advance(glyph)==selected.Advance(glyph)&&paged.Outline(glyph).Segments.SequenceEqual(selected.Outline(glyph).Segments),"Paged TTC changed CJK/Latin glyphs or metrics.");
             }
         }
+        }
+        finally{File.Delete(collectionFile);}
         foreach(int index in new[]{-1,2}){bool rejected=false;try{_ = new TrueTypeFont(ttc,index);}catch(ArgumentOutOfRangeException){rejected=true;}Check(rejected,"TTC invalid face index.");}
         var invalid=(byte[])ttc.Clone();BinaryPrimitives.WriteUInt32BigEndian(invalid.AsSpan(12),uint.MaxValue);bool badOffset=false;try{_ = FontCollection.Count(invalid);}catch(InvalidDataException){badOffset=true;}Check(badOffset,"TTC offset outside file accepted.");
         return checks;

@@ -59,10 +59,43 @@ try
     using(var bold=Select(lazy,global::Avalonia.Media.FontWeight.Bold))
         Check(bold.Weight==global::Avalonia.Media.FontWeight.Bold,"Lazy style selection loads the actual bold face.");
     Check(lazy.LoadedFaceCount==2,"Both requested styles are now loaded.");
+    // Actual file source versus immutable input: cross-page glyph reads,
+    // concurrent readers, escaped table memory and streams, and TTC exports.
+    var fileSource=FontSource.OpenInstalled(valid,bytes.Length,File.GetLastWriteTimeUtc(valid));
+    var pagedFont=TrueTypeFont.FromInstalledSource(fileSource,0);
+    Parallel.For(0,256,i=>
+    {
+        ushort glyph=(ushort)(i*(pagedFont.GlyphCount-1)/255);
+        if(pagedFont.Advance(glyph)!=font.Advance(glyph)||!pagedFont.Outline(glyph).Segments.SequenceEqual(font.Outline(glyph).Segments))
+            throw new InvalidOperationException("Paged glyph outlines/metrics differ from the immutable font.");
+    });
+    Check(true,"Concurrent glyph reads across the font preserve outlines and advances.");
+    Check(pagedFont.GetGlyph('中')==font.GetGlyph('中')&&pagedFont.GetGlyph('A')==font.GetGlyph('A'),"Paged cmap preserves CJK/Latin mappings.");
+    using(var stream=pagedFont.OpenStream())
+    {
+        Check(stream.CanRead&&stream.CanSeek&&!stream.CanWrite,"File font stream capabilities remain read-only/seekable.");
+        var actual=new byte[bytes.Length];stream.ReadExactly(actual);
+        Check(actual.AsSpan().SequenceEqual(bytes),"OpenStream preserves every byte, including unparsed font tables.");
+        stream.Seek(16382,SeekOrigin.Begin);Span<byte> crossing=stackalloc byte[8];stream.ReadExactly(crossing);
+        Check(crossing.SequenceEqual(bytes.AsSpan(16382,8)),"Stream reads cross page boundaries correctly.");
+        stream.Seek(2,SeekOrigin.End);Check(stream.ReadByte()==-1,"Seeking past EOF reads zero bytes.");
+        Throws<IOException>(()=>stream.Seek(-1,SeekOrigin.Begin));
+        Throws<ArgumentNullException>(()=>stream.Read(null!,0,0));
+        stream.Dispose();Throws<ObjectDisposedException>(()=>stream.ReadByte());
+    }
+    Check(pagedFont.TryGetTable("glyf",out var exported)&&font.TryGetTable("glyf",out var original)&&exported.Span.SequenceEqual(original.Span),"Large explicit table exports are exact.");
+    if(OperatingSystem.IsWindows())Throws<IOException>(()=>File.WriteAllBytes(valid,bytes));
+    string corrupt=Path.Combine(temp,"invalid-offset.ttf");var badBytes=(byte[])bytes.Clone();
+    BinaryPrimitives.WriteUInt32BigEndian(badBytes.AsSpan(20),uint.MaxValue);File.WriteAllBytes(corrupt,badBytes);
+    Throws<OverflowException>(()=>TrueTypeFont.FromInstalledSource(FontSource.OpenInstalled(corrupt,badBytes.Length,File.GetLastWriteTimeUtc(corrupt)),0));
+    string renamed=Path.Combine(temp,"renamed.ttf");File.Move(valid,renamed);
+    Check(pagedFont.Outline(pagedFont.GetGlyph('中')).Segments.SequenceEqual(font.Outline(font.GetGlyph('中')).Segments),"An open source survives atomic font path replacement.");
+    File.Move(renamed,valid);
     var eager=new SimdSkia.Avalonia.FontManager([valid,boldFile],found.DefaultFamily);
     Check(eager.LoadedFaceCount==2,"Explicit font files keep eager validation semantics.");
-    var changedFile=new SimdSkia.Avalonia.FontManager([boldFile],found.DefaultFamily,supportedFacesOnly:true);
-    File.WriteAllBytes(boldFile,bytes);
+    string mutableFile=Path.Combine(temp,"mutable.ttf");File.WriteAllBytes(mutableFile,boldBytes);
+    var changedFile=new SimdSkia.Avalonia.FontManager([mutableFile],found.DefaultFamily,supportedFacesOnly:true);
+    File.WriteAllBytes(mutableFile,bytes);
     Throws<IOException>(()=>Select(changedFile,global::Avalonia.Media.FontWeight.Bold));
     Console.WriteLine($"PASS {checks} portable font discovery checks; {found.DefaultFamily}");
 }

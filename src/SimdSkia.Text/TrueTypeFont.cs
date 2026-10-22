@@ -6,7 +6,9 @@ namespace SimdSkia.Text;
 /// <summary>Managed, unhinted TrueType glyf outlines; cmap 4/12, simple and XY composite glyphs.</summary>
 public sealed class TrueTypeFont
 {
-    private readonly byte[] bytes;
+    private readonly FontSource bytes;
+    private readonly Dictionary<string,ReadOnlyMemory<byte>> tableMemory=[];
+    private int tableMemoryBytes;
     private readonly int collectionFace;
     private readonly bool isCollection;
     private readonly Dictionary<string,(int Offset,int Length)> tables=[];
@@ -21,6 +23,7 @@ public sealed class TrueTypeFont
     }
     private readonly int[] offsets;
     private readonly int cmapOffset,cmapLength,cmapFormat,metrics;
+    private readonly ReadOnlyMemory<byte> characterMap,horizontalMetrics;
     public int UnitsPerEm {get;}
     public int GlyphCount {get;}
     public short Ascender {get;}
@@ -29,18 +32,34 @@ public sealed class TrueTypeFont
     public RectF FontBounds {get;}
     public bool TryGetTable(string tag,out ReadOnlyMemory<byte> table)
     {
-        if(tables.TryGetValue(tag,out var entry)){table=bytes.AsMemory(entry.Offset,entry.Length);return true;}
+        if(tables.TryGetValue(tag,out var entry))
+        {
+            lock(tableMemory)
+            {
+                if(!tableMemory.TryGetValue(tag,out table))
+                {
+                    table=bytes.Read(entry.Offset,entry.Length);
+                    // Large explicit table exports should not permanently grow
+                    // the installed-font cache. The caller owns returned memory.
+                    if(table.Length<=1024*1024&&tableMemoryBytes+table.Length<=2*1024*1024)
+                    {tableMemory.Add(tag,table);tableMemoryBytes+=table.Length;}
+                }
+            }
+            return true;
+        }
         table=default;return false;
     }
-    public Stream OpenStream()=>isCollection?new MemoryStream(FontCollection.Extract(bytes,collectionFace),false):new MemoryStream(bytes,0,bytes.Length,false,false);
+    public Stream OpenStream()=>isCollection?new MemoryStream(FontCollection.Extract(bytes,collectionFace),false):new FontReadStream(bytes);
     public TrueTypeFont(ReadOnlySpan<byte> data):this(data,0) { }
     public TrueTypeFont(ReadOnlySpan<byte> data,int faceIndex):this(FontCollection.Extract(data,faceIndex),0,true) { }
     // The platform font manager owns one immutable file snapshot. TTC faces use
     // its original table offsets so shared outlines are not copied per face.
-    internal static TrueTypeFont FromOwnedCollection(byte[] data,int faceIndex)=>new(data,faceIndex,true);
-    private TrueTypeFont(byte[] data,int faceIndex,bool owned)
+    internal static TrueTypeFont FromOwnedCollection(byte[] data,int faceIndex)=>new(new FontSource(data),faceIndex);
+    internal static TrueTypeFont FromInstalledSource(FontSource data,int faceIndex)=>new(data,faceIndex);
+    private TrueTypeFont(byte[] data,int faceIndex,bool owned):this(new FontSource(data),faceIndex) { }
+    private TrueTypeFont(FontSource data,int faceIndex)
     {
-        bytes=data;int faces=FontCollection.Count(bytes);if(faceIndex<0||faceIndex>=faces)throw new ArgumentOutOfRangeException(nameof(faceIndex));
+        bytes=data;int faces=bytes.FaceCount();if(faceIndex<0||faceIndex>=faces)throw new ArgumentOutOfRangeException(nameof(faceIndex));
         isCollection=U32(0)==0x74746366;collectionFace=faceIndex;
         int directory=isCollection?checked((int)U32(12+faceIndex*4)):0;
         uint magic=U32(directory);
@@ -48,7 +67,7 @@ public sealed class TrueTypeFont
         int count=U16(directory+4);Check(directory+12,checked(count*16));
         for(int i=0;i<count;i++)
         {
-            int p=directory+12+i*16;string tag=Encoding.ASCII.GetString(bytes,p,4);int offset=checked((int)U32(p+8)),length=checked((int)U32(p+12));Check(offset,length);
+            int p=directory+12+i*16;string tag=Encoding.ASCII.GetString(bytes.Read(p,4).Span);int offset=checked((int)U32(p+8)),length=checked((int)U32(p+12));Check(offset,length);
             if(!tables.TryAdd(tag,(offset,length)))throw new InvalidDataException("Duplicate font table.");
         }
         if(tables.ContainsKey("fvar")||tables.ContainsKey("gvar"))throw new NotSupportedException("Variable fonts require variation processing.");
@@ -58,10 +77,11 @@ public sealed class TrueTypeFont
         GlyphCount=U16(Table("maxp",6).Offset+4);var hhea=Table("hhea",36);metrics=U16(hhea.Offset+34);
         if(metrics<1||metrics>GlyphCount)throw new InvalidDataException("Invalid horizontal metrics.");
         Ascender=S16(hhea.Offset+4);Descender=S16(hhea.Offset+6);LineGap=S16(hhea.Offset+8);
-        _=Table("hmtx",checked(metrics*4+(GlyphCount-metrics)*2));var glyf=Table("glyf",0);
+        var hm=Table("hmtx",checked(metrics*4+(GlyphCount-metrics)*2));horizontalMetrics=bytes.Read(hm.Offset,hm.Length);var glyf=Table("glyf",0);
         int format=S16(head.Offset+50);if(format is not (0 or 1))throw new InvalidDataException("Invalid loca format.");
         var loca=Table("loca",checked((GlyphCount+1)*(format==0?2:4)));offsets=new int[GlyphCount+1];
-        for(int i=0;i<offsets.Length;i++){int offset=format==0?U16(loca.Offset+i*2)*2:checked((int)U32(loca.Offset+i*4));if(offset>glyf.Length||(i>0&&offset<offsets[i-1]))throw new InvalidDataException("Invalid glyph offsets.");offsets[i]=offset;}
+        var locations=bytes.Read(loca.Offset,loca.Length).Span;
+        for(int i=0;i<offsets.Length;i++){int offset=format==0?BinaryPrimitives.ReadUInt16BigEndian(locations[(i*2)..])*2:checked((int)BinaryPrimitives.ReadUInt32BigEndian(locations[(i*4)..]));if(offset>glyf.Length||(i>0&&offset<offsets[i-1]))throw new InvalidDataException("Invalid glyph offsets.");offsets[i]=offset;}
         var cmap=Table("cmap",4);int records=U16(cmap.Offset+2);if(4+records*8>cmap.Length)throw new InvalidDataException("Truncated cmap records.");
         int selected=-1,best=0,lengthSelected=0,formatSelected=0;
         for(int i=0;i<records;i++)
@@ -78,9 +98,14 @@ public sealed class TrueTypeFont
         }
         if(selected<0)throw new NotSupportedException("Font has no supported Unicode cmap 4/12.");
         cmapOffset=selected;cmapLength=lengthSelected;cmapFormat=formatSelected;
+        characterMap=bytes.Read(cmapOffset,cmapLength);
     }
     public ushort GetGlyph(int codepoint)
     {
+        void CheckMap(int p,int count){if(p<cmapOffset||p-cmapOffset>cmapLength-count)throw new InvalidDataException("Truncated cmap value.");}
+        ushort U16(int p){CheckMap(p,2);return BinaryPrimitives.ReadUInt16BigEndian(characterMap.Span[(p-cmapOffset)..]);}
+        short S16(int p)=>unchecked((short)U16(p));
+        uint U32(int p){CheckMap(p,4);return BinaryPrimitives.ReadUInt32BigEndian(characterMap.Span[(p-cmapOffset)..]);}
         if(!Rune.IsValid(codepoint))throw new ArgumentOutOfRangeException(nameof(codepoint));
         uint glyph=0;
         if(cmapFormat==12)
@@ -104,7 +129,7 @@ public sealed class TrueTypeFont
         }
         if(glyph>=GlyphCount)throw new InvalidDataException("cmap references invalid glyph.");return (ushort)glyph;
     }
-    public int Advance(ushort glyph){if(glyph>=GlyphCount)throw new ArgumentOutOfRangeException(nameof(glyph));return U16(Table("hmtx",0).Offset+Math.Min(glyph,metrics-1)*4);}
+    public int Advance(ushort glyph){if(glyph>=GlyphCount)throw new ArgumentOutOfRangeException(nameof(glyph));return BinaryPrimitives.ReadUInt16BigEndian(horizontalMetrics.Span[(Math.Min(glyph,metrics-1)*4)..]);}
     public PathGeometry Outline(ushort glyph)
     {
         if(glyph>=GlyphCount)throw new ArgumentOutOfRangeException(nameof(glyph));
@@ -120,7 +145,7 @@ public sealed class TrueTypeFont
         try
         {
             int size=offsets[glyph+1]-offsets[glyph];if(size==0)return new([]);
-            var reader=new GlyphReader(bytes,Table("glyf",0).Offset+offsets[glyph],size);int contours=reader.Short();reader.Skip(8);
+            var reader=new GlyphReader(bytes.Read(Table("glyf",0).Offset+offsets[glyph],size).Span);int contours=reader.Short();reader.Skip(8);
             var segments=new List<PathSegment>();
             if(contours>=0)
             {
@@ -179,14 +204,15 @@ public sealed class TrueTypeFont
         finally{active.Remove(glyph);}
     }
     private (int Offset,int Length) Table(string name,int minimum){if(!tables.TryGetValue(name,out var table)||table.Length<minimum)throw new InvalidDataException("Missing/truncated font table: "+name);return table;}
-    private void Check(int offset,int length){if(offset<0||length<0||offset>bytes.Length-length)throw new InvalidDataException("Font table outside file.");}
-    private ushort U16(int p){Check(p,2);return BinaryPrimitives.ReadUInt16BigEndian(bytes.AsSpan(p,2));}
+    private void Check(int offset,int length)=>bytes.Check(offset,length);
+    private ushort U16(int p)=>bytes.U16(p);
     private short S16(int p)=>unchecked((short)U16(p));
-    private uint U32(int p){Check(p,4);return BinaryPrimitives.ReadUInt32BigEndian(bytes.AsSpan(p,4));}
-    private sealed class GlyphReader(byte[] bytes,int offset,int size)
+    private uint U32(int p)=>bytes.U32(p);
+    private ref struct GlyphReader(ReadOnlySpan<byte> bytes)
     {
-        private int position=offset;
-        private readonly int end=checked(offset+size);
+        private readonly ReadOnlySpan<byte> bytes=bytes;
+        private int position;
+        private readonly int end=bytes.Length;
         public byte Byte(){if(position>=end)throw new InvalidDataException("Truncated glyph.");return bytes[position++];}
         public sbyte SByte()=>unchecked((sbyte)Byte());
         public ushort UShort()=>(ushort)((Byte()<<8)|Byte());

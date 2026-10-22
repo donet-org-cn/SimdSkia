@@ -11,6 +11,7 @@ p.add_argument('--family',required=True,help='Exact installed family available t
 p.add_argument('--output',type=Path,required=True)
 p.add_argument('--frames',type=int,default=600)
 p.add_argument('--runs',type=int,default=3)
+p.add_argument('--before-directory',type=Path,help='Frozen previous AvaloniaControls build for a measured before/after comparison.')
 args=p.parse_args()
 if args.runs<1 or args.frames<100:raise SystemExit('Use positive runs and at least 100 frames.')
 if (args.output/'manifest.json').exists():raise SystemExit('Choose a fresh output directory.')
@@ -20,6 +21,7 @@ engines={
     'reference':(Path('tests/AvaloniaControls.Reference/bin/Release/net8.0/AvaloniaControls.Reference.dll'),[]),
     'default':(Path('tests/AvaloniaControls.Reference/bin/Release/net8.0/AvaloniaControls.Reference.dll'),['--native-default-opacity']),
 }
+if args.before_directory:engines={'before':(args.before_directory/'SimdSkia.Avalonia.Controls.Tests.dll',[]),**engines}
 files={path.resolve() for binary,_ in engines.values() for path in binary.parent.glob('*.dll')}
 hashes={str(path):hashlib.sha256(path.read_bytes()).hexdigest() for path in sorted(files)}
 manifest={'scope':'CPU RenderTargetBitmap + real Fluent controls; no GPU or desktop presentation timing',

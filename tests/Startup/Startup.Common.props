@@ -1,0 +1,17 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>WinExe</OutputType>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>false</SelfContained>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="[12.1.4]" GeneratePathProperty="true" ExcludeAssets="compile" />
+    <Reference Include="$(PkgAvalonia)/lib/net10.0/*.dll" />
+    <PackageReference Include="Avalonia.Win32" Version="[12.1.4]" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.4]" />
+    <Compile Include="../Program.cs" Link="Program.cs" />
+    <Compile Include="../../AvaloniaControls/ControlScene.cs" Link="ControlScene.cs" />
+  </ItemGroup>
+</Project>

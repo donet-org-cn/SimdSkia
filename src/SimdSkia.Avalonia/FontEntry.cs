@@ -1,11 +1,12 @@
 using System.Buffers.Binary;
 using System.Text;
 using Avalonia.Media;
+using SimdSkia.Text;
 
 namespace SimdSkia.Avalonia;
 
 // Installed font enumeration needs family/style metadata, not every glyf table.
-// One file snapshot is loaded on first use and shared by its selected TTC faces.
+// One bounded, file-backed source is opened on first use and shared by TTC faces.
 internal sealed class FontEntry
 {
     private readonly Lazy<FontData> data;
@@ -17,12 +18,12 @@ internal sealed class FontEntry
     internal FontData Data=>data.Value;
     internal FontEntry(FontData value)
     {Family=value.Family;Weight=value.Weight;Style=value.Style;Stretch=value.Stretch;data=new(()=>value);_ = data.Value;}
-    private FontEntry(string family,FontWeight weight,FontStyle style,FontStretch stretch,Lazy<byte[]> file,int face)
+    private FontEntry(string family,FontWeight weight,FontStyle style,FontStretch stretch,Lazy<FontSource> file,int face)
     {
         Family=family;Weight=weight;Style=style;Stretch=stretch;
         data=new(()=>
         {
-            var value=new FontData(file.Value,face,true);
+            var value=new FontData(file.Value,face);
             if(value.Family!=Family||value.Weight!=Weight||value.Style!=Style||value.Stretch!=Stretch)
                 throw new IOException("Installed font metadata changed between discovery and use.");
             return value;
@@ -30,7 +31,7 @@ internal sealed class FontEntry
     }
     internal static IReadOnlyList<FontEntry> ReadSystemFile(string path)
     {
-        using var stream=File.OpenRead(path);long length=stream.Length;
+        using var stream=File.OpenRead(path);long length=stream.Length;var write=File.GetLastWriteTimeUtc(stream.SafeFileHandle);
         if(length>int.MaxValue)throw new NotSupportedException("Font files larger than 2 GiB are not supported.");
         byte[] Read(long offset,int count)
         {
@@ -54,7 +55,7 @@ internal sealed class FontEntry
             }
         }
         else offsets=[0];
-        var snapshot=new Lazy<byte[]>(()=>File.ReadAllBytes(path));var result=new List<FontEntry>();
+        var snapshot=new Lazy<FontSource>(()=>FontSource.OpenInstalled(path,length,write));var result=new List<FontEntry>();
         for(int face=0;face<offsets.Length;face++)
         {
             var faceHeader=Read(offsets[face],12);

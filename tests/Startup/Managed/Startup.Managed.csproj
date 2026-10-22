@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Startup.Common.props" />
+  <PropertyGroup><DefineConstants>$(DefineConstants);MANAGED</DefineConstants></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../src/SimdSkia.Avalonia.Desktop/SimdSkia.Avalonia.Desktop.csproj" />
+    <ProjectReference Include="../../../src/SimdSkia.Avalonia.Gpu/SimdSkia.Avalonia.Gpu.csproj" />
+  </ItemGroup>
+</Project>

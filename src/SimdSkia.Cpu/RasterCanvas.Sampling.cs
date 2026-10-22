@@ -22,8 +22,8 @@ public sealed partial class RasterCanvas
             if(command.CoverageClip is null){if(run.Coverage==255)source.CopyTo(row);else ImageCompositor.SourceOver(source,row,run.Coverage,true);continue;}
             for(int i=0;i<b-a;)
             {
-                byte coverage=ClipCoverage(run.Coverage,a+i,y,command.CoverageClip);int next=i+1;
-                while(next<b-a&&ClipCoverage(run.Coverage,a+next,y,command.CoverageClip)==coverage)next++;
+                int length=ClipRun(command.CoverageClip,a+i,y,b-a-i,out byte clipAlpha);
+                byte coverage=PixelBuffer.Multiply(run.Coverage,clipAlpha);int next=i+length;
                 if(coverage==255)source.Slice(i*4,(next-i)*4).CopyTo(row.Slice(i*4,(next-i)*4));
                 else if(coverage>0)ImageCompositor.SourceOver(source.Slice(i*4,(next-i)*4),row.Slice(i*4,(next-i)*4),coverage,true);i=next;
             }
@@ -43,13 +43,27 @@ public sealed partial class RasterCanvas
         return ClipCoverageCache.Add(key,new(mask.Left,mask.Top,mask.Width,mask.Height,data));
     }
     private static byte ClipCoverage(byte coverage,int x,int y,CoverageClip? clip)=>clip is null?coverage:PixelBuffer.Multiply(coverage,clip.At(x,y));
+    private static int ClipRun(CoverageClip clip,int x,int y,int maximum,out byte coverage)
+    {
+        var row=clip.GetRow(y);coverage=0;
+        if(row.IsEmpty||x>=clip.Left+clip.Width)return maximum;
+        if(x<clip.Left)return (int)Math.Min(maximum,(long)clip.Left-x);
+        int offset=x-clip.Left,count=Math.Min(maximum,row.Length-offset);
+        var values=row.Slice(offset,count);coverage=values[0];int different;
+        // Large opaque interiors dominate rounded UI clips. Let the BCL scan
+        // entire vectors instead of repeating bounds tests and alpha math for
+        // each pixel; edges still use their exact original coverage bytes.
+        if(CpuOptions.EnableSimd)different=values.IndexOfAnyExcept(coverage);
+        else{different=1;while(different<values.Length&&values[different]==coverage)different++;}
+        return different<0?count:different;
+    }
     private void ApplyMasked(Span<byte> row,int x,int y,Paint paint,byte coverage,CoverageClip? clip)
     {
         if(clip is null){SpanCompositor.Apply(row,target.Format,target.Alpha,paint,coverage);return;}
         for(int i=0;i<row.Length/4;)
         {
-            byte c=ClipCoverage(coverage,x+i,y,clip);int end=i+1;
-            while(end<row.Length/4&&ClipCoverage(coverage,x+end,y,clip)==c)end++;
+            int count=ClipRun(clip,x+i,y,row.Length/4-i,out byte clipAlpha);
+            byte c=PixelBuffer.Multiply(coverage,clipAlpha);int end=i+count;
             SpanCompositor.Apply(row.Slice(i*4,(end-i)*4),target.Format,target.Alpha,paint,c);i=end;
         }
     }

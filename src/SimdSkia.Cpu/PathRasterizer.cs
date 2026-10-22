@@ -1,5 +1,6 @@
 using System.Buffers;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace SimdSkia.Cpu;
 
@@ -10,6 +11,11 @@ public static class PathRasterizer
 {
     private readonly record struct Crossing(float X,int Winding,int Edge);
     private readonly record struct Edge(PointF A,PointF B,float Minimum,float Maximum);
+    private sealed class EdgeComparer:IComparer<Edge>
+    {
+        public static readonly EdgeComparer Instance=new();
+        public int Compare(Edge a,Edge b)=>a.Minimum.CompareTo(b.Minimum);
+    }
     private sealed class CrossingComparer : IComparer<Crossing>
     {
         public static readonly CrossingComparer Instance=new();
@@ -22,6 +28,7 @@ public static class PathRasterizer
         for(int y=0;y<mask.Height;y++)mask.Data.AsSpan(y*mask.Width,mask.Width).CopyTo(output.AsSpan((y+mask.Top)*width+mask.Left,mask.Width));
         return output;
     }
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     internal static CoverageMask Rasterize(PointF[][] contours,FillRule rule,int width,int height,bool antialias,RectF? clip=null,bool compactRuns=false)
     {
         bool inverse=rule is FillRule.InverseEvenOdd or FillRule.InverseWinding;
@@ -45,12 +52,15 @@ public static class PathRasterizer
         bool sparse=compactRuns&&edgeHeight/h<=8;
         var output=sparse?Array.Empty<byte>():new byte[checked(w*h)];
         var sparseRuns=sparse?new List<CoverageRun>():null;
-        var edges=ArrayPool<Edge>.Shared.Rent(Math.Max(1,edgeCount));
-        var active=ArrayPool<Edge>.Shared.Rent(Math.Max(1,edgeCount));
-        var sortedActive=ArrayPool<Edge>.Shared.Rent(Math.Max(1,edgeCount));
-        var crossings=ArrayPool<Crossing>.Shared.Rent(Math.Max(1,edgeCount));
-        var row=ArrayPool<int>.Shared.Rent(w);var delta=ArrayPool<int>.Shared.Rent(w+1);
-        var events=ArrayPool<ulong>.Shared.Rent((w+64)/64);
+        Edge[]? rentedEdges=null;int[]? rentedActive=null;Crossing[]? rentedCrossings=null;
+        int[]? rentedRow=null;int[]? rentedDelta=null;ulong[]? rentedEvents=null;
+        Span<Edge> edges=edgeCount<=128?stackalloc Edge[edgeCount]:(rentedEdges=ArrayPool<Edge>.Shared.Rent(edgeCount));
+        Span<int> active=edgeCount<=128?stackalloc int[edgeCount]:(rentedActive=ArrayPool<int>.Shared.Rent(edgeCount));
+        Span<Crossing> crossings=edgeCount<=128?stackalloc Crossing[edgeCount]:(rentedCrossings=ArrayPool<Crossing>.Shared.Rent(edgeCount));
+        Span<int> row=w<=256?stackalloc int[w]:(rentedRow=ArrayPool<int>.Shared.Rent(w));
+        Span<int> delta=w<=256?stackalloc int[w+1]:(rentedDelta=ArrayPool<int>.Shared.Rent(w+1));
+        int eventCount=(w+64)/64;
+        Span<ulong> events=eventCount<=16?stackalloc ulong[eventCount]:(rentedEvents=ArrayPool<ulong>.Shared.Rent(eventCount));
         int samples=antialias?16:1;
         try
         {
@@ -61,30 +71,29 @@ public static class PathRasterizer
                 for(int j=0;j<contour.Length;j++)
                 {var a=contour[j];var b=contour[(j+1)%contour.Length];if(a.Y!=b.Y)edges[n++]=new(a,b,MathF.Min(a.Y,b.Y),MathF.Max(a.Y,b.Y));}
             }
-            Array.Sort(edges,0,n,Comparer<Edge>.Create((a,b)=>a.Minimum.CompareTo(b.Minimum)));
+            edges[..n].Sort(EdgeComparer.Instance);
             int nextEdge=0,activeCount=0;
             for(int y=y0;y<y1;y++)
             {
-                if(!sparse)row.AsSpan(0,w).Clear();delta.AsSpan(0,w+1).Clear();
-                if(sparse)events.AsSpan(0,(w+64)/64).Clear();
+                if(!sparse)row[..w].Clear();delta[..(w+1)].Clear();
+                if(sparse)events[..eventCount].Clear();
                 for(int sy=0;sy<samples;sy++)
                 {
                     float sampleY=y+(sy+0.5f)/samples;
-                    while(nextEdge<n&&edges[nextEdge].Minimum<=sampleY)active[activeCount++]=edges[nextEdge++];
+                    while(nextEdge<n&&edges[nextEdge].Minimum<=sampleY)active[activeCount++]=nextEdge++;
                     int retained=0;
                     bool clipped=clip is {} bound&&(sampleY<bound.Top||sampleY>=bound.Bottom);
                     for(int j=0;j<activeCount;j++)
                     {
-                        var e=active[j];if(e.Maximum<=sampleY)continue;
-                        active[retained]=e;
-                        if(!clipped)crossings[retained]=new(e.A.X+(sampleY-e.A.Y)*(e.B.X-e.A.X)/(e.B.Y-e.A.Y),e.B.Y>e.A.Y?1:-1,retained);
+                        int index=active[j];var e=edges[index];if(e.Maximum<=sampleY)continue;
+                        active[retained]=index;
+                        if(!clipped)crossings[retained]=new(e.A.X+(sampleY-e.A.Y)*(e.B.X-e.A.X)/(e.B.Y-e.A.Y),e.B.Y>e.A.Y?1:-1,index);
                         retained++;
                     }
                     activeCount=retained;int count=retained;
                     if(clipped)continue;
                     SortCoherent(crossings,count);
-                    for(int j=0;j<count;j++)sortedActive[j]=active[crossings[j].Edge];
-                    (active,sortedActive)=(sortedActive,active);
+                    for(int j=0;j<count;j++)active[j]=crossings[j].Edge;
                     int winding=0;float previous=0;
                     for(int j=0;j<=count;j++)
                     {
@@ -125,7 +134,14 @@ public static class PathRasterizer
             }
         }
         finally
-        {ArrayPool<Edge>.Shared.Return(edges);ArrayPool<Edge>.Shared.Return(active);ArrayPool<Edge>.Shared.Return(sortedActive);ArrayPool<Crossing>.Shared.Return(crossings);ArrayPool<int>.Shared.Return(row);ArrayPool<int>.Shared.Return(delta);ArrayPool<ulong>.Shared.Return(events);}
+        {
+            if(rentedEdges is not null)ArrayPool<Edge>.Shared.Return(rentedEdges);
+            if(rentedActive is not null)ArrayPool<int>.Shared.Return(rentedActive);
+            if(rentedCrossings is not null)ArrayPool<Crossing>.Shared.Return(rentedCrossings);
+            if(rentedRow is not null)ArrayPool<int>.Shared.Return(rentedRow);
+            if(rentedDelta is not null)ArrayPool<int>.Shared.Return(rentedDelta);
+            if(rentedEvents is not null)ArrayPool<ulong>.Shared.Return(rentedEvents);
+        }
         if(sparse)return new(x0,y0,w,h,[],sparseRuns!.ToArray());
         // Dense AA text can contain more run metadata than coverage bytes. Keep the
         // byte mask and composite it directly instead of allocating thousands of runs.
@@ -149,7 +165,8 @@ public static class PathRasterizer
         }
         return new(x0,y0,w,h,output,runs.ToArray());
     }
-    private static void SortCoherent(Crossing[] values,int count)
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    private static void SortCoherent(Span<Crossing> values,int count)
     {
         // Insertion sort is linear for coherent scanlines. A bounded move budget
         // switches arbitrary/self-intersecting input to O(n log n) introsort.
@@ -160,12 +177,13 @@ public static class PathRasterizer
             while(at>0&&values[at-1].X.CompareTo(current.X)>0)
             {
                 values[at]=values[at-1];at--;
-                if(--budget<0){values[at]=current;Array.Sort(values,0,count,CrossingComparer.Instance);return;}
+                if(--budget<0){values[at]=current;values[..count].Sort(CrossingComparer.Instance);return;}
             }
             values[at]=current;
         }
     }
-    private static void AddSpan(int[] row,int[] delta,int origin,int width,float left,float right,int samples,RectF? clip)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void AddSpan(Span<int> row,Span<int> delta,int origin,int width,float left,float right,int samples,RectF? clip)
     {
         left=MathF.Max(left,origin);right=MathF.Min(right,origin+width);
         if(clip is {} c){left=MathF.Max(left,c.Left);right=MathF.Min(right,c.Right);}
@@ -178,7 +196,8 @@ public static class PathRasterizer
         row[a]+=samples-first%samples;row[b]+=(end-1)%samples+1;
         if(a+1<b){delta[a+1]+=samples;delta[b]-=samples;}
     }
-    private static void AddSparseSpan(int[] delta,ulong[] events,int origin,int width,float left,float right,int samples,RectF? clip)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void AddSparseSpan(Span<int> delta,Span<ulong> events,int origin,int width,float left,float right,int samples,RectF? clip)
     {
         left=MathF.Max(left,origin);right=MathF.Min(right,origin+width);
         if(clip is {} c){left=MathF.Max(left,c.Left);right=MathF.Min(right,c.Right);}

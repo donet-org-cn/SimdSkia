@@ -260,6 +260,7 @@ using(var red=new SKBitmap(128,96))using(var blue=new SKBitmap(128,96))
         if(alias.ReadPixel(64,48)!=expected)throw new Exception("Concurrent independent rentals overlapped.");
     });checks++;
 }
+checks+=CoverageRunValidation.Run();
 CpuOptions.EnableSimd=true;
 Directory.CreateDirectory("artifacts");
 File.WriteAllText($"artifacts/optimization-tests-{(System.Numerics.Vector.IsHardwareAccelerated?"hardware":"fallback")}.json",
