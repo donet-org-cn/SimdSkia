@@ -1,5 +1,20 @@
 # NuGet 预览版发布
 
+## 第六预览版 0.1.0-preview.6
+
+正在准备可信发布与公开下载验证；在本节明确更新为“已公开发布”前，不将打包或上传成功视为已上架。11 个包统一为 `0.1.0-preview.6`，Avalonia 继续锁定 `12.1.4`。完整包名、跨平台接入、GPU 和 AOT 命令见 [首页](../README.md)，三个 Avalonia 包的 README 与首页自动同步。
+
+本版纳入 preview.5 之后的系统字体分页/TTC 共享、光栅缓冲复用、精确 SIMD 双线性采样、图片画刷缓存生命周期修复、几何边界复用及字形缓冲优化。新增经典桌面 JIT 后台启动准备，线程完成即退出，无窗口程序和 Native AOT 跳过；可以通过 `EnableStartupPreparation = false` 关闭。
+
+[最新实测报告](STARTUP-ROUND7-2026-10-22.md)保留 70 次可见启动、原版 CPU、GPU 前后对照、内存、AOT 体积和全部失败项。JIT 白色阶段采样中位数为 CPU 114→61 ms、Direct2D 289→198 ms、Vulkan 363→266 ms；原版 CPU 49 ms。常驻内存和最新一轮的持续 GPU 吞吐没有明显改善，完整画质/API 仍未通过，不宣称完整替换。发布只更改版本、依赖锁定和文档，渲染实现对应已测源码 `1438833`。
+
+```shell
+dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.0-preview.6
+dotnet add package SimdSkia.Avalonia.Gpu --version 0.1.0-preview.6
+```
+
+第二行仅用于需要 GPU 的应用。所有直接引用的 SimdSkia 包应使用同一版本；旧版本和旧标签保持原内容。
+
 ## 第五预览版 0.1.0-preview.5
 
 **已公开发布，11 个包均已实际下载，DLL 和 README 与发布 CI 产物逐字节一致。** [可信发布流水线](https://github.com/hnlyf168/SimdSkia/actions/runs/39746371476)全部成功，完成构建、全部包内容检查、真实 Native AOT 像素/窗口验证、隔离包消费、上传及公开下载核对。标签 `v0.1.0-preview.5` 固定在 `c12c3db16dda9b5fa7505a146bf1b948d3311934`。下载 SHA、实际包和测试证据见 [发布记录](evidence/nuget-preview5-2026-10-22.json)。

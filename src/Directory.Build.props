@@ -1,7 +1,7 @@
 <Project>
   <Import Project="../Directory.Build.props" />
   <PropertyGroup>
-    <Version Condition="'$(Version)' == ''">0.1.0-preview.5</Version>
+    <Version Condition="'$(Version)' == ''">0.1.0-preview.6</Version>
     <Authors>hnlyf168</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/hnlyf168/SimdSkia</PackageProjectUrl>
@@ -11,7 +11,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Description>Experimental managed C# 2D rendering components. Preview only; API and rendering compatibility are incomplete. No Google Skia rendering dependency.</Description>
     <PackageTags>SimdSkia;graphics;rendering;managed;preview</PackageTags>
-    <PackageReleaseNotes>Preview 5: Vulkan bounded coverage caching, conservative edge bins, packed winding, specialized compute pipelines, device-local inputs, direct BGRA framebuffer output and overlap-aware barriers. Real controls window P50 improved from 22.250 to 2.316 ms on the measured GTX 1050 Ti, versus CPU 2.067 ms; memory did not improve proportionally. Optional per-dispatch GPU timestamps and cache diagnostics. CPU/Direct2D/Vulkan Native AOT windows verified. Full API, native pixel equivalence and macOS GPU remain incomplete. See the Vulkan optimization report for hardware, quality failures and measurement limits.</PackageReleaseNotes>
+    <PackageReleaseNotes>Preview 6: managed system-font paging and shared TTC storage, reusable raster buffers, exact SIMD bilinear sampling, bounded image-brush caches and stale image release. Classic desktop JIT startup prepares common drawing paths on a short-lived background thread; headless applications and Native AOT skip preparation. Reuses exact geometry bounds and glyph coverage buffers. Windows startup white intervals were reduced but not eliminated; original renderer comparisons, CPU/GPU timings, memory, AOT size and remaining quality failures are documented in STARTUP-ROUND7-2026-10-22.md. Steady GPU throughput and resident memory did not improve materially in the latest round. Avalonia remains pinned to 12.1.4; full API/rendering compatibility and macOS GPU remain incomplete.</PackageReleaseNotes>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>

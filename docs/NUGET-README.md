@@ -1,6 +1,6 @@
 # SimdSkia preview
 
-Preview 5 adds bounded Vulkan coverage caching, conservative edge bins, specialized compute pipelines, direct BGRA framebuffer output, overlap-aware barriers and optional GPU timestamp diagnostics. The measured controls window improved from 22.250 to 2.316 ms on a GTX 1050 Ti; CPU was 2.067 ms and memory did not improve proportionally. [Vulkan performance, memory and validation report](https://github.com/hnlyf168/SimdSkia/blob/main/docs/VULKAN-OPTIMIZATION-2026-10-22.md) retains failed native pixel quality gates; full compatibility is still incomplete.
+Preview 6 includes managed system-font paging and shared TTC storage, reusable raster buffers, exact SIMD bilinear sampling, image-brush cache lifetime fixes, geometry bounds reuse and reduced glyph coverage copying. Classic desktop JIT applications prepare common drawing paths on a short-lived background thread; headless applications and Native AOT skip preparation. Windows startup white intervals were reduced but not eliminated. The latest round did not materially improve steady GPU throughput or resident memory. See the [startup, CPU/GPU, memory and AOT report](https://github.com/hnlyf168/SimdSkia/blob/main/docs/STARTUP-ROUND7-2026-10-22.md), including original renderer comparisons and remaining quality failures.
 
 An independent C# 2D renderer. No Google Skia rendering calls. This release is a **preview**: public API coverage, font support and rendering equivalence are incomplete. It is not a binary replacement for the strong-named SkiaSharp assembly.
 
@@ -21,7 +21,7 @@ Packages target .NET 8 or later:
 | SimdSkia.Gpu.Direct2D | Windows hardware Direct2D/D3D11 canvas, C# system API bindings |
 
 ```shell
-dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.0-preview.5
+dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.0-preview.6
 ```
 
 An existing Avalonia 12.1.4 application selects the adapter explicitly:
@@ -35,6 +35,8 @@ AppBuilder.Configure<App>()
 ```
 
 Windows uses its current message font; Linux/macOS discover supported installed static TrueType families. Explicit `options.FontFiles.Add(path)` overrides automatic selection. Parsing, shaping, glyph coverage and codecs remain C#. Chinese text needs a supported installed Chinese font. Complex shaping, CFF/variable/color fonts and hinting have gaps.
+
+Startup preparation is enabled by default. To disable it for diagnosis, use `.UseSimdSkiaDesktop(options => options.EnableStartupPreparation = false)`. It does not hide the window or add a placeholder frame. Keep all directly referenced SimdSkia packages on version `0.1.0-preview.6` and all Avalonia packages on `12.1.4`.
 
 The base adapter provides rendering/font services. The Desktop package supplies OS host selection without Skia/HarfBuzz/ANGLE packages. macOS uses the official MIT libAvaloniaNative window bridge, an explicit window-host exception; application drawing/fonts are managed. The optional GPU adapter defaults Direct2D to a native Windows swapchain; Vulkan currently waits for completion and reads back to the OS framebuffer. macOS GPU/Metal is not implemented. GPU glyphs normally use a managed atlas, and CPU layers/fallbacks are reported. See the [complete quick start](https://github.com/hnlyf168/SimdSkia#readme).
 
