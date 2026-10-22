@@ -1,5 +1,9 @@
 # 验证：2026-10-22
 
+最新源码 `6c017e7`：[采样/缓存优化、原版对照与窗口报告](OPTIMIZATION-ROUND6-2026-10-22.md) · [完整证据](evidence/optimization-round6-2026-10-22.json)。Release 0 警告/错误；8665 优化和 9664 控件/生命周期检查通过，完全禁用硬件指令也通过；Direct2D 344、GPU 集成 12174、Vulkan 540、GPU 采样 590、平台字体 36。新增双线性舍入/预乘/格式/stride 与裁剪、画刷整行复制及拒绝时不写入、旧缓存淘汰不影响已借用像素，以及重复矩形重绘的分配上限回归。
+
+三平台[托管及标量](https://github.com/hnlyf168/SimdSkia/actions/runs/39771031055)、[实际 JIT/AOT/nupkg 桌面窗口](https://github.com/hnlyf168/SimdSkia/actions/runs/39771031167)、[Windows 双实现 AOT](https://github.com/hnlyf168/SimdSkia/actions/runs/39771031036)均通过。连续换图三轮与原版像素完全相同；完整控件画质、旧图像和 API 缺口仍存在，完整验证退出码仍为 **2**。本轮未发布 NuGet。以下保留此前记录。
+
 本轮生产源码 `1c6af37`：[启动/性能报告](STARTUP-PERFORMANCE-2026-10-22.md) · [完整证据](evidence/startup-performance-2026-10-22.json)。Release 0 警告/错误；8085 标量/优化（新增 240 独立裁剪对照）、8299 控件（含文件 TTC 导出/字形一致性）、36 Windows 平台字体、13 系统字体、344 Direct2D、12174 GPU 集成通过。12 对 CPU 帧与 6 对实际窗口/呈现截图完全相同。三平台[托管/标量](https://github.com/hnlyf168/SimdSkia/actions/runs/39759622776)、[JIT/AOT/nupkg 窗口](https://github.com/hnlyf168/SimdSkia/actions/runs/39759622830)、[Windows 双实现 AOT](https://github.com/hnlyf168/SimdSkia/actions/runs/39759622875)均通过，下载核对 9 条桌面与 2 条双实现 AOT 记录。
 
 性能包含 48 个 CPU 进程、35 次可见启动和 36 个实际 CPU/GPU 窗口进程。短时与较长预热结果均保留，未宣称 GPU 吞吐或动态窗口 CPU 全面改善。原版也采到约 95 ms 白色阶段，SimdSkia CPU 为约 218 ms，白屏尚未消除。整页画质、旧图像和 API 缺口保持，完整验证退出码 **2**。本轮与上一轮内存优化均未发布 NuGet；以下为历史记录。

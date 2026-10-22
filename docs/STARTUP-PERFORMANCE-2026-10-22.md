@@ -1,5 +1,7 @@
 # 启动白屏、CPU 与内存优化：2026-10-22
 
+后续优化及新一轮同机测量见 [图片采样、画刷缓存与窗口报告](OPTIMIZATION-ROUND6-2026-10-22.md)；本页数字保持原始测量。为释放本地测试盘空间，本页大体积 RGBA 已无损移至 `artifacts/startup-round5/frame-evidence.zip` 和 `remaining-frame-evidence.zip`，对应 `*-archive-manifest.json` 保存逐文件 SHA256，恢复时解压到原目录即可；公开证据和图片不变。
+
 本轮实现已提交 [1c6af37](https://github.com/hnlyf168/SimdSkia/commit/1c6af3701631a6c2f75563c0d18bb4c732bc3ce9)，对照基线为上一轮内存优化后的 `7bcd362`，不是最早版本。系统字体控件 CPU 平均耗时 **1.008→0.800 ms/帧**，工作集 **111.9→94.8 MiB**，Private **67.0→48.5 MiB**。原版默认配置本次为 **0.911 ms、88.4 MiB、42.8 MiB**。这是指定场景的计时，原版画质门槛仍未通过，不能据此宣称整体性能或兼容性已超过 SkiaSharp。
 
 **本机同场景的原版也有短暂白屏。** 外部屏幕采样估计其中位时长约 **95 ms**；SimdSkia CPU 从 **280 ms 缩短到 218 ms**，仍然更长。没有隐藏窗口、延迟 Show、增加启动遮罩或用背景色冒充首帧。
