@@ -29,6 +29,21 @@ public sealed record SimdSkiaGpuStatistics(string Device, long GpuCommands, long
 
 public static class SimdSkiaGpuDiagnostics
 {
+    /// <summary>Opt-in, serializing GPU diagnostics. Leave disabled for performance measurements.</summary>
+    public static bool CaptureVulkanProfiles {get;set;}
+    private static global::SimdSkia.Gpu.VulkanProfile? lastVulkanProfile;
+    public static global::SimdSkia.Gpu.VulkanProfile? LastVulkanProfile {get=>Volatile.Read(ref lastVulkanProfile);internal set=>Volatile.Write(ref lastVulkanProfile,value);}
+    private static long maskBuilds,maskHits,maskPeakBytes,drawDispatches,drawBarriers;
+    public static long VulkanPathMaskBuilds=>Interlocked.Read(ref maskBuilds);
+    public static long VulkanPathMaskHits=>Interlocked.Read(ref maskHits);
+    public static long VulkanPathMaskPeakBytes=>Interlocked.Read(ref maskPeakBytes);
+    public static long VulkanDrawDispatches=>Interlocked.Read(ref drawDispatches);
+    public static long VulkanDrawDependencyBarriers=>Interlocked.Read(ref drawBarriers);
+    internal static void VulkanCounters(long builds,long hits,long bytes,long dispatches,long barriers)
+    {
+        Interlocked.Add(ref maskBuilds,builds);Interlocked.Add(ref maskHits,hits);Interlocked.Add(ref drawDispatches,dispatches);Interlocked.Add(ref drawBarriers,barriers);
+        long previous;do{previous=Interlocked.Read(ref maskPeakBytes);if(previous>=bytes)break;}while(Interlocked.CompareExchange(ref maskPeakBytes,bytes,previous)!=previous);
+    }
     private static string device = "";
     private static long gpu, cpu, batches, uploads, ticks;
     private static long nativePresents;

@@ -5,6 +5,28 @@ using SimdSkia.Cpu;
 if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("This hardware integration suite currently requires Windows Direct2D and Vulkan devices.");
 int checks = 0;
 void Check(bool value, string message) { if (!value) throw new InvalidOperationException(message); checks++; }
+// Former Vulkan windows staged both PMA and Opaque framebuffers through RGBA/PMA.
+// Direct framebuffer output must preserve those exact physical storage bytes,
+// including Src/Clear writing nonopaque alpha into an Opaque metadata target.
+foreach(var format in Enum.GetValues<PixelFormat>())
+{
+    using var actual=new PixelBuffer(48,40,format,AlphaFormat.Opaque,48*4+12);
+    using var expected=new PixelBuffer(48,40,PixelFormat.Rgba8888,AlphaFormat.Premultiplied);
+    var options=new SimdSkiaOptions();options.UseGpu(SimdSkiaGpuBackend.Vulkan);
+    using var window=options.CanvasBackendFactory!(actual);
+    using var staging=new global::SimdSkia.Gpu.VulkanCanvas(expected);
+    var path=PathGeometry.Rectangle(new(3.25f,5.125f,42.75f,34.875f));
+    DrawingCommand[] commands=[DrawingCommand.Clear(new(23,57,189,127)),
+        DrawingCommand.FillRectangle(new(1.25f,2.125f,39.75f,30.875f),Matrix3.Identity,new(new(210,40,90,93),CompositeMode.SourceOver,true)),
+        new(CommandKind.FillPath,default,Matrix3.Identity,new(new(30,230,80,57),CompositeMode.Source,true)){Path=path}];
+    foreach(var command in commands){window.Execute(command);staging.Execute(command);}window.Flush();staging.Flush();
+    for(int y=0;y<40;y++)for(int x=0;x<48;x++)
+    {
+        var a=actual.GetRowSpan(y).Slice(x*4,4);var e=expected.GetRowSpan(y).Slice(x*4,4);
+        if(a[0]!=e[format==PixelFormat.Rgba8888?0:2]||a[1]!=e[1]||a[2]!=e[format==PixelFormat.Rgba8888?2:0]||a[3]!=e[3])throw new Exception("Opaque direct Vulkan target changed physical PMA storage.");
+    }
+    Check(true,"Opaque Vulkan framebuffer preserves the former staging contract.");
+}
 foreach (var backend in Enum.GetValues<SimdSkiaGpuBackend>())
 foreach (var format in Enum.GetValues<PixelFormat>())
 {

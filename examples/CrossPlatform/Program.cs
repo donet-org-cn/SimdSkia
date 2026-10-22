@@ -21,6 +21,7 @@ internal static class Program
     {
         Smoke = args.Contains("--smoke");
         Benchmark=args.Contains("--benchmark");Controls=args.Contains("--controls");
+        SimdSkiaGpuDiagnostics.CaptureVulkanProfiles=args.Contains("--vulkan-profile");
         int output = Array.IndexOf(args, "--output"); if (output >= 0) Output = args[output + 1];
         int font = Array.IndexOf(args, "--font");
         int gpu = Array.IndexOf(args, "--gpu");

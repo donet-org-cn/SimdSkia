@@ -8,13 +8,13 @@ namespace SimdSkia.Avalonia;
 internal sealed class WindowGpuCanvas : ICanvasBackend
 {
     private readonly PixelBuffer target;
-    private readonly PixelBuffer? rgba;
     private readonly ICanvasBackend hardware;
     private readonly RasterCanvas software;
     private readonly SimdSkiaGpuBackend kind;
     private readonly bool fallback;
     private readonly int owner = Environment.CurrentManagedThreadId;
     private bool cpuDirty, gpuDirty, disposed;
+    private long maskBuilds,maskHits,drawDispatches,drawBarriers;
     private readonly Dictionary<(GlyphRunGeometry Run,Matrix3 Matrix,bool Aa,bool Snap),PathGeometry[]> glyphBatches=[];
     private long glyphBytes;
     private readonly SimdSkiaGpuTextMode textMode;
@@ -37,15 +37,13 @@ internal sealed class WindowGpuCanvas : ICanvasBackend
             }
             else
             {
-                rgba = PixelBuffer.Rent(target.Width, target.Height, PixelFormat.Rgba8888);
-                Copy(target, rgba);
-                var canvas = new VulkanCanvas(rgba); hardware = canvas;
+                var canvas = new VulkanCanvas(this.target){EnableProfiling=SimdSkiaGpuDiagnostics.CaptureVulkanProfiles}; hardware = canvas;
                 if (canvas.IsSoftwareDevice) { canvas.Dispose(); throw new NotSupportedException("A software Vulkan device cannot be reported as hardware acceleration."); }
                 canvas.Upload();
                 SimdSkiaGpuDiagnostics.SetDevice($"Vulkan: {canvas.DeviceName}");
             }
         }
-        catch { rgba?.Dispose(); software.Dispose(); this.target.Dispose(); throw; }
+        catch { software.Dispose(); this.target.Dispose(); throw; }
     }
     private void Check()
     {
@@ -87,7 +85,7 @@ internal sealed class WindowGpuCanvas : ICanvasBackend
         }
         if (cpuDirty)
         {
-            if (hardware is VulkanCanvas vulkan) { Copy(target, rgba!); vulkan.Upload(); }
+            if (hardware is VulkanCanvas vulkan) vulkan.Upload();
             else if (OperatingSystem.IsWindows() && hardware is Direct2DCanvas direct2D) direct2D.Upload();
             cpuDirty = false; SimdSkiaGpuDiagnostics.Uploaded();
         }
@@ -159,7 +157,12 @@ internal sealed class WindowGpuCanvas : ICanvasBackend
     {
         Check(); if (!gpuDirty) return;
         long start = Stopwatch.GetTimestamp(); hardware.Flush();
-        if (rgba is not null) Copy(rgba, target);
+        if(hardware is VulkanCanvas vulkan)
+        {
+            SimdSkiaGpuDiagnostics.LastVulkanProfile=vulkan.LastProfile;
+            SimdSkiaGpuDiagnostics.VulkanCounters(vulkan.BuiltPathMasks-maskBuilds,vulkan.PathMaskHits-maskHits,vulkan.PathMaskBytes,vulkan.DrawDispatches-drawDispatches,vulkan.DrawDependencyBarriers-drawBarriers);
+            maskBuilds=vulkan.BuiltPathMasks;maskHits=vulkan.PathMaskHits;drawDispatches=vulkan.DrawDispatches;drawBarriers=vulkan.DrawDependencyBarriers;
+        }
         gpuDirty = false; SimdSkiaGpuDiagnostics.Completed(Stopwatch.GetTimestamp() - start);
     }
     internal void Present()
@@ -169,19 +172,10 @@ internal sealed class WindowGpuCanvas : ICanvasBackend
         long start=Stopwatch.GetTimestamp();canvas.Present(SimdSkiaDiagnostics.CapturePresentedFrames);gpuDirty=false;
         SimdSkiaGpuDiagnostics.Completed(Stopwatch.GetTimestamp()-start);SimdSkiaGpuDiagnostics.NativePresented();
     }
-    private static void Copy(PixelBuffer source, PixelBuffer destination)
-    {
-        for (int y = 0; y < source.Height; y++)
-        {
-            var src = source.GetRowSpan(y); var dest = destination.GetRowSpan(y);
-            if (source.Format == destination.Format) src[..(source.Width * 4)].CopyTo(dest);
-            else for (int x = 0; x < source.Width; x++) { int p = x * 4; dest[p] = src[p + 2]; dest[p + 1] = src[p + 1]; dest[p + 2] = src[p]; dest[p + 3] = src[p + 3]; }
-        }
-    }
     public void Dispose()
     {
         if (disposed) return; Check();
         try { if(!IsFaulted)Flush(); }
-        finally { disposed = true; hardware.Dispose(); software.Dispose(); rgba?.Dispose(); target.Dispose();glyphBatches.Clear();glyphBytes=0;foreach(var item in atlas.Values)item.Pixels.Dispose();atlas.Clear();atlasBytes=0; }
+        finally { disposed = true;hardware.Dispose();software.Dispose();target.Dispose();glyphBatches.Clear();glyphBytes=0;foreach(var item in atlas.Values)item.Pixels.Dispose();atlas.Clear();atlasBytes=0; }
     }
 }

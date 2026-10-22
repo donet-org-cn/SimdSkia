@@ -35,6 +35,8 @@ for run in range(args.runs):
         (dest/'run.log').write_bytes(result.stdout)
         if result.returncode:raise SystemExit(f'{backend} run {run+1} failed: see {dest}/run.log')
         row=json.loads((dest/'benchmark.json').read_text(encoding='utf-8'));row['run']=run+1;rows.append(row)
+        if row.get('gpuTimestampProfilingEnabled',False):raise SystemExit('Serializing timestamp diagnostics must be disabled during measurements.')
+        if any(row[key]!=rows[0][key] for key in ['width','height','scaling','scene','nativeAot','os','architecture']):raise SystemExit('Window size/DPI/scene/runtime changed during measurement.')
         print(f"{backend} #{run+1}: P50={row['drawingP50Ms']:.3f}ms P95={row['drawingP95Ms']:.3f}ms CPU={row['cpuPercentMachine']:.2f}% WS={row['peakWorkingSetBytes']/1048576:.1f}MiB",flush=True)
 summary=[]
 for backend in args.backends:

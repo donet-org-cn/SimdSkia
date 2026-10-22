@@ -35,10 +35,13 @@ internal sealed record TiledEdges(float[] Data, int Left, int Top, int Columns, 
                 if (a == b) continue;
                 int firstY = Math.Max(top, Tile(MathF.Min(a.Y, b.Y) - 1, height));
                 int lastY = Math.Min(bottom, EndTile(MathF.Max(a.Y, b.Y) + 1, height));
-                if (left < right && firstY < lastY)
+                // A leftward winding ray cannot see edges entirely to its right.
+                // Retain a pixel halo for float32 crossing/boundary tests.
+                int firstX=Math.Max(left,Tile(MathF.Min(a.X,b.X)-1,width));
+                if (firstX < right && firstY < lastY)
                 {
-                    ranges[rangeCount++]=new(edge, left, firstY, right, lastY);
-                    originX = Math.Min(originX, left);endX = Math.Max(endX, right);
+                    ranges[rangeCount++]=new(edge, firstX, firstY, right, lastY);
+                    originX = Math.Min(originX, firstX);endX = Math.Max(endX, right);
                     originY = Math.Min(originY, firstY);endY = Math.Max(endY, lastY);
                 }
                 edge++;
@@ -59,10 +62,12 @@ internal sealed record TiledEdges(float[] Data, int Left, int Top, int Columns, 
         counts.AsSpan(0,(int)headers).Clear();
         foreach (var range in ranges.AsSpan(0,rangeCount))
             for (int y = range.Top; y < range.Bottom; y++)
-                for (int x = range.Left; x < range.Right; x++) counts[(y - originY) * columns + x - originX]++;
+                for (int x = range.Left; x < range.Right; x++)
+                    if(!ConstantWinding(edges,range.Edge,x,y))counts[(y - originY) * columns + x - originX]++;
         // Store each edge once. Bin lists contain packed 32-bit edge indices, saving
         // four times the index payload versus duplicating vec4 endpoints per tile.
-        var data = new float[checked(edges.Length + (int)headers * 4 + (((int)references + 3) & ~3))];
+        int actualReferences=0;for(int i=0;i<(int)headers;i++)actualReferences=checked(actualReferences+counts[i]);
+        var data = new float[checked(edges.Length + (int)headers * 4 + ((actualReferences + 3) & ~3))];
         edges.CopyTo(data, 0);
         int next = edges.Length + (int)headers * 4;
         for (int i = 0; i < (int)headers; i++)
@@ -74,14 +79,23 @@ internal sealed record TiledEdges(float[] Data, int Left, int Top, int Columns, 
             for (int y = range.Top; y < range.Bottom; y++)
                 for (int x = range.Left; x < range.Right; x++)
                 {
-                    int offset = counts[(y - originY) * columns + x - originX]++;
-                    data[offset] = range.Edge;
+                    int bin=(y-originY)*columns+x-originX;
+                    if(ConstantWinding(edges,range.Edge,x,y))data[edges.Length+bin*4+2]+=edges[range.Edge*4+3]>edges[range.Edge*4+1]?1:-1;
+                    else{int offset = counts[bin]++;data[offset] = range.Edge;}
                 }
         return new(data, originX, originY, columns, rows);
         }
         finally{ArrayPool<int>.Shared.Return(counts);}
         }
         finally{ArrayPool<Range>.Shared.Return(ranges);}
+    }
+    // Geometry binning only: these edges have the same crossing contribution for
+    // every point in the entire tile. Coverage and AA still execute on the GPU.
+    private static bool ConstantWinding(float[] edges,int index,int x,int y)
+    {
+        int at=index*4;
+        return MathF.Max(edges[at],edges[at+2])<x*8-1&&
+            MathF.Min(edges[at+1],edges[at+3])<=y*8-1&&MathF.Max(edges[at+1],edges[at+3])>=y*8+9;
     }
     private static int Tile(float value, int limit) => (int)Math.Clamp(MathF.Floor(value / 8), 0, (limit + 7) / 8);
     private static int EndTile(float value, int limit) => (int)Math.Clamp(MathF.Floor(value / 8) + 1, 0, (limit + 7) / 8);

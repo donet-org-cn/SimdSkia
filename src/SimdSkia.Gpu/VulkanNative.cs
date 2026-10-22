@@ -10,7 +10,7 @@ internal static unsafe class Vk
     {
         if(IntPtr.Size!=8||!BitConverter.IsLittleEndian)throw new PlatformNotSupportedException("The initial Vulkan ABI supports 64-bit little-endian Windows/Linux.");
         NativeLibrary.SetDllImportResolver(typeof(Vk).Assembly,Resolve);
-        if(sizeof(InstanceInfo)!=64||sizeof(DeviceInfo)!=72||sizeof(SubmitInfo)!=72||sizeof(WriteDescriptor)!=64||sizeof(ComputePipelineInfo)!=96||sizeof(MemoryProperties)!=520||sizeof(ImageInfo)!=88||sizeof(ImageViewInfo)!=80||sizeof(ImageBarrier)!=72||sizeof(BufferImageCopy)!=56||sizeof(BufferCopy)!=24)
+        if(sizeof(InstanceInfo)!=64||sizeof(DeviceInfo)!=72||sizeof(SubmitInfo)!=72||sizeof(WriteDescriptor)!=64||sizeof(ComputePipelineInfo)!=96||sizeof(MemoryProperties)!=520||sizeof(ImageInfo)!=88||sizeof(ImageViewInfo)!=80||sizeof(ImageBarrier)!=72||sizeof(BufferImageCopy)!=56||sizeof(BufferCopy)!=24||sizeof(QueryPoolInfo)!=32||sizeof(SpecializationEntry)!=16||sizeof(SpecializationInfo)!=32)
             throw new PlatformNotSupportedException("Vulkan structure ABI size mismatch.");
     }
     private static IntPtr Resolve(string name,Assembly assembly,DllImportSearchPath? search)
@@ -29,6 +29,8 @@ internal static unsafe class Vk
     [StructLayout(LayoutKind.Sequential)]public struct AllocateInfo {public uint Type;public void* Next;public ulong Size;public uint MemoryType;}
     [StructLayout(LayoutKind.Sequential)]public struct ShaderInfo {public uint Type;public void* Next;public uint Flags;public nuint CodeSize;public uint* Code;}
     [StructLayout(LayoutKind.Sequential)]public struct ShaderStage {public uint Type;public void* Next;public uint Flags,Stage;public ulong Module;public byte* Name;public void* Specialization;}
+    [StructLayout(LayoutKind.Sequential)]public struct SpecializationEntry {public uint Constant,Offset;public nuint Size;}
+    [StructLayout(LayoutKind.Sequential)]public struct SpecializationInfo {public uint Count;public SpecializationEntry* Entries;public nuint Size;public void* Data;}
     [StructLayout(LayoutKind.Sequential)]public struct PipelineLayoutInfo {public uint Type;public void* Next;public uint Flags,Count;public ulong* Layouts;public uint PushCount;public void* PushRanges;}
     [StructLayout(LayoutKind.Sequential)]public struct ComputePipelineInfo {public uint Type;public void* Next;public uint Flags;public ShaderStage Stage;public ulong Layout,Base;public int BaseIndex;}
     [StructLayout(LayoutKind.Sequential)]public struct LayoutBinding {public uint Binding,DescriptorType,Count,Stages;public void* Samplers;}
@@ -42,6 +44,7 @@ internal static unsafe class Vk
     [StructLayout(LayoutKind.Sequential)]public struct CommandAllocateInfo {public uint Type;public void* Next;public ulong Pool;public uint Level,Count;}
     [StructLayout(LayoutKind.Sequential)]public struct CommandBeginInfo {public uint Type;public void* Next;public uint Flags;public void* Inheritance;}
     [StructLayout(LayoutKind.Sequential)]public struct FenceInfo {public uint Type;public void* Next;public uint Flags;}
+    [StructLayout(LayoutKind.Sequential)]public struct QueryPoolInfo {public uint Type;public void* Next;public uint Flags,QueryType,Count,Statistics;}
     [StructLayout(LayoutKind.Sequential)]public struct SubmitInfo {public uint Type;public void* Next;public uint WaitCount;public void* Waits;public void* Stages;public uint CommandCount;public IntPtr* Commands;public uint SignalCount;public void* Signals;}
     [StructLayout(LayoutKind.Sequential)]public struct BufferBarrier {public uint Type;public void* Next;public uint SourceAccess,DestinationAccess,SourceFamily,DestinationFamily;public ulong Buffer,Offset,Size;}
     [StructLayout(LayoutKind.Sequential)]public struct ImageInfo {public uint Type;public void* Next;public uint Flags,ImageType,Format,Width,Height,Depth,Mips,Layers,Samples,Tiling,Usage,Sharing,FamilyCount;public uint* Families;public uint InitialLayout;}
@@ -94,6 +97,11 @@ internal static unsafe class Vk
     [DllImport(Library)]public static extern void vkCmdDispatch(IntPtr command,uint x,uint y,uint z);
     [DllImport(Library)]public static extern void vkCmdPipelineBarrier(IntPtr command,uint source,uint destination,uint dependencies,uint memoryCount,void* memories,uint bufferCount,BufferBarrier* buffers,uint imageCount,void* images);
     [DllImport(Library)]public static extern int vkCreateFence(IntPtr device,FenceInfo* info,void* allocator,ulong* fence);
+    [DllImport(Library)]public static extern int vkCreateQueryPool(IntPtr device,QueryPoolInfo* info,void* allocator,ulong* pool);
+    [DllImport(Library)]public static extern void vkDestroyQueryPool(IntPtr device,ulong pool,void* allocator);
+    [DllImport(Library)]public static extern void vkCmdResetQueryPool(IntPtr command,ulong pool,uint first,uint count);
+    [DllImport(Library)]public static extern void vkCmdWriteTimestamp(IntPtr command,uint stage,ulong pool,uint query);
+    [DllImport(Library)]public static extern int vkGetQueryPoolResults(IntPtr device,ulong pool,uint first,uint count,nuint size,void* data,ulong stride,uint flags);
     [DllImport(Library)]public static extern void vkDestroyFence(IntPtr device,ulong fence,void* allocator);
     [DllImport(Library)]public static extern int vkResetFences(IntPtr device,uint count,ulong* fences);
     [DllImport(Library)]public static extern int vkWaitForFences(IntPtr device,uint count,ulong* fences,uint all,ulong timeout);
