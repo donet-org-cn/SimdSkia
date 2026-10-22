@@ -1,6 +1,6 @@
 # 进度：2026-10-22
 
-发布续轮：已从 NuGet.org 实际下载并核对全部 11 个 preview.4 包，DLL/README 与 CI 产物一致；原流水线失败由索引等待超时造成。正在准备 preview.5，纳入下述 Vulkan 专项优化；[版本与发布证据](NUGET-PREVIEW.md)按实际公开下载结果更新。
+发布续轮：已从 NuGet.org 实际下载并核对全部 11 个 preview.4 包，DLL/README 与 CI 产物一致；原流水线失败由索引等待超时造成。preview.5 的 11 个包已上传，纳入下述 Vulkan 专项优化，等待公开下载验证；本机真实包的 CPU/Direct2D/Vulkan 窗口、三平台托管回归与 JIT/AOT/nupkg 窗口、Windows 双后端 AOT 全部通过。[版本与发布证据](NUGET-PREVIEW.md)
 
 Vulkan 专项源码优化已完成并实测：[检查、测试与性能报告](VULKAN-OPTIMIZATION-2026-10-22.md)。本机 100% DPI 的真实控件窗口三进程 P50 22.250→2.316 ms（9.61×），CPU 2.067 / Direct2D 1.552 ms；Vulkan 仍慢约 12%，CPU/内存没有同比下降。实现 GPU 有界覆盖率缓存、宽绕数内核、保守分块、uniform/显存输入、BGRA 直接输出、覆盖消除与依赖同步。
 

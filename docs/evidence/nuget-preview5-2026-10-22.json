@@ -1,0 +1,581 @@
+{
+  "version": "0.1.0-preview.5",
+  "tag": "v0.1.0-preview.5",
+  "sourceCommit": "c12c3db16dda9b5fa7505a146bf1b948d3311934",
+  "checkedUtc": "2026-10-22T08:25:04.335306+00:00",
+  "status": "uploaded_waiting_public_download_verification",
+  "publicAvailabilityVerified": false,
+  "nupkgCount": 11,
+  "workflow": "https://github.com/hnlyf168/SimdSkia/actions/runs/39746371476",
+  "ci": [
+    {
+      "id": 39746371476,
+      "name": "NuGet preview",
+      "sourceCommit": "c12c3db16dda9b5fa7505a146bf1b948d3311934",
+      "url": "https://github.com/hnlyf168/SimdSkia/actions/runs/39746371476",
+      "conclusion": null,
+      "jobs": [
+        {
+          "id": 119715733408,
+          "name": "build",
+          "conclusion": "success"
+        },
+        {
+          "id": 119716843975,
+          "name": "publish",
+          "conclusion": null
+        }
+      ]
+    },
+    {
+      "id": 39746343255,
+      "name": "Cross-platform desktop",
+      "sourceCommit": "c12c3db16dda9b5fa7505a146bf1b948d3311934",
+      "url": "https://github.com/hnlyf168/SimdSkia/actions/runs/39746343255",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 119715620949,
+          "name": "desktop (macos-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 119715621156,
+          "name": "desktop (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 119715621333,
+          "name": "desktop (ubuntu-latest)",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 39746371489,
+      "name": "Managed engine verification",
+      "sourceCommit": "c12c3db16dda9b5fa7505a146bf1b948d3311934",
+      "url": "https://github.com/hnlyf168/SimdSkia/actions/runs/39746371489",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 119715708773,
+          "name": "managed (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 119715709003,
+          "name": "managed (macos-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 119715777021,
+          "name": "managed (ubuntu-latest)",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 39746342939,
+      "name": "Windows Native AOT smoke",
+      "sourceCommit": "c12c3db16dda9b5fa7505a146bf1b948d3311934",
+      "url": "https://github.com/hnlyf168/SimdSkia/actions/runs/39746342939",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 119715619910,
+          "name": "aot",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "ciPackageManifest": [
+    {
+      "id": "SimdSkia.Core",
+      "version": "0.1.0-preview.5",
+      "bytes": 29609,
+      "sha256": "fea773dc311e51dd6813144143b0e08fd24cb680931224bc64df4889bdc38e89",
+      "dependencies": {}
+    },
+    {
+      "id": "SimdSkia.Cpu",
+      "version": "0.1.0-preview.5",
+      "bytes": 43233,
+      "sha256": "d8f51679cbdfed970333fb9b3bbb4f8e0a1de47a16ba737008dba9eba8235ae0",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.5"
+      }
+    },
+    {
+      "id": "SimdSkia.Text",
+      "version": "0.1.0-preview.5",
+      "bytes": 20841,
+      "sha256": "a8804b3f12175ef561c54ebdb1859acd38bb3fa2c474d06be5a3b8fbf32444e6",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.5"
+      }
+    },
+    {
+      "id": "SimdSkia.Imaging",
+      "version": "0.1.0-preview.5",
+      "bytes": 35421,
+      "sha256": "b093370733fa4e3b50ceb0102bd91dbd49307b38feb9fb6867566598b0b1ffa0",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.5",
+        "JpegLibrary": "[0.4.32]"
+      }
+    },
+    {
+      "id": "SimdSkia.Gpu",
+      "version": "0.1.0-preview.5",
+      "bytes": 64141,
+      "sha256": "1886c79296133529a819929c30b9e40e12fc36a69e091ed68b201050d3a67849",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.5"
+      }
+    },
+    {
+      "id": "SimdSkia.Gpu.Direct2D",
+      "version": "0.1.0-preview.5",
+      "bytes": 21784,
+      "sha256": "ba0bc397c84c40377b9ef3e4193ead8db4fe2fd4eb5f3705688c9b19cd27c447",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.5"
+      }
+    },
+    {
+      "id": "SimdSkia.Compatibility",
+      "version": "0.1.0-preview.5",
+      "bytes": 34981,
+      "sha256": "da66341f582fabc53c068c09e54b80ad0564e159e2c723f4c0d485295d8da022",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.5",
+        "SimdSkia.Cpu": "0.1.0-preview.5",
+        "SimdSkia.Gpu": "0.1.0-preview.5",
+        "SimdSkia.Imaging": "0.1.0-preview.5",
+        "SimdSkia.Text": "0.1.0-preview.5"
+      }
+    },
+    {
+      "id": "SimdSkia.Avalonia",
+      "version": "0.1.0-preview.5",
+      "bytes": 73594,
+      "sha256": "5c25d302d21a48e3acd3a2ef0426c29081bf7e87f094d29ba0a51310da42763f",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.5",
+        "SimdSkia.Cpu": "0.1.0-preview.5",
+        "SimdSkia.Imaging": "0.1.0-preview.5",
+        "SimdSkia.Text": "0.1.0-preview.5",
+        "Avalonia": "[12.1.4]",
+        "Clipper2": "[2.0.0]"
+      }
+    },
+    {
+      "id": "SimdSkia.Avalonia.Desktop",
+      "version": "0.1.0-preview.5",
+      "bytes": 545267,
+      "sha256": "175d6fda7104bef494661af5ce55825063c596e5239731dec01bbe59945ca8f5",
+      "dependencies": {
+        "SimdSkia.Avalonia": "0.1.0-preview.5",
+        "Avalonia": "[12.1.4]",
+        "Avalonia.FreeDesktop": "[12.1.4]",
+        "Avalonia.FreeDesktop.AtSpi": "[12.1.4]",
+        "Avalonia.Native": "[12.1.4]"
+      }
+    },
+    {
+      "id": "SimdSkia.Avalonia.Gpu",
+      "version": "0.1.0-preview.5",
+      "bytes": 26655,
+      "sha256": "c4f83966ce39764f54d5c3c238990b1bc1c66c9dc80f01fd3ea1b308d0412a3b",
+      "dependencies": {
+        "SimdSkia.Avalonia": "0.1.0-preview.5",
+        "SimdSkia.Gpu.Direct2D": "0.1.0-preview.5",
+        "SimdSkia.Gpu": "0.1.0-preview.5",
+        "Avalonia": "[12.1.4]"
+      }
+    },
+    {
+      "id": "SimdSkia",
+      "version": "0.1.0-preview.5",
+      "bytes": 5138,
+      "sha256": "aad9d35684d17c8b27f4589d5408c1caff4a5d2f593a8082c20786d3c458c23a",
+      "dependencies": {
+        "SimdSkia.Compatibility": "0.1.0-preview.5"
+      }
+    }
+  ],
+  "publicVerification": [],
+  "actualCiNativeAotConsumer": {
+    "NativeAot": true,
+    "Frames": 1,
+    "FontFamily": "站酷小薇体",
+    "LoadedModules": [
+      "PackageConsumer.exe",
+      "ntdll.dll",
+      "KERNEL32.DLL",
+      "KERNELBASE.dll",
+      "apphelp.dll",
+      "ADVAPI32.dll",
+      "msvcrt.dll",
+      "sechost.dll",
+      "RPCRT4.dll",
+      "ole32.dll",
+      "msvcp_win.dll",
+      "ucrtbase.dll",
+      "bcrypt.dll",
+      "GDI32.dll",
+      "win32u.dll",
+      "gdi32full.dll",
+      "USER32.dll",
+      "combase.dll",
+      "OLEAUT32.dll",
+      "IMM32.DLL",
+      "kernel.appcore.dll",
+      "bcryptPrimitives.dll",
+      "uxtheme.dll",
+      "icu.dll",
+      "MSCTF.dll",
+      "shcore.dll",
+      "clbcatq.dll",
+      "WinTypes.dll",
+      "rometadata.dll",
+      "Windows.UI.dll",
+      "Windows.UI.Immersive.dll",
+      "twinapi.dll",
+      "SHELL32.dll",
+      "XmlLite.dll",
+      "twinapi.appcore.dll",
+      "dataexchange.dll",
+      "dwmapi.dll",
+      "textinputframework.dll",
+      "CoreMessaging.dll",
+      "CoreUIComponents.dll",
+      "CRYPTBASE.DLL"
+    ],
+    "PixelsVerified": true
+  },
+  "actualCiDesktopPackageConsumer": {
+    "OS": "Microsoft Windows 10.0.26100",
+    "Architecture": "X64",
+    "Frames": "2",
+    "Font": "站酷小薇体",
+    "ClientSize": "1000, 720",
+    "NativeHandle": "327886",
+    "GPU": "",
+    "GpuCommands": "0",
+    "NativeSwapchainPresents": "0",
+    "CpuFallbackCommands": "0",
+    "CpuLayerCommands": "0",
+    "CompletedBatches": "0",
+    "GpuCompletionMs": "0",
+    "FallbackReasons": ""
+  },
+  "actualLocalPackageWindows": {
+    "cpu": {
+      "OS": "Microsoft Windows 10.0.26300",
+      "Architecture": "X64",
+      "Frames": "2",
+      "Font": "Microsoft YaHei UI",
+      "ClientSize": "1000, 720",
+      "NativeHandle": "2034450",
+      "GPU": "",
+      "GpuCommands": "0",
+      "NativeSwapchainPresents": "0",
+      "CpuFallbackCommands": "0",
+      "CpuLayerCommands": "0",
+      "CompletedBatches": "0",
+      "GpuCompletionMs": "0",
+      "FallbackReasons": ""
+    },
+    "direct2d": {
+      "OS": "Microsoft Windows 10.0.26300",
+      "Architecture": "X64",
+      "Frames": "2",
+      "Font": "Microsoft YaHei UI",
+      "ClientSize": "1000, 720",
+      "NativeHandle": "1378680",
+      "GPU": "Direct2D: NVIDIA GeForce GTX 1050 Ti",
+      "GpuCommands": "132",
+      "NativeSwapchainPresents": "2",
+      "CpuFallbackCommands": "0",
+      "CpuLayerCommands": "6",
+      "CompletedBatches": "2",
+      "GpuCompletionMs": "21.3771",
+      "FallbackReasons": ""
+    },
+    "vulkan": {
+      "OS": "Microsoft Windows 10.0.26300",
+      "Architecture": "X64",
+      "Frames": "2",
+      "Font": "Microsoft YaHei UI",
+      "ClientSize": "1000, 720",
+      "NativeHandle": "2755114",
+      "GPU": "Vulkan: NVIDIA GeForce GTX 1050 Ti",
+      "GpuCommands": "132",
+      "NativeSwapchainPresents": "0",
+      "CpuFallbackCommands": "0",
+      "CpuLayerCommands": "6",
+      "CompletedBatches": "2",
+      "GpuCompletionMs": "50.8518",
+      "FallbackReasons": ""
+    }
+  },
+  "actualThreePlatformWindows": [
+    {
+      "platform": "windows",
+      "mode": "jit",
+      "artifactId": "12411900950",
+      "result": {
+        "OS": "Microsoft Windows 10.0.26100",
+        "Architecture": "X64",
+        "Frames": "2",
+        "Font": "站酷小薇体",
+        "ClientSize": "600, 300",
+        "NativeHandle": "196808",
+        "GPU": "",
+        "GpuCommands": "0",
+        "NativeSwapchainPresents": "0",
+        "CpuFallbackCommands": "0",
+        "CpuLayerCommands": "0",
+        "CompletedBatches": "0",
+        "GpuCompletionMs": "0",
+        "FallbackReasons": ""
+      },
+      "nativeAot": false,
+      "screenshots": {
+        "window.png": "f5687f79c98efdd5ebe71ad2d669522f65b2dca380f40fec68184b9eb1a1eb55",
+        "presented.png": "b5b4046abd86405145dcab621fadb9670906e0f83e3f2cdda60dccf35886cdb0"
+      }
+    },
+    {
+      "platform": "windows",
+      "mode": "aot",
+      "artifactId": "12411900950",
+      "result": {
+        "OS": "Microsoft Windows 10.0.26100",
+        "Architecture": "X64",
+        "Frames": "3",
+        "Font": "站酷小薇体",
+        "ClientSize": "600, 300",
+        "NativeHandle": "262308",
+        "GPU": "",
+        "GpuCommands": "0",
+        "NativeSwapchainPresents": "0",
+        "CpuFallbackCommands": "0",
+        "CpuLayerCommands": "0",
+        "CompletedBatches": "0",
+        "GpuCompletionMs": "0",
+        "FallbackReasons": ""
+      },
+      "nativeAot": true,
+      "screenshots": {
+        "window.png": "f5687f79c98efdd5ebe71ad2d669522f65b2dca380f40fec68184b9eb1a1eb55",
+        "presented.png": "b5b4046abd86405145dcab621fadb9670906e0f83e3f2cdda60dccf35886cdb0"
+      }
+    },
+    {
+      "platform": "windows",
+      "mode": "nupkg",
+      "artifactId": "12411900950",
+      "result": {
+        "OS": "Microsoft Windows 10.0.26100",
+        "Architecture": "X64",
+        "Frames": "2",
+        "Font": "站酷小薇体",
+        "ClientSize": "1000, 720",
+        "NativeHandle": "262342",
+        "GPU": "",
+        "GpuCommands": "0",
+        "NativeSwapchainPresents": "0",
+        "CpuFallbackCommands": "0",
+        "CpuLayerCommands": "0",
+        "CompletedBatches": "0",
+        "GpuCompletionMs": "0",
+        "FallbackReasons": ""
+      },
+      "nativeAot": false,
+      "screenshots": {
+        "window.png": "81fbc5166c989a2748dddbbfde80223b19416730d6298f624f48bf9603a5c1c2",
+        "presented.png": "0d714e0f57731aa3d00471cd9ada6a6218a6d9613b670205f90020de83510cd2"
+      }
+    },
+    {
+      "platform": "linux",
+      "mode": "jit",
+      "artifactId": "12411940703",
+      "result": {
+        "OS": "Ubuntu 24.04.5 LTS",
+        "Architecture": "X64",
+        "Frames": "3",
+        "Font": "DejaVu Sans",
+        "ClientSize": "600, 300",
+        "NativeHandle": "2097167",
+        "GPU": "",
+        "GpuCommands": "0",
+        "NativeSwapchainPresents": "0",
+        "CpuFallbackCommands": "0",
+        "CpuLayerCommands": "0",
+        "CompletedBatches": "0",
+        "GpuCompletionMs": "0",
+        "FallbackReasons": ""
+      },
+      "nativeAot": false,
+      "screenshots": {
+        "window.png": "4ff21b8ed1e8953a2a77b771cdbd91a69811d058e57f555cbc25d7e87469af4a",
+        "presented.png": "bc5c036c36d0b464a21d1b5547232a403bcc4b2c76ab3b56a4e285f4a8ea3228"
+      }
+    },
+    {
+      "platform": "linux",
+      "mode": "aot",
+      "artifactId": "12411940703",
+      "result": {
+        "OS": "Ubuntu 24.04.5 LTS",
+        "Architecture": "X64",
+        "Frames": "3",
+        "Font": "DejaVu Sans",
+        "ClientSize": "600, 300",
+        "NativeHandle": "2097167",
+        "GPU": "",
+        "GpuCommands": "0",
+        "NativeSwapchainPresents": "0",
+        "CpuFallbackCommands": "0",
+        "CpuLayerCommands": "0",
+        "CompletedBatches": "0",
+        "GpuCompletionMs": "0",
+        "FallbackReasons": ""
+      },
+      "nativeAot": true,
+      "screenshots": {
+        "window.png": "4ff21b8ed1e8953a2a77b771cdbd91a69811d058e57f555cbc25d7e87469af4a",
+        "presented.png": "bc5c036c36d0b464a21d1b5547232a403bcc4b2c76ab3b56a4e285f4a8ea3228"
+      }
+    },
+    {
+      "platform": "linux",
+      "mode": "nupkg",
+      "artifactId": "12411940703",
+      "result": {
+        "OS": "Ubuntu 24.04.5 LTS",
+        "Architecture": "X64",
+        "Frames": "3",
+        "Font": "DejaVu Sans",
+        "ClientSize": "1000, 720",
+        "NativeHandle": "2097167",
+        "GPU": "",
+        "GpuCommands": "0",
+        "NativeSwapchainPresents": "0",
+        "CpuFallbackCommands": "0",
+        "CpuLayerCommands": "0",
+        "CompletedBatches": "0",
+        "GpuCompletionMs": "0",
+        "FallbackReasons": ""
+      },
+      "nativeAot": false,
+      "screenshots": {
+        "window.png": "9ff48dda182374560cb67267494730ab987a6adfebc4961b023c8d33c6fbe2c2",
+        "presented.png": "a947c6a32bb3b28f93a7aa86bd81c5cdfb0b3321b86a302d740448b5510112a5"
+      }
+    },
+    {
+      "platform": "macos",
+      "mode": "jit",
+      "artifactId": "12410918971",
+      "result": {
+        "OS": "macOS 26.6.2",
+        "Architecture": "Arm64",
+        "Frames": "3",
+        "Font": "Arial",
+        "ClientSize": "600, 300",
+        "NativeHandle": "45424034432",
+        "GPU": "",
+        "GpuCommands": "0",
+        "NativeSwapchainPresents": "0",
+        "CpuFallbackCommands": "0",
+        "CpuLayerCommands": "0",
+        "CompletedBatches": "0",
+        "GpuCompletionMs": "0",
+        "FallbackReasons": ""
+      },
+      "nativeAot": false,
+      "screenshots": {
+        "window.png": "fac0a73181b76581faecbaa208ba33cf1d6ed2abd1961babda724867cbd98164",
+        "presented.png": "7123c9fa9501b53279763c9991a2272bf6e1f52207a8b5b6f950b452dfd6e78f"
+      }
+    },
+    {
+      "platform": "macos",
+      "mode": "aot",
+      "artifactId": "12410918971",
+      "result": {
+        "OS": "macOS 26.6.2",
+        "Architecture": "Arm64",
+        "Frames": "2",
+        "Font": "Arial",
+        "ClientSize": "600, 300",
+        "NativeHandle": "36290544256",
+        "GPU": "",
+        "GpuCommands": "0",
+        "NativeSwapchainPresents": "0",
+        "CpuFallbackCommands": "0",
+        "CpuLayerCommands": "0",
+        "CompletedBatches": "0",
+        "GpuCompletionMs": "0",
+        "FallbackReasons": ""
+      },
+      "nativeAot": true,
+      "screenshots": {
+        "window.png": "fac0a73181b76581faecbaa208ba33cf1d6ed2abd1961babda724867cbd98164",
+        "presented.png": "7123c9fa9501b53279763c9991a2272bf6e1f52207a8b5b6f950b452dfd6e78f"
+      }
+    },
+    {
+      "platform": "macos",
+      "mode": "nupkg",
+      "artifactId": "12410918971",
+      "result": {
+        "OS": "macOS 26.6.2",
+        "Architecture": "Arm64",
+        "Frames": "3",
+        "Font": "Arial",
+        "ClientSize": "1000, 646",
+        "NativeHandle": "35420308096",
+        "GPU": "",
+        "GpuCommands": "0",
+        "NativeSwapchainPresents": "0",
+        "CpuFallbackCommands": "0",
+        "CpuLayerCommands": "0",
+        "CompletedBatches": "0",
+        "GpuCompletionMs": "0",
+        "FallbackReasons": ""
+      },
+      "nativeAot": false,
+      "screenshots": {
+        "window.png": "92aed83ccac63bce4790585c7bdedb444fa6c4497f48520a7424e0793f27ca4f",
+        "presented.png": "a8df10e2250351e60bdfd137a6e645c7dc3ec3ad155b4b71e24ec53e3f842759"
+      }
+    }
+  ],
+  "performance": {
+    "measuredSourceCommit": "2257b85dcec8b5ca98271eb4a63d7e573c43422c",
+    "renderingSourceUnchanged": true,
+    "report": "../VULKAN-OPTIMIZATION-2026-10-22.md",
+    "note": "Release changes versions, locks and documentation only. Performance measurements retain their own measured binary hashes. Smoke completion times above include cold initialization and are not performance comparisons."
+  },
+  "ciScreenshots": [
+    {
+      "path": "desktop-package-consumer/results/presented.png",
+      "sha256": "0d714e0f57731aa3d00471cd9ada6a6218a6d9613b670205f90020de83510cd2"
+    },
+    {
+      "path": "desktop-package-consumer/results/window.png",
+      "sha256": "81fbc5166c989a2748dddbbfde80223b19416730d6298f624f48bf9603a5c1c2"
+    },
+    {
+      "path": "nuget-consumer/window.png",
+      "sha256": "4ad6ba16c2c2445e6bd547b39abbb124478603864dba02d66efdd3297ff7d061"
+    }
+  ]
+}
