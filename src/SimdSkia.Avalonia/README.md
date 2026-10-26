@@ -20,7 +20,7 @@
 
 ## preview.7 更新了什么
 
-每个 NuGet 包都带有发行说明、本文使用说明和 `CHANGELOG.md`；完整内容见 [更新日志](https://github.com/hnlyf168/SimdSkia/blob/main/docs/RELEASE-NOTES.md)，实际公开下载状态见 [发布记录](https://github.com/hnlyf168/SimdSkia/blob/main/docs/NUGET-PREVIEW.md)。
+**11 个 `0.1.0-preview.7` 包已公开发布并逐项实际下载验证。** 每个包都带有 NuGet 发行说明、使用说明和 `CHANGELOG.md`；完整内容见 [更新日志](https://github.com/hnlyf168/SimdSkia/blob/main/docs/RELEASE-NOTES.md)，发布及三平台/AOT 验证证据见 [发布记录](https://github.com/hnlyf168/SimdSkia/blob/main/docs/NUGET-PREVIEW.md)。
 
 - **CPU 图片缩放**：新增精确八像素 AVX2 双线性采样；保留 SSE/标量与不支持 AVX2 的硬件及通用 AOT 回退，不要求应用修改调用方式。
 - **半透明画质**：修复图像 SourceOver 的透明度缩放和背景贡献舍入，统一现代最近邻、线性采样、直拷贝和裁剪图层回贴；同步修复 Vulkan 的 CoverageClip 采样分流。

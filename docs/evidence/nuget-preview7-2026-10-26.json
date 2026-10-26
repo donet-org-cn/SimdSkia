@@ -1,0 +1,637 @@
+{
+  "version": "0.1.0-preview.7",
+  "tag": "v0.1.0-preview.7",
+  "sourceCommit": "1490f164084c24c1bd3f3dbaf727d7598a14abee",
+  "checkedUtc": "2026-10-26T15:15:31.403468+00:00",
+  "publicStatus": "public-downloads-verified",
+  "engineCi": {
+    "managed.yml": {
+      "id": 40343999682,
+      "head_sha": "8f2e9458f96501fb31d78618a44f47916672c4d6",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/hnlyf168/SimdSkia/actions/runs/40343999682"
+    },
+    "desktop.yml": {
+      "id": 40343999518,
+      "head_sha": "8f2e9458f96501fb31d78618a44f47916672c4d6",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/hnlyf168/SimdSkia/actions/runs/40343999518"
+    },
+    "native-aot.yml": {
+      "id": 40343999721,
+      "head_sha": "8f2e9458f96501fb31d78618a44f47916672c4d6",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/hnlyf168/SimdSkia/actions/runs/40343999721"
+    }
+  },
+  "finalCi": {
+    "managed.yml": {
+      "id": 40344702599,
+      "sha": "1490f164084c24c1bd3f3dbaf727d7598a14abee",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/hnlyf168/SimdSkia/actions/runs/40344702599",
+      "jobs": [
+        {
+          "id": 121648410950,
+          "name": "managed (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "active": [],
+          "failed": []
+        },
+        {
+          "id": 121648411467,
+          "name": "managed (windows-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "active": [],
+          "failed": []
+        },
+        {
+          "id": 121648411840,
+          "name": "managed (macos-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "active": [],
+          "failed": []
+        }
+      ]
+    },
+    "desktop.yml": {
+      "id": 40344702666,
+      "sha": "1490f164084c24c1bd3f3dbaf727d7598a14abee",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/hnlyf168/SimdSkia/actions/runs/40344702666",
+      "jobs": [
+        {
+          "id": 121648411762,
+          "name": "desktop (windows-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "active": [],
+          "failed": []
+        },
+        {
+          "id": 121648412432,
+          "name": "desktop (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "active": [],
+          "failed": []
+        },
+        {
+          "id": 121648414375,
+          "name": "desktop (macos-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "active": [],
+          "failed": []
+        }
+      ]
+    },
+    "native-aot.yml": {
+      "id": 40344702836,
+      "sha": "1490f164084c24c1bd3f3dbaf727d7598a14abee",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/hnlyf168/SimdSkia/actions/runs/40344702836",
+      "jobs": [
+        {
+          "id": 121648411534,
+          "name": "aot",
+          "status": "completed",
+          "conclusion": "success",
+          "active": [],
+          "failed": []
+        }
+      ]
+    },
+    "nuget-preview.yml": {
+      "id": 40344837096,
+      "sha": "1490f164084c24c1bd3f3dbaf727d7598a14abee",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/hnlyf168/SimdSkia/actions/runs/40344837096",
+      "jobs": [
+        {
+          "id": 121648895711,
+          "name": "build",
+          "status": "completed",
+          "conclusion": "success",
+          "active": [],
+          "failed": []
+        },
+        {
+          "id": 121651176462,
+          "name": "publish",
+          "status": "completed",
+          "conclusion": "success",
+          "active": [],
+          "failed": []
+        }
+      ]
+    }
+  },
+  "packages": [
+    {
+      "id": "SimdSkia.Core",
+      "version": "0.1.0-preview.7",
+      "bytes": 33743,
+      "sha256": "802977f9d88f65aa4e0346f4e91db48d11906645cedf5699fc5af07cffdeee85",
+      "dependencies": {}
+    },
+    {
+      "id": "SimdSkia.Cpu",
+      "version": "0.1.0-preview.7",
+      "bytes": 50134,
+      "sha256": "ae2071a998eb5e4c6f76667ee9466ce44f459c6862cb190a2920d1f7ae22b5bb",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.7"
+      }
+    },
+    {
+      "id": "SimdSkia.Text",
+      "version": "0.1.0-preview.7",
+      "bytes": 27905,
+      "sha256": "9e54ec768d73452590128babbd5713217e2114a898029e39157250fdb7bb2967",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.7"
+      }
+    },
+    {
+      "id": "SimdSkia.Imaging",
+      "version": "0.1.0-preview.7",
+      "bytes": 39546,
+      "sha256": "d6cf7f230cc1ce9485bbf27657c25c9414ba5783c7718f11ab256ad9fa0066e4",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.7",
+        "JpegLibrary": "[0.4.32]"
+      }
+    },
+    {
+      "id": "SimdSkia.Gpu",
+      "version": "0.1.0-preview.7",
+      "bytes": 68559,
+      "sha256": "4e30bb93ad5569b9eb8cfe44411ae22070b2380aa679f269a7bbf3daae85e69e",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.7"
+      }
+    },
+    {
+      "id": "SimdSkia.Gpu.Direct2D",
+      "version": "0.1.0-preview.7",
+      "bytes": 25927,
+      "sha256": "ea8abd159833b08a5ae60e88f1a6698cc969d1789d38352d4e23c1549a1cae14",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.7"
+      }
+    },
+    {
+      "id": "SimdSkia.Compatibility",
+      "version": "0.1.0-preview.7",
+      "bytes": 39118,
+      "sha256": "7138e6e82336b0908e145f5c09ed34eb937e981d54cd9b84887613ce742f0ec2",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.7",
+        "SimdSkia.Cpu": "0.1.0-preview.7",
+        "SimdSkia.Gpu": "0.1.0-preview.7",
+        "SimdSkia.Imaging": "0.1.0-preview.7",
+        "SimdSkia.Text": "0.1.0-preview.7"
+      }
+    },
+    {
+      "id": "SimdSkia.Avalonia",
+      "version": "0.1.0-preview.7",
+      "bytes": 86157,
+      "sha256": "bbf7695797ad36e4e3493bf864f609ec70ee89a6117fa750c5d50d81760f1850",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.7",
+        "SimdSkia.Cpu": "0.1.0-preview.7",
+        "SimdSkia.Imaging": "0.1.0-preview.7",
+        "SimdSkia.Text": "0.1.0-preview.7",
+        "Avalonia": "[12.1.4]",
+        "Clipper2": "[2.0.0]"
+      }
+    },
+    {
+      "id": "SimdSkia.Avalonia.Desktop",
+      "version": "0.1.0-preview.7",
+      "bytes": 551183,
+      "sha256": "d93e7687decc0dfd89e54f6bff67bc936a29ca9dcf525b41d0e62964e2002364",
+      "dependencies": {
+        "SimdSkia.Avalonia": "0.1.0-preview.7",
+        "Avalonia": "[12.1.4]",
+        "Avalonia.FreeDesktop": "[12.1.4]",
+        "Avalonia.FreeDesktop.AtSpi": "[12.1.4]",
+        "Avalonia.Native": "[12.1.4]"
+      }
+    },
+    {
+      "id": "SimdSkia.Avalonia.Gpu",
+      "version": "0.1.0-preview.7",
+      "bytes": 32563,
+      "sha256": "f3085904c95823b47cb1906937d24e34a3be9b197fc3be272d3be94f6e7e808b",
+      "dependencies": {
+        "SimdSkia.Avalonia": "0.1.0-preview.7",
+        "SimdSkia.Gpu.Direct2D": "0.1.0-preview.7",
+        "SimdSkia.Gpu": "0.1.0-preview.7",
+        "Avalonia": "[12.1.4]"
+      }
+    },
+    {
+      "id": "SimdSkia",
+      "version": "0.1.0-preview.7",
+      "bytes": 9283,
+      "sha256": "a440057738c1383a6b0f95a76a212cf6ab12e88c34bc3bd0e5ee4c6a789d6472",
+      "dependencies": {
+        "SimdSkia.Compatibility": "0.1.0-preview.7"
+      }
+    }
+  ],
+  "packagedReleaseDocs": [
+    {
+      "id": "SimdSkia.Core",
+      "readmeSha256": "d8b6f7453579fd3df250e2f63fff35d2120206b3bbbcd8886aa9f499a92ebc81",
+      "changelogSha256": "d3204ecec6b7da4f017c41cfd4a1f089ef36dbcb183f3f29830db4d45f8ae2b0",
+      "releaseNotes": "Preview 7 / 预览版 7：新增精确八像素 AVX2 双线性采样及标量回退；修复半透明图片 SourceOver 舍入、现代最近邻/图层回贴及 Vulkan CoverageClip 分流，核心图片原版画质对照 24/24 通过。Windows x64 同机 1024×768 四类图片实测 5.412–6.758 ms，原版 6.804–7.714 ms；仅适用于报告场景，不代表所有 Avalonia 页面或 GPU。常驻内存未见明显改善，完整字体/路径/整页画质和 API 仍有缺口，macOS GPU 未实现。Avalonia 固定 12.1.4。完整更新说明、测试和限制见包内 CHANGELOG.md、README.md 及 https://github.com/hnlyf168/SimdSkia/blob/main/docs/RELEASE-NOTES.md",
+      "readmeBytes": 4703,
+      "changelogBytes": 4688
+    },
+    {
+      "id": "SimdSkia.Cpu",
+      "readmeSha256": "d8b6f7453579fd3df250e2f63fff35d2120206b3bbbcd8886aa9f499a92ebc81",
+      "changelogSha256": "d3204ecec6b7da4f017c41cfd4a1f089ef36dbcb183f3f29830db4d45f8ae2b0",
+      "releaseNotes": "Preview 7 / 预览版 7：新增精确八像素 AVX2 双线性采样及标量回退；修复半透明图片 SourceOver 舍入、现代最近邻/图层回贴及 Vulkan CoverageClip 分流，核心图片原版画质对照 24/24 通过。Windows x64 同机 1024×768 四类图片实测 5.412–6.758 ms，原版 6.804–7.714 ms；仅适用于报告场景，不代表所有 Avalonia 页面或 GPU。常驻内存未见明显改善，完整字体/路径/整页画质和 API 仍有缺口，macOS GPU 未实现。Avalonia 固定 12.1.4。完整更新说明、测试和限制见包内 CHANGELOG.md、README.md 及 https://github.com/hnlyf168/SimdSkia/blob/main/docs/RELEASE-NOTES.md",
+      "readmeBytes": 4703,
+      "changelogBytes": 4688
+    },
+    {
+      "id": "SimdSkia.Text",
+      "readmeSha256": "d8b6f7453579fd3df250e2f63fff35d2120206b3bbbcd8886aa9f499a92ebc81",
+      "changelogSha256": "d3204ecec6b7da4f017c41cfd4a1f089ef36dbcb183f3f29830db4d45f8ae2b0",
+      "releaseNotes": "Preview 7 / 预览版 7：新增精确八像素 AVX2 双线性采样及标量回退；修复半透明图片 SourceOver 舍入、现代最近邻/图层回贴及 Vulkan CoverageClip 分流，核心图片原版画质对照 24/24 通过。Windows x64 同机 1024×768 四类图片实测 5.412–6.758 ms，原版 6.804–7.714 ms；仅适用于报告场景，不代表所有 Avalonia 页面或 GPU。常驻内存未见明显改善，完整字体/路径/整页画质和 API 仍有缺口，macOS GPU 未实现。Avalonia 固定 12.1.4。完整更新说明、测试和限制见包内 CHANGELOG.md、README.md 及 https://github.com/hnlyf168/SimdSkia/blob/main/docs/RELEASE-NOTES.md",
+      "readmeBytes": 4703,
+      "changelogBytes": 4688
+    },
+    {
+      "id": "SimdSkia.Imaging",
+      "readmeSha256": "d8b6f7453579fd3df250e2f63fff35d2120206b3bbbcd8886aa9f499a92ebc81",
+      "changelogSha256": "d3204ecec6b7da4f017c41cfd4a1f089ef36dbcb183f3f29830db4d45f8ae2b0",
+      "releaseNotes": "Preview 7 / 预览版 7：新增精确八像素 AVX2 双线性采样及标量回退；修复半透明图片 SourceOver 舍入、现代最近邻/图层回贴及 Vulkan CoverageClip 分流，核心图片原版画质对照 24/24 通过。Windows x64 同机 1024×768 四类图片实测 5.412–6.758 ms，原版 6.804–7.714 ms；仅适用于报告场景，不代表所有 Avalonia 页面或 GPU。常驻内存未见明显改善，完整字体/路径/整页画质和 API 仍有缺口，macOS GPU 未实现。Avalonia 固定 12.1.4。完整更新说明、测试和限制见包内 CHANGELOG.md、README.md 及 https://github.com/hnlyf168/SimdSkia/blob/main/docs/RELEASE-NOTES.md",
+      "readmeBytes": 4703,
+      "changelogBytes": 4688
+    },
+    {
+      "id": "SimdSkia.Gpu",
+      "readmeSha256": "d8b6f7453579fd3df250e2f63fff35d2120206b3bbbcd8886aa9f499a92ebc81",
+      "changelogSha256": "d3204ecec6b7da4f017c41cfd4a1f089ef36dbcb183f3f29830db4d45f8ae2b0",
+      "releaseNotes": "Preview 7 / 预览版 7：新增精确八像素 AVX2 双线性采样及标量回退；修复半透明图片 SourceOver 舍入、现代最近邻/图层回贴及 Vulkan CoverageClip 分流，核心图片原版画质对照 24/24 通过。Windows x64 同机 1024×768 四类图片实测 5.412–6.758 ms，原版 6.804–7.714 ms；仅适用于报告场景，不代表所有 Avalonia 页面或 GPU。常驻内存未见明显改善，完整字体/路径/整页画质和 API 仍有缺口，macOS GPU 未实现。Avalonia 固定 12.1.4。完整更新说明、测试和限制见包内 CHANGELOG.md、README.md 及 https://github.com/hnlyf168/SimdSkia/blob/main/docs/RELEASE-NOTES.md",
+      "readmeBytes": 4703,
+      "changelogBytes": 4688
+    },
+    {
+      "id": "SimdSkia.Gpu.Direct2D",
+      "readmeSha256": "d8b6f7453579fd3df250e2f63fff35d2120206b3bbbcd8886aa9f499a92ebc81",
+      "changelogSha256": "d3204ecec6b7da4f017c41cfd4a1f089ef36dbcb183f3f29830db4d45f8ae2b0",
+      "releaseNotes": "Preview 7 / 预览版 7：新增精确八像素 AVX2 双线性采样及标量回退；修复半透明图片 SourceOver 舍入、现代最近邻/图层回贴及 Vulkan CoverageClip 分流，核心图片原版画质对照 24/24 通过。Windows x64 同机 1024×768 四类图片实测 5.412–6.758 ms，原版 6.804–7.714 ms；仅适用于报告场景，不代表所有 Avalonia 页面或 GPU。常驻内存未见明显改善，完整字体/路径/整页画质和 API 仍有缺口，macOS GPU 未实现。Avalonia 固定 12.1.4。完整更新说明、测试和限制见包内 CHANGELOG.md、README.md 及 https://github.com/hnlyf168/SimdSkia/blob/main/docs/RELEASE-NOTES.md",
+      "readmeBytes": 4703,
+      "changelogBytes": 4688
+    },
+    {
+      "id": "SimdSkia.Compatibility",
+      "readmeSha256": "d8b6f7453579fd3df250e2f63fff35d2120206b3bbbcd8886aa9f499a92ebc81",
+      "changelogSha256": "d3204ecec6b7da4f017c41cfd4a1f089ef36dbcb183f3f29830db4d45f8ae2b0",
+      "releaseNotes": "Preview 7 / 预览版 7：新增精确八像素 AVX2 双线性采样及标量回退；修复半透明图片 SourceOver 舍入、现代最近邻/图层回贴及 Vulkan CoverageClip 分流，核心图片原版画质对照 24/24 通过。Windows x64 同机 1024×768 四类图片实测 5.412–6.758 ms，原版 6.804–7.714 ms；仅适用于报告场景，不代表所有 Avalonia 页面或 GPU。常驻内存未见明显改善，完整字体/路径/整页画质和 API 仍有缺口，macOS GPU 未实现。Avalonia 固定 12.1.4。完整更新说明、测试和限制见包内 CHANGELOG.md、README.md 及 https://github.com/hnlyf168/SimdSkia/blob/main/docs/RELEASE-NOTES.md",
+      "readmeBytes": 4703,
+      "changelogBytes": 4688
+    },
+    {
+      "id": "SimdSkia.Avalonia",
+      "readmeSha256": "789724bd784620d4a56e2b4ebd3eb1a3b11ff111551c05702283fbc0c80fd12b",
+      "changelogSha256": "d3204ecec6b7da4f017c41cfd4a1f089ef36dbcb183f3f29830db4d45f8ae2b0",
+      "releaseNotes": "Preview 7 / 预览版 7：新增精确八像素 AVX2 双线性采样及标量回退；修复半透明图片 SourceOver 舍入、现代最近邻/图层回贴及 Vulkan CoverageClip 分流，核心图片原版画质对照 24/24 通过。Windows x64 同机 1024×768 四类图片实测 5.412–6.758 ms，原版 6.804–7.714 ms；仅适用于报告场景，不代表所有 Avalonia 页面或 GPU。常驻内存未见明显改善，完整字体/路径/整页画质和 API 仍有缺口，macOS GPU 未实现。Avalonia 固定 12.1.4。完整更新说明、测试和限制见包内 CHANGELOG.md、README.md 及 https://github.com/hnlyf168/SimdSkia/blob/main/docs/RELEASE-NOTES.md",
+      "readmeBytes": 26662,
+      "changelogBytes": 4688
+    },
+    {
+      "id": "SimdSkia.Avalonia.Desktop",
+      "readmeSha256": "789724bd784620d4a56e2b4ebd3eb1a3b11ff111551c05702283fbc0c80fd12b",
+      "changelogSha256": "d3204ecec6b7da4f017c41cfd4a1f089ef36dbcb183f3f29830db4d45f8ae2b0",
+      "releaseNotes": "Preview 7 / 预览版 7：新增精确八像素 AVX2 双线性采样及标量回退；修复半透明图片 SourceOver 舍入、现代最近邻/图层回贴及 Vulkan CoverageClip 分流，核心图片原版画质对照 24/24 通过。Windows x64 同机 1024×768 四类图片实测 5.412–6.758 ms，原版 6.804–7.714 ms；仅适用于报告场景，不代表所有 Avalonia 页面或 GPU。常驻内存未见明显改善，完整字体/路径/整页画质和 API 仍有缺口，macOS GPU 未实现。Avalonia 固定 12.1.4。完整更新说明、测试和限制见包内 CHANGELOG.md、README.md 及 https://github.com/hnlyf168/SimdSkia/blob/main/docs/RELEASE-NOTES.md",
+      "readmeBytes": 26662,
+      "changelogBytes": 4688
+    },
+    {
+      "id": "SimdSkia.Avalonia.Gpu",
+      "readmeSha256": "789724bd784620d4a56e2b4ebd3eb1a3b11ff111551c05702283fbc0c80fd12b",
+      "changelogSha256": "d3204ecec6b7da4f017c41cfd4a1f089ef36dbcb183f3f29830db4d45f8ae2b0",
+      "releaseNotes": "Preview 7 / 预览版 7：新增精确八像素 AVX2 双线性采样及标量回退；修复半透明图片 SourceOver 舍入、现代最近邻/图层回贴及 Vulkan CoverageClip 分流，核心图片原版画质对照 24/24 通过。Windows x64 同机 1024×768 四类图片实测 5.412–6.758 ms，原版 6.804–7.714 ms；仅适用于报告场景，不代表所有 Avalonia 页面或 GPU。常驻内存未见明显改善，完整字体/路径/整页画质和 API 仍有缺口，macOS GPU 未实现。Avalonia 固定 12.1.4。完整更新说明、测试和限制见包内 CHANGELOG.md、README.md 及 https://github.com/hnlyf168/SimdSkia/blob/main/docs/RELEASE-NOTES.md",
+      "readmeBytes": 26662,
+      "changelogBytes": 4688
+    },
+    {
+      "id": "SimdSkia",
+      "readmeSha256": "d8b6f7453579fd3df250e2f63fff35d2120206b3bbbcd8886aa9f499a92ebc81",
+      "changelogSha256": "d3204ecec6b7da4f017c41cfd4a1f089ef36dbcb183f3f29830db4d45f8ae2b0",
+      "releaseNotes": "Preview 7 / 预览版 7：新增精确八像素 AVX2 双线性采样及标量回退；修复半透明图片 SourceOver 舍入、现代最近邻/图层回贴及 Vulkan CoverageClip 分流，核心图片原版画质对照 24/24 通过。Windows x64 同机 1024×768 四类图片实测 5.412–6.758 ms，原版 6.804–7.714 ms；仅适用于报告场景，不代表所有 Avalonia 页面或 GPU。常驻内存未见明显改善，完整字体/路径/整页画质和 API 仍有缺口，macOS GPU 未实现。Avalonia 固定 12.1.4。完整更新说明、测试和限制见包内 CHANGELOG.md、README.md 及 https://github.com/hnlyf168/SimdSkia/blob/main/docs/RELEASE-NOTES.md",
+      "readmeBytes": 4703,
+      "changelogBytes": 4688
+    }
+  ],
+  "desktop": [
+    {
+      "artifact": 12661760429,
+      "path": "artifact-12661760429\\cross-platform\\result.txt",
+      "os": "Microsoft Windows 10.0.26100",
+      "architecture": "X64",
+      "frames": "2",
+      "font": "站酷小薇体",
+      "runtime": "NativeAot=False\nNativeModules=CrossPlatform.exe,ntdll.dll,KERNEL32.DLL,KERNELBASE.dll,apphelp.dll,SHELL32.dll,msvcp_win.dll,ucrtbase.dll,USER32.dll,win32u.dll,GDI32.dll,gdi32full.dll,wintypes.dll,combase.dll,RPCRT4.dll,ADVAPI32.dll,msvcrt.dll,sechost.dll,IMM32.DLL,hostfxr.dll,hostpolicy.dll,coreclr.dll,ole32.dll,OLEAUT32.dll,bcryptPrimitives.dll,kernel.appcore.dll,System.Private.CoreLib.dll,clrjit.dll,icu.dll,CrossPlatform.dll,System.Runtime.dll,SimdSkia.Avalonia.Gpu.dll,uxtheme.dll,System.Linq.dll,SimdSkia.Avalonia.dll,Avalonia.Controls.dll,Avalonia.Base.dll,System.ObjectModel.dll,SimdSkia.Avalonia.Desktop.dll,System.Collections.Concurrent.dll,System.Threading.dll,SimdSkia.Core.dll,System.Collections.dll,Avalonia.Native.dll,MicroCom.Runtime.dll,System.Runtime.InteropServices.dll,Avalonia.X11.dll,Avalonia.Win32.dll,System.Numerics.Vectors.dll,Avalonia.OpenGL.dll,System.ComponentModel.Primitives.dll,System.Private.Uri.dll,System.Memory.dll,BCrypt.dll,SimdSkia.Text.dll,Microsoft.Win32.Primitives.dll,System.ComponentModel.dll,MSCTF.dll,System.Threading.Thread.dll,Avalonia.Vulkan.dll,shcore.dll,clbcatq.dll,rometadata.dll,Windows.UI.dll,Windows.UI.Immersive.dll,Avalonia.Themes.Fluent.dll,Avalonia.Markup.Xaml.dll,System.ComponentModel.TypeConverter.dll,Avalonia.Dialogs.dll,System.Diagnostics.TraceSource.dll,SimdSkia.Cpu.dll,Clipper2Lib.dll,netstandard.dll,Avalonia.Win32.Automation.dll,Avalonia.MicroCom.dll,twinapi.dll,XmlLite.dll,twinapi.appcore.dll,System.Diagnostics.DiagnosticSource.dll,dataexchange.dll,dwmapi.dll,System.Runtime.Intrinsics.dll,Avalonia.Markup.dll,textinputframework.dll,CoreMessaging.dll,CoreUIComponents.dll,CRYPTBASE.DLL,System.Console.dll,System.IO.Compression.dll,System.Diagnostics.Process.dll,System.Collections.NonGeneric.dll,SimdSkia.Imaging.dll\nManagedGlyphAtlasBuilds=0\nManagedGlyphAtlasHits=0\n",
+      "images": [
+        {
+          "path": "artifact-12661760429\\cross-platform\\presented.png",
+          "sha256": "b5b4046abd86405145dcab621fadb9670906e0f83e3f2cdda60dccf35886cdb0"
+        },
+        {
+          "path": "artifact-12661760429\\cross-platform\\window.png",
+          "sha256": "f5687f79c98efdd5ebe71ad2d669522f65b2dca380f40fec68184b9eb1a1eb55"
+        }
+      ]
+    },
+    {
+      "artifact": 12661760429,
+      "path": "artifact-12661760429\\desktop-package-consumer\\results\\result.txt",
+      "os": "Microsoft Windows 10.0.26100",
+      "architecture": "X64",
+      "frames": "2",
+      "font": "站酷小薇体",
+      "runtime": "NativeAot=False\nNativeModules=dotnet.exe,ntdll.dll,KERNEL32.DLL,KERNELBASE.dll,ucrtbase.dll,hostfxr.dll,ADVAPI32.dll,msvcrt.dll,sechost.dll,RPCRT4.dll,hostpolicy.dll,coreclr.dll,ole32.dll,msvcp_win.dll,GDI32.dll,win32u.dll,gdi32full.dll,USER32.dll,combase.dll,OLEAUT32.dll,IMM32.DLL,bcryptPrimitives.dll,kernel.appcore.dll,System.Private.CoreLib.dll,clrjit.dll,icu.dll,CrossPlatform.dll,System.Runtime.dll,SimdSkia.Avalonia.Gpu.dll,uxtheme.dll,System.Linq.dll,SimdSkia.Avalonia.dll,Avalonia.Controls.dll,Avalonia.Base.dll,System.ObjectModel.dll,SimdSkia.Avalonia.Desktop.dll,System.Collections.Concurrent.dll,System.Threading.dll,SimdSkia.Core.dll,System.Collections.dll,Avalonia.Native.dll,MicroCom.Runtime.dll,System.Runtime.InteropServices.dll,Avalonia.X11.dll,Avalonia.Win32.dll,System.Numerics.Vectors.dll,Avalonia.OpenGL.dll,System.ComponentModel.Primitives.dll,System.Private.Uri.dll,System.Memory.dll,BCrypt.dll,SimdSkia.Text.dll,Microsoft.Win32.Primitives.dll,System.ComponentModel.dll,MSCTF.dll,System.Threading.Thread.dll,Avalonia.Vulkan.dll,shcore.dll,clbcatq.dll,WinTypes.dll,rometadata.dll,Windows.UI.dll,Windows.UI.Immersive.dll,Avalonia.Themes.Fluent.dll,Avalonia.Markup.Xaml.dll,System.ComponentModel.TypeConverter.dll,Avalonia.Dialogs.dll,System.Diagnostics.TraceSource.dll,SimdSkia.Cpu.dll,Clipper2Lib.dll,netstandard.dll,Avalonia.Win32.Automation.dll,Avalonia.MicroCom.dll,twinapi.dll,SHELL32.dll,XmlLite.dll,twinapi.appcore.dll,System.Diagnostics.DiagnosticSource.dll,dataexchange.dll,System.Runtime.Intrinsics.dll,dwmapi.dll,Avalonia.Markup.dll,textinputframework.dll,CoreMessaging.dll,CoreUIComponents.dll,CRYPTBASE.DLL,System.Console.dll,System.IO.Compression.dll,System.Diagnostics.Process.dll,System.Collections.NonGeneric.dll,SimdSkia.Imaging.dll\nManagedGlyphAtlasBuilds=0\nManagedGlyphAtlasHits=0\n",
+      "images": [
+        {
+          "path": "artifact-12661760429\\desktop-package-consumer\\results\\presented.png",
+          "sha256": "fe2c658210b05c1209032c44e698824ae8bf059f61438556c357de6b744141a5"
+        },
+        {
+          "path": "artifact-12661760429\\desktop-package-consumer\\results\\window.png",
+          "sha256": "4cf7aa164124d6260c8f7ef878b8333e2b17c179a301c51d236e88971ab3ff31"
+        }
+      ]
+    },
+    {
+      "artifact": 12661760429,
+      "path": "artifact-12661760429\\cross-platform\\aot\\result.txt",
+      "os": "Microsoft Windows 10.0.26100",
+      "architecture": "X64",
+      "frames": "2",
+      "font": "站酷小薇体",
+      "runtime": "NativeAot=True\nNativeModules=CrossPlatform.exe,ntdll.dll,KERNEL32.DLL,KERNELBASE.dll,apphelp.dll,ADVAPI32.dll,msvcrt.dll,sechost.dll,RPCRT4.dll,ole32.dll,msvcp_win.dll,ucrtbase.dll,bcrypt.dll,GDI32.dll,win32u.dll,gdi32full.dll,USER32.dll,combase.dll,OLEAUT32.dll,IMM32.DLL,kernel.appcore.dll,bcryptPrimitives.dll,uxtheme.dll,icu.dll,MSCTF.dll,shcore.dll,clbcatq.dll,WinTypes.dll,rometadata.dll,Windows.UI.dll,Windows.UI.Immersive.dll,twinapi.dll,SHELL32.dll,XmlLite.dll,twinapi.appcore.dll,dataexchange.dll,dwmapi.dll,textinputframework.dll,CoreMessaging.dll,CoreUIComponents.dll,CRYPTBASE.DLL\nManagedGlyphAtlasBuilds=0\nManagedGlyphAtlasHits=0\n",
+      "images": [
+        {
+          "path": "artifact-12661760429\\cross-platform\\aot\\presented.png",
+          "sha256": "b5b4046abd86405145dcab621fadb9670906e0f83e3f2cdda60dccf35886cdb0"
+        },
+        {
+          "path": "artifact-12661760429\\cross-platform\\aot\\window.png",
+          "sha256": "f5687f79c98efdd5ebe71ad2d669522f65b2dca380f40fec68184b9eb1a1eb55"
+        }
+      ]
+    },
+    {
+      "artifact": 12660728314,
+      "path": "artifact-12660728314\\cross-platform\\result.txt",
+      "os": "Ubuntu 26.04.1 LTS",
+      "architecture": "X64",
+      "frames": "3",
+      "font": "DejaVu Sans",
+      "runtime": "NativeAot=False\nNativeModules=\nManagedGlyphAtlasBuilds=0\nManagedGlyphAtlasHits=0\n",
+      "images": [
+        {
+          "path": "artifact-12660728314\\cross-platform\\presented.png",
+          "sha256": "bc5c036c36d0b464a21d1b5547232a403bcc4b2c76ab3b56a4e285f4a8ea3228"
+        },
+        {
+          "path": "artifact-12660728314\\cross-platform\\window.png",
+          "sha256": "4ff21b8ed1e8953a2a77b771cdbd91a69811d058e57f555cbc25d7e87469af4a"
+        }
+      ]
+    },
+    {
+      "artifact": 12660728314,
+      "path": "artifact-12660728314\\desktop-package-consumer\\results\\result.txt",
+      "os": "Ubuntu 26.04.1 LTS",
+      "architecture": "X64",
+      "frames": "3",
+      "font": "DejaVu Sans",
+      "runtime": "NativeAot=False\nNativeModules=\nManagedGlyphAtlasBuilds=0\nManagedGlyphAtlasHits=0\n",
+      "images": [
+        {
+          "path": "artifact-12660728314\\desktop-package-consumer\\results\\presented.png",
+          "sha256": "a3196dd80107e06ccb9aa26aaee6c1247d00742fac332872f74be26fa7678082"
+        },
+        {
+          "path": "artifact-12660728314\\desktop-package-consumer\\results\\window.png",
+          "sha256": "f58ed4edeff5308be6ffbe111e2f6905bae2779a0154c735a9025d10e0b0aea1"
+        }
+      ]
+    },
+    {
+      "artifact": 12660728314,
+      "path": "artifact-12660728314\\cross-platform\\aot\\result.txt",
+      "os": "Ubuntu 26.04.1 LTS",
+      "architecture": "X64",
+      "frames": "3",
+      "font": "DejaVu Sans",
+      "runtime": "NativeAot=True\nNativeModules=\nManagedGlyphAtlasBuilds=0\nManagedGlyphAtlasHits=0\n",
+      "images": [
+        {
+          "path": "artifact-12660728314\\cross-platform\\aot\\presented.png",
+          "sha256": "bc5c036c36d0b464a21d1b5547232a403bcc4b2c76ab3b56a4e285f4a8ea3228"
+        },
+        {
+          "path": "artifact-12660728314\\cross-platform\\aot\\window.png",
+          "sha256": "4ff21b8ed1e8953a2a77b771cdbd91a69811d058e57f555cbc25d7e87469af4a"
+        }
+      ]
+    },
+    {
+      "artifact": 12660663597,
+      "path": "artifact-12660663597\\cross-platform\\result.txt",
+      "os": "macOS 26.6.2",
+      "architecture": "Arm64",
+      "frames": "2",
+      "font": "Arial",
+      "runtime": "NativeAot=False\nNativeModules=\nManagedGlyphAtlasBuilds=0\nManagedGlyphAtlasHits=0\n",
+      "images": [
+        {
+          "path": "artifact-12660663597\\cross-platform\\presented.png",
+          "sha256": "7123c9fa9501b53279763c9991a2272bf6e1f52207a8b5b6f950b452dfd6e78f"
+        },
+        {
+          "path": "artifact-12660663597\\cross-platform\\window.png",
+          "sha256": "fac0a73181b76581faecbaa208ba33cf1d6ed2abd1961babda724867cbd98164"
+        }
+      ]
+    },
+    {
+      "artifact": 12660663597,
+      "path": "artifact-12660663597\\desktop-package-consumer\\results\\result.txt",
+      "os": "macOS 26.6.2",
+      "architecture": "Arm64",
+      "frames": "2",
+      "font": "Arial",
+      "runtime": "NativeAot=False\nNativeModules=\nManagedGlyphAtlasBuilds=0\nManagedGlyphAtlasHits=0\n",
+      "images": [
+        {
+          "path": "artifact-12660663597\\desktop-package-consumer\\results\\presented.png",
+          "sha256": "acd0b93115d7c329f9b7a3805eb3004e2f708bb2db0d1a4a50f4a60c302c67b3"
+        },
+        {
+          "path": "artifact-12660663597\\desktop-package-consumer\\results\\window.png",
+          "sha256": "d4b11183cdfa21c13fcd6dd42a775fc5bf7d09bde06d714197482c32ff7ac194"
+        }
+      ]
+    },
+    {
+      "artifact": 12660663597,
+      "path": "artifact-12660663597\\cross-platform\\aot\\result.txt",
+      "os": "macOS 26.6.2",
+      "architecture": "Arm64",
+      "frames": "2",
+      "font": "Arial",
+      "runtime": "NativeAot=True\nNativeModules=\nManagedGlyphAtlasBuilds=0\nManagedGlyphAtlasHits=0\n",
+      "images": [
+        {
+          "path": "artifact-12660663597\\cross-platform\\aot\\presented.png",
+          "sha256": "7123c9fa9501b53279763c9991a2272bf6e1f52207a8b5b6f950b452dfd6e78f"
+        },
+        {
+          "path": "artifact-12660663597\\cross-platform\\aot\\window.png",
+          "sha256": "fac0a73181b76581faecbaa208ba33cf1d6ed2abd1961babda724867cbd98164"
+        }
+      ]
+    }
+  ],
+  "samplingAot": {
+    "portable.txt": "NativeAot=True; AVX2=False; SSE41=False\nPASS 460050 sampling checks.",
+    "v3.txt": "NativeAot=True; AVX2=True; SSE41=True\nPASS 460050 sampling checks."
+  },
+  "publicDownloads": [
+    {
+      "id": "SimdSkia.Cpu",
+      "version": "0.1.0-preview.7",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.cpu/0.1.0-preview.7/simdskia.cpu.0.1.0-preview.7.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "1b3dd93a8cdcce09b3b2ec3fd448cacd5c0337c6233a1ef0125d660144aaa50d"
+    },
+    {
+      "id": "SimdSkia.Core",
+      "version": "0.1.0-preview.7",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.core/0.1.0-preview.7/simdskia.core.0.1.0-preview.7.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "83260fdcbdceae6cede5d12ffd205b708f9a482da53712efb1d5137e94754742"
+    },
+    {
+      "id": "SimdSkia.Text",
+      "version": "0.1.0-preview.7",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.text/0.1.0-preview.7/simdskia.text.0.1.0-preview.7.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "0b90b64e3245bc8f80d88d51190b39b0894e1f7008030a0d9403f9309baf18a4"
+    },
+    {
+      "id": "SimdSkia.Avalonia.Gpu",
+      "version": "0.1.0-preview.7",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.avalonia.gpu/0.1.0-preview.7/simdskia.avalonia.gpu.0.1.0-preview.7.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "307b8b451931131c189a71d090b20f0dd4e39c752a70c90186261a4b7f7adba8"
+    },
+    {
+      "id": "SimdSkia.Gpu",
+      "version": "0.1.0-preview.7",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.gpu/0.1.0-preview.7/simdskia.gpu.0.1.0-preview.7.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "56ad6d5399e854f13d091a66ec3a3bb4149c3f5462cb95d39eb38f22cbc6def7"
+    },
+    {
+      "id": "SimdSkia.Avalonia.Desktop",
+      "version": "0.1.0-preview.7",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.avalonia.desktop/0.1.0-preview.7/simdskia.avalonia.desktop.0.1.0-preview.7.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "d6641bb6469c299a2bea3c6675dbe43b1f222d4586570473cdb89998244c5323"
+    },
+    {
+      "id": "SimdSkia.Imaging",
+      "version": "0.1.0-preview.7",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.imaging/0.1.0-preview.7/simdskia.imaging.0.1.0-preview.7.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "ef3f47411cfb62bc5d43d86f9bfb8c58a62645c71b27a037fca8a74234a75c5d"
+    },
+    {
+      "id": "SimdSkia",
+      "version": "0.1.0-preview.7",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia/0.1.0-preview.7/simdskia.0.1.0-preview.7.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "4b88fc934d2b13edf768cb88fec34af8e3ed4bf275672ce096b2d8cb04a8a71f"
+    },
+    {
+      "id": "SimdSkia.Avalonia",
+      "version": "0.1.0-preview.7",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.avalonia/0.1.0-preview.7/simdskia.avalonia.0.1.0-preview.7.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "6602e4293e95516c37ca2735994c4bd9862cc527173d0c33b58a5aba522c51ea"
+    },
+    {
+      "id": "SimdSkia.Gpu.Direct2D",
+      "version": "0.1.0-preview.7",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.gpu.direct2d/0.1.0-preview.7/simdskia.gpu.direct2d.0.1.0-preview.7.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "777ff0aa364f94373c3ce12b18fd1b04017d23da074d782090e853c7468c462b"
+    },
+    {
+      "id": "SimdSkia.Compatibility",
+      "version": "0.1.0-preview.7",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.compatibility/0.1.0-preview.7/simdskia.compatibility.0.1.0-preview.7.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "a17fde02291dd314f98cce592583c4db75ee198cdc32468357aa26738daf6a11"
+    }
+  ],
+  "apiAudit": {
+    "Baseline": "SkiaSharp, Version=3.119.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756",
+    "Replacement": "SimdSkia.Compatibility, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null",
+    "BaselineHash": "03A164AC1097F84793632DF806DA91E2829F0FCA65D8F2B922E45554AB083296",
+    "ReplacementHash": "72D2A3228A79FDAD9552B71227F492AF2E5FC25B0FAD2F5EA903AABFE33768AF",
+    "BaselineEntries": 3235,
+    "MatchingEntries": 425,
+    "BinaryCompatibility": "Not established: assembly identity and strong-name signing differ; signature matches alone do not prove binary compatibility.",
+    "Limitations": "Public metadata only; protected APIs, attributes not listed by this tool, nullable annotations, and behavioral contracts require additional review."
+  },
+  "limitations": [
+    "Full API and original whole-page/font/path quality still incomplete.",
+    "CPU image microbenchmark is not whole-Avalonia or GPU performance evidence.",
+    "No demonstrated improvement in resident managed memory in this round.",
+    "Original image fixture is pinned to Windows x64 SkiaSharp 3.119.4.",
+    "macOS GPU/Metal not implemented."
+  ],
+  "performanceReport": "docs/ALPHA-COMPATIBILITY-2026-10-26.md",
+  "publicPages": [
+    {
+      "url": "https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.0-preview.7",
+      "sha256": "da7c2d87fa688c8b1429b635df294d8f3456ea3600f51891fb583ac2cb107eac",
+      "avx2NotesVisible": true,
+      "releaseNotesLinkVisible": true,
+      "usageExampleVisible": true,
+      "qualityResultVisible": true
+    },
+    {
+      "url": "https://www.nuget.org/packages/SimdSkia.Cpu/0.1.0-preview.7",
+      "sha256": "389213d97210a377f2259deb173f5d195e90e6cf4f131a8c65fa622a9b7dd548",
+      "avx2NotesVisible": true,
+      "releaseNotesLinkVisible": true,
+      "qualityResultVisible": true
+    }
+  ]
+}

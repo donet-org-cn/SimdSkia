@@ -2,7 +2,9 @@
 
 ## 第七预览版 0.1.0-preview.7
 
-**发布候选：尚未公开发布。** 11 个包统一版本；将依次验证包内 README、发行说明、`CHANGELOG.md`、真实隔离包消费、三平台回归和可信发布。上传成功后仍需实际公开下载核对，才更新为已发布。
+**已公开发布：11 个包均已实际下载并核对内容。** [可信发布流水线](https://github.com/hnlyf168/SimdSkia/actions/runs/40344837096)全部成功；公开包中的 DLL、README、`CHANGELOG.md`、MIT 许可证及 nuspec（含发行说明）与 CI 产物逐字节一致。标签 `v0.1.0-preview.7` 固定在 `1490f164084c24c1bd3f3dbaf727d7598a14abee`，旧包和标签保持原内容。[发布与包文档证据](evidence/nuget-preview7-2026-10-26.json)包含全部包哈希、公开下载地址和实际 NuGet 页面更新内容检查。
+
+[三平台托管回归](https://github.com/hnlyf168/SimdSkia/actions/runs/40344702599)、[三平台 JIT/AOT/nupkg 真实窗口](https://github.com/hnlyf168/SimdSkia/actions/runs/40344702666)、[Windows AOT 及通用/v3 采样](https://github.com/hnlyf168/SimdSkia/actions/runs/40344702836)全部成功；已下载核对九份桌面窗口记录，两种采样 AOT 各通过 460,050 项检查。原版全量质量/API 缺口仍保留，不将冒烟测试的帧时间作为性能对比。
 
 本版包含精确八像素 AVX2 双线性采样、半透明图像合成修复、Vulkan 裁剪采样一致性修复，以及独立自绘/AOT 示例。每个包都包含 [完整更新日志](RELEASE-NOTES.md)；三个 Avalonia 包继续带有完整中文接入说明。Avalonia 保持 12.1.4，不要求重编译 Avalonia。
 
