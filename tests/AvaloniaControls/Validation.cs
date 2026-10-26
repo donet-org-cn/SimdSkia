@@ -105,11 +105,13 @@ internal static class Validation
             random.NextBytes(source.GetPixelSpan());random.NextBytes(destination.GetPixelSpan());
             foreach(var buffer in new[]{source,destination})for(int y=0;y<buffer.Height;y++)for(int x=0;x<buffer.Width;x++){var p=buffer.GetRowSpan(y).Slice(x*4,4);for(int c=0;c<3;c++)p[c]=(byte)Math.Min(p[c],p[3]);}
             var expected=destination.CopyBytes();
-            static byte Mul(byte a,byte b)=>(byte)Math.Floor(a*b/255d+.5);
+            // Independently reproduce the pinned x64 image pipeline; native
+            // recorded cases also cover this rule. Not the solid-span rule.
+            static byte Mul(byte a,byte b)=>(byte)Math.Ceiling(a*b/256d);
             for(int y=0;y<3;y++)for(int x=0;x<width;x++)
             {var p=source.GetRowSpan(y).Slice(x*4,4);int offset=(y+1)*destination.RowBytes+(x+2)*4;byte alpha=Mul(p[3],opacity);for(int c=0;c<4;c++)expected[offset+c]=(byte)Math.Min(255,Mul(p[c],opacity)+Mul(expected[offset+c],(byte)(255-alpha)));}
             using(var canvas=new RasterCanvas(destination))canvas.Execute(new(CommandKind.DrawImage,new(2,1,width+2,4),Matrix3.Identity,new(new(255,255,255,opacity),CompositeMode.SourceOver)){Image=source,ImageSource=new(0,0,width,3),Sampling=ImageSampling.Nearest});
-            Assert(expected.AsSpan().SequenceEqual(destination.GetPixelSpan()),$"Porter-Duff image oracle failed: {format}/{width}/{opacity} (including stride padding).");
+            Assert(expected.AsSpan().SequenceEqual(destination.GetPixelSpan()),$"Pinned native image blend oracle failed: {format}/{width}/{opacity} (including stride padding).");
         }
         using var clipped=new CorePixel(2,1,SimdSkia.PixelFormat.Rgba8888,SimdSkia.AlphaFormat.Premultiplied);using var raster=new RasterCanvas(clipped);
         raster.Execute(DrawingCommand.FillRectangle(new(0,0,2,1),Matrix3.Identity,new(new(255,0,0,255),CompositeMode.SourceOver)) with{CoverageClip=new(0,0,2,1,new byte[]{128,0})});

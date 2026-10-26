@@ -1,0 +1,939 @@
+{
+  "measuredAtUtc": "2026-10-23T12:37:01.566846+00:00",
+  "sdk": "10.0.402",
+  "baseline": "F:\\simdSkia\\artifacts\\native-window-aot",
+  "baselineEvidenceSha256": "6fa71f1351c7c5347c584d9f36bd15dcc7ed1f020c33468630d82b63e187f52f",
+  "candidates": [
+    {
+      "label": "text-size-only",
+      "variant": "text",
+      "profile": "size-only",
+      "command": [
+        "dotnet",
+        "publish",
+        "F:\\simdSkia\\examples\\NativeWindow\\NativeWindow.csproj",
+        "-c",
+        "Release",
+        "-r",
+        "win-x64",
+        "-p:IncludeText=true",
+        "-p:MinimumSize=false",
+        "-p:IncludeVerification=false",
+        "-o",
+        "F:\\simdSkia\\artifacts\\native-window-minimum\\publish\\text-size-only"
+      ],
+      "passed": true,
+      "exeBytes": 1639936,
+      "compilerOptions": [
+        "--dehydrate",
+        "--directpinvoke:System.Globalization.Native",
+        "--directpinvoke:System.IO.Compression.Native",
+        "--directpinvokelist:E:\\data\\.nuget\\microsoft.dotnet.ilcompiler\\10.0.13\\build\\WindowsAPIs.txt",
+        "--feature:System.Diagnostics.Tracing.EventSource.IsSupported=false",
+        "--feature:System.Resources.ResourceManager.AllowCustomResourceTypes=false",
+        "--feature:System.Resources.UseSystemResourceKeys=false",
+        "--stacktracedata",
+        "--methodbodyfolding:generic",
+        "--Os",
+        "--feature:System.Diagnostics.Debugger.IsSupported=false"
+      ],
+      "verification": {
+        "frames": [
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-text-size-only\\frame-0.bmp",
+            "sha256": "0d0ca69d339b3a30445571d5c6a99fcbe440a181fc6b0f2673ebfd21fc365825",
+            "width": 622,
+            "height": 373,
+            "chineseInkPixels": 2817,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          },
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-text-size-only\\frame-1.bmp",
+            "sha256": "a2dc22198e82d94a7d35cf3a9ddf21bb4dab2cd97978bb0e36117af9e8d226da",
+            "width": 762,
+            "height": 453,
+            "chineseInkPixels": 2817,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          },
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-text-size-only\\frame-2.bmp",
+            "sha256": "c4418e6324505ccdc9c6c6314ebeeea404020f643aab8dd883aa86cad77e7879",
+            "width": 762,
+            "height": 453,
+            "chineseInkPixels": 2817,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          },
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-text-size-only\\frame-3.bmp",
+            "sha256": "a2dc22198e82d94a7d35cf3a9ddf21bb4dab2cd97978bb0e36117af9e8d226da",
+            "width": 762,
+            "height": 453,
+            "chineseInkPixels": 2817,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          }
+        ],
+        "loadedModules": [
+          "NativeWindow.exe",
+          "ntdll.dll",
+          "KERNEL32.DLL",
+          "KERNELBASE.dll",
+          "apphelp.dll",
+          "ADVAPI32.dll",
+          "msvcrt.dll",
+          "sechost.dll",
+          "RPCRT4.dll",
+          "ole32.dll",
+          "msvcp_win.dll",
+          "ucrtbase.dll",
+          "bcrypt.dll",
+          "GDI32.dll",
+          "win32u.dll",
+          "gdi32full.dll",
+          "USER32.dll",
+          "combase.dll",
+          "IMM32.DLL",
+          "kernel.appcore.dll",
+          "bcryptPrimitives.dll",
+          "uxtheme.dll",
+          "MSCTF.dll",
+          "OLEAUT32.dll",
+          "textinputframework.dll"
+        ],
+        "normalClose": true,
+        "nativeGuiPe": true
+      }
+    },
+    {
+      "label": "text-minimum",
+      "variant": "text",
+      "profile": "minimum",
+      "command": [
+        "dotnet",
+        "publish",
+        "F:\\simdSkia\\examples\\NativeWindow\\NativeWindow.csproj",
+        "-c",
+        "Release",
+        "-r",
+        "win-x64",
+        "-p:IncludeText=true",
+        "-p:MinimumSize=true",
+        "-o",
+        "F:\\simdSkia\\artifacts\\native-window-minimum\\publish\\text-minimum"
+      ],
+      "passed": true,
+      "exeBytes": 1375744,
+      "compilerOptions": [
+        "--dehydrate",
+        "--directpinvoke:System.Globalization.Native",
+        "--directpinvoke:System.IO.Compression.Native",
+        "--directpinvokelist:E:\\data\\.nuget\\microsoft.dotnet.ilcompiler\\10.0.13\\build\\WindowsAPIs.txt",
+        "--feature:System.Diagnostics.Debugger.IsSupported=false",
+        "--feature:System.Diagnostics.Metrics.Meter.IsSupported=false",
+        "--feature:System.Diagnostics.StackTrace.IsSupported=false",
+        "--feature:System.Diagnostics.Tracing.EventSource.IsSupported=false",
+        "--feature:System.Globalization.Invariant=true",
+        "--feature:System.Globalization.PredefinedCulturesOnly=true",
+        "--feature:System.Resources.ResourceManager.AllowCustomResourceTypes=false",
+        "--feature:System.Resources.UseSystemResourceKeys=true",
+        "--methodbodyfolding:all",
+        "--Os",
+        "--feature:System.Diagnostics.Debugger.IsSupported=false"
+      ],
+      "verification": {
+        "frames": [
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-text-minimum\\frame-0.bmp",
+            "sha256": "0d0ca69d339b3a30445571d5c6a99fcbe440a181fc6b0f2673ebfd21fc365825",
+            "width": 622,
+            "height": 373,
+            "chineseInkPixels": 2817,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          },
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-text-minimum\\frame-1.bmp",
+            "sha256": "a2dc22198e82d94a7d35cf3a9ddf21bb4dab2cd97978bb0e36117af9e8d226da",
+            "width": 762,
+            "height": 453,
+            "chineseInkPixels": 2817,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          },
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-text-minimum\\frame-2.bmp",
+            "sha256": "c4418e6324505ccdc9c6c6314ebeeea404020f643aab8dd883aa86cad77e7879",
+            "width": 762,
+            "height": 453,
+            "chineseInkPixels": 2817,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          },
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-text-minimum\\frame-3.bmp",
+            "sha256": "a2dc22198e82d94a7d35cf3a9ddf21bb4dab2cd97978bb0e36117af9e8d226da",
+            "width": 762,
+            "height": 453,
+            "chineseInkPixels": 2817,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          }
+        ],
+        "loadedModules": [
+          "NativeWindow.exe",
+          "ntdll.dll",
+          "KERNEL32.DLL",
+          "KERNELBASE.dll",
+          "apphelp.dll",
+          "ADVAPI32.dll",
+          "msvcrt.dll",
+          "sechost.dll",
+          "RPCRT4.dll",
+          "ole32.dll",
+          "msvcp_win.dll",
+          "ucrtbase.dll",
+          "bcrypt.dll",
+          "GDI32.dll",
+          "win32u.dll",
+          "gdi32full.dll",
+          "USER32.dll",
+          "combase.dll",
+          "IMM32.DLL",
+          "kernel.appcore.dll",
+          "bcryptPrimitives.dll",
+          "uxtheme.dll",
+          "MSCTF.dll",
+          "OLEAUT32.dll",
+          "textinputframework.dll"
+        ],
+        "normalClose": true,
+        "nativeGuiPe": true
+      }
+    },
+    {
+      "label": "text-metadata",
+      "variant": "text",
+      "profile": "metadata",
+      "command": [
+        "dotnet",
+        "publish",
+        "F:\\simdSkia\\examples\\NativeWindow\\NativeWindow.csproj",
+        "-c",
+        "Release",
+        "-r",
+        "win-x64",
+        "-p:IncludeText=true",
+        "-p:MinimumSize=true",
+        "-p:MinimalMetadata=true",
+        "-o",
+        "F:\\simdSkia\\artifacts\\native-window-minimum\\publish\\text-metadata"
+      ],
+      "passed": false,
+      "exeBytes": 1310208,
+      "compilerOptions": [
+        "--reflectiondata:none",
+        "--dehydrate",
+        "--directpinvoke:System.Globalization.Native",
+        "--directpinvoke:System.IO.Compression.Native",
+        "--directpinvokelist:E:\\data\\.nuget\\microsoft.dotnet.ilcompiler\\10.0.13\\build\\WindowsAPIs.txt",
+        "--feature:System.Diagnostics.Debugger.IsSupported=false",
+        "--feature:System.Diagnostics.Metrics.Meter.IsSupported=false",
+        "--feature:System.Diagnostics.StackTrace.IsSupported=false",
+        "--feature:System.Diagnostics.Tracing.EventSource.IsSupported=false",
+        "--feature:System.Globalization.Invariant=true",
+        "--feature:System.Globalization.PredefinedCulturesOnly=true",
+        "--feature:System.Resources.ResourceManager.AllowCustomResourceTypes=false",
+        "--feature:System.Resources.UseSystemResourceKeys=true",
+        "--methodbodyfolding:all",
+        "--Os",
+        "--feature:System.Diagnostics.Debugger.IsSupported=false"
+      ],
+      "failure": "No visible application window; exit=3221227010"
+    },
+    {
+      "label": "text-direct",
+      "variant": "text",
+      "profile": "direct",
+      "command": [
+        "dotnet",
+        "publish",
+        "F:\\simdSkia\\examples\\NativeWindow\\NativeWindow.csproj",
+        "-c",
+        "Release",
+        "-r",
+        "win-x64",
+        "-p:IncludeText=true",
+        "-p:PublishProfile=MinimumSize",
+        "-o",
+        "F:\\simdSkia\\artifacts\\native-window-minimum\\publish\\text-direct"
+      ],
+      "passed": true,
+      "exeBytes": 1374720,
+      "compilerOptions": [
+        "--dehydrate",
+        "--directpinvoke:user32",
+        "--directpinvoke:gdi32",
+        "--directpinvoke:kernel32",
+        "--directpinvoke:System.Globalization.Native",
+        "--directpinvoke:System.IO.Compression.Native",
+        "--directpinvokelist:E:\\data\\.nuget\\microsoft.dotnet.ilcompiler\\10.0.13\\build\\WindowsAPIs.txt",
+        "--feature:System.Diagnostics.Debugger.IsSupported=false",
+        "--feature:System.Diagnostics.Metrics.Meter.IsSupported=false",
+        "--feature:System.Diagnostics.StackTrace.IsSupported=false",
+        "--feature:System.Diagnostics.Tracing.EventSource.IsSupported=false",
+        "--feature:System.Globalization.Invariant=true",
+        "--feature:System.Globalization.PredefinedCulturesOnly=true",
+        "--feature:System.Resources.ResourceManager.AllowCustomResourceTypes=false",
+        "--feature:System.Resources.UseSystemResourceKeys=true",
+        "--methodbodyfolding:all",
+        "--Os",
+        "--feature:System.Diagnostics.Debugger.IsSupported=false"
+      ],
+      "verification": {
+        "frames": [
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-text-direct\\frame-0.bmp",
+            "sha256": "0d0ca69d339b3a30445571d5c6a99fcbe440a181fc6b0f2673ebfd21fc365825",
+            "width": 622,
+            "height": 373,
+            "chineseInkPixels": 2817,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          },
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-text-direct\\frame-1.bmp",
+            "sha256": "a2dc22198e82d94a7d35cf3a9ddf21bb4dab2cd97978bb0e36117af9e8d226da",
+            "width": 762,
+            "height": 453,
+            "chineseInkPixels": 2817,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          },
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-text-direct\\frame-2.bmp",
+            "sha256": "c4418e6324505ccdc9c6c6314ebeeea404020f643aab8dd883aa86cad77e7879",
+            "width": 762,
+            "height": 453,
+            "chineseInkPixels": 2817,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          },
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-text-direct\\frame-3.bmp",
+            "sha256": "a2dc22198e82d94a7d35cf3a9ddf21bb4dab2cd97978bb0e36117af9e8d226da",
+            "width": 762,
+            "height": 453,
+            "chineseInkPixels": 2817,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          }
+        ],
+        "loadedModules": [
+          "NativeWindow.exe",
+          "ntdll.dll",
+          "KERNEL32.DLL",
+          "KERNELBASE.dll",
+          "apphelp.dll",
+          "USER32.dll",
+          "win32u.dll",
+          "GDI32.dll",
+          "gdi32full.dll",
+          "msvcp_win.dll",
+          "ucrtbase.dll",
+          "ADVAPI32.dll",
+          "msvcrt.dll",
+          "sechost.dll",
+          "RPCRT4.dll",
+          "ole32.dll",
+          "combase.dll",
+          "bcrypt.dll",
+          "IMM32.DLL",
+          "kernel.appcore.dll",
+          "bcryptPrimitives.dll",
+          "uxtheme.dll",
+          "MSCTF.dll",
+          "OLEAUT32.dll",
+          "textinputframework.dll"
+        ],
+        "normalClose": true,
+        "nativeGuiPe": true
+      }
+    },
+    {
+      "label": "shapes-size-only",
+      "variant": "shapes",
+      "profile": "size-only",
+      "command": [
+        "dotnet",
+        "publish",
+        "F:\\simdSkia\\examples\\NativeWindow\\NativeWindow.csproj",
+        "-c",
+        "Release",
+        "-r",
+        "win-x64",
+        "-p:IncludeText=false",
+        "-p:MinimumSize=false",
+        "-p:IncludeVerification=false",
+        "-o",
+        "F:\\simdSkia\\artifacts\\native-window-minimum\\publish\\shapes-size-only"
+      ],
+      "passed": true,
+      "exeBytes": 1530368,
+      "compilerOptions": [
+        "--dehydrate",
+        "--directpinvoke:System.Globalization.Native",
+        "--directpinvoke:System.IO.Compression.Native",
+        "--directpinvokelist:E:\\data\\.nuget\\microsoft.dotnet.ilcompiler\\10.0.13\\build\\WindowsAPIs.txt",
+        "--feature:System.Diagnostics.Tracing.EventSource.IsSupported=false",
+        "--feature:System.Resources.ResourceManager.AllowCustomResourceTypes=false",
+        "--feature:System.Resources.UseSystemResourceKeys=false",
+        "--stacktracedata",
+        "--methodbodyfolding:generic",
+        "--Os",
+        "--feature:System.Diagnostics.Debugger.IsSupported=false"
+      ],
+      "verification": {
+        "frames": [
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-shapes-size-only\\frame-0.bmp",
+            "sha256": "5c8d854121682f35a18961e87f3f7fc77d48013194c9794a98f39e6f9c3f2bf4",
+            "width": 622,
+            "height": 373,
+            "chineseInkPixels": 0,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          },
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-shapes-size-only\\frame-1.bmp",
+            "sha256": "d1e94be05ecc20b375b9fbe5fd76840468a49f0dfe967da7c0fd4dca7692cbad",
+            "width": 762,
+            "height": 453,
+            "chineseInkPixels": 0,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          },
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-shapes-size-only\\frame-2.bmp",
+            "sha256": "7baf479c6136257834328cf8f9e433e3230bed254702448f60fa37c147fd0cd2",
+            "width": 762,
+            "height": 453,
+            "chineseInkPixels": 0,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          },
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-shapes-size-only\\frame-3.bmp",
+            "sha256": "d1e94be05ecc20b375b9fbe5fd76840468a49f0dfe967da7c0fd4dca7692cbad",
+            "width": 762,
+            "height": 453,
+            "chineseInkPixels": 0,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          }
+        ],
+        "loadedModules": [
+          "NativeWindow.exe",
+          "ntdll.dll",
+          "KERNEL32.DLL",
+          "KERNELBASE.dll",
+          "apphelp.dll",
+          "ADVAPI32.dll",
+          "msvcrt.dll",
+          "sechost.dll",
+          "RPCRT4.dll",
+          "ole32.dll",
+          "msvcp_win.dll",
+          "ucrtbase.dll",
+          "bcrypt.dll",
+          "GDI32.dll",
+          "win32u.dll",
+          "gdi32full.dll",
+          "USER32.dll",
+          "combase.dll",
+          "IMM32.DLL",
+          "kernel.appcore.dll",
+          "bcryptPrimitives.dll",
+          "uxtheme.dll",
+          "MSCTF.dll",
+          "OLEAUT32.dll",
+          "textinputframework.dll"
+        ],
+        "normalClose": true,
+        "nativeGuiPe": true
+      }
+    },
+    {
+      "label": "shapes-minimum",
+      "variant": "shapes",
+      "profile": "minimum",
+      "command": [
+        "dotnet",
+        "publish",
+        "F:\\simdSkia\\examples\\NativeWindow\\NativeWindow.csproj",
+        "-c",
+        "Release",
+        "-r",
+        "win-x64",
+        "-p:IncludeText=false",
+        "-p:MinimumSize=true",
+        "-o",
+        "F:\\simdSkia\\artifacts\\native-window-minimum\\publish\\shapes-minimum"
+      ],
+      "passed": true,
+      "exeBytes": 1274880,
+      "compilerOptions": [
+        "--dehydrate",
+        "--directpinvoke:System.Globalization.Native",
+        "--directpinvoke:System.IO.Compression.Native",
+        "--directpinvokelist:E:\\data\\.nuget\\microsoft.dotnet.ilcompiler\\10.0.13\\build\\WindowsAPIs.txt",
+        "--feature:System.Diagnostics.Debugger.IsSupported=false",
+        "--feature:System.Diagnostics.Metrics.Meter.IsSupported=false",
+        "--feature:System.Diagnostics.StackTrace.IsSupported=false",
+        "--feature:System.Diagnostics.Tracing.EventSource.IsSupported=false",
+        "--feature:System.Globalization.Invariant=true",
+        "--feature:System.Globalization.PredefinedCulturesOnly=true",
+        "--feature:System.Resources.ResourceManager.AllowCustomResourceTypes=false",
+        "--feature:System.Resources.UseSystemResourceKeys=true",
+        "--methodbodyfolding:all",
+        "--Os",
+        "--feature:System.Diagnostics.Debugger.IsSupported=false"
+      ],
+      "verification": {
+        "frames": [
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-shapes-minimum\\frame-0.bmp",
+            "sha256": "5c8d854121682f35a18961e87f3f7fc77d48013194c9794a98f39e6f9c3f2bf4",
+            "width": 622,
+            "height": 373,
+            "chineseInkPixels": 0,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          },
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-shapes-minimum\\frame-1.bmp",
+            "sha256": "d1e94be05ecc20b375b9fbe5fd76840468a49f0dfe967da7c0fd4dca7692cbad",
+            "width": 762,
+            "height": 453,
+            "chineseInkPixels": 0,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          },
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-shapes-minimum\\frame-2.bmp",
+            "sha256": "7baf479c6136257834328cf8f9e433e3230bed254702448f60fa37c147fd0cd2",
+            "width": 762,
+            "height": 453,
+            "chineseInkPixels": 0,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          },
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-shapes-minimum\\frame-3.bmp",
+            "sha256": "d1e94be05ecc20b375b9fbe5fd76840468a49f0dfe967da7c0fd4dca7692cbad",
+            "width": 762,
+            "height": 453,
+            "chineseInkPixels": 0,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          }
+        ],
+        "loadedModules": [
+          "NativeWindow.exe",
+          "ntdll.dll",
+          "KERNEL32.DLL",
+          "KERNELBASE.dll",
+          "apphelp.dll",
+          "ADVAPI32.dll",
+          "msvcrt.dll",
+          "sechost.dll",
+          "RPCRT4.dll",
+          "ole32.dll",
+          "msvcp_win.dll",
+          "ucrtbase.dll",
+          "bcrypt.dll",
+          "GDI32.dll",
+          "win32u.dll",
+          "gdi32full.dll",
+          "USER32.dll",
+          "combase.dll",
+          "IMM32.DLL",
+          "kernel.appcore.dll",
+          "bcryptPrimitives.dll",
+          "uxtheme.dll",
+          "MSCTF.dll",
+          "OLEAUT32.dll",
+          "textinputframework.dll"
+        ],
+        "normalClose": true,
+        "nativeGuiPe": true
+      }
+    },
+    {
+      "label": "shapes-metadata",
+      "variant": "shapes",
+      "profile": "metadata",
+      "command": [
+        "dotnet",
+        "publish",
+        "F:\\simdSkia\\examples\\NativeWindow\\NativeWindow.csproj",
+        "-c",
+        "Release",
+        "-r",
+        "win-x64",
+        "-p:IncludeText=false",
+        "-p:MinimumSize=true",
+        "-p:MinimalMetadata=true",
+        "-o",
+        "F:\\simdSkia\\artifacts\\native-window-minimum\\publish\\shapes-metadata"
+      ],
+      "passed": false,
+      "exeBytes": 1214464,
+      "compilerOptions": [
+        "--reflectiondata:none",
+        "--dehydrate",
+        "--directpinvoke:System.Globalization.Native",
+        "--directpinvoke:System.IO.Compression.Native",
+        "--directpinvokelist:E:\\data\\.nuget\\microsoft.dotnet.ilcompiler\\10.0.13\\build\\WindowsAPIs.txt",
+        "--feature:System.Diagnostics.Debugger.IsSupported=false",
+        "--feature:System.Diagnostics.Metrics.Meter.IsSupported=false",
+        "--feature:System.Diagnostics.StackTrace.IsSupported=false",
+        "--feature:System.Diagnostics.Tracing.EventSource.IsSupported=false",
+        "--feature:System.Globalization.Invariant=true",
+        "--feature:System.Globalization.PredefinedCulturesOnly=true",
+        "--feature:System.Resources.ResourceManager.AllowCustomResourceTypes=false",
+        "--feature:System.Resources.UseSystemResourceKeys=true",
+        "--methodbodyfolding:all",
+        "--Os",
+        "--feature:System.Diagnostics.Debugger.IsSupported=false"
+      ],
+      "failure": "No visible application window; exit=3221227010"
+    },
+    {
+      "label": "shapes-direct",
+      "variant": "shapes",
+      "profile": "direct",
+      "command": [
+        "dotnet",
+        "publish",
+        "F:\\simdSkia\\examples\\NativeWindow\\NativeWindow.csproj",
+        "-c",
+        "Release",
+        "-r",
+        "win-x64",
+        "-p:IncludeText=false",
+        "-p:PublishProfile=MinimumSize",
+        "-o",
+        "F:\\simdSkia\\artifacts\\native-window-minimum\\publish\\shapes-direct"
+      ],
+      "passed": true,
+      "exeBytes": 1228800,
+      "compilerOptions": [
+        "--dehydrate",
+        "--directpinvoke:user32",
+        "--directpinvoke:gdi32",
+        "--directpinvoke:kernel32",
+        "--directpinvoke:System.Globalization.Native",
+        "--directpinvoke:System.IO.Compression.Native",
+        "--directpinvokelist:E:\\data\\.nuget\\microsoft.dotnet.ilcompiler\\10.0.13\\build\\WindowsAPIs.txt",
+        "--feature:System.Diagnostics.Debugger.IsSupported=false",
+        "--feature:System.Diagnostics.Metrics.Meter.IsSupported=false",
+        "--feature:System.Diagnostics.StackTrace.IsSupported=false",
+        "--feature:System.Diagnostics.Tracing.EventSource.IsSupported=false",
+        "--feature:System.Globalization.Invariant=true",
+        "--feature:System.Globalization.PredefinedCulturesOnly=true",
+        "--feature:System.Resources.ResourceManager.AllowCustomResourceTypes=false",
+        "--feature:System.Resources.UseSystemResourceKeys=true",
+        "--methodbodyfolding:all",
+        "--Os",
+        "--feature:System.Diagnostics.Debugger.IsSupported=false"
+      ],
+      "verification": {
+        "frames": [
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-shapes-direct\\frame-0.bmp",
+            "sha256": "5c8d854121682f35a18961e87f3f7fc77d48013194c9794a98f39e6f9c3f2bf4",
+            "width": 622,
+            "height": 373,
+            "chineseInkPixels": 0,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          },
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-shapes-direct\\frame-1.bmp",
+            "sha256": "d1e94be05ecc20b375b9fbe5fd76840468a49f0dfe967da7c0fd4dca7692cbad",
+            "width": 762,
+            "height": 453,
+            "chineseInkPixels": 0,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          },
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-shapes-direct\\frame-2.bmp",
+            "sha256": "7baf479c6136257834328cf8f9e433e3230bed254702448f60fa37c147fd0cd2",
+            "width": 762,
+            "height": 453,
+            "chineseInkPixels": 0,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          },
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-shapes-direct\\frame-3.bmp",
+            "sha256": "d1e94be05ecc20b375b9fbe5fd76840468a49f0dfe967da7c0fd4dca7692cbad",
+            "width": 762,
+            "height": 453,
+            "chineseInkPixels": 0,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          }
+        ],
+        "loadedModules": [
+          "NativeWindow.exe",
+          "ntdll.dll",
+          "KERNEL32.DLL",
+          "KERNELBASE.dll",
+          "apphelp.dll",
+          "USER32.dll",
+          "win32u.dll",
+          "GDI32.dll",
+          "gdi32full.dll",
+          "msvcp_win.dll",
+          "ucrtbase.dll",
+          "ADVAPI32.dll",
+          "msvcrt.dll",
+          "sechost.dll",
+          "RPCRT4.dll",
+          "ole32.dll",
+          "combase.dll",
+          "bcrypt.dll",
+          "IMM32.DLL",
+          "kernel.appcore.dll",
+          "bcryptPrimitives.dll",
+          "uxtheme.dll",
+          "MSCTF.dll",
+          "OLEAUT32.dll",
+          "textinputframework.dll"
+        ],
+        "normalClose": true,
+        "nativeGuiPe": true
+      }
+    }
+  ],
+  "winners": {
+    "text": {
+      "label": "text-direct",
+      "exeBytes": 1374720,
+      "runtimeBytes": 1388471,
+      "zipBytes": 692347,
+      "zipSha256": "2c976af0e4fc3a2db7fb20dc3b1d06846eeb25e8cf71ad19378324d630c2e1e1",
+      "files": [
+        {
+          "path": "LICENSE.txt",
+          "bytes": 1065,
+          "sha256": "d7690eb5fcded898a216f96af14f53a1eb4e12e53d522000c1dbbfa0af97a640"
+        },
+        {
+          "path": "licenses/Apache-2.0.txt",
+          "bytes": 11358,
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        },
+        {
+          "path": "licenses/JpegLibrary-MIT.txt",
+          "bytes": 1070,
+          "sha256": "61c9471fc2b65056f717c1db48193de382841a3cdea275d6fc26bef8e0906360"
+        },
+        {
+          "path": "licenses/JpegLibrary-THIRD-PARTY-NOTICES.md",
+          "bytes": 258,
+          "sha256": "3c7543bb7b227085302d8a0505269180c2b0460c4b4243b49b908b048f5b71f2"
+        },
+        {
+          "path": "NativeWindow.exe",
+          "bytes": 1374720,
+          "sha256": "d93530e9be7bc3995432c5a151a3186283e925905cd740d640d597478042425c"
+        }
+      ],
+      "verification": {
+        "frames": [
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-final-text\\frame-0.bmp",
+            "sha256": "0d0ca69d339b3a30445571d5c6a99fcbe440a181fc6b0f2673ebfd21fc365825",
+            "width": 622,
+            "height": 373,
+            "chineseInkPixels": 2817,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          },
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-final-text\\frame-1.bmp",
+            "sha256": "a2dc22198e82d94a7d35cf3a9ddf21bb4dab2cd97978bb0e36117af9e8d226da",
+            "width": 762,
+            "height": 453,
+            "chineseInkPixels": 2817,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          },
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-final-text\\frame-2.bmp",
+            "sha256": "c4418e6324505ccdc9c6c6314ebeeea404020f643aab8dd883aa86cad77e7879",
+            "width": 762,
+            "height": 453,
+            "chineseInkPixels": 2817,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          },
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-final-text\\frame-3.bmp",
+            "sha256": "a2dc22198e82d94a7d35cf3a9ddf21bb4dab2cd97978bb0e36117af9e8d226da",
+            "width": 762,
+            "height": 453,
+            "chineseInkPixels": 2817,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          }
+        ],
+        "loadedModules": [
+          "NativeWindow.exe",
+          "ntdll.dll",
+          "KERNEL32.DLL",
+          "KERNELBASE.dll",
+          "apphelp.dll",
+          "USER32.dll",
+          "win32u.dll",
+          "GDI32.dll",
+          "gdi32full.dll",
+          "msvcp_win.dll",
+          "ucrtbase.dll",
+          "ADVAPI32.dll",
+          "msvcrt.dll",
+          "sechost.dll",
+          "RPCRT4.dll",
+          "ole32.dll",
+          "combase.dll",
+          "bcrypt.dll",
+          "IMM32.DLL",
+          "kernel.appcore.dll",
+          "bcryptPrimitives.dll",
+          "uxtheme.dll",
+          "MSCTF.dll",
+          "OLEAUT32.dll",
+          "textinputframework.dll"
+        ],
+        "normalClose": true,
+        "nativeGuiPe": true
+      }
+    },
+    "shapes": {
+      "label": "shapes-direct",
+      "exeBytes": 1228800,
+      "runtimeBytes": 1242551,
+      "zipBytes": 620391,
+      "zipSha256": "b67df3ea5adf6a6df2ad48de3a1c9300d2ad5a728913576de9a058cc132eec8c",
+      "files": [
+        {
+          "path": "LICENSE.txt",
+          "bytes": 1065,
+          "sha256": "d7690eb5fcded898a216f96af14f53a1eb4e12e53d522000c1dbbfa0af97a640"
+        },
+        {
+          "path": "licenses/Apache-2.0.txt",
+          "bytes": 11358,
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        },
+        {
+          "path": "licenses/JpegLibrary-MIT.txt",
+          "bytes": 1070,
+          "sha256": "61c9471fc2b65056f717c1db48193de382841a3cdea275d6fc26bef8e0906360"
+        },
+        {
+          "path": "licenses/JpegLibrary-THIRD-PARTY-NOTICES.md",
+          "bytes": 258,
+          "sha256": "3c7543bb7b227085302d8a0505269180c2b0460c4b4243b49b908b048f5b71f2"
+        },
+        {
+          "path": "NativeWindow.exe",
+          "bytes": 1228800,
+          "sha256": "32f5bc1b953cef34f1e84cc3ae5768275e8179f30c5f28e995355d91f064e739"
+        }
+      ],
+      "verification": {
+        "frames": [
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-final-shapes\\frame-0.bmp",
+            "sha256": "5c8d854121682f35a18961e87f3f7fc77d48013194c9794a98f39e6f9c3f2bf4",
+            "width": 622,
+            "height": 373,
+            "chineseInkPixels": 0,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          },
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-final-shapes\\frame-1.bmp",
+            "sha256": "d1e94be05ecc20b375b9fbe5fd76840468a49f0dfe967da7c0fd4dca7692cbad",
+            "width": 762,
+            "height": 453,
+            "chineseInkPixels": 0,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          },
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-final-shapes\\frame-2.bmp",
+            "sha256": "7baf479c6136257834328cf8f9e433e3230bed254702448f60fa37c147fd0cd2",
+            "width": 762,
+            "height": 453,
+            "chineseInkPixels": 0,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          },
+          {
+            "path": "artifacts\\native-window-minimum\\publish\\verify-final-shapes\\frame-3.bmp",
+            "sha256": "d1e94be05ecc20b375b9fbe5fd76840468a49f0dfe967da7c0fd4dca7692cbad",
+            "width": 762,
+            "height": 453,
+            "chineseInkPixels": 0,
+            "circleColors": 35,
+            "allRgbPixelsMatchBaseline": true
+          }
+        ],
+        "loadedModules": [
+          "NativeWindow.exe",
+          "ntdll.dll",
+          "KERNEL32.DLL",
+          "KERNELBASE.dll",
+          "apphelp.dll",
+          "USER32.dll",
+          "win32u.dll",
+          "GDI32.dll",
+          "gdi32full.dll",
+          "msvcp_win.dll",
+          "ucrtbase.dll",
+          "ADVAPI32.dll",
+          "msvcrt.dll",
+          "sechost.dll",
+          "RPCRT4.dll",
+          "ole32.dll",
+          "combase.dll",
+          "bcrypt.dll",
+          "IMM32.DLL",
+          "kernel.appcore.dll",
+          "bcryptPrimitives.dll",
+          "uxtheme.dll",
+          "MSCTF.dll",
+          "OLEAUT32.dll",
+          "textinputframework.dll"
+        ],
+        "normalClose": true,
+        "nativeGuiPe": true
+      }
+    }
+  },
+  "sourceFiles": {
+    "examples/NativeWindow/NativeWindow.csproj": "cd91431b01fe1d913c8aa194402796e6721c5f9d78b3489c333db323bc923146",
+    "examples/NativeWindow/Program.cs": "ec309c3e6b1a7231426d42c0eeb1613ae6c63727836132d59bc4555a13b35364",
+    "examples/NativeWindow/Properties/PublishProfiles/MinimumSize.pubxml": "ee33a965f876d73e94df4dc2e067a99d4519a11d440acd29b687dd1749168b7e",
+    "tools/test-native-window-minimum.py": "d97ccc3bedaa26d093300ca2dbbfb24cfd06d500fe07274259c2b0d95ad99945",
+    "tools/test-native-window-aot.py": "1c03b946deb2cc168c1c614ece43ae64f418efbe32edebc7f044f76e62a9eed8"
+  }
+}

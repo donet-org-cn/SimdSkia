@@ -1,0 +1,10 @@
+{
+  "baseline": "SkiaSharp 3.119.4",
+  "skiaCommit": "7dbfc07dd33181f84e0958afb7ee805c6c769f0b",
+  "cases": 12288,
+  "sha256": "842fc782b1dda513c2e04b23ee9bc789431b436e36f30c2956f03172efdafa0f",
+  "nativeDllSha256": "7dec3ba900ab353491e6446f0083739924c6f8dd668832e2f09d38ebffdbbe1c",
+  "generatorSha256": "d59aa0008874dbdb491da0224a9d2b5934de7f4f51116ec5fcb765af0198b73b",
+  "source": "Uniform 2x2 RGBA8888 source, Premul/Unpremul; 1x1 Premul target; linear filter; all source alpha values; opacity 0,1,64,173,254,255; destination alpha 0,73,128,255; RGB 82,143,219 over RGB 10,20,30. Native pixels, not calculated expected values.",
+  "record": "16 bytes: straight,opacity,sourceAlpha,destinationAlpha,sourceRGBA[4],initialDestinationPMA[4],nativeOutputPMA[4]"
+}

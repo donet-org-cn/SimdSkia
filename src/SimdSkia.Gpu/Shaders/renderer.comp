@@ -256,6 +256,13 @@ void main(){
     if(kind()==3u){
       if(param(50)!=0u){
         uvec4 texel=sampledImage(q),destination=unpackTarget(pixels[index]);uint scale=multiplyAlpha(color.a,coverage),alpha=multiplyAlpha(texel.a,scale);
+        if(param(3)==0u&&param(50)!=3u){
+            // Match the pinned low-precision image pipeline used by the CPU.
+            // Premultiply texels accurately; only image opacity/over use this rule.
+            uvec4 source=(texel*scale+uvec4(255u))>>8u;
+            uvec4 result=source+((destination*(255u-source.a)+uvec4(255u))>>8u);
+            pixels[index]=packTarget(min(result,uvec4(255u)));return;
+        }
         uint remain=param(3)==0u?255u-alpha:255u-coverage;
         if(param(3)==2u)texel=uvec4(0);
         uvec4 source=uvec4(multiplyAlpha(texel.r,scale),multiplyAlpha(texel.g,scale),multiplyAlpha(texel.b,scale),multiplyAlpha(texel.a,scale));

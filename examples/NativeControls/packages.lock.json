@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net10.0": {
+      "Microsoft.DotNet.ILCompiler": {
+        "type": "Direct",
+        "requested": "[10.0.13, )",
+        "resolved": "10.0.13",
+        "contentHash": "MnT222WlxhelguLZTQx9soBHKW7TeY6A9YUwVaprjUd+ARlhLAkfsXGFNX9w6kRq89/yxUcAQ/lzvmgndSFfOw=="
+      },
+      "Microsoft.NET.ILLink.Tasks": {
+        "type": "Direct",
+        "requested": "[10.0.13, )",
+        "resolved": "10.0.13",
+        "contentHash": "40yrBMsLEcjixBR4G+FiUaBPvxXIPSKJ2OgSrbOZcmSDBda4Sb0k7BWrfDpIvn3IvvDzwOL/tEPa6gDQfh6aRw=="
+      },
+      "JpegLibrary": {
+        "type": "Transitive",
+        "resolved": "0.4.32",
+        "contentHash": "Lv11HXsyGZxuRUG/0sw+3itw930/c08VkEVXDPin819yheN3Y3YpWQYccs1dW+sBlsGs9S4Y4q6DzyBCctsEeQ=="
+      },
+      "simdskia.compatibility": {
+        "type": "Project",
+        "dependencies": {
+          "SimdSkia.Core": "[0.1.0-preview.6, )",
+          "SimdSkia.Cpu": "[0.1.0-preview.6, )",
+          "SimdSkia.Gpu": "[0.1.0-preview.6, )",
+          "SimdSkia.Imaging": "[0.1.0-preview.6, )",
+          "SimdSkia.Text": "[0.1.0-preview.6, )"
+        }
+      },
+      "simdskia.core": {
+        "type": "Project"
+      },
+      "simdskia.cpu": {
+        "type": "Project",
+        "dependencies": {
+          "SimdSkia.Core": "[0.1.0-preview.6, )"
+        }
+      },
+      "simdskia.gpu": {
+        "type": "Project",
+        "dependencies": {
+          "SimdSkia.Core": "[0.1.0-preview.6, )"
+        }
+      },
+      "simdskia.imaging": {
+        "type": "Project",
+        "dependencies": {
+          "JpegLibrary": "[0.4.32, 0.4.32]",
+          "SimdSkia.Core": "[0.1.0-preview.6, )"
+        }
+      },
+      "simdskia.text": {
+        "type": "Project",
+        "dependencies": {
+          "SimdSkia.Core": "[0.1.0-preview.6, )"
+        }
+      }
+    },
+    "net10.0/win-x64": {
+      "Microsoft.DotNet.ILCompiler": {
+        "type": "Direct",
+        "requested": "[10.0.13, )",
+        "resolved": "10.0.13",
+        "contentHash": "MnT222WlxhelguLZTQx9soBHKW7TeY6A9YUwVaprjUd+ARlhLAkfsXGFNX9w6kRq89/yxUcAQ/lzvmgndSFfOw==",
+        "dependencies": {
+          "runtime.win-x64.Microsoft.DotNet.ILCompiler": "10.0.13"
+        }
+      },
+      "runtime.win-x64.Microsoft.DotNet.ILCompiler": {
+        "type": "Transitive",
+        "resolved": "10.0.13",
+        "contentHash": "L85cXCLA3BMnFyf6xtFczYVstkmMqlJk4pP8cpsvz86V6Gqn885K9rg+aJdoYGCEF7I01ptCYcwujtMmqkezsA=="
+      }
+    }
+  }
+}

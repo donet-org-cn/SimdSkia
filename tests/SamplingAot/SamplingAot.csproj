@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework><OutputType>Exe</OutputType>
+    <PublishAot>true</PublishAot><OptimizationPreference>Size</OptimizationPreference>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/SimdSkia.Cpu/SimdSkia.Cpu.csproj" />
+    <Compile Include="../Optimization/SamplingValidation.cs" Link="SamplingValidation.cs" />
+    <Compile Include="../Optimization/RecordedBlendValidation.cs" Link="RecordedBlendValidation.cs" />
+    <None Include="../Optimization/Fixtures/linear-blend-native-3.119.4.bin" Link="Fixtures/linear-blend-native-3.119.4.bin" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

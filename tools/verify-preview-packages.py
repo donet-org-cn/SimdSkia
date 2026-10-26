@@ -20,7 +20,12 @@ for package_id in ids:
     with zipfile.ZipFile(path) as package:
         assert package.testzip() is None,path
         names=package.namelist()
-        assert 'README.md' in names and 'LICENSE' in names,path
+        assert 'README.md' in names and 'LICENSE' in names and 'CHANGELOG.md' in names,path
+        readme=package.read('README.md').decode('utf-8')
+        changelog=package.read('CHANGELOG.md').decode('utf-8')
+        assert args.version in readme and args.version in changelog,(path,'Missing current version notes')
+        for topic in ('AVX2','24/24'):
+            assert topic in readme and topic in changelog,(path,'Missing release topic',topic)
         assert not any(name.lower().endswith(('.ttf','.ttc','.otf','.woff','.woff2','.so','.dylib')) or name.lower().startswith('runtimes/') for name in names),path
         assert not any('skiasharp.dll' in name.lower() or 'harfbuzz' in name.lower() for name in names),path
         root=ET.fromstring(package.read(next(name for name in names if name.endswith('.nuspec'))))
@@ -30,6 +35,8 @@ for package_id in ids:
         assert metadata.findtext(prefix+'id')==package_id,path
         assert metadata.findtext(prefix+'version')==args.version,path
         assert metadata.findtext(prefix+'license')=='MIT',path
+        release_notes=metadata.findtext(prefix+'releaseNotes') or ''
+        assert release_notes.strip() and 'AVX2' in release_notes and 'CHANGELOG.md' in release_notes,(path,'Missing NuGet release notes')
         dependencies={element.attrib['id']:element.attrib['version'] for element in metadata.iter(prefix+'dependency')}
         for dependency,version in dependencies.items():
             if dependency.startswith('SimdSkia'):
@@ -54,4 +61,4 @@ for package_id in ids:
             assert set(dependencies)=={'SimdSkia.Core'},dependencies
         rows.append({'id':package_id,'version':args.version,'bytes':path.stat().st_size,'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'dependencies':dependencies})
 (args.directory/'manifest.json').write_text(json.dumps(rows,indent=2)+'\n',encoding='utf-8')
-print(f'PASS {len(rows)} preview packages: dependency versions, managed assemblies, README, MIT, symbols and no font/native drawing binaries')
+print(f'PASS {len(rows)} preview packages: dependency versions, managed assemblies, README, CHANGELOG, NuGet release notes, MIT, symbols and no font/native drawing binaries')

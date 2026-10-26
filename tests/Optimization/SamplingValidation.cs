@@ -12,7 +12,7 @@ internal static class SamplingValidation
         foreach(var mode in Enum.GetValues<CompositeMode>())
         foreach(bool aa in new[]{false,true})
         foreach(bool mirror in new[]{false,true})
-        foreach(int width in new[]{1,7,33,129})
+        foreach(int width in new[]{1,7,8,9,15,16,17,33,129})
         {
             using var source=new PixelBuffer(11,7,sourceFormat,alpha,49);
             // Include invalid physical PMA and opaque physical alpha bytes:
@@ -43,6 +43,27 @@ internal static class SamplingValidation
             if(!result.GetPixelSpan().Slice(4,4).SequenceEqual(new byte[]{0,2,8,200}))throw new InvalidOperationException("Bilinear ties-to-even changed.");
             checks++;
         }
+        // Every byte/alpha pair: premultiplication must round before filtering,
+        // not after. Expected values use an independent scalar formula.
+        using var straightSource=new PixelBuffer(2,2,PixelFormat.Rgba8888,AlphaFormat.Straight,13);
+        using var straightResult=new PixelBuffer(9,1,PixelFormat.Rgba8888,AlphaFormat.Premultiplied,41);
+        using(var canvas=new RasterCanvas(straightResult))
+        {
+            var command=new DrawingCommand(CommandKind.DrawImage,new(0,0,9,1),Matrix3.Identity,new(new(255,255,255,255),CompositeMode.SourceOver))
+                {Image=straightSource,Sampling=ImageSampling.Bilinear};
+            for(int alpha=0;alpha<256;alpha++)for(int value=0;value<256;value++)
+            {
+                for(int y=0;y<2;y++)for(int x=0;x<2;x++)
+                {var pixel=straightSource.GetRowSpan(y).Slice(x*4,4);pixel[0]=(byte)value;pixel[1]=(byte)(255-value);pixel[2]=(byte)((value*13)&255);pixel[3]=(byte)alpha;}
+                straightResult.GetPixelSpan().Clear();CpuOptions.EnableSimd=true;canvas.Execute(command);
+                var result=straightResult.GetRowSpan(0);
+                for(int x=0;x<9;x++)
+                    if(result[x*4]!=(value*alpha+127)/255||result[x*4+1]!=((255-value)*alpha+127)/255||result[x*4+2]!=(((value*13)&255)*alpha+127)/255||result[x*4+3]!=alpha)
+                        throw new InvalidOperationException($"Straight-alpha interpolation rounding: {value}/{alpha}/{x}");
+                checks++;
+            }
+        }
+        checks+=RecordedBlendValidation.Run();
         CpuOptions.EnableSimd=true;return checks;
     }
 }

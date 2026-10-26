@@ -1,7 +1,7 @@
 <Project>
   <Import Project="../Directory.Build.props" />
   <PropertyGroup>
-    <Version Condition="'$(Version)' == ''">0.1.0-preview.6</Version>
+    <Version Condition="'$(Version)' == ''">0.1.0-preview.7</Version>
     <Authors>hnlyf168</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/hnlyf168/SimdSkia</PackageProjectUrl>
@@ -11,11 +11,12 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Description>Experimental managed C# 2D rendering components. Preview only; API and rendering compatibility are incomplete. No Google Skia rendering dependency.</Description>
     <PackageTags>SimdSkia;graphics;rendering;managed;preview</PackageTags>
-    <PackageReleaseNotes>Preview 6: managed system-font paging and shared TTC storage, reusable raster buffers, exact SIMD bilinear sampling, bounded image-brush caches and stale image release. Classic desktop JIT startup prepares common drawing paths on a short-lived background thread; headless applications and Native AOT skip preparation. Reuses exact geometry bounds and glyph coverage buffers. Windows startup white intervals were reduced but not eliminated; original renderer comparisons, CPU/GPU timings, memory, AOT size and remaining quality failures are documented in STARTUP-ROUND7-2026-10-22.md. Steady GPU throughput and resident memory did not improve materially in the latest round. Avalonia remains pinned to 12.1.4; full API/rendering compatibility and macOS GPU remain incomplete.</PackageReleaseNotes>
+    <PackageReleaseNotes>Preview 7 / 预览版 7：新增精确八像素 AVX2 双线性采样及标量回退；修复半透明图片 SourceOver 舍入、现代最近邻/图层回贴及 Vulkan CoverageClip 分流，核心图片原版画质对照 24/24 通过。Windows x64 同机 1024×768 四类图片实测 5.412–6.758 ms，原版 6.804–7.714 ms；仅适用于报告场景，不代表所有 Avalonia 页面或 GPU。常驻内存未见明显改善，完整字体/路径/整页画质和 API 仍有缺口，macOS GPU 未实现。Avalonia 固定 12.1.4。完整更新说明、测试和限制见包内 CHANGELOG.md、README.md 及 https://github.com/hnlyf168/SimdSkia/blob/main/docs/RELEASE-NOTES.md</PackageReleaseNotes>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)../docs/RELEASE-NOTES.md" Pack="true" PackagePath="/CHANGELOG.md" />
     <None Include="$(MSBuildThisFileDirectory)../docs/NUGET-README.md" Pack="true" PackagePath="/README.md" Condition="'$(MSBuildProjectName)' != 'SimdSkia.Avalonia' AND '$(MSBuildProjectName)' != 'SimdSkia.Avalonia.Desktop' AND '$(MSBuildProjectName)' != 'SimdSkia.Avalonia.Gpu'" />
     <None Include="$(MSBuildThisFileDirectory)../LICENSE" Pack="true" PackagePath="/" />
   </ItemGroup>

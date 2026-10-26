@@ -1,4 +1,4 @@
-"""Wait for public NuGet availability and compare DLLs/README with CI artifacts."""
+"""Wait for public NuGet availability and compare binaries and release docs with CI."""
 import argparse
 import concurrent.futures
 import hashlib
@@ -37,8 +37,8 @@ def check(row):
     with zipfile.ZipFile(io.BytesIO(blob)) as public,zipfile.ZipFile(expected) as built:
         assert public.testzip() is None,row['id']
         # NuGet repository-signs the container, so the whole ZIP hash can differ.
-        # Its managed assemblies and README must remain exactly the CI artifacts.
-        files=[name for name in built.namelist() if name.endswith('.dll') or name=='README.md']
+        # NuGet adds a ZIP-level signature; package metadata/release notes stay intact.
+        files=[name for name in built.namelist() if name.endswith(('.dll','.nuspec')) or name in ('README.md','CHANGELOG.md','LICENSE')]
         for name in files:assert public.read(name)==built.read(name),(row['id'],name)
     return {'id':row['id'],'version':row['version'],'publicDownload':url,'contentVerified':True,'downloadSha256':hashlib.sha256(blob).hexdigest()}
 
@@ -53,4 +53,4 @@ while pending:
     print('Waiting for NuGet validation/indexing:',', '.join(pending),flush=True)
     time.sleep(min(30,max(0,deadline-time.monotonic())))
 (args.manifest.parent/'published-verification.json').write_text(json.dumps(verified,indent=2)+'\n',encoding='utf-8')
-print(f'PASS all {len(rows)} preview packages are publicly downloadable, with the exact CI DLLs and README',flush=True)
+print(f'PASS all {len(rows)} preview packages are publicly downloadable, with the exact CI DLLs, metadata and release docs',flush=True)

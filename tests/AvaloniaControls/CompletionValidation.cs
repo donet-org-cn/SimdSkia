@@ -86,7 +86,7 @@ internal static class CompletionValidation
             using(var c=cropped.CreateDrawingContext()){c.Clear(Colors.Transparent);c.PushClip(clipping);c.PushOpacity(.5,null);Content(c);c.PopOpacity();c.PopClip();}
             using(var c=expected.CreateDrawingContext()){c.Clear(Colors.Transparent);c.PushClip(clipping);c.DrawBitmap(uncut,.5,new Rect(0,0,96,72),new Rect(0,0,96/scaling,72/scaling));c.PopClip();}
             using var a=cropped.Lock();using var b=expected.Lock();var aa=new byte[a.RowBytes*72];var bb=new byte[b.RowBytes*72];Marshal.Copy(a.Address,aa,0,aa.Length);Marshal.Copy(b.Address,bb,0,bb.Length);
-            Check(aa.SequenceEqual(bb),"Cropped nested layers differ from full-size layer + final clip (transform, opacity, mask, blur, hint bounds).");
+            Check(aa.SequenceEqual(bb),$"Cropped nested layers differ from full-size layer + final clip at scale {scaling} (transform, opacity, mask, blur, hint bounds).");
         }
         foreach(var format in Enum.GetValues<SimdSkia.PixelFormat>())foreach(var alpha in Enum.GetValues<SimdSkia.AlphaFormat>())
         {

@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>WinExe</OutputType>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PublishAot>true</PublishAot>
+    <SelfContained>true</SelfContained>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OptimizationPreference>Size</OptimizationPreference>
+    <!-- SDK publish profiles are normally imported after this project's items.
+         Resolve this named profile early so constants and ILC items agree. -->
+    <MinimumSize Condition="'$(MinimumSize)' == '' and '$(PublishProfile)' == 'MinimumSize'">true</MinimumSize>
+    <MinimumSize Condition="'$(MinimumSize)' == ''">false</MinimumSize>
+    <DirectWindowsImports Condition="'$(DirectWindowsImports)' == '' and '$(PublishProfile)' == 'MinimumSize'">true</DirectWindowsImports>
+    <IncludeVerification Condition="'$(IncludeVerification)' == '' and '$(MinimumSize)' == 'true'">false</IncludeVerification>
+    <IncludeVerification Condition="'$(IncludeVerification)' == ''">true</IncludeVerification>
+    <IncludeText Condition="'$(IncludeText)' == ''">true</IncludeText>
+    <DefineConstants Condition="'$(IncludeText)' == 'true'">$(DefineConstants);INCLUDE_TEXT</DefineConstants>
+    <DefineConstants Condition="'$(IncludeVerification)' == 'true'">$(DefineConstants);INCLUDE_VERIFICATION</DefineConstants>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(MinimalMetadata)' == 'true'">
+    <!-- Toolchain-specific experiment; never apply to reusable library packages. -->
+    <IlcArg Include="--reflectiondata:none" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(DirectWindowsImports)' == 'true'">
+    <DirectPInvoke Include="user32" />
+    <DirectPInvoke Include="gdi32" />
+    <DirectPInvoke Include="kernel32" />
+    <NativeLibrary Include="user32.lib" />
+    <NativeLibrary Include="gdi32.lib" />
+    <NativeLibrary Include="kernel32.lib" />
+  </ItemGroup>
+  <!-- Opt-in for this small demo only. These restrictions are not library defaults. -->
+  <PropertyGroup Condition="'$(MinimumSize)' == 'true'">
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <StackTraceSupport>false</StackTraceSupport>
+    <DebuggerSupport>false</DebuggerSupport>
+    <EventSourceSupport>false</EventSourceSupport>
+    <MetricsSupport>false</MetricsSupport>
+    <UseSystemResourceKeys>true</UseSystemResourceKeys>
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/SimdSkia.Compatibility/SimdSkia.Compatibility.csproj" />
+    <None Include="../../LICENSE" Link="LICENSE.txt" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

@@ -1,5 +1,19 @@
 # NuGet 预览版发布
 
+## 第七预览版 0.1.0-preview.7
+
+**发布候选：尚未公开发布。** 11 个包统一版本；将依次验证包内 README、发行说明、`CHANGELOG.md`、真实隔离包消费、三平台回归和可信发布。上传成功后仍需实际公开下载核对，才更新为已发布。
+
+本版包含精确八像素 AVX2 双线性采样、半透明图像合成修复、Vulkan 裁剪采样一致性修复，以及独立自绘/AOT 示例。每个包都包含 [完整更新日志](RELEASE-NOTES.md)；三个 Avalonia 包继续带有完整中文接入说明。Avalonia 保持 12.1.4，不要求重编译 Avalonia。
+
+最终核心图片质量 24/24 通过原门槛；性能及未完成项详见 [半透明修复报告](ALPHA-COMPATIBILITY-2026-10-26.md)，不将之前的 3%–5% 页面测试误写成修复后整页或 GPU 复测。内存未见明显改善，完整兼容性仍未通过。
+
+```shell
+dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.0-preview.7
+# 需要 GPU 时再加：
+dotnet add package SimdSkia.Avalonia.Gpu --version 0.1.0-preview.7
+```
+
 ## 第六预览版 0.1.0-preview.6
 
 正在准备可信发布与公开下载验证；在本节明确更新为“已公开发布”前，不将打包或上传成功视为已上架。11 个包统一为 `0.1.0-preview.6`，Avalonia 继续锁定 `12.1.4`。完整包名、跨平台接入、GPU 和 AOT 命令见 [首页](../README.md)，三个 Avalonia 包的 README 与首页自动同步。

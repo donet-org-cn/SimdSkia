@@ -2,4 +2,5 @@
   <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
   <ItemGroup><ProjectReference Include="../../src/SimdSkia.Compatibility/SimdSkia.Compatibility.csproj" /></ItemGroup>
 <ItemGroup><None Include="Fixtures/codecs.json" CopyToOutputDirectory="PreserveNewest" /></ItemGroup>
+<ItemGroup><None Update="Fixtures/linear-blend-native-3.119.4.bin" CopyToOutputDirectory="PreserveNewest" /></ItemGroup>
 </Project>

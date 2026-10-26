@@ -34,9 +34,25 @@ jobs:
             if (!$metrics.nativeAot -or !$metrics.imageBrushProbePassed -or $metrics.frames -le 0) { throw "AOT runtime probe failed: $name" }
             if ($metrics.loadedModules -match '^(coreclr|clrjit|clr|mscorwks|mscorsvr)\.dll$') { throw "JIT runtime loaded: $name" }
           }
+      - name: Verify precise sampling in portable and AVX2 Native AOT
+        shell: pwsh
+        run: |
+          foreach ($variant in @('portable','v3')) {
+            $instructionSet = if ($variant -eq 'v3') { 'x86-64-v3' } else { '' }
+            dotnet publish tests/SamplingAot -c Release -r win-x64 -p:IlcInstructionSet=$instructionSet -o "artifacts/sampling-aot/$variant"
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            $output = & "artifacts/sampling-aot/$variant/SamplingAot.exe"
+            if ($LASTEXITCODE -ne 0) { throw "AOT sampling failed: $variant" }
+            $output | Set-Content "artifacts/sampling-aot/$variant.txt"
+            $output | Write-Output
+            $text = $output -join "`n"
+            if ($text -notmatch 'NativeAot=True' -or $text -notmatch 'PASS 460050 sampling checks') { throw "Missing AOT sampling results: $variant" }
+          }
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: windows-aot-smoke
-          path: artifacts/aot-comparison/smoke-*
+          path: |
+            artifacts/aot-comparison/smoke-*
+            artifacts/sampling-aot/*.txt
           if-no-files-found: ignore

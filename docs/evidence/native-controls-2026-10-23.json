@@ -1,0 +1,80 @@
+{
+  "status": "PASS",
+  "exeBytes": 1408512,
+  "runtimeBytes": 1422263,
+  "files": [
+    {
+      "path": "LICENSE.txt",
+      "bytes": 1065,
+      "sha256": "d7690eb5fcded898a216f96af14f53a1eb4e12e53d522000c1dbbfa0af97a640"
+    },
+    {
+      "path": "NativeControls.exe",
+      "bytes": 1408512,
+      "sha256": "3541f9b22682f5b1ecd42c82fdd8e4b6e8a4f0f8adf594db1ee738e942c919c7"
+    },
+    {
+      "path": "licenses/Apache-2.0.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "licenses/JpegLibrary-MIT.txt",
+      "bytes": 1070,
+      "sha256": "61c9471fc2b65056f717c1db48193de382841a3cdea275d6fc26bef8e0906360"
+    },
+    {
+      "path": "licenses/JpegLibrary-THIRD-PARTY-NOTICES.md",
+      "bytes": 258,
+      "sha256": "3c7543bb7b227085302d8a0505269180c2b0460c4b4243b49b908b048f5b71f2"
+    }
+  ],
+  "loadedModules": [
+    "NativeControls.exe",
+    "ntdll.dll",
+    "KERNEL32.DLL",
+    "KERNELBASE.dll",
+    "USER32.dll",
+    "win32u.dll",
+    "GDI32.dll",
+    "gdi32full.dll",
+    "msvcp_win.dll",
+    "ucrtbase.dll",
+    "IMM32.dll",
+    "ADVAPI32.dll",
+    "msvcrt.dll",
+    "sechost.dll",
+    "RPCRT4.dll",
+    "ole32.dll",
+    "combase.dll",
+    "bcrypt.dll",
+    "kernel.appcore.dll",
+    "bcryptPrimitives.dll",
+    "uxtheme.dll",
+    "MSCTF.dll",
+    "OLEAUT32.dll",
+    "textinputframework.dll"
+  ],
+  "checks": [
+    "native GUI PE",
+    "no CLR/Skia/HarfBuzz/Avalonia",
+    "animated progress",
+    "pause freezes shimmer and progress",
+    "resume",
+    "reset",
+    "English editing left/backspace",
+    "Chinese character input",
+    "hover and pressed appearance",
+    "release outside cancels",
+    "resize",
+    "normal close"
+  ],
+  "sourceSha256": {
+    "examples\\NativeControls\\LineEditor.cs": "d06d9fe91365a9d64394c911115583f7776597fca831d4d6136f9fa4edbd2d77",
+    "examples\\NativeControls\\Native.cs": "65027c08dd13d3385e07dbd5789ce280926fa1e094cece20cefd13d21d655b57",
+    "examples\\NativeControls\\Program.cs": "02f8eae0ec31f8d9196435342b472deded77ffcf8d6282cde7545ea3bbf8259e",
+    "examples/NativeControls/NativeControls.csproj": "b758f3e4c180724a36fb12a36863847490a6a7bb6727a6687c2cf5ce167d3c87"
+  },
+  "zipBytes": 709605,
+  "editorModelChecks": 22
+}

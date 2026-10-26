@@ -507,7 +507,7 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
         if(item.Path?.Tiles is {} tiles){words[41]=(uint)tiles.Columns;words[42]=(uint)tiles.Rows;words[43]=(uint)tiles.Left;words[44]=(uint)tiles.Top;}
         words[45]=optimizedCoverage?1u:0u;
         var source=cmd.ImageSource??new RectF(0,0,words[19],words[20]);floats[46]=source.Left;floats[47]=source.Top;floats[48]=source.Right;floats[49]=source.Bottom;
-        words[50]=cmd.ImageSource is not null||cmd.Sampling!=ImageSampling.Nearest||cmd.NearestLowerBoundary?(uint)cmd.Sampling+1:0;words[51]=cmd.NearestLowerBoundary?1u:0u;
+        words[50]=cmd.ImageSource is not null||cmd.Sampling!=ImageSampling.Nearest||cmd.NearestLowerBoundary||cmd.CoverageClip is not null?(uint)cmd.Sampling+1:0;words[51]=cmd.NearestLowerBoundary?1u:0u;
         if(cmd.CoverageClip is {} coverage){words[52]=(uint)item.Data.Length;words[53]=unchecked((uint)coverage.Left);words[54]=unchecked((uint)coverage.Top);words[55]=(uint)coverage.Width;words[56]=(uint)coverage.Height;words[57]=1;}
     }
     private void ComputeBounds(in DrawingCommand cmd,float[] edges,RectF clip,RectF rect,out int originX,out int originY,out int extentX,out int extentY)

@@ -51,10 +51,10 @@
         "dependencies": {
           "Avalonia": "[12.1.4, 12.1.4]",
           "Clipper2": "[2.0.0, 2.0.0]",
-          "SimdSkia.Core": "[0.1.0-preview.6, )",
-          "SimdSkia.Cpu": "[0.1.0-preview.6, )",
-          "SimdSkia.Imaging": "[0.1.0-preview.6, )",
-          "SimdSkia.Text": "[0.1.0-preview.6, )"
+          "SimdSkia.Core": "[0.1.0-preview.7, )",
+          "SimdSkia.Cpu": "[0.1.0-preview.7, )",
+          "SimdSkia.Imaging": "[0.1.0-preview.7, )",
+          "SimdSkia.Text": "[0.1.0-preview.7, )"
         }
       },
       "simdskia.core": {
@@ -63,20 +63,20 @@
       "simdskia.cpu": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.0-preview.6, )"
+          "SimdSkia.Core": "[0.1.0-preview.7, )"
         }
       },
       "simdskia.imaging": {
         "type": "Project",
         "dependencies": {
           "JpegLibrary": "[0.4.32, 0.4.32]",
-          "SimdSkia.Core": "[0.1.0-preview.6, )"
+          "SimdSkia.Core": "[0.1.0-preview.7, )"
         }
       },
       "simdskia.text": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.0-preview.6, )"
+          "SimdSkia.Core": "[0.1.0-preview.7, )"
         }
       }
     }
