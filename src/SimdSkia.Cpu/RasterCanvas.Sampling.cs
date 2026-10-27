@@ -84,7 +84,7 @@ public sealed partial class RasterCanvas
         if(!command.Transform.IsAffine||!command.Transform.IsFinite)throw new NotSupportedException("Image drawing requires a finite affine transform.");
         var source=command.ImageSource??new RectF(0,0,image.Width,image.Height);
         if(!source.IsFinite||source.IsEmpty||source.Left<0||source.Top<0||source.Right>image.Width||source.Bottom>image.Height)
-            throw new ArgumentOutOfRangeException(nameof(command.ImageSource),"Source must be a nonempty rectangle inside the bitmap.");
+            throw new ArgumentOutOfRangeException(nameof(command.ImageSource),$"Source [{source.Left:R}, {source.Top:R}, {source.Right:R}, {source.Bottom:R}] must be a nonempty rectangle inside the {image.Width} x {image.Height} bitmap.");
         if(command.Rectangle.IsEmpty)return;
         if(!command.Rectangle.IsFinite)throw new ArgumentException("Destination must be finite.");
         if(!command.Transform.TryInvert(out var inverse))return;

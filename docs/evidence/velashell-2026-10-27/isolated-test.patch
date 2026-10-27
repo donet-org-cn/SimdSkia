@@ -1,0 +1,75 @@
+diff --git a/src/VelaShell/Program.cs b/src/VelaShell/Program.cs
+index 5b78620..d781239 100644
+--- a/src/VelaShell/Program.cs
++++ b/src/VelaShell/Program.cs
+@@ -98,7 +98,7 @@ internal static partial class Program
+             // **必须排在数据迁移之后**:迁移要在旧目录还没人打开时搬完。
+             // DI 那边由 StartupWarmup.Claim 认领同一个实例(绝不能各开一个,SonnetDB 的 WAL 是独占的)。
+             StartupWarmup.Begin(new VelaShellStoragePaths());
+-            BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
++            SimdSkiaVelaProbe.Configure(BuildAvaloniaApp()).StartWithClassicDesktopLifetime(args);
+         }
+         catch (Exception ex) when (IsDatabaseLockedFailure(ex))
+         {
+diff --git a/src/VelaShell/VelaShell.csproj b/src/VelaShell/VelaShell.csproj
+index 28d9c18..f76144d 100644
+--- a/src/VelaShell/VelaShell.csproj
++++ b/src/VelaShell/VelaShell.csproj
+@@ -338,4 +338,9 @@
+     </ItemGroup>
+     <Error Condition="'@(_VelaAppPublishAssetDropped)' != ''" Text="发布产物缺少应用自身的依赖(被发布期文件名冲突消重删掉了):@(_VelaAppPublishAssetDropped->'%(Filename)%(Extension)', ', ')。多半是又有 target 在 ComputeResolvedFilesToPublishList **之前**往 ResolvedFileToPublish 里登记了同名文件(见 AddVelaPluginsToPublish 的注释,#181)。" />
+   </Target>
++  <ItemGroup>
++    <ProjectReference Include="F:\simdSkia\src\SimdSkia.Avalonia.Desktop\SimdSkia.Avalonia.Desktop.csproj" />
++    <ProjectReference Include="F:\simdSkia\src\SimdSkia.Avalonia.Gpu\SimdSkia.Avalonia.Gpu.csproj" />
++    <Compile Include="F:\simdSkia\tools\VelaShellProbe\Probe.cs" Link="SimdSkiaVelaProbe.cs" />
++  </ItemGroup>
+ </Project>
+diff --git a/tests/VelaShell.Terminal.RenderTests/SkiaTestSession.cs b/tests/VelaShell.Terminal.RenderTests/SkiaTestSession.cs
+index 57e9357..91e2128 100644
+--- a/tests/VelaShell.Terminal.RenderTests/SkiaTestSession.cs
++++ b/tests/VelaShell.Terminal.RenderTests/SkiaTestSession.cs
+@@ -59,6 +59,6 @@ public class SkiaHeadlessApp : Application
+     /// <summary>供 <see cref="HeadlessUnitTestSession" /> 反射调用。</summary>
+     public static AppBuilder BuildAvaloniaApp() =>
+         AppBuilder.Configure<SkiaHeadlessApp>()
+-            .UseSkia()
++            .UseVelaTestRenderer()
+             .UseHeadless(new AvaloniaHeadlessPlatformOptions { UseHeadlessDrawing = false });
+ }
+diff --git a/tests/VelaShell.Terminal.RenderTests/VelaShell.Terminal.RenderTests.csproj b/tests/VelaShell.Terminal.RenderTests/VelaShell.Terminal.RenderTests.csproj
+index f1c24ae..7492468 100644
+--- a/tests/VelaShell.Terminal.RenderTests/VelaShell.Terminal.RenderTests.csproj
++++ b/tests/VelaShell.Terminal.RenderTests/VelaShell.Terminal.RenderTests.csproj
+@@ -36,4 +36,8 @@
+     <ProjectReference Include="..\..\src\VelaShell.Terminal\VelaShell.Terminal.csproj" />
+   </ItemGroup>
+ 
++  <ItemGroup>
++    <ProjectReference Include="F:\simdSkia\src\SimdSkia.Avalonia\SimdSkia.Avalonia.csproj" />
++    <Compile Include="F:\simdSkia\tools\VelaShellProbe\TerminalRenderer.cs" Link="ProbeTerminalRenderer.cs" />
++  </ItemGroup>
+ </Project>
+diff --git a/tests/VelaShell.Tests/VelaShell.Tests.csproj b/tests/VelaShell.Tests/VelaShell.Tests.csproj
+index 28dcaa8..08568c7 100644
+--- a/tests/VelaShell.Tests/VelaShell.Tests.csproj
++++ b/tests/VelaShell.Tests/VelaShell.Tests.csproj
+@@ -53,4 +53,5 @@
+     <ProjectReference Include="..\..\src\VelaShell.Presentation\VelaShell.Presentation.csproj" />
+   </ItemGroup>
+ 
++  <ItemGroup><Compile Include="F:\simdSkia\tools\VelaShellProbe\ViewRenderer.cs" Link="ProbeViewRenderer.cs" /></ItemGroup>
+ </Project>
+diff --git a/tests/VelaShell.Tests/Views/VelaHeadlessApp.cs b/tests/VelaShell.Tests/Views/VelaHeadlessApp.cs
+index f6da788..d0a4a2f 100644
+--- a/tests/VelaShell.Tests/Views/VelaHeadlessApp.cs
++++ b/tests/VelaShell.Tests/Views/VelaHeadlessApp.cs
+@@ -54,7 +54,7 @@ public class VelaHeadlessApp : Application
+ 
+     public static AppBuilder BuildAvaloniaApp() =>
+         AppBuilder.Configure<VelaHeadlessApp>()
+-                  .UseSkia()
++                  .UseVelaViewRenderer()
+                   // 与生产 Program.BuildAvaloniaApp 同源的内置字体集合:令牌里的
+                   // fonts:VelaShell#... 在测试里同样可解析,EmbeddedFontTests 据此守住资源接线。
+                   .ConfigureFonts(fontManager => fontManager.AddFontCollection(

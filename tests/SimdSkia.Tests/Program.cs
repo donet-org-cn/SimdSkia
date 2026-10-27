@@ -181,7 +181,7 @@ var tests=new (string Name,Action Run)[]
     {
         Throws<NotSupportedException>(()=>new SKBitmap(new SKImageInfo(1,1,SKColorType.RgbaF16)));
         Throws<NotSupportedException>(()=>SKColorSpace.CreateSrgbLinear()); using var bitmap=new SKBitmap(1,1);
-        Throws<NotSupportedException>(()=>bitmap.GetPixels()); Throws<NotSupportedException>(()=>_ = bitmap.Handle);
+        if(bitmap.GetPixels()==IntPtr.Zero)throw new Exception("Allocated bitmap must expose pinned pixels."); Throws<NotSupportedException>(()=>_ = bitmap.Handle);
         Throws<NotSupportedException>(()=>SKSurface.Create(new SKImageInfo(1,1),IntPtr.Zero));
     }),
     ("Perspective and nonfinite matrices rejected atomically", () =>

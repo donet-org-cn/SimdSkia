@@ -1,5 +1,11 @@
 # 依赖与许可证
 
+VelaShell 整体兼容验证：固定公开提交 `3c8a20ef739ef4fc2d3363a9d7aaf8ba15ca7b7c`，第三方宿主按其 AGPL-3.0/商业双授权条款保留于隔离 artifacts。未将目标应用代码或原版绘图库加入 SimdSkia 生产依赖；报告截图/测试补丁保留目标归属。只读性能定位工具 dotnet-stack 10.0.750501 安装于实验目录，不进入产品或包。本轮无新增生产 NuGet 依赖，未发布任何新包。
+
+未发布兼容扩展：可选 `SimdSkia.Pdf` 新增精确 `[0.1.16]` **PdfPig**（Apache-2.0，C# PDF 结构/字形轮廓解析）。包记录源码 `a7bb35662bbbf405efddad50aedc9bcdcf515afc`；net8.0 资产没有额外包依赖、native/runtime assets，SHA-512 固定于模块锁文件。阅读器使用自有 `ManagedZlib` 替换默认 Flate 解码；不调用 Skia、PDFium、MuPDF、FreeType 或 native zlib。未引用 PDF 模块的 Compatibility/Avalonia 不增加这一依赖。许可及说明见 `licenses/Apache-2.0.txt`、`licenses/PdfPig-NOTICE.txt`。
+
+`Geometry.cs`、几何值声明及新增枚举/选项采用固定 SkiaSharp 3.119.4 的 MIT 托管值类型代码，保留归属并随包分发 `licenses/SkiaSharp-MIT.txt`；没有调用或复制原生 Skia 绘制实现。PDF 测试夹具包含 OFL ZCOOL XiaoWei 字体子集并附许可。独立开发验证使用 ReportLab 5.1.0（BSD）、Pillow 13.0.0（HPND）、pypdf 6.21.2（BSD-3-Clause）和 PyMuPDF 2.0（AGPL/商业双许可，含原生组件）；它们只安装在被忽略的隔离 `artifacts` 测试目录，**不进入产品、NuGet、AOT 输出或 C# 测试依赖图**。仓库只保留自有夹具、验证脚本与结果，未分发参考渲染库。
+
 2026-10-27 的 `benchmarks/AvaloniaGpuParity/Original` 新增固定 `Avalonia.Angle.Windows.Natives 2.1.27548.20260419`，仅用于原版 Skia 经 EGL/OpenGL ES → 硬件 D3D11 的隔离对照，包含 `av_libglesv2.dll`。包内 LICENSE 为 ANGLE 三条款 BSD 许可，源码归属提交 `1c89805903c1482166356d3b950d474973180e61`；许可随隔离输出复制。该包不进入 SimdSkia 生产项目。`tests/FontOutlineProbe` 仅使用既有原版 SkiaSharp 3.119.4 导出诊断轮廓，禁止把这些数据用于生产字体渲染。
 
 性能报告绘图使用隔离 Python 环境中的 matplotlib/numpy，字体调查另用 fontTools；均为开发分析工具，不进入 NuGet 引用图。`artifacts` 中的 SharpFont/LayoutFarm 字体解释器是 MIT 的隔离调查副本，尚未集成产品，不能把实验结果当作已实现 TrueType hinting。

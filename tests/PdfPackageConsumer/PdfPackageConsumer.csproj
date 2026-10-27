@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <SimdSkiaPackageVersion Condition="'$(SimdSkiaPackageVersion)' == ''">0.1.0-preview.9</SimdSkiaPackageVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="SimdSkia.Pdf" Version="$(SimdSkiaPackageVersion)" />
+    <Compile Include="../Pdf/Program.cs" Link="Program.cs" />
+    <None Include="../Pdf/Fixtures/*" Link="Fixtures/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

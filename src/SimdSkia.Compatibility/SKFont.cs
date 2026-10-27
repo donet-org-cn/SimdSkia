@@ -13,8 +13,21 @@ public enum SKTextAlign { Left=0,Center=1,Right=2 }
 public class SKTypeface : SKObject
 {
     private TrueTypeFont? data;
+    private readonly (string Family,int Weight,int Width,int Slant) description;
     internal TrueTypeFont Font=>data??throw new ObjectDisposedException(nameof(SKTypeface));
-    private SKTypeface(TrueTypeFont font)=>data=font;
+    private SKTypeface(TrueTypeFont font){data=font;description=InstalledFonts.Describe(font);}
+    public string FamilyName {get{ThrowIfDisposed();return description.Family;}}
+    public SKFontStyle FontStyle {get{ThrowIfDisposed();return new(description.Weight,description.Width,(SKFontStyleSlant)description.Slant);}}
+    public int FontWeight {get{ThrowIfDisposed();return description.Weight;}}
+    public int FontWidth {get{ThrowIfDisposed();return description.Width;}}
+    public SKFontStyleSlant FontSlant {get{ThrowIfDisposed();return (SKFontStyleSlant)description.Slant;}}
+    public bool IsBold=>FontWeight>=600;
+    public bool IsItalic=>FontSlant!=SKFontStyleSlant.Upright;
+    public static SKTypeface FromFamilyName(string? familyName)=>FromFamilyName(familyName,400,5,SKFontStyleSlant.Upright);
+    public static SKTypeface FromFamilyName(string? familyName,SKFontStyle style){ArgumentNullException.ThrowIfNull(style);return FromFamilyName(familyName,style.Weight,style.Width,style.Slant);}
+    public static SKTypeface FromFamilyName(string? familyName,SKFontStyleWeight weight,SKFontStyleWidth width,SKFontStyleSlant slant)=>FromFamilyName(familyName,(int)weight,(int)width,slant);
+    public static SKTypeface FromFamilyName(string? familyName,int weight,int width,SKFontStyleSlant slant)=>new(InstalledFonts.Match(familyName,weight,width,(int)slant).Font);
+    public static SKTypeface FromData(SKData data,int index=0){ArgumentNullException.ThrowIfNull(data);return new(new(data.AsSpan(),index));}
     protected override void Dispose(bool disposing)=>data=null;
     public static SKTypeface FromFile(string path,int index=0)
     {ArgumentNullException.ThrowIfNull(path);return new(new(File.ReadAllBytes(path),index));}
@@ -24,9 +37,7 @@ public class SKTypeface : SKObject
     {
         get
         {
-            string[] candidates=[Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Fonts),"arial.ttf"),"/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf","/System/Library/Fonts/Supplemental/Arial.ttf"];
-            foreach(string path in candidates)if(File.Exists(path))return FromFile(path);
-            throw new FileNotFoundException("No default TrueType font was found. Supply SKTypeface.FromFile explicitly.");
+            return FromFamilyName(null);
         }
     }
     public int GlyphCount {get{ThrowIfDisposed();return Font.GlyphCount;}}

@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="d73639f4-ad98-4a30-b65a-ef937c01735b" name="Happy@DESKTOP-FISFTL4 2026-10-27 17:34:14" runUser="DESKTOP-FISFTL4\Happy" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-27T17:34:14.1330676+08:00" queuing="2026-10-27T17:34:14.1330679+08:00" start="2026-10-27T17:34:12.3362896+08:00" finish="2026-10-27T17:34:14.4979565+08:00" />
+  <TestSettings name="default" id="885cdf6b-5358-444a-b0a2-7cda57f0cd11">
+    <Deployment runDeploymentRoot="Happy_DESKTOP-FISFTL4_2026-10-27_17_34_14" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="a4fcc18e-1d81-4dfb-958b-02269b17e008" testId="1f4b2675-5317-8bad-92f1-df77a66b98dd" testName="RuleBackground_IsThePaletteColor_AndSelectionStaysOnTop" computerName="DESKTOP-FISFTL4" duration="00:00:00.1109122" startTime="2026-10-27T17:34:14.1594294+08:00" endTime="2026-10-27T17:34:14.2704582+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a4fcc18e-1d81-4dfb-958b-02269b17e008" />
+    <UnitTestResult executionId="6a4566e9-534d-4f5f-8196-4e933cafb4d7" testId="166fc2cc-b0bc-8a91-9366-a13c1084fb91" testName="DraggedSelection_PaintsABandTheEyeCanActuallySee" computerName="DESKTOP-FISFTL4" duration="00:00:00.0509404" startTime="2026-10-27T17:34:14.2704948+08:00" endTime="2026-10-27T17:34:14.3215126+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6a4566e9-534d-4f5f-8196-4e933cafb4d7" />
+    <UnitTestResult executionId="526074c2-fbc4-41d4-8fc6-3d5f5488aacc" testId="16f8a86e-b0ac-8986-ade3-c41bf0391e35" testName="ManyStyledRuns_AllRasterize_SoBufferReuseDoesNotCorruptEarlierRuns" computerName="DESKTOP-FISFTL4" duration="00:00:00.0970670" startTime="2026-10-27T17:34:13.8603133+08:00" endTime="2026-10-27T17:34:13.9578374+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="526074c2-fbc4-41d4-8fc6-3d5f5488aacc" />
+    <UnitTestResult executionId="8b1fe201-f2d4-4efa-b353-518caa8be58f" testId="16093a9a-329c-89f3-93a8-0ff53a0ba76b" testName="RepeatedRepaints_KeepRasterizingText" computerName="DESKTOP-FISFTL4" duration="00:00:00.1604224" startTime="2026-10-27T17:34:13.9582902+08:00" endTime="2026-10-27T17:34:14.1195906+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8b1fe201-f2d4-4efa-b353-518caa8be58f" />
+    <UnitTestResult executionId="5696bd51-2bd4-4b74-a586-98aaf354cb18" testId="1c659841-b80b-86c1-839b-83ee8373594f" testName="SelectedAnsiText_KeepsItsHue_AndStaysReadable" computerName="DESKTOP-FISFTL4" duration="00:00:00.0250699" startTime="2026-10-27T17:34:14.4241647+08:00" endTime="2026-10-27T17:34:14.4526548+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5696bd51-2bd4-4b74-a586-98aaf354cb18" />
+    <UnitTestResult executionId="05895f00-b12f-49a4-8087-f864eb5cad7d" testId="179ab3bc-6b4a-86f1-a24f-a06d866fff0e" testName="Composing_PaintsThePinyinOnScreen" computerName="DESKTOP-FISFTL4" duration="00:00:00.0396532" startTime="2026-10-27T17:34:14.1196287+08:00" endTime="2026-10-27T17:34:14.1593838+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="05895f00-b12f-49a4-8087-f864eb5cad7d" />
+    <UnitTestResult executionId="6454ca50-43ea-45b5-b779-571a85445395" testId="1dfe2180-62d9-8f90-85b2-836e19ea59e3" testName="PlainText_IsActuallyRasterized" computerName="DESKTOP-FISFTL4" duration="00:00:00.9395416" startTime="2026-10-27T17:34:12.7512419+08:00" endTime="2026-10-27T17:34:13.8525884+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6454ca50-43ea-45b5-b779-571a85445395" />
+    <UnitTestResult executionId="66a62ac3-0b98-49cd-8678-f60551d6f350" testId="116ac054-5597-8787-9883-b18f5963c073" testName="SelectionMatches_PaintOtherOccurrences_WithoutCoveringTheRealSelection (False)" computerName="DESKTOP-FISFTL4" duration="00:00:00.0613590" startTime="2026-10-27T17:34:14.3220091+08:00" endTime="2026-10-27T17:34:14.3859018+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="66a62ac3-0b98-49cd-8678-f60551d6f350" />
+    <UnitTestResult executionId="085cfaff-d335-47fa-be73-c8392d8d1707" testId="1641de4c-1e2a-8532-8214-e5b6bf0e660e" testName="SelectionMatches_PaintOtherOccurrences_WithoutCoveringTheRealSelection (True)" computerName="DESKTOP-FISFTL4" duration="00:00:00.0380446" startTime="2026-10-27T17:34:14.3859495+08:00" endTime="2026-10-27T17:34:14.4240784+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="085cfaff-d335-47fa-be73-c8392d8d1707" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="DraggedSelection_PaintsABandTheEyeCanActuallySee" storage="f:\simdskia\artifacts\velashell-compat-2026-10-27\velashell\tests\velashell.terminal.rendertests\bin\debug\net11.0\velashell.terminal.rendertests.dll" id="166fc2cc-b0bc-8a91-9366-a13c1084fb91">
+      <TestCategory>
+        <TestCategoryItem TestCategory="GlyphRendering" />
+      </TestCategory>
+      <Execution id="6a4566e9-534d-4f5f-8196-4e933cafb4d7" />
+      <TestMethod codeBase="F:\simdSkia\artifacts\velashell-compat-2026-10-27\VelaShell\tests\VelaShell.Terminal.RenderTests\bin\Debug\net11.0\VelaShell.Terminal.RenderTests.dll" adapterTypeName="executor://mstestadapter/v4" className="VelaShell.Terminal.RenderTests.SelectionVisibilityRenderTests" name="DraggedSelection_PaintsABandTheEyeCanActuallySee" />
+    </UnitTest>
+    <UnitTest name="RepeatedRepaints_KeepRasterizingText" storage="f:\simdskia\artifacts\velashell-compat-2026-10-27\velashell\tests\velashell.terminal.rendertests\bin\debug\net11.0\velashell.terminal.rendertests.dll" id="16093a9a-329c-89f3-93a8-0ff53a0ba76b">
+      <TestCategory>
+        <TestCategoryItem TestCategory="GlyphRendering" />
+      </TestCategory>
+      <Execution id="8b1fe201-f2d4-4efa-b353-518caa8be58f" />
+      <TestMethod codeBase="F:\simdSkia\artifacts\velashell-compat-2026-10-27\VelaShell\tests\VelaShell.Terminal.RenderTests\bin\Debug\net11.0\VelaShell.Terminal.RenderTests.dll" adapterTypeName="executor://mstestadapter/v4" className="VelaShell.Terminal.RenderTests.GlyphRenderingTests" name="RepeatedRepaints_KeepRasterizingText" />
+    </UnitTest>
+    <UnitTest name="SelectionMatches_PaintOtherOccurrences_WithoutCoveringTheRealSelection (False)" storage="f:\simdskia\artifacts\velashell-compat-2026-10-27\velashell\tests\velashell.terminal.rendertests\bin\debug\net11.0\velashell.terminal.rendertests.dll" id="116ac054-5597-8787-9883-b18f5963c073">
+      <TestCategory>
+        <TestCategoryItem TestCategory="GlyphRendering" />
+      </TestCategory>
+      <Execution id="66a62ac3-0b98-49cd-8678-f60551d6f350" />
+      <TestMethod codeBase="F:\simdSkia\artifacts\velashell-compat-2026-10-27\VelaShell\tests\VelaShell.Terminal.RenderTests\bin\Debug\net11.0\VelaShell.Terminal.RenderTests.dll" adapterTypeName="executor://mstestadapter/v4" className="VelaShell.Terminal.RenderTests.SelectionVisibilityRenderTests" name="SelectionMatches_PaintOtherOccurrences_WithoutCoveringTheRealSelection" />
+    </UnitTest>
+    <UnitTest name="ManyStyledRuns_AllRasterize_SoBufferReuseDoesNotCorruptEarlierRuns" storage="f:\simdskia\artifacts\velashell-compat-2026-10-27\velashell\tests\velashell.terminal.rendertests\bin\debug\net11.0\velashell.terminal.rendertests.dll" id="16f8a86e-b0ac-8986-ade3-c41bf0391e35">
+      <TestCategory>
+        <TestCategoryItem TestCategory="GlyphRendering" />
+      </TestCategory>
+      <Execution id="526074c2-fbc4-41d4-8fc6-3d5f5488aacc" />
+      <TestMethod codeBase="F:\simdSkia\artifacts\velashell-compat-2026-10-27\VelaShell\tests\VelaShell.Terminal.RenderTests\bin\Debug\net11.0\VelaShell.Terminal.RenderTests.dll" adapterTypeName="executor://mstestadapter/v4" className="VelaShell.Terminal.RenderTests.GlyphRenderingTests" name="ManyStyledRuns_AllRasterize_SoBufferReuseDoesNotCorruptEarlierRuns" />
+    </UnitTest>
+    <UnitTest name="PlainText_IsActuallyRasterized" storage="f:\simdskia\artifacts\velashell-compat-2026-10-27\velashell\tests\velashell.terminal.rendertests\bin\debug\net11.0\velashell.terminal.rendertests.dll" id="1dfe2180-62d9-8f90-85b2-836e19ea59e3">
+      <TestCategory>
+        <TestCategoryItem TestCategory="GlyphRendering" />
+      </TestCategory>
+      <Execution id="6454ca50-43ea-45b5-b779-571a85445395" />
+      <TestMethod codeBase="F:\simdSkia\artifacts\velashell-compat-2026-10-27\VelaShell\tests\VelaShell.Terminal.RenderTests\bin\Debug\net11.0\VelaShell.Terminal.RenderTests.dll" adapterTypeName="executor://mstestadapter/v4" className="VelaShell.Terminal.RenderTests.GlyphRenderingTests" name="PlainText_IsActuallyRasterized" />
+    </UnitTest>
+    <UnitTest name="SelectedAnsiText_KeepsItsHue_AndStaysReadable" storage="f:\simdskia\artifacts\velashell-compat-2026-10-27\velashell\tests\velashell.terminal.rendertests\bin\debug\net11.0\velashell.terminal.rendertests.dll" id="1c659841-b80b-86c1-839b-83ee8373594f">
+      <TestCategory>
+        <TestCategoryItem TestCategory="GlyphRendering" />
+      </TestCategory>
+      <Execution id="5696bd51-2bd4-4b74-a586-98aaf354cb18" />
+      <TestMethod codeBase="F:\simdSkia\artifacts\velashell-compat-2026-10-27\VelaShell\tests\VelaShell.Terminal.RenderTests\bin\Debug\net11.0\VelaShell.Terminal.RenderTests.dll" adapterTypeName="executor://mstestadapter/v4" className="VelaShell.Terminal.RenderTests.SelectionVisibilityRenderTests" name="SelectedAnsiText_KeepsItsHue_AndStaysReadable" />
+    </UnitTest>
+    <UnitTest name="Composing_PaintsThePinyinOnScreen" storage="f:\simdskia\artifacts\velashell-compat-2026-10-27\velashell\tests\velashell.terminal.rendertests\bin\debug\net11.0\velashell.terminal.rendertests.dll" id="179ab3bc-6b4a-86f1-a24f-a06d866fff0e">
+      <TestCategory>
+        <TestCategoryItem TestCategory="GlyphRendering" />
+      </TestCategory>
+      <Execution id="05895f00-b12f-49a4-8087-f864eb5cad7d" />
+      <TestMethod codeBase="F:\simdSkia\artifacts\velashell-compat-2026-10-27\VelaShell\tests\VelaShell.Terminal.RenderTests\bin\Debug\net11.0\VelaShell.Terminal.RenderTests.dll" adapterTypeName="executor://mstestadapter/v4" className="VelaShell.Terminal.RenderTests.ImePreeditRenderTests" name="Composing_PaintsThePinyinOnScreen" />
+    </UnitTest>
+    <UnitTest name="SelectionMatches_PaintOtherOccurrences_WithoutCoveringTheRealSelection (True)" storage="f:\simdskia\artifacts\velashell-compat-2026-10-27\velashell\tests\velashell.terminal.rendertests\bin\debug\net11.0\velashell.terminal.rendertests.dll" id="1641de4c-1e2a-8532-8214-e5b6bf0e660e">
+      <TestCategory>
+        <TestCategoryItem TestCategory="GlyphRendering" />
+      </TestCategory>
+      <Execution id="085cfaff-d335-47fa-be73-c8392d8d1707" />
+      <TestMethod codeBase="F:\simdSkia\artifacts\velashell-compat-2026-10-27\VelaShell\tests\VelaShell.Terminal.RenderTests\bin\Debug\net11.0\VelaShell.Terminal.RenderTests.dll" adapterTypeName="executor://mstestadapter/v4" className="VelaShell.Terminal.RenderTests.SelectionVisibilityRenderTests" name="SelectionMatches_PaintOtherOccurrences_WithoutCoveringTheRealSelection" />
+    </UnitTest>
+    <UnitTest name="RuleBackground_IsThePaletteColor_AndSelectionStaysOnTop" storage="f:\simdskia\artifacts\velashell-compat-2026-10-27\velashell\tests\velashell.terminal.rendertests\bin\debug\net11.0\velashell.terminal.rendertests.dll" id="1f4b2675-5317-8bad-92f1-df77a66b98dd">
+      <TestCategory>
+        <TestCategoryItem TestCategory="GlyphRendering" />
+      </TestCategory>
+      <Execution id="a4fcc18e-1d81-4dfb-958b-02269b17e008" />
+      <TestMethod codeBase="F:\simdSkia\artifacts\velashell-compat-2026-10-27\VelaShell\tests\VelaShell.Terminal.RenderTests\bin\Debug\net11.0\VelaShell.Terminal.RenderTests.dll" adapterTypeName="executor://mstestadapter/v4" className="VelaShell.Terminal.RenderTests.OutputHighlightRenderTests" name="RuleBackground_IsThePaletteColor_AndSelectionStaysOnTop" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="1f4b2675-5317-8bad-92f1-df77a66b98dd" executionId="a4fcc18e-1d81-4dfb-958b-02269b17e008" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="166fc2cc-b0bc-8a91-9366-a13c1084fb91" executionId="6a4566e9-534d-4f5f-8196-4e933cafb4d7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="16f8a86e-b0ac-8986-ade3-c41bf0391e35" executionId="526074c2-fbc4-41d4-8fc6-3d5f5488aacc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="16093a9a-329c-89f3-93a8-0ff53a0ba76b" executionId="8b1fe201-f2d4-4efa-b353-518caa8be58f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1c659841-b80b-86c1-839b-83ee8373594f" executionId="5696bd51-2bd4-4b74-a586-98aaf354cb18" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="179ab3bc-6b4a-86f1-a24f-a06d866fff0e" executionId="05895f00-b12f-49a4-8087-f864eb5cad7d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1dfe2180-62d9-8f90-85b2-836e19ea59e3" executionId="6454ca50-43ea-45b5-b779-571a85445395" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="116ac054-5597-8787-9883-b18f5963c073" executionId="66a62ac3-0b98-49cd-8678-f60551d6f350" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1641de4c-1e2a-8532-8214-e5b6bf0e660e" executionId="085cfaff-d335-47fa-be73-c8392d8d1707" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="列表中未列出的结果" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="所有已加载的结果" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="9" executed="9" passed="9" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+</TestRun>

@@ -8,6 +8,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Build failed.' }
     dotnet run --project tests/SimdSkia.Tests -c Release --no-build
     if ($LASTEXITCODE -ne 0) { throw 'Behavior tests failed.' }
+    dotnet run --project tests/CompatibilityExpansion/Managed -c Release --no-build -- artifacts/compat-expansion/managed
+    if ($LASTEXITCODE -ne 0) { throw 'Standalone compatibility expansion tests failed.' }
+    dotnet run --project tests/Pdf -c Release --no-build
+    if ($LASTEXITCODE -ne 0) { throw 'Managed PDF export/read tests failed.' }
     $fontPath=$env:SIMDSKIA_CJK_FONT
     if(-not $fontPath -and (Test-Path -LiteralPath baseline/fonts/ZenOldMincho-Regular.ttf)){$fontPath=(Resolve-Path baseline/fonts/ZenOldMincho-Regular.ttf).Path}
     if($fontPath){dotnet run --project tests/Features -c Release --no-build -- $fontPath}

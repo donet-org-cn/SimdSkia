@@ -20,7 +20,25 @@ public static class ManagedZlib
         if(expectedLength<0||expectedLength>256*1024*1024)throw new NotSupportedException("Image inflation exceeds the configured 256 MiB limit.");
         var output=new byte[expectedLength];Decode(encoded,output);return output;
     }
+    private sealed class OutputLimitException : Exception { }
     internal static void Decode(ReadOnlySpan<byte> encoded,Span<byte> output,bool prefix=false)
+    {
+        try{DecodeInto(encoded,output,prefix,true);}
+        catch(OutputLimitException){throw new InvalidDataException("Inflation exceeds declared image size.");}
+    }
+    /// <summary>Inflates an unknown-length PDF stream with a strict output budget and checksum validation.</summary>
+    public static byte[] DecodeBounded(ReadOnlySpan<byte> encoded,int maximumLength=64*1024*1024)
+    {
+        if(maximumLength<0||maximumLength>256*1024*1024)throw new ArgumentOutOfRangeException(nameof(maximumLength));
+        int capacity=Math.Min(65536,maximumLength);
+        while(true)
+        {
+            var output=new byte[capacity];
+            try{int length=DecodeInto(encoded,output,false,false);return length==output.Length?output:output.AsSpan(0,length).ToArray();}
+            catch(OutputLimitException){if(capacity==maximumLength)throw new NotSupportedException("Inflated stream exceeds the output budget.");capacity=(int)Math.Min(maximumLength,Math.Max(1L,capacity*2L));}
+        }
+    }
+    private static int DecodeInto(ReadOnlySpan<byte> encoded,Span<byte> output,bool prefix,bool exact)
     {
         int expectedLength=output.Length;
         if(encoded.Length<6||(encoded[0]&15)!=8||(encoded[0]>>4)>7||((encoded[0]<<8)|encoded[1])%31!=0)throw new InvalidDataException("Invalid zlib header.");
@@ -33,8 +51,8 @@ public static class ManagedZlib
             if(kind==0)
             {
                 reader.Align();int size=reader.Read(16),inverse=reader.Read(16);if((size^inverse)!=65535)throw new InvalidDataException("Invalid stored DEFLATE block.");
-                if(size>output.Length-position){if(prefix){reader.ReadBytes(output[position..]);return;}throw new InvalidDataException("Inflation exceeds declared image size.");}
-                reader.ReadBytes(output.Slice(position,size));position+=size;if(prefix&&position==output.Length)return;continue;
+                if(size>output.Length-position){if(prefix){reader.ReadBytes(output[position..]);return position;}throw new OutputLimitException();}
+                reader.ReadBytes(output.Slice(position,size));position+=size;if(prefix&&position==output.Length)return position;continue;
             }
             Huffman literal,distance;
             if(kind==1)
@@ -65,22 +83,23 @@ public static class ManagedZlib
             while(true)
             {
                 int symbol=literal.Decode(ref reader);if(symbol==256)break;
-                if(symbol<256){if(position==output.Length){if(prefix)return;throw new InvalidDataException("Inflation exceeds image size.");}output[position++]=(byte)symbol;if(prefix&&position==output.Length)return;continue;}
+                if(symbol<256){if(position==output.Length){if(prefix)return position;throw new OutputLimitException();}output[position++]=(byte)symbol;if(prefix&&position==output.Length)return position;continue;}
                 if(symbol>285)throw new InvalidDataException("Reserved length symbol.");
                 int length=LengthBase[symbol-257]+reader.Read(LengthBits[symbol-257]);int ds=distance.Decode(ref reader);
                 if(ds>=30)throw new InvalidDataException("Reserved distance symbol.");
                 int offset=DistanceBase[ds]+reader.Read(DistanceBits[ds]);
                 if(offset>window||offset>position)throw new InvalidDataException("Invalid DEFLATE back-reference.");
-                if(length>output.Length-position){if(prefix)length=output.Length-position;else throw new InvalidDataException("Invalid DEFLATE back-reference.");}
-                if(offset==1){output.Slice(position,length).Fill(output[position-1]);position+=length;if(prefix&&position==output.Length)return;continue;}
+                if(length>output.Length-position){if(prefix)length=output.Length-position;else throw new OutputLimitException();}
+                if(offset==1){output.Slice(position,length).Fill(output[position-1]);position+=length;if(prefix&&position==output.Length)return position;continue;}
                 int copied=0;
                 while(copied<length)
                 {int count=Math.Min(offset+copied,length-copied);output.Slice(position-offset,count).CopyTo(output.Slice(position+copied,count));copied+=count;}
-                position+=length;if(prefix&&position==output.Length)return;
+                position+=length;if(prefix&&position==output.Length)return position;
             }
         }while(!final);
-        reader.Align();if(reader.BytePosition!=encoded.Length-6||position!=expectedLength)throw new InvalidDataException("Unexpected DEFLATE length or trailing payload.");
-        if(Adler(output)!=BinaryPrimitives.ReadUInt32BigEndian(encoded[^4..]))throw new InvalidDataException("zlib Adler-32 mismatch.");
+        reader.Align();if(reader.BytePosition!=encoded.Length-6||(exact&&position!=expectedLength))throw new InvalidDataException("Unexpected DEFLATE length or trailing payload.");
+        if(Adler(output[..position])!=BinaryPrimitives.ReadUInt32BigEndian(encoded[^4..]))throw new InvalidDataException("zlib Adler-32 mismatch.");
+        return position;
     }
     public static byte[] EncodeStored(ReadOnlySpan<byte> data)
     {

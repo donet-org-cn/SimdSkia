@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="0dbace44-6061-4b0a-9b02-24453145a918" name="Happy@DESKTOP-FISFTL4 2026-10-27 17:47:52" runUser="DESKTOP-FISFTL4\Happy" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-27T17:47:52.4309925+08:00" queuing="2026-10-27T17:47:52.4309928+08:00" start="2026-10-27T17:47:46.3825932+08:00" finish="2026-10-27T17:47:52.4358299+08:00" />
+  <TestSettings name="default" id="27ec3a7e-e422-4c53-b4d4-f846817273bf">
+    <Deployment runDeploymentRoot="Happy_DESKTOP-FISFTL4_2026-10-27_17_47_52" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="3341de3c-9cab-4947-bf5f-03bcad0a97bf" testId="1b27ef0b-0ba1-8f92-93bb-2128ba634eb2" testName="DoubleClickingAButton_DoesNotMaximize_ButTheBlankTitleBarDoes" computerName="DESKTOP-FISFTL4" duration="00:00:04.7785042" startTime="2026-10-27T17:47:47.4908104+08:00" endTime="2026-10-27T17:47:52.3173697+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3341de3c-9cab-4947-bf5f-03bcad0a97bf">
+      <Output>
+        <ErrorInfo>
+          <Message>Assertion failed. 预期值相等。&#xD;
+双击标题栏空白处照常最大化&#xD;
+&#xD;
+expected: Maximized&#xD;
+actual:   Normal&#xD;
+&#xD;
+Assert.AreEqual(WindowState.Maximized, window.WindowState)</Message>
+          <StackTrace>   at VelaShell.Tests.Views.RecordingPlayerTitleBarUiTests.&lt;&gt;c.&lt;DoubleClickingAButton_DoesNotMaximize_ButTheBlankTitleBarDoes&gt;b__5_0() in F:\simdSkia\artifacts\velashell-compat-2026-10-27\VelaShell\tests\VelaShell.Tests\Views\RecordingPlayerTitleBarUiTests.cs:line 108&#xD;
+   at VelaShell.Tests.Views.RecordingPlayerTitleBarUiTests.&lt;&gt;c__DisplayClass12_0.&lt;OnUi&gt;b__0() in F:\simdSkia\artifacts\velashell-compat-2026-10-27\VelaShell\tests\VelaShell.Tests\Views\RecordingPlayerTitleBarUiTests.cs:line 183&#xD;
+   at Avalonia.Headless.HeadlessUnitTestSession.&lt;&gt;c__DisplayClass10_0`1.&lt;Dispatch&gt;b__0()&#xD;
+   at Avalonia.Headless.HeadlessUnitTestSession.&lt;&gt;c__DisplayClass12_0`1.&lt;DispatchCore&gt;b__0()&#xD;
+--- End of stack trace from previous location ---&#xD;
+   at VelaShell.Tests.Views.RecordingPlayerTitleBarUiTests.OnUi(Action body) in F:\simdSkia\artifacts\velashell-compat-2026-10-27\VelaShell\tests\VelaShell.Tests\Views\RecordingPlayerTitleBarUiTests.cs:line 180&#xD;
+   at VelaShell.Tests.Views.RecordingPlayerTitleBarUiTests.DoubleClickingAButton_DoesNotMaximize_ButTheBlankTitleBarDoes() in F:\simdSkia\artifacts\velashell-compat-2026-10-27\VelaShell\tests\VelaShell.Tests\Views\RecordingPlayerTitleBarUiTests.cs:line 95&#xD;
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="DoubleClickingAButton_DoesNotMaximize_ButTheBlankTitleBarDoes" storage="f:\simdskia\artifacts\velashell-compat-2026-10-27\velashell\tests\velashell.tests\bin\debug\net11.0\velashell.tests.dll" id="1b27ef0b-0ba1-8f92-93bb-2128ba634eb2">
+      <TestCategory>
+        <TestCategoryItem TestCategory="RecorderUI" />
+      </TestCategory>
+      <Execution id="3341de3c-9cab-4947-bf5f-03bcad0a97bf" />
+      <TestMethod codeBase="F:\simdSkia\artifacts\velashell-compat-2026-10-27\VelaShell\tests\VelaShell.Tests\bin\Debug\net11.0\VelaShell.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="VelaShell.Tests.Views.RecordingPlayerTitleBarUiTests" name="DoubleClickingAButton_DoesNotMaximize_ButTheBlankTitleBarDoes" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="1b27ef0b-0ba1-8f92-93bb-2128ba634eb2" executionId="3341de3c-9cab-4947-bf5f-03bcad0a97bf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="列表中未列出的结果" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="所有已加载的结果" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" passed="0" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <RunInfos>
+      <RunInfo computerName="DESKTOP-FISFTL4" outcome="Warning" timestamp="2026-10-27T17:47:52.4072426+08:00">
+        <Text>数据收集器“Blame”消息: 所有测试都已运行完毕，将不生成序列文件。</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

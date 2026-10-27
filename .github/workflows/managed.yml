@@ -21,6 +21,14 @@ jobs:
         run: ./tools/fetch-test-font.ps1
       - run: dotnet run --project tests/Features -c Release --no-build -- baseline/fonts/ZenOldMincho-Regular.ttf
       - run: dotnet run --project tests/Imaging -c Release --no-build
+      - run: dotnet run --project tests/CompatibilityExpansion/Managed -c Release --no-build
+      - run: dotnet run --project tests/Pdf -c Release --no-build
+      - name: Standalone original behavior comparison
+        if: runner.os == 'Windows'
+        run: dotnet run --project tests/CompatibilityExpansion/Original -c Release -- artifacts/compat-expansion/original
+      - name: Verify actual PDF window presentation
+        if: runner.os == 'Windows'
+        run: dotnet run --project examples/PdfViewer -c Release --no-build -- tests/Pdf/Fixtures/external.pdf --smoke
       - run: python tools/verify-managed-encoding.py
       - run: dotnet run --project tests/Optimization -c Release --no-build -- baseline/fonts/ZenOldMincho-Regular.ttf
       - run: dotnet run --project tests/Avalonia -c Release --no-build -- baseline/fonts/ZenOldMincho-Regular.ttf

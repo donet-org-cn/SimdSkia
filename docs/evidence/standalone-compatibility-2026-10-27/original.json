@@ -1,0 +1,102 @@
+{
+  "roundRect": {
+    "type": "Simple",
+    "radii": [
+      [
+        26.666668,
+        20
+      ],
+      [
+        26.666668,
+        20
+      ],
+      [
+        26.666668,
+        20
+      ],
+      [
+        26.666668,
+        20
+      ]
+    ],
+    "contains": true
+  },
+  "layerPixel": "#ffff7e7e",
+  "layerSourceOutside": "#ffff0000",
+  "disposal.gif": {
+    "FrameCount": 4,
+    "RepetitionCount": 2,
+    "Info": {
+      "Width": 32,
+      "Height": 24,
+      "Alpha": "Unpremul"
+    },
+    "frames": [
+      {
+        "RequiredFrame": -1,
+        "Duration": 20,
+        "FullyRecieved": true,
+        "Alpha": "Unpremul",
+        "HasAlphaWithinBounds": true,
+        "Disposal": "Keep",
+        "Blend": "SrcOver",
+        "Rect": "{Left=0,Top=0,Width=32,Height=24}"
+      },
+      {
+        "RequiredFrame": 0,
+        "Duration": 30,
+        "FullyRecieved": true,
+        "Alpha": "Unpremul",
+        "HasAlphaWithinBounds": true,
+        "Disposal": "RestoreBackgroundColor",
+        "Blend": "SrcOver",
+        "Rect": "{Left=0,Top=3,Width=16,Height=13}"
+      },
+      {
+        "RequiredFrame": 1,
+        "Duration": 40,
+        "FullyRecieved": true,
+        "Alpha": "Unpremul",
+        "HasAlphaWithinBounds": true,
+        "Disposal": "RestorePrevious",
+        "Blend": "SrcOver",
+        "Rect": "{Left=0,Top=0,Width=32,Height=24}"
+      },
+      {
+        "RequiredFrame": 1,
+        "Duration": 50,
+        "FullyRecieved": true,
+        "Alpha": "Unpremul",
+        "HasAlphaWithinBounds": true,
+        "Disposal": "Keep",
+        "Blend": "SrcOver",
+        "Rect": "{Left=10,Top=3,Width=16,Height=13}"
+      }
+    ]
+  },
+  "disposal.gif-invalidFrame": "IncompleteInput",
+  "interlaced.gif": {
+    "FrameCount": 1,
+    "RepetitionCount": -1,
+    "Info": {
+      "Width": 47,
+      "Height": 39,
+      "Alpha": "Opaque"
+    },
+    "frames": [
+      {
+        "RequiredFrame": -1,
+        "Duration": 0,
+        "FullyRecieved": true,
+        "Alpha": "Opaque",
+        "HasAlphaWithinBounds": false,
+        "Disposal": "Keep",
+        "Blend": "SrcOver",
+        "Rect": "{Left=0,Top=0,Width=47,Height=39}"
+      }
+    ]
+  },
+  "interlaced.gif-invalidFrame": "IncompleteInput",
+  "family": "Microsoft YaHei",
+  "checks": 26
+}

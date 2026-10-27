@@ -7,6 +7,7 @@ public class SKImage : SKObject
 {
     private readonly PixelBuffer pixels;
     private readonly SKImageInfo info;
+    internal PixelBuffer Buffer {get{ThrowIfDisposed();return pixels;}}
     internal SKImage(SKImageInfo info,PixelBuffer pixels) { this.info=info; this.pixels=pixels; }
     public int Width { get { ThrowIfDisposed(); return info.Width; } }
     public int Height { get { ThrowIfDisposed(); return info.Height; } }

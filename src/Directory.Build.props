@@ -1,7 +1,7 @@
 <Project>
   <Import Project="../Directory.Build.props" />
   <PropertyGroup>
-    <Version Condition="'$(Version)' == ''">0.1.0-preview.8</Version>
+    <Version Condition="'$(Version)' == ''">0.1.0-preview.9</Version>
     <Authors>hnlyf168</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/hnlyf168/SimdSkia</PackageProjectUrl>
@@ -11,13 +11,13 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Description>Experimental managed C# 2D rendering components. Preview only; API and rendering compatibility are incomplete. No Google Skia rendering dependency.</Description>
     <PackageTags>SimdSkia;graphics;rendering;managed;preview</PackageTags>
-    <PackageReleaseNotes>Preview 8 / 预览版 8：优化通用 x64 SSE2 字形/图像合成与采样、填充、字形串缓存和画布分配。固定 Avalonia 控件 CPU 吞吐综合耗时比原版低 4.4%，最慢场景落后 3.8%；Vulkan/Direct2D JIT 离屏完成帧含回读低 29.8%/35.3%，仅限报告硬件和场景，不代表窗口呈现。60 FPS 滚动分配 155.14→28.05 KiB/帧；普通控件工作集仍 79.89 vs 原版 60.91 MiB。整页画质、字体和完整 API 仍有缺口，非完全兼容版本；Avalonia 固定 12.1.4。完整测试与限制见包内 CHANGELOG.md、README.md 和 https://github.com/hnlyf168/SimdSkia/blob/main/docs/RELEASE-NOTES.md</PackageReleaseNotes>
+    <PackageReleaseNotes>Preview 9 / 预览版 9：补齐 SKBitmap.GetPixels 真实像素指针、系统字体 FromFamilyName、GIF SKCodec、SKRoundRect/SaveLayer/Inflate 与采样重载；新增多页栅格 PDF 导出及可选纯托管 SimdSkia.Pdf 阅读模块。修复 VelaShell 字体 Try 回退和图片布局舍入边界，CPU/Direct2D/Vulkan 各 23 个常规场景通过，控件回归 9,750 项通过。仍有组合字符异常、复杂页面耗时、输入/Skia 专属预览及原版画质差距；PDF 仅支持明确子集。没有重测完整 CPU/GPU 性能，不沿用旧成绩宣称新版全面追平。12 个包统一版本，Avalonia 12.1.4、SkiaSharp 源码基线 3.119.4；不承诺二进制或全面兼容。完整更新、测试和限制见包内 CHANGELOG.md、README.md 和 https://github.com/hnlyf168/SimdSkia/blob/main/docs/RELEASE-NOTES.md</PackageReleaseNotes>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)../docs/RELEASE-NOTES.md" Pack="true" PackagePath="/CHANGELOG.md" />
-    <None Include="$(MSBuildThisFileDirectory)../docs/NUGET-README.md" Pack="true" PackagePath="/README.md" Condition="'$(MSBuildProjectName)' != 'SimdSkia.Avalonia' AND '$(MSBuildProjectName)' != 'SimdSkia.Avalonia.Desktop' AND '$(MSBuildProjectName)' != 'SimdSkia.Avalonia.Gpu'" />
+    <None Include="$(MSBuildThisFileDirectory)../docs/NUGET-README.md" Pack="true" PackagePath="/README.md" Condition="'$(MSBuildProjectName)' != 'SimdSkia.Avalonia' AND '$(MSBuildProjectName)' != 'SimdSkia.Avalonia.Desktop' AND '$(MSBuildProjectName)' != 'SimdSkia.Avalonia.Gpu' AND '$(MSBuildProjectName)' != 'SimdSkia.Pdf'" />
     <None Include="$(MSBuildThisFileDirectory)../LICENSE" Pack="true" PackagePath="/" />
   </ItemGroup>
 </Project>

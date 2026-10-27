@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="12a3b81b-525d-4ff9-84e3-4b22c033b3e7" name="Happy@DESKTOP-FISFTL4 2026-10-27 17:59:30" runUser="DESKTOP-FISFTL4\Happy" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-27T17:59:30.6302574+08:00" queuing="2026-10-27T17:59:30.6302576+08:00" start="2026-10-27T17:58:44.0285351+08:00" finish="2026-10-27T17:59:30.6307037+08:00" />
+  <TestSettings name="default" id="47d1aa34-1520-4c46-8cd5-52115c64ae8e">
+    <Deployment runDeploymentRoot="Happy_DESKTOP-FISFTL4_2026-10-27_17_59_30" />
+  </TestSettings>
+  <TestLists>
+    <TestList name="列表中未列出的结果" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="所有已加载的结果" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="0" executed="0" passed="0" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <RunInfos>
+      <RunInfo computerName="DESKTOP-FISFTL4" outcome="Error" timestamp="2026-10-27T17:59:30.5899314+08:00">
+        <Text>活动的测试运行已中止。原因: 测试主机进程崩溃 : Process path: F:\simdSkia\artifacts\velashell-compat-2026-10-27\VelaShell\tests\VelaShell.Tests\bin\Debug\net11.0\testhost.exe</Text>
+      </RunInfo>
+      <RunInfo computerName="DESKTOP-FISFTL4" outcome="Warning" timestamp="2026-10-27T17:59:30.6130720+08:00">
+        <Text>数据收集器“Blame”消息: 指定的非活动时间(45 秒)已过。正在从测试主机及其子进程中收集挂起的转储。</Text>
+      </RunInfo>
+    </RunInfos>
+    <CollectorDataEntries>
+      <Collector agentName="DESKTOP-FISFTL4" uri="datacollector://microsoft/TestPlatform/Extensions/Blame/v1" collectorDisplayName="Blame">
+        <UriAttachments>
+          <UriAttachment>
+            <A href="DESKTOP-FISFTL4\Sequence_5cc0093d9469404085b3b6fea5049931.xml"></A>
+          </UriAttachment>
+        </UriAttachments>
+      </Collector>
+    </CollectorDataEntries>
+  </ResultSummary>
+</TestRun>

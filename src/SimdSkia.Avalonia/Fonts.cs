@@ -107,7 +107,10 @@ internal sealed class FontManager:IFontManagerImpl
     {var match=Order(style,weight,stretch).OrderBy(f=>f.Family.Equals(family,StringComparison.OrdinalIgnoreCase)?0:1).FirstOrDefault(f=>f.Data.Font.GetGlyph(codepoint)!=0);typeface=match is null?null:new PlatformTypeface(match.Data);return typeface is not null;}
     public bool TryCreateGlyphTypeface(Stream stream,FontSimulations simulations,[NotNullWhen(true)]out IPlatformTypeface? typeface)
     {
-        if(simulations!=FontSimulations.None)throw new NotSupportedException("Synthetic bold/italic font outlines are not implemented.");
+        ArgumentNullException.ThrowIfNull(stream);
+        // Avalonia uses a failed Try result to retain the nearest real face.
+        // Do not manufacture a simulated face or abort the window's layout.
+        if(simulations!=FontSimulations.None){typeface=null;return false;}
         using var memory=new MemoryStream();stream.CopyTo(memory);var data=memory.GetBuffer().AsSpan(0,(int)memory.Length);var digest=SHA256.HashData(data);
         // An external stream need not load unrelated installed fallback files.
         var existing=fonts.FirstOrDefault(f=>f.IsLoaded&&f.Data.Digest.AsSpan().SequenceEqual(digest));typeface=new PlatformTypeface(existing?.Data??new FontData(data));return true;

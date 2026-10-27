@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup><AssemblyName>SimdSkia.Compatibility</AssemblyName><RootNamespace>SkiaSharp</RootNamespace></PropertyGroup>
+  <PropertyGroup><AssemblyName>SimdSkia.Compatibility</AssemblyName><RootNamespace>SkiaSharp</RootNamespace><AllowUnsafeBlocks>true</AllowUnsafeBlocks></PropertyGroup>
+  <ItemGroup><None Include="../../docs/licenses/SkiaSharp-MIT.txt" Link="licenses/SkiaSharp-MIT.txt" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="licenses" /></ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../SimdSkia.Core/SimdSkia.Core.csproj" />
     <ProjectReference Include="../SimdSkia.Cpu/SimdSkia.Cpu.csproj" />

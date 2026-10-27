@@ -6,6 +6,7 @@ namespace SkiaSharp;
 public class SKBitmap : SKObject
 {
     private PixelBuffer? buffer;
+    private PixelBufferPin? pixelPin;
     private SKImageInfo info;
     public SKBitmap() { }
     public SKBitmap(int width,int height,bool isOpaque=false) : this(new SKImageInfo(width,height,SKImageInfo.PlatformColorType,isOpaque ? SKAlphaType.Opaque : SKAlphaType.Premul)) { }
@@ -49,8 +50,10 @@ public class SKBitmap : SKObject
         if ((uint)y>=(uint)pixels.Height) throw new ArgumentOutOfRangeException(nameof(y));
         return pixels.GetPixelSpan()[(y*pixels.RowBytes+x*4)..];
     }
-    public IntPtr GetPixels() { ThrowIfDisposed(); throw new NotSupportedException("Raw pixel pointers require a separate verified pinning and ownership API; use GetPixelSpan()."); }
-    public IntPtr GetPixels(out IntPtr length) { length=default; return GetPixels(); }
+    // The address remains stable until reallocation or disposal. The caller must
+    // synchronize native writers with drawing and keep this bitmap alive.
+    public IntPtr GetPixels() { ThrowIfDisposed(); return buffer is null ? IntPtr.Zero : (pixelPin ??= buffer.Pin()).Address; }
+    public IntPtr GetPixels(out IntPtr length) { var result=GetPixels(); length=(IntPtr)ByteCount; return result; }
     public void SetPixels(IntPtr pixels) { ThrowIfDisposed(); throw new NotSupportedException("External native pixel storage is not implemented."); }
     public SKColor GetPixel(int x,int y) => SKColor.FromCore(Buffer.ReadPixel(x,y));
     public void SetPixel(int x,int y,SKColor color) => Buffer.WritePixel(x,y,color.ToCore());
@@ -73,12 +76,12 @@ public class SKBitmap : SKObject
         try
         {
             var allocated=new PixelBuffer(info.Width,info.Height,format,alpha,rowBytes);
-            buffer?.Dispose(); buffer=allocated; this.info=info;
+            pixelPin?.Dispose(); pixelPin=null; buffer?.Dispose(); buffer=allocated; this.info=info;
             return true;
         }
         catch (ArgumentOutOfRangeException) { return false; }
         catch (OverflowException) { return false; }
     }
     internal PixelBuffer Buffer { get { ThrowIfDisposed(); return buffer ?? throw new InvalidOperationException("The bitmap has no pixels."); } }
-    protected override void Dispose(bool disposing) { buffer?.Dispose(); buffer=null; }
+    protected override void Dispose(bool disposing) { pixelPin?.Dispose(); pixelPin=null; buffer?.Dispose(); buffer=null; }
 }

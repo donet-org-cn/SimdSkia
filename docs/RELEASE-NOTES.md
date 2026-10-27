@@ -1,5 +1,36 @@
 # SimdSkia 更新日志 / Release notes
 
+## 0.1.0-preview.9 — 2026-10-27
+
+本版补齐独立 SK* 调用链、GIF 和受限 PDF 支持，并修正真实 VelaShell 接入问题。新增可选 `SimdSkia.Pdf`，共 **12 个包**统一版本；Avalonia **12.1.4**、SkiaSharp 源码兼容基线 **3.119.4** 不变。公开上传和下载验证状态见[发布记录](https://github.com/hnlyf168/SimdSkia/blob/main/docs/NUGET-PREVIEW.md)。
+
+### 新增与修复
+
+- 真实 VelaShell 接入修正：字体 `TryCreateGlyphTypeface` 不支持合成时返回 false/null，按 Avalonia 合同保留真实近邻字面，避免设置窗口布局被异常中断；图片 Uniform 布局的微小 double 舍入尾差按 ULP 归一化，真实越界仍拒绝。9,750 控件回归通过。
+- 新增 VelaShell 原版/CPU/Direct2D/Vulkan 页面及上游终端/视图测试工具和报告；常规场景可显示，组合字符、资源监视性能、部分输入、专属 Skia 预览和整页质量问题保留。不是完整兼容版本。
+
+- `SKBitmap.GetPixels()` 提供懒固定的真实像素指针，支持 stride、逐行复制、GC 稳定地址和释放/重分配失效规则。
+- 补充系统 TrueType/TTC 字体族及样式发现、`SKTypeface.FromFamilyName`、`SKFontStyle`、几何值类型和 `SKRect.Inflate`。
+- 新增纯 C# GIF LZW、交错扫描、透明度、帧延迟/循环、背景/前帧处置和随机回读，接入 `SKCodec`；复用解码索引缓冲。
+- 新增 `SKRoundRect`、圆角绘制/裁剪、路径/差集裁剪、`SaveLayer` 整组透明度与嵌套恢复，以及 `DrawImage` 采样重载。`Src/Clear` 图层的边界提示规则按原版验证。
+- 新增 `SKDocument.CreatePdf` 多页**栅格**导出，不承诺矢量、可搜索文字或 PDF/A；可选 `SimdSkia.Pdf` 使用纯托管 PdfPig 0.1.16 解析已有 PDF，再由本引擎渲染。PDF 存在明确支持范围，不是通用 PDF 阅读器替代品。
+- 新增 Documents 和 PdfViewer 示例、独立原版调用/像素对照、PDF 外部夹具与 Native AOT 检查。API 缺口、原版画质失败及性能适用范围见[专项报告](STANDALONE-COMPATIBILITY-2026-10-27.md)。
+
+### 验证、性能范围与已知限制
+
+- 整仓 Release 构建 0 警告、0 错误；真实 Avalonia 控件回归 **9,750 项**、系统字体 **13 项**通过。独立兼容调用链、PDF 及 Native AOT 结果见[专项报告](https://github.com/hnlyf168/SimdSkia/blob/main/docs/STANDALONE-COMPATIBILITY-2026-10-27.md)。
+- 固定基线匹配公共条目从 preview.8 的 **425/3235** 增至 **892/3235**，仍缺 **2343** 项；这不是完整实现数量或二进制兼容承诺。
+- VelaShell 常规窗口 CPU / Direct2D / Vulkan 各 **23/23**、终端测试 **9/9**；深层视图复测原版 **514/514**，本实现 **393 通过、7 失败、114 未完成**。组合字符 U+0301 仍会异常，资源监视页存在超时，部分焦点/标题栏/Skia 专属预览不兼容；目标应用仍直接加载原版 Skia 原生库，不能宣称整应用替换完成。完整日志见[VelaShell 报告](https://github.com/hnlyf168/SimdSkia/blob/main/docs/VELASHELL-COMPATIBILITY-2026-10-27.md)。
+- 新增独立像素对照 **11/14** 通过；圆角 AA、圆角硬裁剪、微软雅黑文字三组尚未通过，整页一致性仍未通过，没有放宽门槛。
+- 只重测 1080p 带 stride 的逐行像素复制：本实现 **0.5907 ms/帧**、原版 **0.5921 ms/帧**，视为基本持平；不是视频解码或整个应用的性能结论。**本版没有重测完整 Avalonia CPU/GPU 吞吐和常驻内存，不将下列 preview.8 的历史成绩当作新版测量。**
+- PDF 导出为栅格页面，无矢量、可搜索文字或 PDF/A。PDF 阅读器遇到超出支持范围的可见内容明确报错，不能替代通用 PDF 阅读器。新 PDF 阅读/查看器本地验证平台为 Windows，其他平台执行由本轮 CI 单独记录。
+
+### 升级
+
+将所有直接引用的 SimdSkia 包统一为 `0.1.0-preview.9`。桌面安装 `SimdSkia.Avalonia.Desktop` 并使用 `.UseSimdSkiaDesktop()`；避免再用宿主选项覆盖 framebuffer 模式。GPU 另加同版本 `SimdSkia.Avalonia.Gpu`。PDF 导出位于 `SimdSkia.Compatibility`；读取已有 PDF 另安装 **`SimdSkia.Pdf`**，普通 Avalonia 用户不引入 PdfPig 依赖。
+
+每个包提供本文件的 `CHANGELOG.md`、对应 README、NuGet 发行说明和许可证。下面旧版的内容、成绩和限制保持历史版本标注。
+
 ## 0.1.0-preview.8 — 2026-10-27
 
 本版集中优化通用 x64 Native AOT 的真实 Avalonia 控件绘制，并补充原版 Vulkan / ANGLE 与 SimdSkia Vulkan / Direct2D 的完整帧对照。11 个包统一版本，Avalonia **12.1.4**、SkiaSharp 源码兼容基线 **3.119.4** 不变。

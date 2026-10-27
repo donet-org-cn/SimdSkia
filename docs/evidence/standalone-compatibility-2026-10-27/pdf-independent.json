@@ -1,0 +1,25 @@
+{
+  "exportPages": 2,
+  "exportStructurePassed": true,
+  "note": "Diagnostic differences against an independent rasterizer; not a universal PDF quality pass.",
+  "rows": [
+    {
+      "scene": "external-1",
+      "maxChannelError": 62,
+      "rmse": 1.5422528446417454,
+      "differentPixels": 96078
+    },
+    {
+      "scene": "external-2",
+      "maxChannelError": 0,
+      "rmse": 0.0,
+      "differentPixels": 0
+    },
+    {
+      "scene": "alpha-1",
+      "maxChannelError": 1,
+      "rmse": 0.4183300132670378,
+      "differentPixels": 16800
+    }
+  ]
+}

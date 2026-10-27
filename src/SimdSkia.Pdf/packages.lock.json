@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net8.0": {
+      "PdfPig": {
+        "type": "Direct",
+        "requested": "[0.1.16, 0.1.16]",
+        "resolved": "0.1.16",
+        "contentHash": "qQcbsNMYVY+K5ELptax2S8thNMk0+rSQq3H/KdYj3LLcko8yTCz8y5KIvsKxIyAuTN0ZYNnfsZkM+0EvxTwHVA=="
+      },
+      "JpegLibrary": {
+        "type": "Transitive",
+        "resolved": "0.4.32",
+        "contentHash": "Lv11HXsyGZxuRUG/0sw+3itw930/c08VkEVXDPin819yheN3Y3YpWQYccs1dW+sBlsGs9S4Y4q6DzyBCctsEeQ=="
+      },
+      "simdskia.compatibility": {
+        "type": "Project",
+        "dependencies": {
+          "SimdSkia.Core": "[0.1.0-preview.9, )",
+          "SimdSkia.Cpu": "[0.1.0-preview.9, )",
+          "SimdSkia.Gpu": "[0.1.0-preview.9, )",
+          "SimdSkia.Imaging": "[0.1.0-preview.9, )",
+          "SimdSkia.Text": "[0.1.0-preview.9, )"
+        }
+      },
+      "simdskia.core": {
+        "type": "Project"
+      },
+      "simdskia.cpu": {
+        "type": "Project",
+        "dependencies": {
+          "SimdSkia.Core": "[0.1.0-preview.9, )"
+        }
+      },
+      "simdskia.gpu": {
+        "type": "Project",
+        "dependencies": {
+          "SimdSkia.Core": "[0.1.0-preview.9, )"
+        }
+      },
+      "simdskia.imaging": {
+        "type": "Project",
+        "dependencies": {
+          "JpegLibrary": "[0.4.32, 0.4.32]",
+          "SimdSkia.Core": "[0.1.0-preview.9, )"
+        }
+      },
+      "simdskia.text": {
+        "type": "Project",
+        "dependencies": {
+          "SimdSkia.Core": "[0.1.0-preview.9, )"
+        }
+      }
+    }
+  }
+}

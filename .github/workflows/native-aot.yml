@@ -48,6 +48,17 @@ jobs:
             $text = $output -join "`n"
             if ($text -notmatch 'NativeAot=True' -or $text -notmatch 'PASS 460050 sampling checks') { throw "Missing AOT sampling results: $variant" }
           }
+      - name: Verify standalone compatibility and PDF reader in Native AOT
+        shell: pwsh
+        run: |
+          dotnet publish tests/CompatibilityExpansion/Managed -c Release -r win-x64 -p:NativeAotTest=true -o artifacts/standalone-aot/compat
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & artifacts/standalone-aot/compat/Managed.exe artifacts/standalone-aot/compat-results
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet publish tests/Pdf -c Release -r win-x64 -p:NativeAotTest=true -o artifacts/standalone-aot/pdf
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & artifacts/standalone-aot/pdf/Pdf.exe artifacts/standalone-aot/pdf-results
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -55,4 +66,5 @@ jobs:
           path: |
             artifacts/aot-comparison/smoke-*
             artifacts/sampling-aot/*.txt
+            artifacts/standalone-aot/*-results/
           if-no-files-found: ignore

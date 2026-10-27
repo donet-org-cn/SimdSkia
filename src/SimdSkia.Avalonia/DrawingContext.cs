@@ -129,8 +129,17 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
     public void DrawBitmap(IBitmapImpl source,double opacity,Rect sourceRect,Rect destRect)
     {
         Check();var image=((Bitmap)source).Pixels;
+        // Uniform image layout can subtract almost equal doubles and produce a
+        // tiny negative origin. Normalize arithmetic roundoff before float conversion.
+        // Genuine out-of-bounds rectangles still reach the backend's strict validation.
+        double extent=Math.Max(image.Width,image.Height),epsilon=8*(Math.BitIncrement(extent)-extent);
+        double left=sourceRect.Left,top=sourceRect.Top,right=sourceRect.Right,bottom=sourceRect.Bottom;
+        if(left<0&&left>=-epsilon)left=0;if(top<0&&top>=-epsilon)top=0;
+        if(right>image.Width&&right<=image.Width+epsilon)right=image.Width;
+        if(bottom>image.Height&&bottom<=image.Height+epsilon)bottom=image.Height;
+        var crop=new RectF((float)left,(float)top,(float)right,(float)bottom);
         Execute(new(CommandKind.DrawImage,ConvertTo.Rect(destRect),DeviceMatrix,new(new(255,255,255,BrushFactory.Opacity(opacity)),BitmapComposite,Antialias))
-        {Image=image,ImageSource=ConvertTo.Rect(sourceRect),Sampling=Sampling(renderOptions.BitmapInterpolationMode),NearestLowerBoundary=nearestLowerBoundary&&Sampling(renderOptions.BitmapInterpolationMode)==ImageSampling.Nearest});
+        {Image=image,ImageSource=crop,Sampling=Sampling(renderOptions.BitmapInterpolationMode),NearestLowerBoundary=nearestLowerBoundary&&Sampling(renderOptions.BitmapInterpolationMode)==ImageSampling.Nearest});
     }
     public void DrawBitmap(IBitmapImpl source,IBrush mask,Rect maskRect,Rect dest)
     {PushOpacityMask(mask,maskRect);try{DrawBitmap(source,1,new Rect(source.PixelSize.ToSize(1)),dest);}finally{PopOpacityMask();}}

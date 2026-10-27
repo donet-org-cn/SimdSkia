@@ -14,6 +14,17 @@ args=parser.parse_args()
 if not re.fullmatch(r'\d+\.\d+\.\d+-preview\.\d+',args.version):
     raise SystemExit('Only preview versions are accepted.')
 ids=['SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Text','SimdSkia.Imaging','SimdSkia.Gpu','SimdSkia.Gpu.Direct2D','SimdSkia.Compatibility','SimdSkia.Avalonia','SimdSkia.Avalonia.Desktop','SimdSkia.Avalonia.Gpu','SimdSkia']
+if args.version=='0.1.0-preview.9':
+    ids.append('SimdSkia.Pdf')
+release_topics={
+    '0.1.0-preview.7':(('AVX2','24/24'),'AVX2'),
+    '0.1.0-preview.8':(('SSE2','28.05','画质'),'SSE2'),
+    '0.1.0-preview.9':(('SKBitmap.GetPixels','PDF','preview.9'),'SKBitmap.GetPixels'),
+}
+if args.version not in release_topics:
+    raise SystemExit('Configure release topics and the package list before publishing a new version.')
+topics,release_topic=release_topics[args.version]
+assert {path.name for path in args.directory.glob('*.nupkg')}=={f'{name}.{args.version}.nupkg' for name in ids},'Unexpected or missing packages in output directory'
 rows=[]
 for package_id in ids:
     path=args.directory/f'{package_id}.{args.version}.nupkg'
@@ -24,7 +35,6 @@ for package_id in ids:
         readme=package.read('README.md').decode('utf-8')
         changelog=package.read('CHANGELOG.md').decode('utf-8')
         assert args.version in readme and args.version in changelog,(path,'Missing current version notes')
-        topics=('SSE2','28.05','画质') if args.version=='0.1.0-preview.8' else ('AVX2','24/24')
         for topic in topics:
             assert topic in readme and topic in changelog,(path,'Missing release topic',topic)
         assert not any(name.lower().endswith(('.ttf','.ttc','.otf','.woff','.woff2','.so','.dylib')) or name.lower().startswith('runtimes/') for name in names),path
@@ -37,9 +47,14 @@ for package_id in ids:
         assert metadata.findtext(prefix+'version')==args.version,path
         assert metadata.findtext(prefix+'license')=='MIT',path
         release_notes=metadata.findtext(prefix+'releaseNotes') or ''
-        release_topic='SSE2' if args.version=='0.1.0-preview.8' else 'AVX2'
         assert release_notes.strip() and release_topic in release_notes and 'CHANGELOG.md' in release_notes,(path,'Missing NuGet release notes')
         dependencies={element.attrib['id']:element.attrib['version'] for element in metadata.iter(prefix+'dependency')}
+        if package_id=='SimdSkia.Pdf':
+            assert dependencies.get('PdfPig')=='[0.1.16]',dependencies
+            for notice in ('Apache-2.0.txt','PdfPig-NOTICE.txt','PdfPig-UPSTREAM-NOTICES.txt'):
+                assert f'licenses/{notice}' in names,(path,'Missing PDF license notice',notice)
+        else:
+            assert 'PdfPig' not in dependencies,(path,'Optional PDF dependency leaked into another package')
         for dependency,version in dependencies.items():
             if dependency.startswith('SimdSkia'):
                 assert version.strip('[]')==args.version,(path,dependency,version)

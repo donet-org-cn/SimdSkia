@@ -81,6 +81,15 @@ internal static class Validation
             context.DrawBitmap(source,1,new Rect(1,0,1,1),new Rect(0,0,8,8));context.PopRenderOptions();
         }
         Assert(Pixel(image,1,1).B==255&&Pixel(image,1,1).R==0,"Source image crop was ignored.");
+        byte[] ExactImageCrop(Rect crop)
+        {
+            using var target=Target(8,8);using(var context=target.CreateDrawingContext())
+            {context.Clear(Colors.Transparent);context.PushRenderOptions(new RenderOptions{BitmapInterpolationMode=BitmapInterpolationMode.None});context.DrawBitmap(source,1,crop,new Rect(0,0,8,8));context.PopRenderOptions();}
+            return Bytes(target);
+        }
+        double roundoff=Math.ScaleB(1d,-50);
+        Assert(ExactImageCrop(new Rect(0,0,2,1)).AsSpan().SequenceEqual(ExactImageCrop(new Rect(-roundoff,-roundoff,2+2*roundoff,1+2*roundoff))),"Uniform image layout roundoff changed pixels or was rejected.");
+        using(var context=image.CreateDrawingContext())Throws<ArgumentOutOfRangeException>(()=>context.DrawBitmap(source,1,new Rect(-.01,0,2,1),new Rect(0,0,8,8)),"Genuine source image overflow was silently accepted.");
         using(var locked=source.Lock())Marshal.Copy(new byte[]{255,0,0,0,0,0,255,255},0,locked.Address,8);
         using(var resized=Factory.ResizeBitmap(source,new(3,1),BitmapInterpolationMode.LowQuality))
         {var middle=Pixel((IReadableBitmapImpl)resized,1,0);Assert(middle.R==0&&middle.B==255&&middle.A is >=127 and <=128,"Bilinear sampling mixed straight RGB instead of premultiplied colors.");}
@@ -185,6 +194,14 @@ internal static class Validation
         using(var stream=File.OpenRead(font))
         {
             var manager=AvaloniaLocator.Current.GetRequiredService<IFontManagerImpl>();if(!manager.TryCreateGlyphTypeface(stream,FontSimulations.None,out var platform))throw new InvalidOperationException("Test font registration failed.");
+            foreach(var simulations in new[]{FontSimulations.Bold,FontSimulations.Oblique,FontSimulations.Bold|FontSimulations.Oblique})
+            {
+                long position=stream.Position;
+                Assert(!manager.TryCreateGlyphTypeface(stream,simulations,out var refused)&&refused is null,"Unsupported simulated face must return false/null to enable Avalonia's real-face fallback.");
+                Assert(stream.Position==position,"Rejected synthesis consumed the font stream.");
+            }
+            var nearest=new Typeface(face.FamilyName,FontStyle.Normal,FontWeight.Bold).GlyphTypeface;
+            Assert(nearest.FontSimulations==FontSimulations.None&&nearest.Weight==face.Weight,"Nearest-face fallback invented synthetic bold metadata.");
             var synthetic=new GlyphTypeface(platform,FontSimulations.Bold);
             try
             {

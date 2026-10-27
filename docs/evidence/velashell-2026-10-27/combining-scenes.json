@@ -1,0 +1,52 @@
+[
+  {
+    "scene": "terminal-latin",
+    "passed": true,
+    "width": 800,
+    "height": 420,
+    "renderMilliseconds": 5.1466,
+    "changedPixels": 2319,
+    "workingSetMiB": 240.82421875,
+    "privateMiB": 139.52734375,
+    "visible": true,
+    "window": "Avalonia.Controls.Window",
+    "directSkiaPreviews": 0,
+    "renderer": "SimdSkia.Avalonia.RenderInterface",
+    "presentedFrames": 8
+  },
+  {
+    "scene": "terminal-cjk",
+    "passed": true,
+    "width": 800,
+    "height": 420,
+    "renderMilliseconds": 3.0386,
+    "changedPixels": 1896,
+    "workingSetMiB": 248.078125,
+    "privateMiB": 144.45703125,
+    "visible": true,
+    "window": "Avalonia.Controls.Window",
+    "directSkiaPreviews": 0,
+    "renderer": "SimdSkia.Avalonia.RenderInterface",
+    "presentedFrames": 9
+  },
+  {
+    "scene": "terminal-styles",
+    "passed": true,
+    "width": 800,
+    "height": 420,
+    "renderMilliseconds": 2.8152,
+    "changedPixels": 1101,
+    "workingSetMiB": 250.6328125,
+    "privateMiB": 143.71875,
+    "visible": true,
+    "window": "Avalonia.Controls.Window",
+    "directSkiaPreviews": 0,
+    "renderer": "SimdSkia.Avalonia.RenderInterface",
+    "presentedFrames": 10
+  },
+  {
+    "scene": "terminal-combining",
+    "passed": false,
+    "error": "System.NotSupportedException: Contextual/combining text shaping is not implemented (U\u002B301).\r\n   at SimdSkia.Avalonia.TextShaper.ShapeText(ReadOnlyMemory\u00601 text, TextShaperOptions options) in F:\\simdSkia\\src\\SimdSkia.Avalonia\\Fonts.cs:line 138\r\n   at Avalonia.Media.TextFormatting.TextShaper.ShapeText(ReadOnlyMemory\u00601 text, TextShaperOptions options)\r\n   at Avalonia.Media.TextFormatting.TextFormatterImpl.ShapeTogether(IReadOnlyList\u00601 textRuns, ReadOnlyMemory\u00601 text, TextShaperOptions options, TextShaper textShaper, RentedList\u00601 results)\r\n   at Avalonia.Media.TextFormatting.TextFormatterImpl.ShapeTextRuns(IReadOnlyList\u00601 textRuns, TextParagraphProperties paragraphProperties, FormattingObjectPool objectPool, FontManager fontManager, FlowDirection\u0026 resolvedFlowDirection)\r\n   at Avalonia.Media.TextFormatting.TextFormatterImpl.FormatLine(ITextSource textSource, Int32 firstTextSourceIndex, Double paragraphWidth, TextParagraphProperties paragraphProperties, TextLineBreak previousLineBreak, TextRunCache textRunCache)\r\n   at Avalonia.Media.TextFormatting.TextFormatterImpl.FormatLine(ITextSource textSource, Int32 firstTextSourceIndex, Double paragraphWidth, TextParagraphProperties paragraphProperties, TextLineBreak previousLineBreak)\r\n   at Avalonia.Media.FormattedText.LineEnumerator.FormatLine(ITextSource textSource, Int32 textSourcePosition, Double maxLineLength, TextParagraphProperties paraProps, TextLineBreak lineBreak)\r\n   at Avalonia.Media.FormattedText.LineEnumerator.MoveNext()\r\n   at Avalonia.Media.FormattedText.DrawAndCalculateMetrics(DrawingContext drawingContext, Point drawingOffset, Boolean getBlackBoxMetrics)\r\n   at Avalonia.Media.FormattedText.Draw(DrawingContext drawingContext, Point origin)\r\n   at Avalonia.Media.DrawingContext.DrawText(FormattedText text, Point origin)\r\n   at VelaShell.Terminal.Rendering.VelaTerminalControl.RenderLine(DrawingContext context, TerminalPalette palette, TerminalRow line, Int32 cols, Double y, Int32 absoluteRow, List\u00601 spans) in F:\\simdSkia\\artifacts\\velashell-compat-2026-10-27\\VelaShell\\src\\VelaShell.Terminal\\Rendering\\VelaTerminalControl.cs:line 3525\r\n   at VelaShell.Terminal.Rendering.VelaTerminalControl.Render(DrawingContext context) in F:\\simdSkia\\artifacts\\velashell-compat-2026-10-27\\VelaShell\\src\\VelaShell.Terminal\\Rendering\\VelaTerminalControl.cs:line 2447\r\n   at Avalonia.Rendering.ImmediateRenderer.Render(DrawingContext context, Visual visual, Rect bounds, Matrix parentTransform, Rect clipRect)\r\n   at Avalonia.Rendering.ImmediateRenderer.Render(DrawingContext context, Visual visual, Rect bounds, Matrix parentTransform, Rect clipRect)\r\n   at Avalonia.Rendering.ImmediateRenderer.Render(DrawingContext context, Visual visual, Rect bounds, Matrix parentTransform, Rect clipRect)\r\n   at Avalonia.Rendering.ImmediateRenderer.Render(DrawingContext context, Visual visual, Rect bounds, Matrix parentTransform, Rect clipRect)\r\n   at Avalonia.Rendering.ImmediateRenderer.Render(DrawingContext context, Visual visual, Rect bounds, Matrix parentTransform, Rect clipRect)\r\n   at Avalonia.Rendering.ImmediateRenderer.Render(DrawingContext context, Visual visual, Rect clipRect)\r\n   at Avalonia.Rendering.ImmediateRenderer.Render(DrawingContext context, Visual visual)\r\n   at Avalonia.Media.Imaging.RenderTargetBitmap.Render(Visual visual)\r\n   at SimdSkiaVelaProbe.Capture(String scene, Window window) in F:\\simdSkia\\tools\\VelaShellProbe\\Probe.cs:line 123"
+  }
+]

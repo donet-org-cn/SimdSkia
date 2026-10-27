@@ -1,5 +1,22 @@
 # NuGet 预览版发布
 
+## 第九预览版 0.1.0-preview.9
+
+**正在准备提交、可信发布与公开下载验证；尚未宣称上架完成。** 12 个包统一版本，新增可选 `SimdSkia.Pdf`。本版包括真实像素指针、系统字体族/样式、GIF Codec、圆角/图层/几何和采样 API、多页栅格 PDF 导出、受限 PDF 阅读，以及 VelaShell 字体 Try 回退/图片舍入边界修复。
+
+每个包包含对应 README、`CHANGELOG.md`、NuGet 发行说明及许可证；PDF 的 PdfPig 依赖与 Apache-2.0 通知只进入可选 PDF 模块。发行变化详见[preview.9 更新记录](RELEASE-NOTES.md)。Avalonia 固定 12.1.4、SkiaSharp 源码基线固定 3.119.4。
+
+这是披露限制后发布的实验性预览版：VelaShell 常规页面可呈现，但组合字符、资源监视页性能、部分输入、专属 Skia 预览和完整画质仍有缺口，不能宣称整应用替换。PDF 是受限子集，导出为栅格页面。本版没有完整重测 Avalonia CPU/GPU 吞吐和常驻内存，旧 preview.8 成绩保持历史版本标注。
+
+```shell
+dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.0-preview.9
+# 按需安装同版本 GPU / PDF 模块：
+dotnet add package SimdSkia.Avalonia.Gpu --version 0.1.0-preview.9
+dotnet add package SimdSkia.Pdf --version 0.1.0-preview.9
+```
+
+桌面启动使用 `.UseSimdSkiaDesktop()`；PDF 导出只需 Compatibility，PDF 阅读才需要另装 Pdf。
+
 ## 第八预览版 0.1.0-preview.8
 
 **已公开发布：11 个包均已实际下载并核对内容。** [可信发布流水线](https://github.com/hnlyf168/SimdSkia/actions/runs/40429937427)全部成功，公开包的 DLL、README、CHANGELOG、MIT 许可证和 nuspec（含发行说明）与 CI 一致。标签 `v0.1.0-preview.8` 固定在 `a636296b2b7fec05c44c18f25ae62f4ba03de74a`；[发布证据](evidence/nuget-preview8-2026-10-27.json)包含 11 包版本、哈希、下载地址和实际窗口记录。

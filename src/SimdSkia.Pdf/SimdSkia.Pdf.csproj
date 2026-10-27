@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><RestorePackagesWithLockFile>true</RestorePackagesWithLockFile><Description>Optional pure managed PDF parsing and SimdSkia page rendering. Supported PDF features are validated; unsupported painting fails explicitly.</Description></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../SimdSkia.Compatibility/SimdSkia.Compatibility.csproj"/><PackageReference Include="PdfPig" Version="[0.1.16]"/></ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="/README.md" />
+    <None Include="../../docs/licenses/Apache-2.0.txt" Link="licenses/Apache-2.0.txt" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="licenses" />
+    <None Include="../../docs/licenses/PdfPig-NOTICE.txt" Link="licenses/PdfPig-NOTICE.txt" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="licenses" />
+    <None Include="../../docs/licenses/PdfPig-UPSTREAM-NOTICES.txt" Link="licenses/PdfPig-UPSTREAM-NOTICES.txt" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="licenses" />
+  </ItemGroup>
+</Project>

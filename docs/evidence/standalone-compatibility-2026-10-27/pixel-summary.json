@@ -1,0 +1,22 @@
+{
+  "Original": {
+    "msPerFrame": 0.5921098875074008,
+    "cpuMsPerFrame": 0.5920663114268798,
+    "cpuPercent": 8.33206380454498,
+    "allocatedBytesPerFrame": 0.21630155910795343,
+    "workingSetMiB": 42.6328125,
+    "privateMiB": 24.453125
+  },
+  "Managed": {
+    "msPerFrame": 0.590702520181138,
+    "cpuMsPerFrame": 0.5878894767783657,
+    "cpuPercent": 8.330849074139426,
+    "allocatedBytesPerFrame": 0.21579050994290214,
+    "workingSetMiB": 40.52734375,
+    "privateMiB": 24.65625
+  },
+  "frameTimeRatio": 0.997623131523462,
+  "scope": "1920x1080 synchronous CPU row copy, 64-byte source padding, 200 warmup frames, 3 seconds per process",
+  "os": "Windows-11-10.0.26300-SP0",
+  "runtime": ".NET SDK:\n Version:           10.0.402\n Commit:            a8dd0577c5\n Workload version:  10.0.400-manifests.6055ec36\n MSBuild version:   18.9.15+a8dd0577c\n\n\u8fd0\u884c\u65f6\u73af\u5883:\n OS Name:     Windows\n OS Version:  10.0.26300\n OS Platform: Windows\n RID:         win-x64\n Base Path:   C:\\Program Files\\dotnet\\sdk\\10.0.402\\\n\n\u5df2\u5b89\u88c5 .NET \u5de5\u4f5c\u8d1f\u8f7d:\n [android]\n   \u5b89\u88c5\u6e90\u6587\u4ef6: SDK 10.0.400\n   \u6e05\u5355\u7248\u672c:    36.1.118/10.0.100\n   \u6e05\u5355\u8def\u5f84:       C:\\Program Files\\dotnet\\sdk-manifests\\10.0.100\\microsoft.net.sdk.android\\36.1.118\\WorkloadManifest.json\n   \u5b89\u88c5\u7c7b\u578b:              Msi\n\n\u5df2\u914d\u7f6e\u4e3a\u5728\u5b89\u88c5\u65b0\u6e05\u5355\u65f6\u4f7f\u7528 workload sets\u3002\n\u672a\u5b89\u88c5\u4efb\u4f55 workload sets\u3002\u8fd0\u884c \u201cdotnet workload restore\u201d \u4ee5\u5b89\u88c5\u5de5\u4f5c\u8d1f\u8f7d\u96c6\u3002\n\nHost:\n  Version:      11.0.0-rc.1.26425.128\n  Architecture: x64\n  Commit:       3551975be0\n\n.NET SDKs installed:\n  10.0.402 [C:\\Program Files\\dotnet\\sdk]\n  11.0.100-rc.1.26425.128 [C:\\Program Files\\dotnet\\sdk]\n\n.NET runtimes installed:\n  Microsoft.AspNetCore.App 6.0.36 [C:\\Program Files\\dotnet\\shared\\Microsoft.AspNetCore.App]\n  Microsoft.AspNetCore.App 8.0.32 [C:\\Program Files\\dotnet\\shared\\Microsoft.AspNetCore.App]\n  Microsoft.AspNetCore.App 9.0.21 [C:\\Program Files\\dotnet\\shared\\Microsoft.AspNetCore.App]\n  Microsoft.AspNetCore.App 10.0.13 [C:\\Program Files\\dotnet\\shared\\Microsoft.AspNetCore.App]\n  Microsoft.AspNetCore.App 11.0.0-rc.1.26425.128 [C:\\Program Files\\dotnet\\shared\\Microsoft.AspNetCore.App]\n  Microsoft.NETCore.App 6.0.36 [C:\\Program Files\\dotnet\\shared\\Microsoft.NETCore.App]\n  Microsoft.NETCore.App 8.0.32 [C:\\Program Files\\dotnet\\shared\\Microsoft.NETCore.App]\n  Microsoft.NETCore.App 9.0.21 [C:\\Program Files\\dotnet\\shared\\Microsoft.NETCore.App]\n  Microsoft.NETCore.App 10.0.13 [C:\\Program Files\\dotnet\\shared\\Microsoft.NETCore.App]\n  Microsoft.NETCore.App 11.0.0-rc.1.26425.128 [C:\\Program Files\\dotnet\\shared\\Microsoft.NETCore.App]\n  Microsoft.WindowsDesktop.App 6.0.36 [C:\\Program Files\\dotnet\\shared\\Microsoft.WindowsDesktop.App]\n  Microsoft.WindowsDesktop.App 8.0.32 [C:\\Program Files\\dotnet\\shared\\Microsoft.WindowsDesktop.App]\n  Microsoft.WindowsDesktop.App 9.0.21 [C:\\Program Files\\dotnet\\shared\\Microsoft.WindowsDesktop.App]\n  Microsoft.WindowsDesktop.App 10.0.13 [C:\\Program Files\\dotnet\\shared\\Microsoft.WindowsDesktop.App]\n  Microsoft.WindowsDesktop.App 11.0.0-rc.1.26425.128 [C:\\Program Files\\dotnet\\shared\\Microsoft.WindowsDesktop.App]\n\nOther architectures found:\n  x86   [C:\\Program Files (x86)\\dotnet]\n    registered at [HKLM\\SOFTWARE\\dotnet\\Setup\\InstalledVersions\\x86\\InstallLocation]\n\nEnvironment variables:\n  DOTNET_ROLL_FORWARD_TO_PRERELEASE        [1]\n\nglobal.json file:\n  F:\\simdSkia\\global.json\n\nLearn more:\n  https://aka.ms/dotnet/info\n\nDownload .NET:\n  https://aka.ms/dotnet/download\n"
+}

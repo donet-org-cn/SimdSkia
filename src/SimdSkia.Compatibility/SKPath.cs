@@ -49,6 +49,10 @@ public class SKPath : SKObject
         CubicTo(x-k,y+r*sign,x-r,y+k*sign,x-r,y);CubicTo(x-r,y-k*sign,x-k,y-r*sign,x,y-r*sign);
         CubicTo(x+k,y-r*sign,x+r,y-k*sign,x+r,y);Close();
     }
+    public void AddRoundRect(SKRect rect,float rx,float ry,SKPathDirection dir=SKPathDirection.Clockwise)
+    {using var rounded=new SKRoundRect(rect,rx,ry);AddRoundRect(rounded,dir);}
+    public void AddRoundRect(SKRoundRect rect,SKPathDirection direction=SKPathDirection.Clockwise)
+    {ThrowIfDisposed();ArgumentNullException.ThrowIfNull(rect);using var path=rect.ToPath(direction);segments.AddRange(path.segments);snapshot=null;}
     internal PathGeometry ToCore(){ThrowIfDisposed();return snapshot??=new(segments,(FillRule)fillType);}
     protected override void Dispose(bool disposing){segments.Clear();snapshot=null;}
 }
