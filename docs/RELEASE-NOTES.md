@@ -2,7 +2,7 @@
 
 ## 0.1.0-preview.9 — 2026-10-27
 
-本版补齐独立 SK* 调用链、GIF 和受限 PDF 支持，并修正真实 VelaShell 接入问题。新增可选 `SimdSkia.Pdf`，共 **12 个包**统一版本；Avalonia **12.1.4**、SkiaSharp 源码兼容基线 **3.119.4** 不变。公开上传和下载验证状态见[发布记录](https://github.com/hnlyf168/SimdSkia/blob/main/docs/NUGET-PREVIEW.md)。
+本版补齐独立 SK* 调用链、GIF 和受限 PDF 支持，并修正真实 VelaShell 接入问题。新增可选 `SimdSkia.Pdf`，共 **12 个包**统一版本；Avalonia **12.1.4**、SkiaSharp 源码兼容基线 **3.119.4** 不变。公开上传和下载验证状态见[发布记录](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/NUGET-PREVIEW.md)。
 
 ### 新增与修复
 
@@ -18,9 +18,9 @@
 
 ### 验证、性能范围与已知限制
 
-- 整仓 Release 构建 0 警告、0 错误；真实 Avalonia 控件回归 **9,750 项**、系统字体 **13 项**通过。独立兼容调用链、PDF 及 Native AOT 结果见[专项报告](https://github.com/hnlyf168/SimdSkia/blob/main/docs/STANDALONE-COMPATIBILITY-2026-10-27.md)。
+- 整仓 Release 构建 0 警告、0 错误；真实 Avalonia 控件回归 **9,750 项**、系统字体 **13 项**通过。独立兼容调用链、PDF 及 Native AOT 结果见[专项报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/STANDALONE-COMPATIBILITY-2026-10-27.md)。
 - 固定基线匹配公共条目从 preview.8 的 **425/3235** 增至 **892/3235**，仍缺 **2343** 项；这不是完整实现数量或二进制兼容承诺。
-- VelaShell 常规窗口 CPU / Direct2D / Vulkan 各 **23/23**、终端测试 **9/9**；深层视图复测原版 **514/514**，本实现 **393 通过、7 失败、114 未完成**。组合字符 U+0301 仍会异常，资源监视页存在超时，部分焦点/标题栏/Skia 专属预览不兼容；目标应用仍直接加载原版 Skia 原生库，不能宣称整应用替换完成。完整日志见[VelaShell 报告](https://github.com/hnlyf168/SimdSkia/blob/main/docs/VELASHELL-COMPATIBILITY-2026-10-27.md)。
+- VelaShell 常规窗口 CPU / Direct2D / Vulkan 各 **23/23**、终端测试 **9/9**；深层视图复测原版 **514/514**，本实现 **393 通过、7 失败、114 未完成**。组合字符 U+0301 仍会异常，资源监视页存在超时，部分焦点/标题栏/Skia 专属预览不兼容；目标应用仍直接加载原版 Skia 原生库，不能宣称整应用替换完成。完整日志见[VelaShell 报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/VELASHELL-COMPATIBILITY-2026-10-27.md)。
 - 新增独立像素对照 **11/14** 通过；圆角 AA、圆角硬裁剪、微软雅黑文字三组尚未通过，整页一致性仍未通过，没有放宽门槛。
 - 只重测 1080p 带 stride 的逐行像素复制：本实现 **0.5907 ms/帧**、原版 **0.5921 ms/帧**，视为基本持平；不是视频解码或整个应用的性能结论。**本版没有重测完整 Avalonia CPU/GPU 吞吐和常驻内存，不将下列 preview.8 的历史成绩当作新版测量。**
 - PDF 导出为栅格页面，无矢量、可搜索文字或 PDF/A。PDF 阅读器遇到超出支持范围的可见内容明确报错，不能替代通用 PDF 阅读器。新 PDF 阅读/查看器本地验证平台为 Windows，其他平台执行由本轮 CI 单独记录。
@@ -54,12 +54,12 @@
 | Vulkan / Direct2D | JIT 离屏完成帧含等待与回读，综合耗时比每例较快原版 GPU 低 **29.8% / 35.3%** |
 | 工作集 | 普通控件页 **79.89 MiB**，原版 **60.91 MiB**；未追平 |
 
-综合比取场景耗时比的几何平均数。GPU 不代表 AOT、真实窗口呈现或显示器帧率；不能将此结果推广到其他硬件、任意业务界面或所有图形操作。CPU、内存、分配及未通过项见[完整报告](https://github.com/hnlyf168/SimdSkia/blob/main/docs/PARITY-OPTIMIZATION-2026-10-27.md)。
+综合比取场景耗时比的几何平均数。GPU 不代表 AOT、真实窗口呈现或显示器帧率；不能将此结果推广到其他硬件、任意业务界面或所有图形操作。CPU、内存、分配及未通过项见[完整报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PARITY-OPTIMIZATION-2026-10-27.md)。
 
 ### 验证与已知问题
 
 - 471,569 项精确检查通过（含字体）；SSE2 限制、完全标量各 471,557 项。真实 Avalonia 9,741、Direct2D 344、Vulkan 内核 540、GPU 集成 12,174 项通过。
-- 真实通用 x64 Native AOT 460,050 项采样检查通过，并从外部验证 PE 与进程模块。发布构建及三平台 JIT/AOT/nupkg 消费结果见[发布记录](https://github.com/hnlyf168/SimdSkia/blob/main/docs/NUGET-PREVIEW.md)。
+- 真实通用 x64 Native AOT 460,050 项采样检查通过，并从外部验证 PE 与进程模块。发布构建及三平台 JIT/AOT/nupkg 消费结果见[发布记录](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/NUGET-PREVIEW.md)。
 - CPU 页面优化前后逐字节相同，但原版整页画质通过数仍为 **CPU 0/5、GPU 0/12**，完整画质未达标。字体指令处理和字形边缘覆盖率仍有差异，没有降低画质门槛或把失败改判为成功。
 - 常驻内存仍高于原版，完整 SK* API 仅匹配 425/3235 公共条目；不承诺二进制兼容或任意 Avalonia 应用直接替换。macOS GPU 未实现，Vulkan 窗口路径仍有回读。
 - 本次是在公开这些限制后发布的**实验性预览版**，不代表完整兼容验收通过。完整验收脚本保留失败状态，不能把 NuGet 发布流水线成功等同于画质全绿。
@@ -114,7 +114,7 @@
 
 完整公共 API、字体/路径/整页画质仍有缺口；完整原版对照验证仍返回质量失败状态，不能作为原版完全替代或二进制兼容承诺。原版像素样本固定 Windows x64，未承诺所有平台逐像素等价。macOS GPU/Metal 尚未实现；Vulkan 仍需系统 loader/驱动并有 framebuffer 回读。系统字体支持范围及 macOS 窗口宿主原生例外保持原说明。
 
-详细报告：[最终画质及性能复测](https://github.com/hnlyf168/SimdSkia/blob/main/docs/ALPHA-COMPATIBILITY-2026-10-26.md)、[AVX2 优化历史对照](https://github.com/hnlyf168/SimdSkia/blob/main/docs/CORE-PERFORMANCE-2026-10-26.md)、[验证与差距](https://github.com/hnlyf168/SimdSkia/blob/main/docs/VALIDATION.md)。公开发布状态以[发布记录](https://github.com/hnlyf168/SimdSkia/blob/main/docs/NUGET-PREVIEW.md)为准。
+详细报告：[最终画质及性能复测](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/ALPHA-COMPATIBILITY-2026-10-26.md)、[AVX2 优化历史对照](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/CORE-PERFORMANCE-2026-10-26.md)、[验证与差距](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/VALIDATION.md)。公开发布状态以[发布记录](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/NUGET-PREVIEW.md)为准。
 
 ## 0.1.0-preview.6 — 2026-10-22
 

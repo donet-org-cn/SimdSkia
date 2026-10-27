@@ -16,7 +16,7 @@ dotnet add package SimdSkia.Pdf --version 0.1.0-preview.9
 
 Every package includes `CHANGELOG.md` and NuGet release notes. This preview is a
 supported subset, not complete SkiaSharp or general PDF compatibility; see the
-[release notes](https://github.com/hnlyf168/SimdSkia/blob/main/docs/RELEASE-NOTES.md).
+[release notes](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-NOTES.md).
 
 ```csharp
 using SimdSkia.Pdf;

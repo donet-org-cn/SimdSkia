@@ -4,14 +4,14 @@
     <Version Condition="'$(Version)' == ''">0.1.0-preview.9</Version>
     <Authors>hnlyf168</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/hnlyf168/SimdSkia</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/hnlyf168/SimdSkia</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/donet-org-cn/SimdSkia</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/donet-org-cn/SimdSkia</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Description>Experimental managed C# 2D rendering components. Preview only; API and rendering compatibility are incomplete. No Google Skia rendering dependency.</Description>
     <PackageTags>SimdSkia;graphics;rendering;managed;preview</PackageTags>
-    <PackageReleaseNotes>Preview 9 / 预览版 9：补齐 SKBitmap.GetPixels 真实像素指针、系统字体 FromFamilyName、GIF SKCodec、SKRoundRect/SaveLayer/Inflate 与采样重载；新增多页栅格 PDF 导出及可选纯托管 SimdSkia.Pdf 阅读模块。修复 VelaShell 字体 Try 回退和图片布局舍入边界，CPU/Direct2D/Vulkan 各 23 个常规场景通过，控件回归 9,750 项通过。仍有组合字符异常、复杂页面耗时、输入/Skia 专属预览及原版画质差距；PDF 仅支持明确子集。没有重测完整 CPU/GPU 性能，不沿用旧成绩宣称新版全面追平。12 个包统一版本，Avalonia 12.1.4、SkiaSharp 源码基线 3.119.4；不承诺二进制或全面兼容。完整更新、测试和限制见包内 CHANGELOG.md、README.md 和 https://github.com/hnlyf168/SimdSkia/blob/main/docs/RELEASE-NOTES.md</PackageReleaseNotes>
+    <PackageReleaseNotes>Preview 9 / 预览版 9：补齐 SKBitmap.GetPixels 真实像素指针、系统字体 FromFamilyName、GIF SKCodec、SKRoundRect/SaveLayer/Inflate 与采样重载；新增多页栅格 PDF 导出及可选纯托管 SimdSkia.Pdf 阅读模块。修复 VelaShell 字体 Try 回退和图片布局舍入边界，CPU/Direct2D/Vulkan 各 23 个常规场景通过，控件回归 9,750 项通过。仍有组合字符异常、复杂页面耗时、输入/Skia 专属预览及原版画质差距；PDF 仅支持明确子集。没有重测完整 CPU/GPU 性能，不沿用旧成绩宣称新版全面追平。12 个包统一版本，Avalonia 12.1.4、SkiaSharp 源码基线 3.119.4；不承诺二进制或全面兼容。完整更新、测试和限制见包内 CHANGELOG.md、README.md 和 https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-NOTES.md</PackageReleaseNotes>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>

@@ -19,9 +19,9 @@ dotnet add package SimdSkia.Pdf --version 0.1.0-preview.9
 
 ## 第八预览版 0.1.0-preview.8
 
-**已公开发布：11 个包均已实际下载并核对内容。** [可信发布流水线](https://github.com/hnlyf168/SimdSkia/actions/runs/40429937427)全部成功，公开包的 DLL、README、CHANGELOG、MIT 许可证和 nuspec（含发行说明）与 CI 一致。标签 `v0.1.0-preview.8` 固定在 `a636296b2b7fec05c44c18f25ae62f4ba03de74a`；[发布证据](evidence/nuget-preview8-2026-10-27.json)包含 11 包版本、哈希、下载地址和实际窗口记录。
+**已公开发布：11 个包均已实际下载并核对内容。** [可信发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/40429937427)全部成功，公开包的 DLL、README、CHANGELOG、MIT 许可证和 nuspec（含发行说明）与 CI 一致。标签 `v0.1.0-preview.8` 固定在 `a636296b2b7fec05c44c18f25ae62f4ba03de74a`；[发布证据](evidence/nuget-preview8-2026-10-27.json)包含 11 包版本、哈希、下载地址和实际窗口记录。
 
-[三平台托管回归](https://github.com/hnlyf168/SimdSkia/actions/runs/40429073489)、[三平台 JIT/AOT/nupkg 真实窗口](https://github.com/hnlyf168/SimdSkia/actions/runs/40429073275)、[Windows AOT 及两种采样指令集](https://github.com/hnlyf168/SimdSkia/actions/runs/40429073278)全部成功，下载核对 9 份桌面结果。通用/v3 AOT 各通过 460,050 项采样；本机真实包 CPU/Direct2D/Vulkan 控件窗口和包内 README 的 CPU/GPU 编译通过。这些窗口检查验证发布可用性，不作为速度排名。
+[三平台托管回归](https://github.com/donet-org-cn/SimdSkia/actions/runs/40429073489)、[三平台 JIT/AOT/nupkg 真实窗口](https://github.com/donet-org-cn/SimdSkia/actions/runs/40429073275)、[Windows AOT 及两种采样指令集](https://github.com/donet-org-cn/SimdSkia/actions/runs/40429073278)全部成功，下载核对 9 份桌面结果。通用/v3 AOT 各通过 460,050 项采样；本机真实包 CPU/Direct2D/Vulkan 控件窗口和包内 README 的 CPU/GPU 编译通过。这些窗口检查验证发布可用性，不作为速度排名。
 
 11 个包统一为 preview.8，固定 Avalonia 12.1.4。根据用户在了解画质、内存及验证范围后确认的发布要求，本次作为实验性预览版发布；完整质量门槛和原始失败记录不变。
 
@@ -37,9 +37,9 @@ dotnet add package SimdSkia.Avalonia.Gpu --version 0.1.0-preview.8
 
 ## 第七预览版 0.1.0-preview.7
 
-**已公开发布：11 个包均已实际下载并核对内容。** [可信发布流水线](https://github.com/hnlyf168/SimdSkia/actions/runs/40344837096)全部成功；公开包中的 DLL、README、`CHANGELOG.md`、MIT 许可证及 nuspec（含发行说明）与 CI 产物逐字节一致。标签 `v0.1.0-preview.7` 固定在 `1490f164084c24c1bd3f3dbaf727d7598a14abee`，旧包和标签保持原内容。[发布与包文档证据](evidence/nuget-preview7-2026-10-26.json)包含全部包哈希、公开下载地址和实际 NuGet 页面更新内容检查。
+**已公开发布：11 个包均已实际下载并核对内容。** [可信发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/40344837096)全部成功；公开包中的 DLL、README、`CHANGELOG.md`、MIT 许可证及 nuspec（含发行说明）与 CI 产物逐字节一致。标签 `v0.1.0-preview.7` 固定在 `1490f164084c24c1bd3f3dbaf727d7598a14abee`，旧包和标签保持原内容。[发布与包文档证据](evidence/nuget-preview7-2026-10-26.json)包含全部包哈希、公开下载地址和实际 NuGet 页面更新内容检查。
 
-[三平台托管回归](https://github.com/hnlyf168/SimdSkia/actions/runs/40344702599)、[三平台 JIT/AOT/nupkg 真实窗口](https://github.com/hnlyf168/SimdSkia/actions/runs/40344702666)、[Windows AOT 及通用/v3 采样](https://github.com/hnlyf168/SimdSkia/actions/runs/40344702836)全部成功；已下载核对九份桌面窗口记录，两种采样 AOT 各通过 460,050 项检查。原版全量质量/API 缺口仍保留，不将冒烟测试的帧时间作为性能对比。
+[三平台托管回归](https://github.com/donet-org-cn/SimdSkia/actions/runs/40344702599)、[三平台 JIT/AOT/nupkg 真实窗口](https://github.com/donet-org-cn/SimdSkia/actions/runs/40344702666)、[Windows AOT 及通用/v3 采样](https://github.com/donet-org-cn/SimdSkia/actions/runs/40344702836)全部成功；已下载核对九份桌面窗口记录，两种采样 AOT 各通过 460,050 项检查。原版全量质量/API 缺口仍保留，不将冒烟测试的帧时间作为性能对比。
 
 本版包含精确八像素 AVX2 双线性采样、半透明图像合成修复、Vulkan 裁剪采样一致性修复，以及独立自绘/AOT 示例。每个包都包含 [完整更新日志](RELEASE-NOTES.md)；三个 Avalonia 包继续带有完整中文接入说明。Avalonia 保持 12.1.4，不要求重编译 Avalonia。
 
@@ -68,7 +68,7 @@ dotnet add package SimdSkia.Avalonia.Gpu --version 0.1.0-preview.6
 
 ## 第五预览版 0.1.0-preview.5
 
-**已公开发布，11 个包均已实际下载，DLL 和 README 与发布 CI 产物逐字节一致。** [可信发布流水线](https://github.com/hnlyf168/SimdSkia/actions/runs/39746371476)全部成功，完成构建、全部包内容检查、真实 Native AOT 像素/窗口验证、隔离包消费、上传及公开下载核对。标签 `v0.1.0-preview.5` 固定在 `c12c3db16dda9b5fa7505a146bf1b948d3311934`。下载 SHA、实际包和测试证据见 [发布记录](evidence/nuget-preview5-2026-10-22.json)。
+**已公开发布，11 个包均已实际下载，DLL 和 README 与发布 CI 产物逐字节一致。** [可信发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/39746371476)全部成功，完成构建、全部包内容检查、真实 Native AOT 像素/窗口验证、隔离包消费、上传及公开下载核对。标签 `v0.1.0-preview.5` 固定在 `c12c3db16dda9b5fa7505a146bf1b948d3311934`。下载 SHA、实际包和测试证据见 [发布记录](evidence/nuget-preview5-2026-10-22.json)。
 
 推荐桌面应用统一升级到 `0.1.0-preview.5`，包含本轮 Vulkan 优化；旧 preview.4 内容不变。安装 [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.0-preview.5)，GPU 按需另加 [SimdSkia.Avalonia.Gpu](https://www.nuget.org/packages/SimdSkia.Avalonia.Gpu/0.1.0-preview.5)，完整接入代码见 [首页](../README.md)。
 
@@ -79,11 +79,11 @@ dotnet add package SimdSkia.Avalonia.Gpu --version 0.1.0-preview.5
 
 本版纳入 [Vulkan 专项优化](VULKAN-OPTIMIZATION-2026-10-22.md)：有界覆盖率缓存、保守分块、宽绕数与专用计算管线、显存输入、BGRA 直接输出、依赖同步，以及可选 GPU 时间戳诊断。11 个包统一版本；Avalonia 继续锁定 12.1.4。实测窗口 P50 22.250→2.316 ms，CPU 为 2.067 ms，内存没有同比改善；完整 API/画质仍未通过。渲染源码与报告中实测提交相同，仅变更版本、依赖锁定和说明，保留实际测量二进制哈希。
 
-本机真实 preview.5 包的 CPU/Direct2D/Vulkan 控件窗口均通过，GPU 均为 0 条不支持命令的回退，另外明确记录 6 条 CPU 图层命令。[三平台托管回归](https://github.com/hnlyf168/SimdSkia/actions/runs/39746371489)、[三平台 JIT/AOT/nupkg 窗口](https://github.com/hnlyf168/SimdSkia/actions/runs/39746343255)及 [Windows 双后端 AOT](https://github.com/hnlyf168/SimdSkia/actions/runs/39746342939)全部成功；已下载核对三平台九份实际窗口记录。单次包窗口启动/完成时间含冷初始化，不能作为性能比较。
+本机真实 preview.5 包的 CPU/Direct2D/Vulkan 控件窗口均通过，GPU 均为 0 条不支持命令的回退，另外明确记录 6 条 CPU 图层命令。[三平台托管回归](https://github.com/donet-org-cn/SimdSkia/actions/runs/39746371489)、[三平台 JIT/AOT/nupkg 窗口](https://github.com/donet-org-cn/SimdSkia/actions/runs/39746343255)及 [Windows 双后端 AOT](https://github.com/donet-org-cn/SimdSkia/actions/runs/39746342939)全部成功；已下载核对三平台九份实际窗口记录。单次包窗口启动/完成时间含冷初始化，不能作为性能比较。
 
 ## 第四预览版 0.1.0-preview.4
 
-**已公开发布。** 本次已实际下载全部 11 包，DLL 和 README 与原 CI 产物逐字节一致，[发布证据](evidence/nuget-preview4-2026-10-22.json)保留最初超时及后来成功下载的记录。[发布流水线](https://github.com/hnlyf168/SimdSkia/actions/runs/39657888167)的构建、包内容检查、AOT/nupkg 实际窗口与上传已完成；当时 NuGet 尚未完成索引，20 分钟公开下载校验超时，因此原流水线仍显示失败，不改写历史。源码标签 `v0.1.0-preview.4` 固定在 `5eef27d936dc72cb0dd61c7074292b3192bf9a30`，旧标签与包不改写。
+**已公开发布。** 本次已实际下载全部 11 包，DLL 和 README 与原 CI 产物逐字节一致，[发布证据](evidence/nuget-preview4-2026-10-22.json)保留最初超时及后来成功下载的记录。[发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/39657888167)的构建、包内容检查、AOT/nupkg 实际窗口与上传已完成；当时 NuGet 尚未完成索引，20 分钟公开下载校验超时，因此原流水线仍显示失败，不改写历史。源码标签 `v0.1.0-preview.4` 固定在 `5eef27d936dc72cb0dd61c7074292b3192bf9a30`，旧标签与包不改写。
 
 本轮包含实测 CPU 热点优化、GPU 有界纹理内容复用、Direct2D Opaque Alpha 修正和高 DPI ImageBrush 38/40 修正；不宣称完整兼容。独立 [性能与兼容报告](PERFORMANCE-COMPATIBILITY-2026-10-22.md)包含原版 CPU/Vulkan、新旧窗口、CPU/内存/分配和失败画质项目。三平台回归、实际窗口/AOT/nupkg 与 Windows 双后端 AOT 已全部通过，详见 [验证](VALIDATION.md)及 [9 条 CI 记录](evidence/desktop-preview4-ci-2026-10-22.json)。
 
@@ -91,13 +91,13 @@ preview.4 包与标签保持原内容，不包含后续 Vulkan 专项优化；�
 
 ## 第三预览版 0.1.0-preview.3
 
-**已公开发布。** 11 个 `0.1.0-preview.3` 包均已实际下载，DLL 和 README 与发布 CI 产物逐字节一致，[发布流水线 39648463806](https://github.com/hnlyf168/SimdSkia/actions/runs/39648463806)全部成功。修复 GPU 文字图集在覆盖裁剪下的重叠合成顺序与滚动缓存；preview.2 标签和包保持原样。推荐安装 [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.0-preview.3)，GPU 另加 [SimdSkia.Avalonia.Gpu](https://www.nuget.org/packages/SimdSkia.Avalonia.Gpu/0.1.0-preview.3)，两者版本均为 `0.1.0-preview.3`；完整使用方式在[首页](../README.md)。公开下载核对见[发布证据](evidence/nuget-preview3-2026-10-22.json)。
+**已公开发布。** 11 个 `0.1.0-preview.3` 包均已实际下载，DLL 和 README 与发布 CI 产物逐字节一致，[发布流水线 39648463806](https://github.com/donet-org-cn/SimdSkia/actions/runs/39648463806)全部成功。修复 GPU 文字图集在覆盖裁剪下的重叠合成顺序与滚动缓存；preview.2 标签和包保持原样。推荐安装 [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.0-preview.3)，GPU 另加 [SimdSkia.Avalonia.Gpu](https://www.nuget.org/packages/SimdSkia.Avalonia.Gpu/0.1.0-preview.3)，两者版本均为 `0.1.0-preview.3`；完整使用方式在[首页](../README.md)。公开下载核对见[发布证据](evidence/nuget-preview3-2026-10-22.json)。
 
 已从已发布的包内 README 提取完整程序，在仅 NuGet.org 源、全新缓存下完成 CPU 和 Direct2D 配置的恢复与编译，两者均 0 警告/0 错误。另从 NuGet.org 恢复 CrossPlatform 控件示例，检查全部 SimdSkia 依赖来自包，在本机 GTX 1050 Ti 上实际创建、呈现及缩放 Direct2D 窗口通过。原始记录为 `artifacts/nuget-public-preview3-demo` 和 `artifacts/nuget-public-preview3-desktop`。
 
 ## 第二预览版 0.1.0-preview.2
 
-已公开：11 个包均完成公开下载及 CI DLL/README 内容核对，[发布流水线](https://github.com/hnlyf168/SimdSkia/actions/runs/39646305172)成功。该版本存在重叠字形与覆盖裁剪的图集顺序问题，现已在 preview.3 修复；推荐使用新版本。旧标签和包不改写。
+已公开：11 个包均完成公开下载及 CI DLL/README 内容核对，[发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/39646305172)成功。该版本存在重叠字形与覆盖裁剪的图集顺序问题，现已在 preview.3 修复；推荐使用新版本。旧标签和包不改写。
 
 本轮增加 `SimdSkia.Avalonia.Desktop`、`SimdSkia.Avalonia.Gpu`、`SimdSkia.Gpu.Direct2D`，共 11 个包。桌面用户安装 Desktop，GPU 按需另加 Avalonia.Gpu；三个 Avalonia 包共享完整中文 README，包含三平台双文件程序、安装与迁移、GPU 配置、系统字体和 AOT。核心包仍不携带原生字体/绘图库；仅 Desktop 的官方 Avalonia.Native 依赖在 macOS 携带经允许的窗口桥。源码支持和性能结果见 [报告](DESKTOP-GPU-2026-10-22.md)，公开发布以流水线及实际下载验证为准。
 
@@ -136,7 +136,7 @@ powershell -NoProfile -File tools/test-desktop-package.ps1 -Packages artifacts/n
 
 NuGet 策略由账户拥有者在 [Trusted Publishing](https://www.nuget.org/account/trustedpublishing) 配置；对应字段以 [NuGet 官方文档](https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing) 为准。首次发布允许创建新包，后续版本仍需带 preview 后缀。dotnet push 的重复版本跳过只用于重试；不可用相同版本替换已发布的不同内容。
 
-上传后还需等待 NuGet 验证和索引。后续流水线会轮询实际公开 nupkg 下载，并逐字节核对其中的 DLL、README 与 CI 产物；NuGet 对 ZIP 容器增加仓库签名，因此不把整个 nupkg 的签名后哈希与未签名文件强行对比。等待上限 20 分钟，超时会明确失败，不以 PUT 成功代替可安装验证。首版发布的上传日志为 [GitHub Actions 39628597818](https://github.com/hnlyf168/SimdSkia/actions/runs/39628597818)。
+上传后还需等待 NuGet 验证和索引。后续流水线会轮询实际公开 nupkg 下载，并逐字节核对其中的 DLL、README 与 CI 产物；NuGet 对 ZIP 容器增加仓库签名，因此不把整个 nupkg 的签名后哈希与未签名文件强行对比。等待上限 20 分钟，超时会明确失败，不以 PUT 成功代替可安装验证。首版发布的上传日志为 [GitHub Actions 39628597818](https://github.com/donet-org-cn/SimdSkia/actions/runs/39628597818)。
 
 ## 本机验证
 

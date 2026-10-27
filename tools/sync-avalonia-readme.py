@@ -9,7 +9,7 @@ text=text.replace('# SimdSkia\n','# SimdSkia.Avalonia\n',1)
 def absolute(match):
     label,target=match.groups()
     if target.startswith(('#','/')) or re.match(r'^[a-zA-Z][a-zA-Z0-9+.-]*:',target):return match.group(0)
-    return label+'(https://github.com/hnlyf168/SimdSkia/blob/main/'+target+')'
+    return label+'(https://github.com/donet-org-cn/SimdSkia/blob/main/'+target+')'
 text=re.sub(r'(!?\[[^\]\n]*\])\(([^)\n]+)\)',absolute,text)
 target=root/'src/SimdSkia.Avalonia/README.md'
 if args.check:
