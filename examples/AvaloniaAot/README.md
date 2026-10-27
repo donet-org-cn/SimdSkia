@@ -68,10 +68,16 @@ python tools/test-avalonia-aot.py --portable artifacts/aot-comparison/portable -
 
 运行时来源的最终判定包含没有加载 CoreCLR/JIT，不能只读取 `metrics.json` 中的布尔标志。每个测量目录保留 `run-harness.py.txt`，用于对照执行时的父脚本 SHA。
 
-## preview.7 包消费复测与博客稿
+## preview.8 通用 x64 优化与对照
+
+最新[性能与验收报告](../../docs/PARITY-OPTIMIZATION-2026-10-27.md)包括 75 个通用 AOT CPU、36 个 JIT GPU 正式进程；[博客园文章与配图](../../docs/blog/2026-10-27-simdskia-avalonia-aot-cnblogs.md)使用这组新结果。CPU 的源码候选由 `tools/publish-parity-candidate.py` 发布，再用 `tools/run-cpu-parity.py` 对照冻结的原版及 preview.7；GPU 使用独立 `benchmarks/AvaloniaGpuParity`。图文生成器为 `tools/report-preview8-cnblogs.py`。
+
+速度部分通过本机固定场景门槛，但原版整页画质仍失败，常驻内存未追平；GPU 测量不能代替窗口呈现。预览包上架及跨平台检查见[发布记录](../../docs/NUGET-PREVIEW.md)。
+
+## preview.7 历史包消费复测
 
 2026-10-26—27 新测量使用已发布的包。给 SimdSkia 项目的发布命令增加 `-p:UsePackedSimdSkia=true`，会引用 `SimdSkia.Avalonia 0.1.0-preview.7`；默认不加时继续使用源码工程。两边均为相同 Win32 CPU 宿主与固定 CJK 字体。
 
-完整[博客园 Markdown 与图表](../../docs/blog/2026-10-27-simdskia-avalonia-aot-cnblogs.md)包含通用/v3 两组 90 个正式进程、默认空白窗口另外 6 个进程的资源测量、完整失败画质门槛及源码/程序集哈希。文内默认应用的体积来自独立空白模板，未使用本复杂控件基准的发布体积替代。
+历史数据包含通用/v3 两组 90 个正式进程、默认空白窗口另外 6 个进程的资源测量、完整失败画质门槛及源码/程序集哈希，保留在 `docs/blog/2026-10-27-simdskia-assets/data`。当前文章已更新为 preview.8 实现的性能结果；其中默认应用体积仍明确引用 preview.7 的独立空白模板实测，未使用本复杂控件基准的发布体积替代。
 
 图文由 `tools/report-cnblogs-simdskia.py` 从已结束的测量结果生成，绘图依赖为开发工具 matplotlib（本次 3.11.2），不进入产品 NuGet 或正式测量进程。默认空白窗口的独立采样工具为 `tools/measure-default-avalonia-idle.py`。

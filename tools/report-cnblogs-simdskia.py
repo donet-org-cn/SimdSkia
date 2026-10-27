@@ -221,7 +221,7 @@ def main():
     manifest=dict(articleSha256=sha(md),chartFiles={p.name:sha(p) for p in assets.glob('*.png')},toolSha256=sha(Path(__file__)),matplotlibVersion=matplotlib.__version__,formalProcesses=sum(len(v) for v in runs.values()),idleProcesses=len(idle['runs']),qualityPassed=passed,qualityTotal=len(all_quality),measuredExitStatus=status,publicPackage='SimdSkia.Avalonia 0.1.0-preview.7',hardware=cpu)
     (data/'article-manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     note=out/'preview7-history-publishing.txt'
-    note.write_text('文章为 2026-10-27-simdskia-avalonia-aot-cnblogs.md，标题已写好。\n配图在 2026-10-27-simdskia-assets，包含 PNG、SVG 与原始数据。\n本地 Markdown 可直接预览；博客园发布时将 6 张 PNG 上传到博客园图片服务，再将正文的相对图片地址替换为上传后的链接。\n没有自动发布到博客园，也没有虚构图床 URL。\n',encoding='utf-8')
+    note.write_text('此文件为 preview.7 历史测量说明，文章为 2026-10-27-simdskia-preview7-history.md。\n配图在 2026-10-27-simdskia-assets，包含 PNG、SVG 与原始数据。\n当前 preview.8 文章请使用 tools/report-preview8-cnblogs.py 生成，不要用本历史数据覆盖新结果。\n没有自动发布到博客园，也没有虚构图床 URL。\n',encoding='utf-8')
     archive=out/'2026-10-27-simdskia-preview7-history.zip'
     with zipfile.ZipFile(archive,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
         for p in [md,note,*sorted(assets.rglob('*'))]:

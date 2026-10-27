@@ -2,7 +2,11 @@
 
 ## 第八预览版 0.1.0-preview.8
 
-**正在发布验证，尚未据此宣布公开上架。** 11 个包统一升级到 preview.8，固定 Avalonia 12.1.4。根据用户在了解画质、内存及验证范围后确认的发布要求，本次作为实验性预览版发布；完整质量门槛和原始失败记录不变。
+**已公开发布：11 个包均已实际下载并核对内容。** [可信发布流水线](https://github.com/hnlyf168/SimdSkia/actions/runs/40429937427)全部成功，公开包的 DLL、README、CHANGELOG、MIT 许可证和 nuspec（含发行说明）与 CI 一致。标签 `v0.1.0-preview.8` 固定在 `a636296b2b7fec05c44c18f25ae62f4ba03de74a`；[发布证据](evidence/nuget-preview8-2026-10-27.json)包含 11 包版本、哈希、下载地址和实际窗口记录。
+
+[三平台托管回归](https://github.com/hnlyf168/SimdSkia/actions/runs/40429073489)、[三平台 JIT/AOT/nupkg 真实窗口](https://github.com/hnlyf168/SimdSkia/actions/runs/40429073275)、[Windows AOT 及两种采样指令集](https://github.com/hnlyf168/SimdSkia/actions/runs/40429073278)全部成功，下载核对 9 份桌面结果。通用/v3 AOT 各通过 460,050 项采样；本机真实包 CPU/Direct2D/Vulkan 控件窗口和包内 README 的 CPU/GPU 编译通过。这些窗口检查验证发布可用性，不作为速度排名。
+
+11 个包统一为 preview.8，固定 Avalonia 12.1.4。根据用户在了解画质、内存及验证范围后确认的发布要求，本次作为实验性预览版发布；完整质量门槛和原始失败记录不变。
 
 包含通用 x64 SSE2 合成/采样、填充、字形串缓存、画布分配及 framebuffer 优化。75 个 CPU / 36 个 GPU 正式进程的[性能报告](PARITY-OPTIMIZATION-2026-10-27.md)已完成；CPU 综合速度门槛通过，Vulkan / Direct2D 为 JIT 离屏完成帧结果。常驻内存未追平，完整整页画质仍未通过，不能把发布验证成功当作全面替换验收成功。
 
