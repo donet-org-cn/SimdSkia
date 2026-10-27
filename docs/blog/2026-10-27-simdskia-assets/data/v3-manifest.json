@@ -1,0 +1,37 @@
+{
+  "utc": "2026-10-26T16:07:56Z",
+  "os": "Windows-11-10.0.26300-SP0",
+  "processors": 12,
+  "physicalMemoryBytes": 34286309376,
+  "forks": 3,
+  "seconds": 5.0,
+  "warmupSeconds": 2.0,
+  "resourceSamplingIntervalMs": 25,
+  "instructionSet": "v3",
+  "sdk": "10.0.402",
+  "sourceCommit": "237a79a5daf7c79967e47f7f75655163fccc5b32",
+  "sourceStatus": [
+    " M docs/PROGRESS.md",
+    " M examples/AvaloniaAot/SimdSkia/AvaloniaAot.SimdSkia.csproj",
+    " M examples/AvaloniaAot/SimdSkia/packages.lock.json",
+    "?? docs/DEFAULT-AVALONIA-AOT-SIZE-2026-10-26.md",
+    "?? docs/evidence/default-avalonia-aot-2026-10-26-original.png",
+    "?? docs/evidence/default-avalonia-aot-2026-10-26-simdskia.png",
+    "?? docs/evidence/default-avalonia-aot-2026-10-26.json",
+    "?? examples/DefaultAvaloniaAot/",
+    "?? tools/compare-default-avalonia-aot.py",
+    "?? tools/measure-default-avalonia-idle.py",
+    "?? tools/templates/"
+  ],
+  "binaries": {
+    "simd": {
+      "path": "F:\\simdSkia\\artifacts\\cnblogs-performance-2026-10-26\\publish\\v3\\simd\\AvaloniaAot.SimdSkia.exe",
+      "sha256": "574358b173d049fadcbbe828b06c0da0a24fd4bc331d121e027161022f997d41"
+    },
+    "original": {
+      "path": "F:\\simdSkia\\artifacts\\cnblogs-performance-2026-10-26\\publish\\v3\\original\\AvaloniaAot.Original.exe",
+      "sha256": "e6323a87cd5fb4ead50162f4e17722b9499c4349bbd09a92bc9e3efe103accc8"
+    }
+  },
+  "sourceSnapshotSha256": "4786dc71c54cf0ad6db8c4e51a58f11823118c7f8d128447200ad8c0698f8ea0"
+}

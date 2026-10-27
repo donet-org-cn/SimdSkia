@@ -1,5 +1,8 @@
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
+using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.X86;
 
 namespace SimdSkia.Cpu;
 
@@ -57,14 +60,49 @@ internal static partial class SpanCompositor
         }
     }
 
-    private static Vector<ushort> Divide255(Vector<ushort> n) => (n+Vector<ushort>.One+(n>>8))>>8;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static Vector<ushort> Divide255(Vector<ushort> n)
+    {
+        // n = channel * alpha + 127, so 0 <= n <= 65152.
+        // floor((n+1)*257/65536) is exactly floor((n)/255) on this
+        // input domain. Size guards make the value reinterpretations exact.
+        if(Avx2.IsSupported&&Vector<ushort>.Count==16)
+        {
+            var value=Unsafe.As<Vector<ushort>,Vector256<ushort>>(ref n);
+            var result=Avx2.MultiplyHigh(Avx2.Add(value,Vector256.Create((ushort)1)),Vector256.Create((ushort)257));
+            return Unsafe.As<Vector256<ushort>,Vector<ushort>>(ref result);
+        }
+        if(Sse2.IsSupported&&Vector<ushort>.Count==8)
+        {
+            var value=Unsafe.As<Vector<ushort>,Vector128<ushort>>(ref n);
+            var result=Sse2.MultiplyHigh(Sse2.Add(value,Vector128.Create((ushort)1)),Vector128.Create((ushort)257));
+            return Unsafe.As<Vector128<ushort>,Vector<ushort>>(ref result);
+        }
+        return (n+Vector<ushort>.One+(n>>8))>>8;
+    }
 
     internal static void Fill(Span<byte> pixels,byte first,byte second,byte third,byte fourth)
     {
         uint packed=BitConverter.IsLittleEndian ? (uint)(first|second<<8|third<<16|fourth<<24) : (uint)(first<<24|second<<16|third<<8|fourth);
         var words=MemoryMarshal.Cast<byte,uint>(pixels);
         if(CpuOptions.EnableSimd && Vector.IsHardwareAccelerated)
-        {words.Fill(packed);return;}
+        {
+            // Equal-byte pixels (including transparent clear and opaque white)
+            // can use the runtime's bulk byte fill instead of generic uint fill.
+            if(first==second&&first==third&&first==fourth)pixels.Fill(first);
+            else if(Sse2.IsSupported&&!Avx2.IsSupported&&pixels.Length is >=16384 and <=262144)
+            {
+                // Measured portable-AOT hotspot: medium solid rectangles fit in
+                // cache. Repeating an initialized 1 KiB block lets the runtime
+                // bulk copy accelerate this range, without raising the ISA floor.
+                // Large surfaces keep Fill to avoid extra memory-read traffic.
+                words[..256].Fill(packed);int filled=1024;
+                while(filled<pixels.Length)
+                {int count=Math.Min(filled,pixels.Length-filled);pixels[..count].CopyTo(pixels[filled..]);filled+=count;}
+            }
+            else words.Fill(packed);
+            return;
+        }
         for(int i=0;i<words.Length;i++)words[i]=packed;
     }
 }

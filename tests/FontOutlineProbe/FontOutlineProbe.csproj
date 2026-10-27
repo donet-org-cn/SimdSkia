@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><RestorePackagesWithLockFile>true</RestorePackagesWithLockFile></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/SimdSkia.Text/SimdSkia.Text.csproj" />
+    <ProjectReference Include="../../src/SimdSkia.Cpu/SimdSkia.Cpu.csproj" />
+    <PackageReference Include="SkiaSharp" Version="[3.119.4]" />
+  </ItemGroup>
+</Project>

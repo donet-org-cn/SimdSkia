@@ -1,5 +1,9 @@
 # 依赖与许可证
 
+2026-10-27 的 `benchmarks/AvaloniaGpuParity/Original` 新增固定 `Avalonia.Angle.Windows.Natives 2.1.27548.20260419`，仅用于原版 Skia 经 EGL/OpenGL ES → 硬件 D3D11 的隔离对照，包含 `av_libglesv2.dll`。包内 LICENSE 为 ANGLE 三条款 BSD 许可，源码归属提交 `1c89805903c1482166356d3b950d474973180e61`；许可随隔离输出复制。该包不进入 SimdSkia 生产项目。`tests/FontOutlineProbe` 仅使用既有原版 SkiaSharp 3.119.4 导出诊断轮廓，禁止把这些数据用于生产字体渲染。
+
+性能报告绘图使用隔离 Python 环境中的 matplotlib/numpy，字体调查另用 fontTools；均为开发分析工具，不进入 NuGet 引用图。`artifacts` 中的 SharpFont/LayoutFarm 字体解释器是 MIT 的隔离调查副本，尚未集成产品，不能把实验结果当作已实现 TrueType hinting。
+
 preview.2 新模块：`SimdSkia.Gpu.Direct2D` 无 NuGet 依赖，自写 C# ABI 调用系统 d2d1/d3d11/DXGI，不分发这些 Windows 系统 DLL。`SimdSkia.Avalonia.Gpu` 仅引用已有托管引擎/适配器。`SimdSkia.Avalonia.Desktop` 加入官方 MIT Avalonia.FreeDesktop/AtSpi/Native 12.1.4、MIT Tmds.DBus.Protocol 0.94.1 和 MIT System.IO.Pipelines 8.0.0；X11/Win32 通过固定 PackageDownload 仅分发托管宿主 DLL及 Avalonia MIT 通知。macOS 按用户最新选择允许官方 `libAvaloniaNative.dylib`，仅作窗口/系统交互；绘图、字体解析/覆盖率和编解码依旧为 C#。Linux 需部署系统 X11/XWayland/GLib 等环境库。原型 Vortice/SharpGen 因 AOT 反射裁剪问题已移除，不进入任何交付包。
 
 新增 `examples/AvaloniaAot` 是 .NET 10 Native AOT / Win32 软件窗口对照，继续固定 Avalonia/Fluent 12.1.4。SimdSkia 版只使用上述托管渲染依赖和操作系统 API；Original 版单独引用 Avalonia.Skia 12.1.4、SkiaSharp 3.119.4、Avalonia.HarfBuzz 12.1.4、HarfBuzzSharp 8.3.1.3，仅此对照进程携带原版原生 DLL。两边均携带同一 OFL 字体与许可证，Original 还携带包内 SkiaSharp/HarfBuzzSharp LICENSE；体积清单逐文件记录。Native AOT 的 .NET 10 运行时随 C# 程序静态编译链接，不要求用户额外安装 .NET。基准父程序为 Python 标准库，Windows 资源 API 仅用于测量；报告差异图的 zlib 不进入产品引用图。

@@ -123,6 +123,8 @@ internal sealed class FramebufferTarget(IFramebufferRenderTarget surface,Func<Pi
     private static unsafe void CopyTo(PixelBuffer pixels,ILockedFramebuffer framebuffer)
     {
         if(framebuffer.RowBytes<checked(pixels.Width*4)||framebuffer.Address==IntPtr.Zero)throw new InvalidOperationException("Invalid platform framebuffer.");
+        if(framebuffer.RowBytes==pixels.Width*4&&pixels.RowBytes==framebuffer.RowBytes)
+        {pixels.GetPixelSpan().CopyTo(new Span<byte>((void*)framebuffer.Address,pixels.ByteCount));return;}
         for(int y=0;y<pixels.Height;y++)pixels.GetRowSpan(y)[..(pixels.Width*4)].CopyTo(new Span<byte>((byte*)framebuffer.Address+checked((long)y*framebuffer.RowBytes),pixels.Width*4));
     }
     public void Dispose(){if(active)throw new InvalidOperationException("Dispose the active framebuffer context first.");Interlocked.Exchange(ref backend,null)?.Dispose();Interlocked.Exchange(ref surface,null)?.Dispose();Interlocked.Exchange(ref buffer,null)?.Dispose();}

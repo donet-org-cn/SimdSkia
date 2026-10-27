@@ -16,6 +16,63 @@ void Equal(PixelBuffer expected,PixelBuffer actual,string label)
     {int i=0;while(i<a.Length&&a[i]==b[i])i++;throw new Exception($"{label}: byte {i} expected {a[i]}, actual {b[i]}");}
     checks++;
 }
+// Full-width AA spans may merge their fully covered rows, while fractional
+// first/last rows, padded stride, alpha layouts and all composites stay exact.
+foreach(bool simd in new[]{false,true})foreach(var format in Enum.GetValues<PixelFormat>())
+foreach(var alpha in Enum.GetValues<AlphaFormat>())foreach(var mode in Enum.GetValues<CompositeMode>())
+foreach(int padding in new[]{0,5})foreach(float y in new[]{-3.5f,0f,.03125f,5.5f,18.999f})
+{
+    CpuOptions.EnableSimd=simd;
+    using var expected=new PixelBuffer(37,29,format,alpha,37*4+padding);
+    using var actual=new PixelBuffer(37,29,format,alpha,37*4+padding);
+    random.NextBytes(expected.GetPixelSpan());expected.GetPixelSpan().CopyTo(actual.GetPixelSpan());
+    using var reference=new BaselineRasterCanvas(expected);using var renderer=new RasterCanvas(actual);
+    foreach(var color in new[]{new Rgba32(0,0,0,0),new Rgba32(255,255,255,255),new Rgba32(117,19,207,129)})
+    {
+        var command=DrawingCommand.FillRectangle(new(-3,y,40,y+8.125f),Matrix3.Identity,new(color,mode,true)) with {Clip=new(0,.125f,37,27.9375f)};
+        reference.Execute(command);renderer.Execute(command);Equal(expected,actual,"contiguous AA rectangle preserves fractional rows and stride");
+    }
+}
+// Medium-size repeating fills: exercise both threshold boundaries and uneven
+// copy tails. Sentinel rows and row padding must not be overwritten.
+foreach(int width in new[]{4095,4096,4097,33003,65535,65536,65537})
+foreach(var format in Enum.GetValues<PixelFormat>())foreach(var alpha in Enum.GetValues<AlphaFormat>())
+foreach(int padding in new[]{0,7})foreach(var mode in new[]{CompositeMode.Source,CompositeMode.SourceOver})
+{
+    using var expected=new PixelBuffer(width,3,format,alpha,width*4+padding);
+    using var actual=new PixelBuffer(width,3,format,alpha,width*4+padding);
+    expected.GetPixelSpan().Fill(173);expected.GetPixelSpan().CopyTo(actual.GetPixelSpan());
+    using var reference=new BaselineRasterCanvas(expected);using var renderer=new RasterCanvas(actual);
+    CpuOptions.EnableSimd=true;
+    foreach(var color in new[]{new Rgba32(240,248,255,255),new Rgba32(113,27,201,137)})
+    {
+        var command=DrawingCommand.FillRectangle(new(0,1,width,2),Matrix3.Identity,new(color,mode,true));
+        reference.Execute(command);renderer.Execute(command);
+        Equal(expected,actual,"repeating fill thresholds, copy tails, stride and guard rows");
+    }
+}
+// The SSE2 opaque-black glyph kernel must preserve all coverage values and
+// short vector tails on arbitrary destination bytes, both channel orders and
+// alpha metadata. Scalar glyph drawing is the independent compositing oracle.
+foreach(int width in new[]{3,4,5,7,8,9,17})foreach(var format in Enum.GetValues<PixelFormat>())
+foreach(var alpha in Enum.GetValues<AlphaFormat>())
+{
+    using var expected=new PixelBuffer(width,19,format,alpha,width*4+3);
+    using var actual=new PixelBuffer(width,19,format,alpha,width*4+3);
+    var outline=new PathGeometry([new(PathVerb.Move,new(-1,1.125f)),new(PathVerb.Quadratic,new(width,3.875f),new(width-1,17.625f)),new(PathVerb.Line,new(.125f,13.875f)),new(PathVerb.Close,default)]);
+    var glyphs=new GlyphRunGeometry([new(outline,new(0,0))],Matrix3.Identity);
+    using var scalar=new RasterCanvas(expected);using var vector=new RasterCanvas(actual);
+    foreach(int background in new[]{0,1,2})for(int step=0;step<16;step++)
+    {
+        random.NextBytes(expected.GetPixelSpan());
+        if(background==1)for(int y=0;y<expected.Height;y++)expected.GetRowSpan(y)[..(width*4)].Fill(255);
+        if(background==2)for(int y=0;y<expected.Height;y++)for(int x=0;x<width;x++)expected.WritePixel(x,y,new(240,248,255,255));
+        expected.GetPixelSpan().CopyTo(actual.GetPixelSpan());
+        var command=new DrawingCommand(CommandKind.DrawGlyphRun,default,new(1,0,step/16f,0,1,0,0,0,1),new(new(0,0,0,255),CompositeMode.SourceOver,true)){GlyphRun=glyphs};
+        CpuOptions.EnableSimd=false;scalar.Execute(command);CpuOptions.EnableSimd=true;vector.Execute(command);
+        Equal(expected,actual,"black glyph coverage: exact scalar/SIMD, padded stride and short tails");
+    }
+}
 // Native opaque alpha metadata overrides physical A bytes. Exercise direct
 // row copies, mirrored mappings, fractional clips, padding and scalar tails.
 foreach(bool enabled in new[]{false,true})

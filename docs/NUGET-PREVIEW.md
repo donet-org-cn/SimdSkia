@@ -1,5 +1,19 @@
 # NuGet 预览版发布
 
+## 第八预览版 0.1.0-preview.8
+
+**正在发布验证，尚未据此宣布公开上架。** 11 个包统一升级到 preview.8，固定 Avalonia 12.1.4。根据用户在了解画质、内存及验证范围后确认的发布要求，本次作为实验性预览版发布；完整质量门槛和原始失败记录不变。
+
+包含通用 x64 SSE2 合成/采样、填充、字形串缓存、画布分配及 framebuffer 优化。75 个 CPU / 36 个 GPU 正式进程的[性能报告](PARITY-OPTIMIZATION-2026-10-27.md)已完成；CPU 综合速度门槛通过，Vulkan / Direct2D 为 JIT 离屏完成帧结果。常驻内存未追平，完整整页画质仍未通过，不能把发布验证成功当作全面替换验收成功。
+
+包内 README、CHANGELOG 和 NuGet 发行说明均列出改动、实测范围及限制；[博客园文章](blog/2026-10-27-simdskia-avalonia-aot-cnblogs.md)附性能图、功能兼容表、CPU/内存和历史 AOT 体积说明。
+
+```shell
+dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.0-preview.8
+# 需要 GPU 时再加：
+dotnet add package SimdSkia.Avalonia.Gpu --version 0.1.0-preview.8
+```
+
 ## 第七预览版 0.1.0-preview.7
 
 **已公开发布：11 个包均已实际下载并核对内容。** [可信发布流水线](https://github.com/hnlyf168/SimdSkia/actions/runs/40344837096)全部成功；公开包中的 DLL、README、`CHANGELOG.md`、MIT 许可证及 nuspec（含发行说明）与 CI 产物逐字节一致。标签 `v0.1.0-preview.7` 固定在 `1490f164084c24c1bd3f3dbaf727d7598a14abee`，旧包和标签保持原内容。[发布与包文档证据](evidence/nuget-preview7-2026-10-26.json)包含全部包哈希、公开下载地址和实际 NuGet 页面更新内容检查。

@@ -72,12 +72,14 @@ internal static class GlyphValidation
             for(int i=0;i<700;i++)canvas.Execute(new(CommandKind.DrawGlyphRun,default,Matrix3.Identity,new(new(0,0,0,255),CompositeMode.SourceOver,true)){GlyphRun=new([new(outline,new(1,1))],Matrix3.Identity)});
             var stats=GlyphCoverageCache.Statistics;
             Check(stats.Runs<=GlyphCoverageCache.MaximumRuns&&stats.RunBytes<=GlyphCoverageCache.MaximumRunBytes,"Glyph run cache exceeded its retention budget.");
+            Check(GlyphCoverageCache.RecentRunCount<=stats.Runs,"Recent-run index retained evicted cache entries.");
             for(int i=0;i<4200;i++)canvas.Execute(new(CommandKind.DrawGlyphRun,default,Matrix3.Identity,new(new(0,0,0,255),CompositeMode.SourceOver)){GlyphRun=new([new(PathGeometry.Rectangle(new(0,0,2,2)),new(1,1))],Matrix3.Identity)});
             stats=GlyphCoverageCache.Statistics;
             Check(stats.Glyphs<=GlyphCoverageCache.MaximumGlyphs&&stats.GlyphBytes<=GlyphCoverageCache.MaximumGlyphBytes,"Glyph atlas exceeded its retention budget.");
         }
         GlyphCoverageCache.Clear();
         Parallel.For(0,32,i=>{using var image=new PixelBuffer(64,36,PixelFormat.Rgba8888,AlphaFormat.Premultiplied);using var c=new RasterCanvas(image);c.Execute(new(CommandKind.DrawGlyphRun,default,matrices[0],new(new(0,0,0,255),CompositeMode.SourceOver,true)){GlyphRun=glyphs,TextMaskPreblend=true});if(image.ReadPixel(3,4).A==0)throw new InvalidOperationException("Concurrent glyph rendering lost its ink.");});count++;
+        Check(GlyphCoverageCache.RecentRunCount<=GlyphCoverageCache.Statistics.Runs,"Concurrent glyph misses exceeded the recent-run index budget.");
         // Invalid runs fail before compositing any valid leading glyph.
         using(var image=new PixelBuffer(64,36,PixelFormat.Rgba8888,AlphaFormat.Premultiplied))using(var canvas=new RasterCanvas(image))
         {

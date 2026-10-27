@@ -88,6 +88,35 @@ internal static class CompletionValidation
             using var a=cropped.Lock();using var b=expected.Lock();var aa=new byte[a.RowBytes*72];var bb=new byte[b.RowBytes*72];Marshal.Copy(a.Address,aa,0,aa.Length);Marshal.Copy(b.Address,bb,0,bb.Length);
             Check(aa.SequenceEqual(bb),$"Cropped nested layers differ from full-size layer + final clip at scale {scaling} (transform, opacity, mask, blur, hint bounds).");
         }
+        // Opacity 1 is a scope, not an offscreen layer. Wrapping any mixture of
+        // real layers, clipped clears and draws in such scopes must preserve
+        // both pixels and dirty propagation to every enclosing real layer.
+        foreach(double scaling in new[]{1d,1.5})foreach(bool clipped in new[]{false,true})
+        {
+            using var reference=factory.CreateRenderTargetBitmap(new(48,36),new(96*scaling,96*scaling));
+            using var wrapped=factory.CreateRenderTargetBitmap(new(48,36),new(96*scaling,96*scaling));
+            void Render(IRenderTargetBitmapImpl bitmap,bool scopes)
+            {
+                using var c=bitmap.CreateDrawingContext();
+                void Push(){if(scopes)for(int i=0;i<5;i++)c.PushOpacity(1,new Rect(0,0,1,1));}
+                void Pop(){if(scopes)for(int i=0;i<5;i++)c.PopOpacity();}
+                Push();c.Clear(Colors.White);
+                if(clipped)c.PushClip(new RoundedRect(new Rect(2,3,24,17),3));
+                c.PushOpacity(.5,null);Push();c.Clear(Colors.Transparent);
+                c.DrawRectangle(Brushes.Red,null,new Rect(1,1,14,13));
+                c.PushLayer(new Rect(0,0,1,1));Push();
+                c.DrawRectangle(Brushes.Blue,null,new Rect(8,4,14,12));
+                Pop();c.PopLayer();Pop();c.PopOpacity();
+                c.DrawRectangle(Brushes.Green,null,new Rect(3,14,9,6));
+                if(clipped)c.PopClip();
+                Pop();
+            }
+            Render(reference,false);Render(wrapped,true);
+            using var a=reference.Lock();using var b=wrapped.Lock();
+            var aa=new byte[a.RowBytes*36];var bb=new byte[b.RowBytes*36];
+            Marshal.Copy(a.Address,aa,0,aa.Length);Marshal.Copy(b.Address,bb,0,bb.Length);
+            Check(aa.SequenceEqual(bb),$"Opacity 1 changed nested layers, clear or clip at scale {scaling}, clip={clipped}.");
+        }
         foreach(var format in Enum.GetValues<SimdSkia.PixelFormat>())foreach(var alpha in Enum.GetValues<SimdSkia.AlphaFormat>())
         {
             using var input=new CorePixel(13,11,format,alpha,13*4+11);

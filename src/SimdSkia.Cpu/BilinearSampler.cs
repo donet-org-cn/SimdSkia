@@ -59,17 +59,32 @@ internal static class BilinearSampler
         {
             uint pixel=BinaryPrimitives.ReadUInt32LittleEndian(row.Slice(x*4,4));
             if(opaque)pixel|=0xff000000;
-            return Sse2.ConvertToVector128Single(Sse41.ConvertToVector128Int32(Vector128.CreateScalar(pixel).AsByte()));
+            var bytes=Vector128.CreateScalar(pixel).AsByte();
+            var words=Sse2.UnpackLow(bytes,Vector128<byte>.Zero).AsUInt16();
+            return Sse2.ConvertToVector128Single(Sse2.UnpackLow(words,Vector128<ushort>.Zero).AsInt32());
         }
         float w00=(1-fx)*(1-fy),w10=fx*(1-fy),w01=(1-fx)*fy,w11=fx*fy;
         var sum=Sse.Add(Sse.Multiply(Load(row0,first,opaque),Vector128.Create(w00)),Sse.Multiply(Load(row0,second,opaque),Vector128.Create(w10)));
         sum=Sse.Add(sum,Sse.Multiply(Load(row1,first,opaque),Vector128.Create(w01)));
         sum=Sse.Add(sum,Sse.Multiply(Load(row1,second,opaque),Vector128.Create(w11)));
-        var rounded=Sse2.ConvertToVector128Int32WithTruncation(Sse41.RoundToNearestInteger(sum));
+        Vector128<int> rounded;
+        if(Sse41.IsSupported)rounded=Sse2.ConvertToVector128Int32WithTruncation(Sse41.RoundToNearestInteger(sum));
+        else
+        {
+            // Explicit ties-to-even, independent of the caller's MXCSR rounding
+            // mode. Samples are nonnegative, so truncation gives floor here.
+            var floor=Sse2.ConvertToVector128Int32WithTruncation(sum);
+            var fraction=Sse.Subtract(sum,Sse2.ConvertToVector128Single(floor));
+            var half=Vector128.Create(.5f);var one=Vector128.Create(1);
+            var odd=Sse2.CompareEqual(Sse2.And(floor,one),one);
+            var increment=Sse2.Or(Sse.CompareGreaterThan(fraction,half).AsInt32(),Sse2.And(Sse.CompareEqual(fraction,half).AsInt32(),odd));
+            rounded=Sse2.Add(floor,Sse2.And(increment,one));
+        }
         // Clamp RGB to the interpolated alpha even for caller-provided PMA
         // buffers containing physical RGB values greater than their alpha.
         var alpha=Sse2.Shuffle(rounded,0xff);
-        rounded=Sse41.Min(rounded,alpha);
+        var above=Sse2.CompareGreaterThan(rounded,alpha);
+        rounded=Sse2.Or(Sse2.And(above,alpha),Sse2.AndNot(above,rounded));
         return Sse2.PackUnsignedSaturate(Sse2.PackSignedSaturate(rounded,rounded),Vector128<short>.Zero).AsUInt32().GetElement(0);
     }
 }

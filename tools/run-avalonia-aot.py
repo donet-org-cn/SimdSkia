@@ -79,7 +79,7 @@ def physical_memory():
     return value.totalPhysical
 
 
-def measure_process(executable, arguments, destination, total_ram):
+def measure_process(executable, arguments, destination, total_ram, *, validator=verify_aot_metrics):
     # No visible benchmark console or foreground window; the interactive app remains available without --hidden.
     begin = time.perf_counter()
     process = subprocess.Popen([str(executable), *arguments], cwd=ROOT, stdout=subprocess.PIPE,
@@ -126,7 +126,7 @@ def measure_process(executable, arguments, destination, total_ram):
     if reader.is_alive() or state["readerError"] or process.returncode or state["readyMs"] is None:
         raise RuntimeError(f"AOT child failed ({process.returncode}): {''.join(state['lines'])}")
     result = json.loads((destination / "metrics.json").read_text(encoding="utf-8"))
-    verify_aot_metrics(result)
+    validator(result)
     if result["wallMs"] < 100 or not state["samples"]:
         raise RuntimeError("No valid steady-state resource measurement")
     result["launchToFirstOffscreenFrameMs"] = state["readyMs"]

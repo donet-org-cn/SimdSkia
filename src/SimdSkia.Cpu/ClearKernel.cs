@@ -20,7 +20,12 @@ public static class ClearKernel
         // Span.Fill uses the runtime's unrolled vector stores. Treat a tight
         // image as one span, while never writing into padded scanlines.
         if(useSimd&&Vector.IsHardwareAccelerated&&target.RowBytes==target.Width*4)
-        {MemoryMarshal.Cast<byte,uint>(target.GetPixelSpan()).Fill(packed);return;}
+        {
+            var pixels=target.GetPixelSpan();
+            if(first==g&&first==third&&first==a)pixels.Fill(first);
+            else MemoryMarshal.Cast<byte,uint>(pixels).Fill(packed);
+            return;
+        }
         for(int y=0;y<target.Height;y++)
         {
             var row=MemoryMarshal.Cast<byte,uint>(target.GetRowSpan(y)[..checked(target.Width*4)]);

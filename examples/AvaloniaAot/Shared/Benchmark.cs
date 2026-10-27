@@ -141,6 +141,20 @@ internal static class Benchmark
         finally { pinned.Free(); }
         if (bitmap.Format == PixelFormats.Bgra8888) for (int i = 0; i < pixels.Length; i += 4) (pixels[i], pixels[i + 2]) = (pixels[i + 2], pixels[i]);
         File.WriteAllBytes(Path.Combine(options.Output!, "scene.rgba"), pixels);
+#if MANAGED
+        if(Environment.GetEnvironmentVariable("SIMD_SKIA_PROFILE")=="1")
+        {
+            using var profile=File.Create(Path.Combine(options.Output!,"drawing-profile.json"));
+            using var writer=new Utf8JsonWriter(profile,new(){Indented=true});
+            writer.WriteStartObject();
+            foreach(var entry in SimdSkiaDiagnostics.GetDrawingTimings())
+            {
+                writer.WriteStartObject(entry.Key);writer.WriteNumber("calls",entry.Value.Calls);
+                writer.WriteNumber("milliseconds",entry.Value.Milliseconds);writer.WriteEndObject();
+            }
+            writer.WriteEndObject();
+        }
+#endif
         Console.WriteLine($"DONE {Program.Engine} {options.Scene} {options.Mode}: {frames} frames");
     }
 

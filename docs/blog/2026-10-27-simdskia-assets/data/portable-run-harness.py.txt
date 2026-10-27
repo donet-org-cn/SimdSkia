@@ -1,0 +1,271 @@
+"""Publish/run the two real Win32 Native AOT applications. Python stdlib only.
+
+Exit 2 means measurements succeeded but the existing max=32/RMSE=2 quality gate
+failed. Exit 1 means build/runtime/measurement validation failed.
+"""
+from __future__ import annotations
+
+import argparse
+import csv
+import ctypes
+from ctypes import wintypes
+import hashlib
+import json
+import math
+import os
+from pathlib import Path
+import platform
+import statistics
+import struct
+import subprocess
+import sys
+import threading
+import time
+import zipfile
+
+ROOT = Path(__file__).resolve().parents[1]
+MIB = 1024 * 1024
+VARIANTS = ("simd", "original-default", "original-full")
+CASES = (("controls", 1, "throughput"), ("controls", 1.5, "throughput"),
+         ("scroll", 1, "throughput"), ("controls", 1, "paced"), ("scroll", 1, "paced"))
+
+
+def save_json(path, value):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def native_pe(path):
+    data = path.read_bytes()
+    offset = struct.unpack_from("<I", data, 0x3C)[0]
+    if data[:2] != b"MZ" or data[offset:offset + 4] != b"PE\0\0":
+        raise RuntimeError(f"Not a PE executable: {path}")
+    optional = offset + 24
+    if struct.unpack_from("<H", data, optional)[0] != 0x20B:
+        raise RuntimeError("Expected x64 PE32+ executable")
+    clr_rva, clr_size = struct.unpack_from("<II", data, optional + 112 + 14 * 8)
+    if clr_rva or clr_size:
+        raise RuntimeError(f"Executable still has a CLR/IL header: {path}")
+    return hashlib.sha256(data).hexdigest()
+
+
+class MemoryStatus(ctypes.Structure):
+    _fields_ = [("length", wintypes.DWORD), ("load", wintypes.DWORD)] + [
+        (n, ctypes.c_ulonglong) for n in ("totalPhysical", "availablePhysical", "totalPageFile",
+                                        "availablePageFile", "totalVirtual", "availableVirtual", "extended")]
+
+
+class ProcessMemory(ctypes.Structure):
+    _fields_ = [("cb", wintypes.DWORD), ("pageFaults", wintypes.DWORD)] + [
+        (n, ctypes.c_size_t) for n in ("peakWorkingSet", "workingSet", "peakPagedPool", "pagedPool",
+                                     "peakNonPagedPool", "nonPagedPool", "pageFile", "peakPageFile", "private")]
+
+
+def verify_aot_metrics(result):
+    # PublishAot's runtimeconfig can set IsDynamicCodeSupported=false even when
+    # somebody executes the intermediate IL DLL under dotnet. The flag AND an
+    # apphost's absent CLR header are insufficient: reject a loaded managed runtime.
+    modules = {name.lower() for name in result["loadedModules"]}
+    if modules.intersection({"coreclr.dll", "clrjit.dll", "clr.dll", "mscorwks.dll", "mscorsvr.dll"}):
+        raise RuntimeError("CoreCLR/JIT modules are loaded; this is not a Native AOT process")
+    if not result["nativeAot"] or not result["imageBrushProbePassed"] or result["frames"] < 1:
+        raise RuntimeError("The published application failed AOT/control/pixel assertions")
+
+
+def physical_memory():
+    value = MemoryStatus(); value.length = ctypes.sizeof(value)
+    if not ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(value)):
+        raise ctypes.WinError()
+    return value.totalPhysical
+
+
+def measure_process(executable, arguments, destination, total_ram):
+    # No visible benchmark console or foreground window; the interactive app remains available without --hidden.
+    begin = time.perf_counter()
+    process = subprocess.Popen([str(executable), *arguments], cwd=ROOT, stdout=subprocess.PIPE,
+                               stderr=subprocess.STDOUT, text=True, encoding="utf-8", errors="replace",
+                               creationflags=subprocess.CREATE_NO_WINDOW)
+    state = {"readyMs": None, "measuring": False, "samples": [], "lines": [], "readerError": None,
+             "cyclesBegin": None, "cyclesEnd": None}
+    query_cycles = ctypes.windll.kernel32.QueryProcessCycleTime
+    query_cycles.argtypes = [wintypes.HANDLE, ctypes.POINTER(ctypes.c_ulonglong)]
+
+    def cycles():
+        value = ctypes.c_ulonglong()
+        if not query_cycles(wintypes.HANDLE(int(process._handle)), ctypes.byref(value)):
+            raise ctypes.WinError()
+        return value.value
+
+    def read():
+        try:
+            for line in process.stdout:
+                state["lines"].append(line)
+                line = line.strip()
+                if line == "READY": state["readyMs"] = (time.perf_counter() - begin) * 1000
+                elif line == "MEASURE_BEGIN":
+                    state["cyclesBegin"] = cycles(); state["measuring"] = True
+                elif line == "MEASURE_END":
+                    state["cyclesEnd"] = cycles(); state["measuring"] = False
+        except Exception as error:
+            state["readerError"] = str(error)
+
+    reader = threading.Thread(target=read, daemon=True); reader.start()
+    get_memory = ctypes.windll.psapi.GetProcessMemoryInfo
+    get_memory.argtypes = [wintypes.HANDLE, ctypes.POINTER(ProcessMemory), wintypes.DWORD]
+    while process.poll() is None:
+        if time.perf_counter() - begin > 180:
+            process.kill(); process.wait(); raise RuntimeError("AOT child timed out")
+        memory = ProcessMemory(); memory.cb = ctypes.sizeof(memory)
+        if state["measuring"] and get_memory(wintypes.HANDLE(int(process._handle)), ctypes.byref(memory), memory.cb):
+            state["samples"].append({"elapsedMs": (time.perf_counter() - begin) * 1000,
+                "workingSetMiB": memory.workingSet / MIB, "privateMiB": memory.private / MIB})
+        time.sleep(.025)
+    reader.join(timeout=10)
+    destination.mkdir(parents=True, exist_ok=True)
+    (destination / "stdout.txt").write_text("".join(state["lines"]), encoding="utf-8")
+    if reader.is_alive() or state["readerError"] or process.returncode or state["readyMs"] is None:
+        raise RuntimeError(f"AOT child failed ({process.returncode}): {''.join(state['lines'])}")
+    result = json.loads((destination / "metrics.json").read_text(encoding="utf-8"))
+    verify_aot_metrics(result)
+    if result["wallMs"] < 100 or not state["samples"]:
+        raise RuntimeError("No valid steady-state resource measurement")
+    result["launchToFirstOffscreenFrameMs"] = state["readyMs"]
+    if state["cyclesBegin"] is None or state["cyclesEnd"] is None or state["cyclesEnd"] < state["cyclesBegin"]:
+        raise RuntimeError("Missing independent process CPU cycle measurement")
+    result["parentMeasuredCpuCycles"] = state["cyclesEnd"] - state["cyclesBegin"]
+    result["cpuCyclesPerFrame"] = result["parentMeasuredCpuCycles"] / result["frames"]
+    result["workingSetPercentPhysicalRam"] = result["workingSetMiB"] * MIB / total_ram * 100
+    result["sampledMedianWorkingSetMiB"] = statistics.median(s["workingSetMiB"] for s in state["samples"])
+    result["sampledPeakWorkingSetMiB"] = max(s["workingSetMiB"] for s in state["samples"])
+    result["sampledMedianPrivateMiB"] = statistics.median(s["privateMiB"] for s in state["samples"])
+    save_json(destination / "parent-samples.json", state["samples"])
+    return result
+
+
+def deployment_size(directory, archive):
+    files = []
+    for path in sorted(directory.rglob("*")):
+        if not path.is_file(): continue
+        category = ("symbols" if path.suffix.lower() == ".pdb" else "font" if path.suffix.lower() == ".ttf"
+                    else "nativeLibrary" if path.suffix.lower() == ".dll" else "executable" if path.suffix.lower() == ".exe" else "other")
+        files.append({"path": path.relative_to(directory).as_posix(), "bytes": path.stat().st_size,
+                      "category": category, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()})
+    runtime = [f for f in files if f["category"] != "symbols"]
+    # Runtime ZIP includes every non-PDB published file, including XML/license/font files.
+    with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as zipped:
+        for entry in runtime: zipped.write(directory / entry["path"], entry["path"])
+    return {"runtimeBytes": sum(f["bytes"] for f in runtime), "zipBytes": archive.stat().st_size,
+            "symbolsBytes": sum(f["bytes"] for f in files if f["category"] == "symbols"),
+            "executableBytes": sum(f["bytes"] for f in runtime if f["category"] == "executable"),
+            "fontBytes": sum(f["bytes"] for f in runtime if f["category"] == "font"),
+            "nativeLibraryBytes": sum(f["bytes"] for f in runtime if f["category"] == "nativeLibrary"), "files": files}
+
+
+def quality_compare(managed, original, width, height):
+    a, b = managed.read_bytes(), original.read_bytes()
+    if len(a) != width * height * 4 or len(a) != len(b): raise RuntimeError("Invalid RGBA capture length")
+    maximum = 0; squared = 0; unequal = 0
+    for x, y in zip(a, b):
+        d = abs(x - y); maximum = max(maximum, d); squared += d * d; unequal += d != 0
+    rmse = math.sqrt(squared / len(a))
+    return {"maximumChannelError": maximum, "rmse": rmse, "differentChannels": unequal,
+            "maximumGate": 32, "rmseGate": 2, "passed": maximum <= 32 and rmse <= 2}
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, default=ROOT / "artifacts/aot-comparison/run")
+    parser.add_argument("--publish", type=Path, default=ROOT / "artifacts/aot-comparison/publish")
+    parser.add_argument("--no-build", action="store_true")
+    parser.add_argument("--forks", type=int, default=3)
+    parser.add_argument("--seconds", type=float, default=5)
+    parser.add_argument("--warmup", type=float, default=2)
+    parser.add_argument("--isa", choices=("portable", "v3"), default="portable")
+    options = parser.parse_args()
+    if sys.platform != "win32": raise RuntimeError("Windows x64 is required for this desktop AOT comparison")
+    if options.forks < 1 or not math.isfinite(options.seconds) or not .1 <= options.seconds <= 120:
+        raise ValueError("Invalid measurement duration/fork count")
+    output, publish = options.output.resolve(), options.publish.resolve()
+    output.mkdir(parents=True, exist_ok=False)
+    (output / "run-harness.py.txt").write_bytes(Path(__file__).read_bytes())
+    if not options.no_build:
+        for variant, project in (("simd", "SimdSkia"), ("original", "Original")):
+            command = ["dotnet", "publish", f"examples/AvaloniaAot/{project}/AvaloniaAot.{project}.csproj", "-c", "Release", f"-p:ComparisonIsa={options.isa}", "-o", str(publish / variant)]
+            with (output / f"publish-{variant}.txt").open("w", encoding="utf-8") as log:
+                subprocess.run(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT, check=True)
+    binaries = {"simd": publish / "simd/AvaloniaAot.SimdSkia.exe", "original": publish / "original/AvaloniaAot.Original.exe"}
+    ram = physical_memory()
+    manifest = {"utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "os": platform.platform(),
+        "processors": os.cpu_count(), "physicalMemoryBytes": ram, "forks": options.forks,
+        "seconds": options.seconds, "warmupSeconds": options.warmup, "resourceSamplingIntervalMs": 25, "instructionSet": options.isa,
+        "sdk": subprocess.check_output(["dotnet", "--version"], cwd=ROOT, text=True).strip(),
+        "sourceCommit": subprocess.check_output(["git", "-c", f"safe.directory={ROOT.as_posix()}", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
+        "sourceStatus": subprocess.check_output(["git", "-c", f"safe.directory={ROOT.as_posix()}", "status", "--porcelain"], cwd=ROOT, text=True).splitlines(),
+        "binaries": {name: {"path": str(path), "sha256": native_pe(path)} for name, path in binaries.items()}}
+    source_files = {}
+    for directory in (ROOT / "src", ROOT / "examples/AvaloniaAot"):
+        for path in sorted(directory.rglob("*")):
+            if not path.is_file() or {"bin", "obj"}.intersection(path.relative_to(ROOT).parts): continue
+            if path.suffix in (".cs", ".csproj", ".props", ".json"):
+                source_files[path.relative_to(ROOT).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
+    for relative in ("tests/AvaloniaControls/ControlScene.cs", "tools/run-avalonia-aot.py", "Directory.Build.props", "global.json"):
+        source_files[relative] = hashlib.sha256((ROOT / relative).read_bytes()).hexdigest()
+    manifest["sourceSnapshotSha256"] = hashlib.sha256(json.dumps(source_files, sort_keys=True).encode()).hexdigest()
+    save_json(output / "source-files.json", source_files)
+    sizes = {name: deployment_size(path.parent, output / f"{name}-runtime.zip") for name, path in binaries.items()}
+    if any("skia" in f["path"].lower() or "harfbuzz" in f["path"].lower()
+           for f in sizes["simd"]["files"] if f["category"] == "nativeLibrary"):
+        raise RuntimeError("The SimdSkia publication contains forbidden native drawing/font components")
+    save_json(output / "manifest.json", manifest); save_json(output / "sizes.json", sizes)
+    rows = []
+    for case_index, (scene, scale, mode) in enumerate(CASES):
+        case = f"{scene}-{scale:g}-{mode}"
+        for fork in range(options.forks):
+            offset = (case_index + fork) % len(VARIANTS)
+            for variant in VARIANTS[offset:] + VARIANTS[:offset]:
+                destination = output / f"{case}/{variant}-{fork + 1}"
+                binary = binaries["simd" if variant == "simd" else "original"]
+                arguments = ["--hidden", "--output", str(destination), "--scene", scene, "--scale", str(scale),
+                             "--mode", mode, "--seconds", str(options.seconds), "--warmup", str(options.warmup)]
+                if variant != "original-default": arguments += ["--full-opacity"]
+                result = measure_process(binary, arguments, destination, ram)
+                if result["avx2"] != (options.isa == "v3"):
+                    raise RuntimeError("Published executable instruction set does not match --isa; rebuild into a separate publish directory")
+                result.update(case=case, variant=variant, fork=fork + 1)
+                rows.append(result); save_json(output / "results.json", rows)
+                print(f"{case} {variant} fork={fork+1}: draw={result['drawMsPerFrame']:.3f}ms "
+                      f"CPU={result['cpuPercentMachine']:.2f}% WS={result['workingSetMiB']:.1f}MiB", flush=True)
+    quality = []
+    for scene, scale, mode in CASES:
+        case = f"{scene}-{scale:g}-{mode}"
+        for variant in ("original-default", "original-full"):
+            item = quality_compare(output / f"{case}/simd-1/scene.rgba", output / f"{case}/{variant}-1/scene.rgba",
+                                   int(1000 * scale), int(720 * scale))
+            item.update(case=case, reference=variant, identicalOpacityContract=variant == "original-full")
+            quality.append(item)
+    save_json(output / "quality.json", quality)
+    summary = []
+    for scene, scale, mode in CASES:
+        case = f"{scene}-{scale:g}-{mode}"
+        for variant in VARIANTS:
+            matches = [r for r in rows if r["case"] == case and r["variant"] == variant]
+            item = {"case": case, "variant": variant, "forks": len(matches)}
+            for key, value in matches[0].items():
+                if type(value) in (float, int) and key != "fork":
+                    values = [r[key] for r in matches]
+                    item[key] = statistics.median(values)
+                    item[key + "Min"] = min(values); item[key + "Max"] = max(values)
+            summary.append(item)
+    save_json(output / "summary.json", summary)
+    columns = ("case", "variant", "drawMsPerFrame", "p95Ms", "framesPerSecond", "cpuMsPerFrame", "cpuPercentMachine",
+               "cpuPercentOneCore", "cpuCyclesPerFrame", "cpuPercentMachineMin", "cpuPercentMachineMax", "workingSetMiB", "privateMiB", "workingSetPercentPhysicalRam", "allocatedBytesPerFrame", "launchToFirstOffscreenFrameMs")
+    with (output / "summary.csv").open("w", encoding="utf-8", newline="") as stream:
+        writer = csv.DictWriter(stream, columns, extrasaction="ignore"); writer.writeheader(); writer.writerows(summary)
+    print(f"Completed {len(rows)} real Native AOT process measurements. Quality: {sum(q['passed'] for q in quality)}/{len(quality)}", flush=True)
+    return 0 if all(q["passed"] for q in quality) else 2
+
+
+if __name__ == "__main__":
+    try: sys.exit(main())
+    except Exception as error:
+        print(f"ERROR: {error}", file=sys.stderr); sys.exit(1)

@@ -8,6 +8,7 @@ public sealed partial class RasterCanvas
         if(shader is null||!shader.IsHorizontal||!shader.IsOpaque||inverse.M01!=0||command.Paint.Color.A!=255||target.Alpha==AlphaFormat.Straight||command.Paint.Composite is not (CompositeMode.Source or CompositeMode.SourceOver))return false;
         int start=Math.Max(left,mask.Left+dx),end=Math.Min(right,mask.Left+dx+mask.Width);if(start>=end)return true;
         var key=(shader,inverse,start,end);
+        gradientRows??=[];
         if(!gradientRows.TryGetValue(key,out var colors))
         {
             colors=new byte[checked((end-start)*4)];
@@ -129,7 +130,7 @@ public sealed partial class RasterCanvas
             ?System.Buffers.ArrayPool<byte>.Shared.Rent(checked((end-start)*4)):null;
         float sx=(source.Right-source.Left)/(rect.Right-rect.Left),sy=(source.Bottom-source.Top)/(rect.Bottom-rect.Top);
         bool nearest=command.Sampling==ImageSampling.Nearest;
-        bool vectorBilinear=!nearest&&sampled is not null&&CpuOptions.EnableSimd&&System.Runtime.Intrinsics.X86.Sse41.IsSupported;
+        bool vectorBilinear=!nearest&&sampled is not null&&CpuOptions.EnableSimd&&System.Runtime.Intrinsics.X86.Sse2.IsSupported;
         try
         {
             for(int x=start;x<end;x++)

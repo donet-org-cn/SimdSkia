@@ -1,4 +1,5 @@
 using SimdSkia;
+using System.Runtime.Intrinsics.X86;
 
 namespace SimdSkia.Cpu;
 
@@ -8,18 +9,19 @@ public sealed partial class RasterCanvas : ICanvasBackend
     private readonly PixelBuffer target;
     private bool disposed;
     private readonly record struct MaskKey(PathGeometry Geometry,Matrix3 Transform,bool Antialias,RectF? Clip,bool CompactRuns,float Tolerance);
-    private readonly Dictionary<MaskKey,LinkedListNode<(MaskKey Key,CoverageMask Mask)>> masks=[];
-    private readonly LinkedList<(MaskKey Key,CoverageMask Mask)> maskOrder=[];
+    private Dictionary<MaskKey,LinkedListNode<(MaskKey Key,CoverageMask Mask)>>? masks;
+    private LinkedList<(MaskKey Key,CoverageMask Mask)>? maskOrder;
     private long maskBytes;
-    private readonly Dictionary<RectF,PathGeometry> rectangles=[];
+    private Dictionary<RectF,PathGeometry>? rectangles;
     private int[] imageX=[];
     private long gradientBytes;
-    private readonly Dictionary<(IColorShader Gradient,Matrix3 Inverse,int Left,int Right),byte[]> gradientRows=[];
+    private Dictionary<(IColorShader Gradient,Matrix3 Inverse,int Left,int Right),byte[]>? gradientRows;
     public RasterCanvas(PixelBuffer target) { ArgumentNullException.ThrowIfNull(target);target.ThrowIfDisposed();this.target=target; }
     private PathGeometry RectangleGeometry(RectF rectangle)
     {
         // Coverage keys include geometry identity. A new path on every redraw
         // would fill the LRU with identical masks instead of reusing one mask.
+        rectangles??=[];
         if(rectangles.TryGetValue(rectangle,out var geometry))return geometry;
         geometry=PathGeometry.Rectangle(rectangle);
         if(rectangles.Count>=16)rectangles.Clear();
@@ -75,6 +77,7 @@ public sealed partial class RasterCanvas : ICanvasBackend
                 if(paint.Shader is {} gradient&&gradient.IsHorizontal&&inverse.M01==0&&paint.Color.A==255&&gradient.IsOpaque&&(paint.Composite is CompositeMode.Source or CompositeMode.SourceOver)&&Finite(inverse.Map(x0+.5f,y0+.5f))&&Finite(inverse.Map(x1-.5f,y1-.5f)))
                 {
                     var key=(gradient,inverse,x0,x1);
+                    gradientRows??=[];
                     if(!gradientRows.TryGetValue(key,out var colors))
                     {
                         colors=new byte[checked((x1-x0)*4)];
@@ -107,17 +110,29 @@ public sealed partial class RasterCanvas : ICanvasBackend
         }
     }
     private static bool Finite((float X,float Y) point)=>float.IsFinite(point.X)&&float.IsFinite(point.Y);
-    private static int RoundEdge(float value,int limit)=>(int)Math.Clamp(MathF.Floor(value+.5f),0,limit);
-    private static int SampleEdge(float value,int limit)=>(int)Math.Clamp(MathF.Ceiling(value-.5f),0,limit);
-    private static int SampleGrid(float value,int limit)=>(int)Math.Clamp(MathF.Ceiling(value*16-.5f),0,checked(limit*16));
+    private static int RoundEdge(float value,int limit)
+    {value+=.5f;if(value<=0)return 0;if(value>=limit)return limit;return (int)value;}
+    private static int ClampedCeiling(float value,int limit)
+    {if(value<=0)return 0;if(value>=limit)return limit;int whole=(int)value;return value>whole?whole+1:whole;}
+    private static int SampleEdge(float value,int limit)=>ClampedCeiling(value-.5f,limit);
+    private static int SampleGrid(float value,int limit)=>ClampedCeiling(value*16-.5f,checked(limit*16));
     private void FillAntialiasedRectangle(float left,float top,float right,float bottom,in DrawingCommand command)
     {
         if(command.Clip is {} clip){left=MathF.Max(left,clip.Left);right=MathF.Min(right,clip.Right);top=MathF.Max(top,clip.Top);bottom=MathF.Min(bottom,clip.Bottom);}
         if(left>=right||top>=bottom)return;
         int first=SampleGrid(left,target.Width),end=SampleGrid(right,target.Width),firstY=SampleGrid(top,target.Height),endY=SampleGrid(bottom,target.Height);
         int fullStart=(first+15)/16,fullEnd=end/16;
+        bool contiguous=first==0&&end==checked(target.Width*16)&&target.RowBytes==target.Width*4;
+        int fullTop=(firstY+15)/16,fullBottom=endY/16;
         for(int y=firstY/16;y<(endY+15)/16;y++)
         {
+            // A full-width rectangle's fully covered rows form one continuous
+            // span. Preserve fractional edge rows and padded-stride behavior.
+            if(contiguous&&y>=fullTop&&y<fullBottom)
+            {
+                SpanCompositor.Apply(target.GetPixelSpan().Slice(y*target.RowBytes,(fullBottom-y)*target.RowBytes),target.Format,target.Alpha,command.Paint);
+                y=fullBottom-1;continue;
+            }
             int cy=Math.Max(0,Math.Min(endY,(y+1)*16)-Math.Max(firstY,y*16));var row=target.GetRowSpan(y);
             for(int x=first/16;x<(end+15)/16;)
             {
@@ -130,6 +145,9 @@ public sealed partial class RasterCanvas : ICanvasBackend
     }
     private CoverageMask GetMask(PathGeometry geometry,in DrawingCommand command)
     {
+        // Bitmap contexts are short lived. Rectangles and globally cached text
+        // do not need any of these per-canvas containers.
+        masks??=[];maskOrder??=[];
         bool compact=command.Kind==CommandKind.FillPath;
         var key=new MaskKey(geometry,command.Transform,command.Paint.Antialias,command.Clip,compact,command.CurveTolerance);
         if(masks.TryGetValue(key,out var node)){maskOrder.Remove(node);maskOrder.AddLast(node);return node.Value.Mask;}
@@ -161,12 +179,25 @@ public sealed partial class RasterCanvas : ICanvasBackend
         if(!mask.Dense&&TryFillHorizontalGradient(mask,command,inverse,dx,dy,left,top,right,bottom))return;
         if(mask.Dense)
         {
-            for(int y=0;y<mask.Height;y++)
+            int originX=mask.Left+dx,originY=mask.Top+dy;
+            int start=Math.Max(left,originX),end=Math.Min(right,originX+mask.Width);
+            int firstY=Math.Max(top,originY),lastY=Math.Min(bottom,originY+mask.Height);
+            if(start>=end||firstY>=lastY)return;
+            int width=end-start,coverageOffset=(firstY-originY)*mask.Width+start-originX;
+            if(CpuOptions.EnableSimd&&Sse2.IsSupported&&!Avx2.IsSupported&&target.Alpha!=AlphaFormat.Straight&&
+                command.Paint.Shader is null&&command.CoverageClip is null&&
+                command.Paint.Composite==CompositeMode.SourceOver&&command.Paint.Color==new Rgba32(0,0,0,255))
             {
-                int deviceY=y+mask.Top+dy;if(deviceY<top||deviceY>=bottom)continue;
-                int start=Math.Max(left,mask.Left+dx),end=Math.Min(right,mask.Left+dx+mask.Width);if(start>=end)continue;
-                var row=target.GetRowSpan(deviceY).Slice(start*4,(end-start)*4);
-                var coverage=mask.Data.AsSpan(y*mask.Width+start-mask.Left-dx,end-start);
+                // Mask-wide invariants must not be re-evaluated for every short
+                // glyph row. Bounds and padded destination stride stay checked.
+                for(int deviceY=firstY;deviceY<lastY;deviceY++,coverageOffset+=mask.Width)
+                    SpanCompositor.ApplyOpaqueBlackCoverage(target.GetRowSpan(deviceY).Slice(start*4,width*4),mask.Data.AsSpan(coverageOffset,width));
+                return;
+            }
+            for(int deviceY=firstY;deviceY<lastY;deviceY++,coverageOffset+=mask.Width)
+            {
+                var row=target.GetRowSpan(deviceY).Slice(start*4,width*4);
+                var coverage=mask.Data.AsSpan(coverageOffset,width);
                 if(command.Paint.Shader is null)ApplyMasked(row,coverage,start,deviceY,command.Paint,command.CoverageClip);
                 else for(int x=0;x<coverage.Length;x++)
                 {
@@ -273,6 +304,6 @@ public sealed partial class RasterCanvas : ICanvasBackend
         }
     }
     private void Composite(Span<byte> pixel,Paint paint,byte coverage=255)=>SpanCompositor.Apply(pixel,target.Format,target.Alpha,paint,coverage);
-    public void Dispose(){disposed=true;masks.Clear();maskOrder.Clear();maskBytes=0;gradientRows.Clear();gradientBytes=0;rectangles.Clear();imageX=[];}
+    public void Dispose(){disposed=true;masks=null;maskOrder=null;maskBytes=0;gradientRows=null;gradientBytes=0;rectangles=null;imageX=[];}
     public void Flush(){ObjectDisposedException.ThrowIf(disposed,this);target.ThrowIfDisposed();}
 }

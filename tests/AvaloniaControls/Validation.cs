@@ -199,5 +199,6 @@ internal static class Validation
         var bitmap=(IReadableBitmapImpl)Factory.CreateWriteableBitmap(new(8,8),new(96,96),PixelFormats.Bgra8888,AAlpha.Premul);var locked=bitmap.Lock();bitmap.Dispose();Marshal.WriteByte(locked.Address,77);Assert(Marshal.ReadByte(locked.Address)==77,"Pinned bitmap lease did not retain its storage after bitmap disposal.");locked.Dispose();Throws<ObjectDisposedException>(()=>{_=locked.Address;},"Disposed framebuffer pin remained usable.");
         using var target=Target();var context=target.CreateDrawingContext();context.Dispose();context.Dispose();Throws<ObjectDisposedException>(()=>context.Clear(Colors.Red),"Disposed drawing context remained usable.");
         var unbalanced=target.CreateDrawingContext();unbalanced.PushOpacity(.5,null);Throws<InvalidOperationException>(()=>unbalanced.Dispose(),"Unbalanced opacity layer silently disappeared on disposal.");
+        var unbalancedNoop=target.CreateDrawingContext();unbalancedNoop.PushOpacity(1,null);Throws<InvalidOperationException>(()=>unbalancedNoop.Dispose(),"Unbalanced opacity 1 scope silently disappeared on disposal.");
     }
 }

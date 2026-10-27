@@ -5,5 +5,7 @@
 *.yml text eol=lf
 *.md text eol=lf
 *.json text eol=lf
+# Matplotlib wraps SVG path data with insignificant trailing spaces.
+*.svg text eol=lf whitespace=-blank-at-eol
 *.spv binary
 *.zlib binary

@@ -24,7 +24,8 @@ for package_id in ids:
         readme=package.read('README.md').decode('utf-8')
         changelog=package.read('CHANGELOG.md').decode('utf-8')
         assert args.version in readme and args.version in changelog,(path,'Missing current version notes')
-        for topic in ('AVX2','24/24'):
+        topics=('SSE2','28.05','画质') if args.version=='0.1.0-preview.8' else ('AVX2','24/24')
+        for topic in topics:
             assert topic in readme and topic in changelog,(path,'Missing release topic',topic)
         assert not any(name.lower().endswith(('.ttf','.ttc','.otf','.woff','.woff2','.so','.dylib')) or name.lower().startswith('runtimes/') for name in names),path
         assert not any('skiasharp.dll' in name.lower() or 'harfbuzz' in name.lower() for name in names),path
@@ -36,7 +37,8 @@ for package_id in ids:
         assert metadata.findtext(prefix+'version')==args.version,path
         assert metadata.findtext(prefix+'license')=='MIT',path
         release_notes=metadata.findtext(prefix+'releaseNotes') or ''
-        assert release_notes.strip() and 'AVX2' in release_notes and 'CHANGELOG.md' in release_notes,(path,'Missing NuGet release notes')
+        release_topic='SSE2' if args.version=='0.1.0-preview.8' else 'AVX2'
+        assert release_notes.strip() and release_topic in release_notes and 'CHANGELOG.md' in release_notes,(path,'Missing NuGet release notes')
         dependencies={element.attrib['id']:element.attrib['version'] for element in metadata.iter(prefix+'dependency')}
         for dependency,version in dependencies.items():
             if dependency.startswith('SimdSkia'):

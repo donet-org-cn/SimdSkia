@@ -44,7 +44,17 @@ internal static class TextProbe
                 context.DrawGlyphRun(Brushes.Black,run);
                 context.Transform=new Matrix(scale,0,0,scale,470+phase,y+34+phase);
                 context.DrawGlyphRun(Brushes.MidnightBlue,run);
-                cases.Add(new{size,scale,phase,top=y,height=42});
+                // Keep the original double advances and the float positions
+                // consumed by both backends. Quarter-pixel ties can otherwise
+                // hide behind an approximate shaping fixture comparison.
+                double currentX=0;var positions=new List<object>();
+                foreach(var glyph in shaped)
+                {
+                    positions.Add(new{glyph.GlyphIndex,glyph.GlyphAdvance,
+                        x=(float)(currentX+glyph.GlyphOffset.X),y=(float)glyph.GlyphOffset.Y});
+                    currentX+=glyph.GlyphAdvance;
+                }
+                cases.Add(new{size,scale,phase,top=y,height=42,glyphs=positions});
             }
             context.PopTextOptions();
         }

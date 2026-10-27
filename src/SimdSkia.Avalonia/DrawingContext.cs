@@ -29,6 +29,7 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
     private Stack<TextOptions> textStack=>scratch.TextOptions;
     private Stack<Group> groups=>scratch.Groups;
     private RectF? dirty;
+    private int activeLayers;
     private int originX,originY;
     private readonly record struct Group(string Kind,PixelBuffer? Parent,ICanvasBackend? Canvas,RectF? Clip,CoverageClip? Coverage,byte Opacity,IBrush? Mask,Rect Bounds,RectF? ParentDirty,Matrix3 Matrix,FilterSpec? Filter=null,int OffsetX=0,int OffsetY=0);
     // Reuse only empty internal storage. Public context wrappers are never
@@ -66,7 +67,7 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
         using var measurement=SimdSkiaDiagnostics.Measure(command.Kind==CommandKind.DrawGlyphRun?"glyph-run":command.Kind==CommandKind.FillPath?command.Paint.Shader is null?"path-solid":"path-gradient":command.Kind==CommandKind.DrawImage?"image":"rectangle");
         Check();if(rootBackend is not null and not RasterCanvas&&!ReferenceEquals(canvas,rootBackend))SimdSkiaDiagnostics.SoftwareLayerCommand();
         canvas.Execute(command with {Clip=clip,CoverageClip=coverageClip,CurveTolerance=0.015625f});
-        if(groups.Count==0)return;
+        if(activeLayers==0)return;
         var bounds=command.GlyphRun?.Bounds??command.Path?.ControlBounds??command.Rectangle;var m=command.Transform;
         var a=m.Map(bounds.Left,bounds.Top);var b=m.Map(bounds.Right,bounds.Top);var c=m.Map(bounds.Left,bounds.Bottom);var d=m.Map(bounds.Right,bounds.Bottom);
         var area=Intersect(clip,new RectF(Math.Min(Math.Min(a.X,b.X),Math.Min(c.X,d.X))-1,Math.Min(Math.Min(a.Y,b.Y),Math.Min(c.Y,d.Y))-1,Math.Max(Math.Max(a.X,b.X),Math.Max(c.X,d.X))+1,Math.Max(Math.Max(a.Y,b.Y),Math.Max(c.Y,d.Y))+1));
@@ -78,7 +79,7 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
         lock(shapeGate){if(shapes.TryGetValue((rect,ellipse),out var result))return result;result=ellipse?Geometry.Ellipse(rect.Rect):Geometry.Rounded(rect);if(shapes.Count>=256)shapes.Clear();shapes.Add((rect,ellipse),result);return result;}
     }
     public void Clear(Color color)
-    {Check();if(clip is null&&coverageClip is null&&groups.Count==0)canvas.Execute(DrawingCommand.Clear(ConvertTo.Color(color)));else Execute(DrawingCommand.FillRectangle(new(0,0,target.Width,target.Height),Matrix3.Identity,new(ConvertTo.Color(color),CompositeMode.Source)));}
+    {Check();if(clip is null&&coverageClip is null&&activeLayers==0)canvas.Execute(DrawingCommand.Clear(ConvertTo.Color(color)));else Execute(DrawingCommand.FillRectangle(new(0,0,target.Width,target.Height),Matrix3.Identity,new(ConvertTo.Color(color),CompositeMode.Source)));}
     private void DrawPath(IBrush brush,Geometry geometry,Matrix3? matrix=null,bool text=false)
     {
         geometry.Validate();using var paint=CreatePaint(brush,geometry.Bounds,text?textOptions.TextRenderingMode!=TextRenderingMode.Alias:Antialias);
@@ -163,7 +164,9 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
     {
         using var measurement=SimdSkiaDiagnostics.Measure("push-group");
         Check();using var validation=mask is not null?CreatePaint(mask,bounds,Antialias):default;
-        if(opacity==255&&mask is null&&kind=="opacity"){groups.Push(new(kind,null,null,clip,coverageClip,opacity,null,bounds,dirty,DeviceMatrix));return;}
+        // Avalonia pushes opacity 1 for ordinary visuals. Retain the balanced
+        // scope, but no saved state or dirty bounds are needed without a layer.
+        if(opacity==255&&mask is null&&kind=="opacity"){groups.Push(new(kind,null,null,null,null,255,null,default,null,default));return;}
         // Only pixels that can reach the restore clip are needed. Layer bounds
         // are hints and do NOT crop arbitrary opacity/layer content. A mask is
         // zero outside its actual bounds; filters additionally need their halo.
@@ -179,7 +182,7 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
         int x=(int)MathF.Floor(extent.Left),y=(int)MathF.Floor(extent.Top),width=Math.Max(1,(int)MathF.Ceiling(extent.Right)-x),height=Math.Max(1,(int)MathF.Ceiling(extent.Bottom)-y);
         if(width>32768||height>32768||(long)width*height*4>256*1024*1024)throw new NotSupportedException("Layer exceeds the configured 256 MiB limit.");
         var buffer=PixelBuffer.Rent(width,height,target.Format,AlphaFormat.Premultiplied);var next=new RasterCanvas(buffer);
-        groups.Push(new(kind,target,canvas,clip,coverageClip,opacity,mask,bounds,dirty,DeviceMatrix,filter,x,y));target=buffer;canvas=next;dirty=null;originX+=x;originY+=y;
+        groups.Push(new(kind,target,canvas,clip,coverageClip,opacity,mask,bounds,dirty,DeviceMatrix,filter,x,y));activeLayers++;target=buffer;canvas=next;dirty=null;originX+=x;originY+=y;
         // Apply the existing clip exactly once when restoring this group.
         coverageClip=null;clip=null;
     }
@@ -187,6 +190,7 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
     {
         using var measurement=SimdSkiaDiagnostics.Measure("pop-group");
         Check();if(!groups.TryPeek(out var state)||state.Kind!=kind)throw new InvalidOperationException($"Unbalanced {kind} stack.");groups.Pop();if(state.Parent is null)return;
+        activeLayers--;
         var layer=target;var region=dirty;canvas.Dispose();target=state.Parent;canvas=state.Canvas!;clip=state.Clip;coverageClip=state.Coverage;dirty=state.ParentDirty;originX-=state.OffsetX;originY-=state.OffsetY;
         try
         {

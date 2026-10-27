@@ -1,7 +1,7 @@
 <Project>
   <Import Project="../Directory.Build.props" />
   <PropertyGroup>
-    <Version Condition="'$(Version)' == ''">0.1.0-preview.7</Version>
+    <Version Condition="'$(Version)' == ''">0.1.0-preview.8</Version>
     <Authors>hnlyf168</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/hnlyf168/SimdSkia</PackageProjectUrl>
@@ -11,7 +11,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Description>Experimental managed C# 2D rendering components. Preview only; API and rendering compatibility are incomplete. No Google Skia rendering dependency.</Description>
     <PackageTags>SimdSkia;graphics;rendering;managed;preview</PackageTags>
-    <PackageReleaseNotes>Preview 7 / 预览版 7：新增精确八像素 AVX2 双线性采样及标量回退；修复半透明图片 SourceOver 舍入、现代最近邻/图层回贴及 Vulkan CoverageClip 分流，核心图片原版画质对照 24/24 通过。Windows x64 同机 1024×768 四类图片实测 5.412–6.758 ms，原版 6.804–7.714 ms；仅适用于报告场景，不代表所有 Avalonia 页面或 GPU。常驻内存未见明显改善，完整字体/路径/整页画质和 API 仍有缺口，macOS GPU 未实现。Avalonia 固定 12.1.4。完整更新说明、测试和限制见包内 CHANGELOG.md、README.md 及 https://github.com/hnlyf168/SimdSkia/blob/main/docs/RELEASE-NOTES.md</PackageReleaseNotes>
+    <PackageReleaseNotes>Preview 8 / 预览版 8：优化通用 x64 SSE2 字形/图像合成与采样、填充、字形串缓存和画布分配。固定 Avalonia 控件 CPU 吞吐综合耗时比原版低 4.4%，最慢场景落后 3.8%；Vulkan/Direct2D JIT 离屏完成帧含回读低 29.8%/35.3%，仅限报告硬件和场景，不代表窗口呈现。60 FPS 滚动分配 155.14→28.05 KiB/帧；普通控件工作集仍 79.89 vs 原版 60.91 MiB。整页画质、字体和完整 API 仍有缺口，非完全兼容版本；Avalonia 固定 12.1.4。完整测试与限制见包内 CHANGELOG.md、README.md 和 https://github.com/hnlyf168/SimdSkia/blob/main/docs/RELEASE-NOTES.md</PackageReleaseNotes>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>

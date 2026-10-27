@@ -1,5 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../Aot.Common.props" />
   <PropertyGroup><DefineConstants>$(DefineConstants);MANAGED</DefineConstants></PropertyGroup>
-  <ItemGroup><ProjectReference Include="../../../src/SimdSkia.Avalonia/SimdSkia.Avalonia.csproj" /></ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../src/SimdSkia.Avalonia/SimdSkia.Avalonia.csproj" Condition="'$(UsePackedSimdSkia)' != 'true'" />
+    <PackageReference Include="SimdSkia.Avalonia" Version="[0.1.0-preview.7]" Condition="'$(UsePackedSimdSkia)' == 'true'" />
+  </ItemGroup>
 </Project>

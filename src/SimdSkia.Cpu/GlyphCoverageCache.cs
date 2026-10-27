@@ -10,28 +10,79 @@ internal static class GlyphCoverageCache
     private readonly record struct GlyphKey(PathGeometry Outline,Matrix3 Matrix,bool Antialias,float Tolerance);
     private readonly record struct RunKey(GlyphRunGeometry Run,Matrix3 Matrix,bool Antialias,float Tolerance,bool SnapBaseline,int Luminance);
     private sealed record GlyphEntry(GlyphKey Key,CoverageMask Mask,long Bytes);
-    private sealed record RunEntry(RunKey Key,Batch Batch);
+    private sealed class RunEntry(RunKey key,Batch batch)
+    {
+        internal readonly RunKey Key=key;
+        internal readonly Batch Batch=batch;
+        // Clock/second-chance replacement avoids relinking managed references
+        // (and their GC write barriers) for every glyph on every rendered frame.
+        internal bool Referenced=true;
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        internal bool Matches(in Matrix3 m,bool aa,float tolerance,bool snap,int luminance)
+        {
+            // The run identity was already checked by recentRuns. Compare the
+            // remaining fields directly without copying a 56-byte record key.
+            ref readonly var old=ref Key;
+            return old.Antialias==aa&&old.Tolerance==tolerance&&old.SnapBaseline==snap&&old.Luminance==luminance&&
+                old.Matrix.M00==m.M00&&old.Matrix.M01==m.M01&&old.Matrix.M02==m.M02&&
+                old.Matrix.M10==m.M10&&old.Matrix.M11==m.M11&&old.Matrix.M12==m.M12&&
+                old.Matrix.M20==m.M20&&old.Matrix.M21==m.M21&&old.Matrix.M22==m.M22;
+        }
+    }
     private static readonly object gate=new();
     private static readonly Dictionary<GlyphKey,LinkedListNode<GlyphEntry>> glyphs=[];
     private static readonly LinkedList<GlyphEntry> glyphOrder=[];
     private static readonly Dictionary<RunKey,LinkedListNode<RunEntry>> runs=[];
+    // One index entry per resident run, sharing the existing clock node. Ordinary
+    // labels and integer scrolling keep the same normalized transform; looking
+    // up their immutable run identity avoids hashing nine matrix floats on each
+    // frame. Eviction removes the index too, so it cannot retain evicted masks.
+    private static readonly Dictionary<GlyphRunGeometry,LinkedListNode<RunEntry>> recentRuns=[];
     private static readonly LinkedList<RunEntry> runOrder=[];
     private static long glyphBytes,runBytes;
-    internal const long MaximumGlyphBytes=8*1024*1024,MaximumRunBytes=2*1024*1024;
+    internal const long MaximumGlyphBytes=8*1024*1024,MaximumRunBytes=4*1024*1024;
     internal const int MaximumGlyphs=4096,MaximumRuns=512;
     internal static bool Enabled=true;
     internal static (int Glyphs,int Runs,long GlyphBytes,long RunBytes) Statistics{get{lock(gate)return(glyphs.Count,runs.Count,glyphBytes,runBytes);}}
-    internal static void Clear(){lock(gate){glyphs.Clear();glyphOrder.Clear();runs.Clear();runOrder.Clear();glyphBytes=runBytes=0;}}
+    internal static int RecentRunCount{get{lock(gate)return recentRuns.Count;}}
+    internal static void Clear(){lock(gate){glyphs.Clear();glyphOrder.Clear();runs.Clear();recentRuns.Clear();runOrder.Clear();glyphBytes=runBytes=0;}}
     internal static Batch Resolve(GlyphRunGeometry run,Matrix3 matrix,bool aa,float tolerance,bool snapBaseline,int luminance,out int x,out int y)
     {
         // Keep the normalized arithmetic bounded and deterministic under scrolling.
         if(MathF.Abs(matrix.M02)>65536||MathF.Abs(matrix.M12)>65536)
             throw new NotSupportedException("Glyph origin exceeds the supported device coordinate range (+/-65536).");
-        x=(int)MathF.Floor(matrix.M02);y=(int)MathF.Floor(matrix.M12);
-        var local=matrix with{M02=matrix.M02-x,M12=matrix.M12-y};var key=new RunKey(run,local,aa,tolerance,snapBaseline,luminance);
-        if(Enabled)lock(gate)if(runs.TryGetValue(key,out var cached)){runOrder.Remove(cached);runOrder.AddLast(cached);return cached.Value.Batch;}
+        // The validated origin is within +/-65536. Truncate and correct the
+        // negative fraction without a portable-x64 MathF.Floor library call.
+        x=(int)matrix.M02;if(matrix.M02<x)x--;
+        y=(int)matrix.M12;if(matrix.M12<y)y--;
+        var local=matrix with{M02=matrix.M02-x,M12=matrix.M12-y};
+        if(Enabled)lock(gate)
+        {
+            if(recentRuns.TryGetValue(run,out var recent)&&recent.Value.Matches(local,aa,tolerance,snapBaseline,luminance))
+            {recent.Value.Referenced=true;return recent.Value.Batch;}
+        }
+        return ResolveOtherTransform(new RunKey(run,local,aa,tolerance,snapBaseline,luminance));
+    }
+    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    private static Batch ResolveOtherTransform(RunKey key)
+    {
+        if(Enabled)lock(gate)
+        {
+            if(runs.TryGetValue(key,out var cached))
+            {recentRuns[key.Run]=cached;cached.Value.Referenced=true;return cached.Value.Batch;}
+        }
+        return ResolveMiss(key);
+    }
+    // Keep the common cache hit free of the packing/gamma/eviction slow path's
+    // locals and code footprint, particularly in portable Native AOT.
+    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    private static Batch ResolveMiss(RunKey key)
+    {
+        var run=key.Run;var local=key.Matrix;bool aa=key.Antialias,snapBaseline=key.SnapBaseline;
+        float tolerance=key.Tolerance;int luminance=key.Luminance;
         var placements=new Placement[run.Glyphs.Length];int index=0;long geometryBytes=128L+placements.Length*24L,retained=geometryBytes;
         bool quantized=run.Positioning==GlyphPositioning.QuarterPixel;
+        var fontTransform=(local with{M02=0,M12=0})*run.FontTransform;
         foreach(var glyph in run.Glyphs)
         {
             var origin=local.Map(glyph.Position.X,glyph.Position.Y);
@@ -39,10 +90,10 @@ internal static class GlyphCoverageCache
             if(quantized)
             {
                 float sx=aa?4:1,sy=sx;
-                if(snapBaseline){if(matrix.M10==0)sy=1;else if(matrix.M00==0)sx=1;}
+                if(snapBaseline){if(local.M10==0)sy=1;else if(local.M00==0)sx=1;}
                 px=MathF.Floor(px*sx+.5f)/sx;py=MathF.Floor(py*sy+.5f)/sy;
             }
-            var transform=(local with{M02=0,M12=0})*run.FontTransform;
+            var transform=fontTransform;
             transform=transform with{M02=transform.M02+px,M12=transform.M12+py};
             var mask=ResolveGlyph(glyph.Outline,transform,aa,tolerance,out int dx,out int dy);
             placements[index++]=new(mask,dx,dy);
@@ -72,10 +123,16 @@ internal static class GlyphCoverageCache
         retained=batch.Bytes;
         if(Enabled&&retained<=MaximumRunBytes)lock(gate)
         {
-            if(runs.TryGetValue(key,out var existing))return existing.Value.Batch;
+            if(runs.TryGetValue(key,out var existing)){existing.Value.Referenced=true;return existing.Value.Batch;}
             while(runs.Count>=MaximumRuns||runBytes+retained>MaximumRunBytes)
-            {var first=runOrder.First!;runBytes-=first.Value.Batch.Bytes;runs.Remove(first.Value.Key);runOrder.RemoveFirst();}
-            runs.Add(key,runOrder.AddLast(new RunEntry(key,batch)));runBytes+=retained;
+            {
+                var first=runOrder.First!;
+                if(first.Value.Referenced){first.Value.Referenced=false;runOrder.RemoveFirst();runOrder.AddLast(first);continue;}
+                runBytes-=first.Value.Batch.Bytes;runs.Remove(first.Value.Key);
+                if(recentRuns.TryGetValue(first.Value.Key.Run,out var recent)&&ReferenceEquals(recent,first))recentRuns.Remove(first.Value.Key.Run);
+                runOrder.RemoveFirst();
+            }
+            var node=runOrder.AddLast(new RunEntry(key,batch));runs.Add(key,node);recentRuns[run]=node;runBytes+=retained;
         }
         return batch;
     }
