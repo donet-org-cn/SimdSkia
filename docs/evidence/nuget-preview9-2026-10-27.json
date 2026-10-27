@@ -1,0 +1,659 @@
+{
+  "version": "0.1.0-preview.9",
+  "recordedUtc": "2026-10-27T10:52:17.412488+00:00",
+  "sourceCommit": "044d9e30176aa55eadd9e487f551a695eff24906",
+  "repositoryId": 1428164442,
+  "repository": "donet-org-cn/SimdSkia",
+  "tag": "v0.1.0-preview.9",
+  "githubRelease": {
+    "id": 425322438,
+    "tag_name": "v0.1.0-preview.9",
+    "html_url": "https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.0-preview.9",
+    "prerelease": true,
+    "draft": false,
+    "published_at": "2026-10-27T10:44:51Z"
+  },
+  "nugetPublished": false,
+  "publicationState": "Awaiting NuGet trusted-publishing policy for transferred repository owner; no packages uploaded",
+  "publicationRun": "https://github.com/donet-org-cn/SimdSkia/actions/runs/40490758078",
+  "publicationFailure": {
+    "jobId": 122145617792,
+    "step": "Exchange GitHub OIDC for a short-lived NuGet key",
+    "httpStatus": 401,
+    "message": "No matching trust policy owned by user 'dotnet.org.cn' was found.",
+    "requiredPolicy": {
+      "creator": "dotnet.org.cn",
+      "owner": "donet-org-cn",
+      "repository": "SimdSkia",
+      "workflowFile": "nuget-preview.yml",
+      "environment": "nuget-preview"
+    }
+  },
+  "ciRuns": [
+    {
+      "id": 40490758078,
+      "name": "NuGet preview",
+      "event": "push",
+      "url": "https://github.com/donet-org-cn/SimdSkia/actions/runs/40490758078",
+      "status": "completed",
+      "conclusion": "failure",
+      "jobs": [
+        {
+          "id": 122143803344,
+          "name": "build",
+          "status": "completed",
+          "conclusion": "success",
+          "steps": []
+        },
+        {
+          "id": 122145617792,
+          "name": "publish",
+          "status": "completed",
+          "conclusion": "failure",
+          "steps": [
+            {
+              "name": "Exchange GitHub OIDC for a short-lived NuGet key",
+              "status": "completed",
+              "conclusion": "failure"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 40490757996,
+      "name": "Managed engine verification",
+      "event": "push",
+      "url": "https://github.com/donet-org-cn/SimdSkia/actions/runs/40490757996",
+      "status": "completed",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 122143803317,
+          "name": "managed (windows-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "steps": []
+        },
+        {
+          "id": 122143803346,
+          "name": "managed (macos-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "steps": []
+        },
+        {
+          "id": 122143803349,
+          "name": "managed (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "steps": []
+        }
+      ]
+    },
+    {
+      "id": 40490757943,
+      "name": "Cross-platform desktop",
+      "event": "push",
+      "url": "https://github.com/donet-org-cn/SimdSkia/actions/runs/40490757943",
+      "status": "completed",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 122143802788,
+          "name": "desktop (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "steps": []
+        },
+        {
+          "id": 122143802978,
+          "name": "desktop (windows-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "steps": []
+        },
+        {
+          "id": 122143803210,
+          "name": "desktop (macos-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "steps": []
+        }
+      ]
+    },
+    {
+      "id": 40490546193,
+      "name": "Managed engine verification",
+      "event": "push",
+      "url": "https://github.com/donet-org-cn/SimdSkia/actions/runs/40490546193",
+      "status": "completed",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 122143094448,
+          "name": "managed (macos-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "steps": []
+        },
+        {
+          "id": 122143094497,
+          "name": "managed (windows-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "steps": []
+        },
+        {
+          "id": 122143094747,
+          "name": "managed (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "steps": []
+        }
+      ]
+    },
+    {
+      "id": 40490546007,
+      "name": "Windows Native AOT smoke",
+      "event": "push",
+      "url": "https://github.com/donet-org-cn/SimdSkia/actions/runs/40490546007",
+      "status": "completed",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 122143093899,
+          "name": "aot",
+          "status": "completed",
+          "conclusion": "success",
+          "steps": []
+        }
+      ]
+    },
+    {
+      "id": 40490545778,
+      "name": "Cross-platform desktop",
+      "event": "push",
+      "url": "https://github.com/donet-org-cn/SimdSkia/actions/runs/40490545778",
+      "status": "completed",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 122143092526,
+          "name": "desktop (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "steps": []
+        },
+        {
+          "id": 122143092835,
+          "name": "desktop (macos-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "steps": []
+        },
+        {
+          "id": 122143092920,
+          "name": "desktop (windows-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "steps": []
+        }
+      ]
+    }
+  ],
+  "builtPackages": [
+    {
+      "id": "SimdSkia.Core",
+      "version": "0.1.0-preview.9",
+      "bytes": 37970,
+      "sha256": "1a5e5088da861728509590e2ff39c1349f128514eb7c0c9c5478a940213598fe",
+      "dependencies": {}
+    },
+    {
+      "id": "SimdSkia.Cpu",
+      "version": "0.1.0-preview.9",
+      "bytes": 56452,
+      "sha256": "d6702b97810d78a6c58de70c6dc29033dee96a5de79ba2fa35e9658612c4d20f",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.9"
+      }
+    },
+    {
+      "id": "SimdSkia.Text",
+      "version": "0.1.0-preview.9",
+      "bytes": 37473,
+      "sha256": "0e692e1e672dba847fda8d4b3f77e435d3cedfc980cc1097eef2c1e645359c66",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.9"
+      }
+    },
+    {
+      "id": "SimdSkia.Imaging",
+      "version": "0.1.0-preview.9",
+      "bytes": 50742,
+      "sha256": "a34a06dd10098c8de50799ec7af4745d0bc7184f8b420eef80554811596b1701",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.9",
+        "JpegLibrary": "[0.4.32]"
+      }
+    },
+    {
+      "id": "SimdSkia.Gpu",
+      "version": "0.1.0-preview.9",
+      "bytes": 72789,
+      "sha256": "a8dae8ab3b6a13d1806509aa761ef60ca87d611583176ee6355c658164df9639",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.9"
+      }
+    },
+    {
+      "id": "SimdSkia.Gpu.Direct2D",
+      "version": "0.1.0-preview.9",
+      "bytes": 30157,
+      "sha256": "4f8d24e34bacacca9852ab5314252c26eb0db367b9f42f76fd05f3fdf943cc13",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.9"
+      }
+    },
+    {
+      "id": "SimdSkia.Compatibility",
+      "version": "0.1.0-preview.9",
+      "bytes": 64290,
+      "sha256": "c0879d0e7425f2b7cd980519d1dd5fc8908f9566ab6cb7e817e239a1cee290f7",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.9",
+        "SimdSkia.Cpu": "0.1.0-preview.9",
+        "SimdSkia.Gpu": "0.1.0-preview.9",
+        "SimdSkia.Imaging": "0.1.0-preview.9",
+        "SimdSkia.Text": "0.1.0-preview.9"
+      }
+    },
+    {
+      "id": "SimdSkia.Avalonia",
+      "version": "0.1.0-preview.9",
+      "bytes": 91253,
+      "sha256": "4c6ea9d1042b0dbcdde44a8404fdd24b55b83e5dd65811d8c6aaba57d763c06c",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.9",
+        "SimdSkia.Cpu": "0.1.0-preview.9",
+        "SimdSkia.Imaging": "0.1.0-preview.9",
+        "SimdSkia.Text": "0.1.0-preview.9",
+        "Avalonia": "[12.1.4]",
+        "Clipper2": "[2.0.0]"
+      }
+    },
+    {
+      "id": "SimdSkia.Avalonia.Desktop",
+      "version": "0.1.0-preview.9",
+      "bytes": 556058,
+      "sha256": "3e3e411f44acf52e7356de3377aaea4fed5b01e728faf66ce1e285f1946ba8bf",
+      "dependencies": {
+        "SimdSkia.Avalonia": "0.1.0-preview.9",
+        "Avalonia": "[12.1.4]",
+        "Avalonia.FreeDesktop": "[12.1.4]",
+        "Avalonia.FreeDesktop.AtSpi": "[12.1.4]",
+        "Avalonia.Native": "[12.1.4]"
+      }
+    },
+    {
+      "id": "SimdSkia.Avalonia.Gpu",
+      "version": "0.1.0-preview.9",
+      "bytes": 37425,
+      "sha256": "dec414e1ef6c2f513840775e365b5c141d4ba62fe5ec0ebcd7d3f7aec953b8c7",
+      "dependencies": {
+        "SimdSkia.Avalonia": "0.1.0-preview.9",
+        "SimdSkia.Gpu.Direct2D": "0.1.0-preview.9",
+        "SimdSkia.Gpu": "0.1.0-preview.9",
+        "Avalonia": "[12.1.4]"
+      }
+    },
+    {
+      "id": "SimdSkia",
+      "version": "0.1.0-preview.9",
+      "bytes": 13494,
+      "sha256": "76da038afc8bd4b573eb9ed1f90e4dcb9ae22e327f7412574be569173fa5e3ce",
+      "dependencies": {
+        "SimdSkia.Compatibility": "0.1.0-preview.9"
+      }
+    },
+    {
+      "id": "SimdSkia.Pdf",
+      "version": "0.1.0-preview.9",
+      "bytes": 32458,
+      "sha256": "c334419f6a21b6da906834a54ca549db46f0b12049b51dcecbc3ec76824ee519",
+      "dependencies": {
+        "SimdSkia.Compatibility": "0.1.0-preview.9",
+        "PdfPig": "[0.1.16]"
+      }
+    }
+  ],
+  "desktopValidation": {
+    "runId": 40490545778,
+    "url": "https://github.com/donet-org-cn/SimdSkia/actions/runs/40490545778",
+    "sha": "044d9e30176aa55eadd9e487f551a695eff24906",
+    "status": "completed",
+    "conclusion": "success",
+    "records": [
+      {
+        "artifact": "desktop-macOS-ARM64",
+        "file": "cross-platform/aot/result.txt",
+        "values": {
+          "OS": "macOS 26.6.2",
+          "Architecture": "Arm64",
+          "Frames": "2",
+          "Font": "Arial",
+          "ClientSize": "600, 300",
+          "NativeHandle": "46491681408",
+          "GPU": "",
+          "GpuCommands": "0",
+          "NativeSwapchainPresents": "0",
+          "CpuFallbackCommands": "0",
+          "CpuLayerCommands": "0",
+          "CompletedBatches": "0",
+          "GpuCompletionMs": "0",
+          "FallbackReasons": "",
+          "ManagedAssemblies": "Avalonia.Base,System.Private.CoreLib,System.ObjectModel,System.ComponentModel.Primitives,System.ComponentModel.TypeConverter,System.Collections,Avalonia.Controls,System.ComponentModel,Avalonia.Dialogs,Avalonia.Markup.Xaml,Avalonia.Markup,Avalonia.Metal,Avalonia.MicroCom,MicroCom.Runtime,Avalonia.Native,Avalonia.OpenGL,Avalonia.Themes.Fluent,Clipper2Lib,CrossPlatform,System.Text.Json,SimdSkia.Gpu,SimdSkia.Core,JpegLibrary,SimdSkia.Avalonia,SimdSkia.Avalonia.Desktop,SimdSkia.Avalonia.Gpu,SimdSkia.Cpu,SimdSkia.Imaging,SimdSkia.Text,System,System.Collections.Concurrent,System.Collections.Specialized,System.Console,System.Diagnostics.DiagnosticSource,System.Diagnostics.Process,System.Diagnostics.TraceSource,System.IO.Compression,System.IO.Pipelines,System.IO.Pipes,System.Linq,System.Memory,System.Net.Primitives,System.Net.Sockets,System.Private.Reflection.Execution,System.Private.StackTraceMetadata,System.Private.TypeLoader,System.Private.Uri,System.Security.Cryptography,System.Text.Encodings.Web"
+        }
+      },
+      {
+        "artifact": "desktop-macOS-ARM64",
+        "file": "cross-platform/result.txt",
+        "values": {
+          "OS": "macOS 26.6.2",
+          "Architecture": "Arm64",
+          "Frames": "2",
+          "Font": "Arial",
+          "ClientSize": "600, 300",
+          "NativeHandle": "44269765248",
+          "GPU": "",
+          "GpuCommands": "0",
+          "NativeSwapchainPresents": "0",
+          "CpuFallbackCommands": "0",
+          "CpuLayerCommands": "0",
+          "CompletedBatches": "0",
+          "GpuCompletionMs": "0",
+          "FallbackReasons": "",
+          "ManagedAssemblies": "System.Private.CoreLib,CrossPlatform,System.Runtime,SimdSkia.Avalonia.Gpu,System.Linq,SimdSkia.Avalonia,Avalonia.Controls,Avalonia.Base,System.ObjectModel,SimdSkia.Avalonia.Desktop,System.Collections.Concurrent,System.Threading,SimdSkia.Core,System.Collections,Avalonia.Native,MicroCom.Runtime,System.Runtime.InteropServices,Avalonia.X11,Avalonia.Win32,System.Numerics.Vectors,System.ComponentModel.Primitives,System.Private.Uri,System.Memory,SimdSkia.Text,Avalonia.MicroCom,Avalonia.OpenGL,System.Threading.Thread,Avalonia.Themes.Fluent,System.ComponentModel,Avalonia.Markup.Xaml,System.ComponentModel.TypeConverter,Avalonia.Dialogs,System.Diagnostics.TraceSource,SimdSkia.Cpu,Clipper2Lib,netstandard,System.Runtime.Intrinsics,System.IO.Compression,Avalonia.Metal,System.Diagnostics.DiagnosticSource,Avalonia.Markup,System.Console,System.Diagnostics.Process,System.Collections.NonGeneric,SimdSkia.Imaging"
+        }
+      },
+      {
+        "artifact": "desktop-macOS-ARM64",
+        "file": "desktop-package-consumer/results/result.txt",
+        "values": {
+          "OS": "macOS 26.6.2",
+          "Architecture": "Arm64",
+          "Frames": "2",
+          "Font": "Arial",
+          "ClientSize": "1000, 649",
+          "NativeHandle": "39547257472",
+          "GPU": "",
+          "GpuCommands": "0",
+          "NativeSwapchainPresents": "0",
+          "CpuFallbackCommands": "0",
+          "CpuLayerCommands": "0",
+          "CompletedBatches": "0",
+          "GpuCompletionMs": "0",
+          "FallbackReasons": "",
+          "ManagedAssemblies": "System.Private.CoreLib,CrossPlatform,System.Runtime,SimdSkia.Avalonia.Gpu,System.Linq,SimdSkia.Avalonia,Avalonia.Controls,Avalonia.Base,System.ObjectModel,SimdSkia.Avalonia.Desktop,System.Collections.Concurrent,System.Threading,SimdSkia.Core,System.Collections,Avalonia.Native,MicroCom.Runtime,System.Runtime.InteropServices,Avalonia.X11,Avalonia.Win32,System.Numerics.Vectors,System.ComponentModel.Primitives,System.Private.Uri,System.Memory,SimdSkia.Text,Avalonia.MicroCom,Avalonia.OpenGL,System.Threading.Thread,Avalonia.Themes.Fluent,System.ComponentModel,Avalonia.Markup.Xaml,System.ComponentModel.TypeConverter,Avalonia.Dialogs,System.Diagnostics.TraceSource,SimdSkia.Cpu,Clipper2Lib,netstandard,System.IO.Compression,System.Runtime.Intrinsics,Avalonia.Metal,System.Diagnostics.DiagnosticSource,Avalonia.Markup,System.Console,System.Diagnostics.Process,System.Collections.NonGeneric,SimdSkia.Imaging"
+        }
+      },
+      {
+        "artifact": "desktop-macOS-ARM64",
+        "file": "pdf-package-consumer/results/result.json",
+        "values": {
+          "checks": 18,
+          "pdf": "SimdSkia.Pdf",
+          "nativeAot": false
+        }
+      },
+      {
+        "artifact": "desktop-Windows-X64",
+        "file": "cross-platform/aot/result.txt",
+        "values": {
+          "OS": "Microsoft Windows 10.0.26100",
+          "Architecture": "X64",
+          "Frames": "2",
+          "Font": "站酷小薇体",
+          "ClientSize": "600, 300",
+          "NativeHandle": "197104",
+          "GPU": "",
+          "GpuCommands": "0",
+          "NativeSwapchainPresents": "0",
+          "CpuFallbackCommands": "0",
+          "CpuLayerCommands": "0",
+          "CompletedBatches": "0",
+          "GpuCompletionMs": "0",
+          "FallbackReasons": "",
+          "ManagedAssemblies": "Avalonia.Base,System.Private.CoreLib,System.ObjectModel,System.ComponentModel.Primitives,System.ComponentModel.TypeConverter,System.Collections,Avalonia.Controls,System.ComponentModel,Avalonia.Dialogs,Avalonia.Markup,Avalonia.Markup.Xaml,Avalonia.MicroCom,MicroCom.Runtime,Avalonia.OpenGL,Avalonia.Themes.Fluent,Avalonia.Vulkan,Avalonia.Win32,Avalonia.Win32.Automation,System.Runtime.InteropServices,Clipper2Lib,CrossPlatform,System.Text.Json,SimdSkia.Gpu,SimdSkia.Core,JpegLibrary,Microsoft.Win32.Registry,SimdSkia.Avalonia,SimdSkia.Avalonia.Desktop,SimdSkia.Avalonia.Gpu,SimdSkia.Cpu,SimdSkia.Gpu.Direct2D,SimdSkia.Imaging,SimdSkia.Text,System,System.Collections.Concurrent,System.Collections.NonGeneric,System.Collections.Specialized,System.Console,System.Diagnostics.DiagnosticSource,System.Diagnostics.Process,System.Diagnostics.TraceSource,System.IO.Compression,System.IO.Pipelines,System.Linq,System.Memory,System.Private.Reflection.Execution,System.Private.StackTraceMetadata,System.Private.TypeLoader,System.Private.Uri,System.Security.Cryptography,System.Text.Encodings.Web"
+        }
+      },
+      {
+        "artifact": "desktop-Windows-X64",
+        "file": "cross-platform/result.txt",
+        "values": {
+          "OS": "Microsoft Windows 10.0.26100",
+          "Architecture": "X64",
+          "Frames": "2",
+          "Font": "站酷小薇体",
+          "ClientSize": "600, 300",
+          "NativeHandle": "524418",
+          "GPU": "",
+          "GpuCommands": "0",
+          "NativeSwapchainPresents": "0",
+          "CpuFallbackCommands": "0",
+          "CpuLayerCommands": "0",
+          "CompletedBatches": "0",
+          "GpuCompletionMs": "0",
+          "FallbackReasons": "",
+          "ManagedAssemblies": "System.Private.CoreLib,CrossPlatform,System.Runtime,SimdSkia.Avalonia.Gpu,System.Linq,SimdSkia.Avalonia,Avalonia.Controls,Avalonia.Base,System.ObjectModel,SimdSkia.Avalonia.Desktop,System.Collections.Concurrent,System.Threading,SimdSkia.Core,System.Collections,Avalonia.Native,MicroCom.Runtime,System.Runtime.InteropServices,Avalonia.X11,Avalonia.Win32,System.Numerics.Vectors,Avalonia.OpenGL,System.ComponentModel.Primitives,System.Private.Uri,System.Memory,SimdSkia.Text,Microsoft.Win32.Primitives,System.ComponentModel,System.Threading.Thread,Avalonia.Vulkan,Avalonia.Themes.Fluent,Avalonia.Markup.Xaml,System.ComponentModel.TypeConverter,Avalonia.Dialogs,System.Diagnostics.TraceSource,SimdSkia.Cpu,Clipper2Lib,netstandard,Avalonia.Win32.Automation,Avalonia.MicroCom,System.Diagnostics.DiagnosticSource,System.Runtime.Intrinsics,Avalonia.Markup,System.Console,System.IO.Compression,System.Diagnostics.Process,System.Collections.NonGeneric,SimdSkia.Imaging"
+        }
+      },
+      {
+        "artifact": "desktop-Windows-X64",
+        "file": "desktop-package-consumer/results/result.txt",
+        "values": {
+          "OS": "Microsoft Windows 10.0.26100",
+          "Architecture": "X64",
+          "Frames": "2",
+          "Font": "站酷小薇体",
+          "ClientSize": "1000, 720",
+          "NativeHandle": "393592",
+          "GPU": "",
+          "GpuCommands": "0",
+          "NativeSwapchainPresents": "0",
+          "CpuFallbackCommands": "0",
+          "CpuLayerCommands": "0",
+          "CompletedBatches": "0",
+          "GpuCompletionMs": "0",
+          "FallbackReasons": "",
+          "ManagedAssemblies": "System.Private.CoreLib,CrossPlatform,System.Runtime,SimdSkia.Avalonia.Gpu,System.Linq,SimdSkia.Avalonia,Avalonia.Controls,Avalonia.Base,System.ObjectModel,SimdSkia.Avalonia.Desktop,System.Collections.Concurrent,System.Threading,SimdSkia.Core,System.Collections,Avalonia.Native,MicroCom.Runtime,System.Runtime.InteropServices,Avalonia.X11,Avalonia.Win32,System.Numerics.Vectors,Avalonia.OpenGL,System.ComponentModel.Primitives,System.Private.Uri,System.Memory,SimdSkia.Text,Microsoft.Win32.Primitives,System.ComponentModel,System.Threading.Thread,Avalonia.Vulkan,Avalonia.Themes.Fluent,Avalonia.Markup.Xaml,System.ComponentModel.TypeConverter,Avalonia.Dialogs,System.Diagnostics.TraceSource,SimdSkia.Cpu,Clipper2Lib,netstandard,Avalonia.Win32.Automation,Avalonia.MicroCom,System.Diagnostics.DiagnosticSource,System.Runtime.Intrinsics,Avalonia.Markup,System.Console,System.IO.Compression,System.Diagnostics.Process,System.Collections.NonGeneric,SimdSkia.Imaging"
+        }
+      },
+      {
+        "artifact": "desktop-Windows-X64",
+        "file": "pdf-package-consumer/results/result.json",
+        "values": {
+          "checks": 18,
+          "pdf": "SimdSkia.Pdf",
+          "nativeAot": false
+        }
+      },
+      {
+        "artifact": "desktop-Linux-X64",
+        "file": "cross-platform/aot/result.txt",
+        "values": {
+          "OS": "Ubuntu 24.04.5 LTS",
+          "Architecture": "X64",
+          "Frames": "3",
+          "Font": "DejaVu Sans",
+          "ClientSize": "600, 300",
+          "NativeHandle": "2097167",
+          "GPU": "",
+          "GpuCommands": "0",
+          "NativeSwapchainPresents": "0",
+          "CpuFallbackCommands": "0",
+          "CpuLayerCommands": "0",
+          "CompletedBatches": "0",
+          "GpuCompletionMs": "0",
+          "FallbackReasons": "",
+          "ManagedAssemblies": "Avalonia.Base,System.Private.CoreLib,System.ObjectModel,System.ComponentModel.Primitives,System.ComponentModel.TypeConverter,System.Collections,Avalonia.Controls,System.ComponentModel,Avalonia.Dialogs,Avalonia.FreeDesktop,Tmds.DBus.Protocol,Avalonia.FreeDesktop.AtSpi,Avalonia.Markup,Avalonia.Markup.Xaml,Avalonia.OpenGL,Avalonia.Themes.Fluent,Avalonia.Vulkan,Avalonia.X11,Clipper2Lib,CrossPlatform,System.Text.Json,SimdSkia.Gpu,SimdSkia.Core,JpegLibrary,SimdSkia.Avalonia,SimdSkia.Avalonia.Desktop,SimdSkia.Avalonia.Gpu,SimdSkia.Cpu,SimdSkia.Imaging,SimdSkia.Text,System,System.Collections.Concurrent,System.Collections.Specialized,System.Console,System.Diagnostics.DiagnosticSource,System.Diagnostics.Process,System.Diagnostics.TraceSource,System.IO.Compression,System.IO.Pipelines,System.Linq,System.Memory,System.Net.NameResolution,System.Net.Primitives,System.Net.Sockets,System.Private.Reflection.Execution,System.Private.StackTraceMetadata,System.Private.TypeLoader,System.Private.Uri,System.Security.Cryptography,System.Text.Encodings.Web,System.Threading.Channels"
+        }
+      },
+      {
+        "artifact": "desktop-Linux-X64",
+        "file": "cross-platform/result.txt",
+        "values": {
+          "OS": "Ubuntu 24.04.5 LTS",
+          "Architecture": "X64",
+          "Frames": "3",
+          "Font": "DejaVu Sans",
+          "ClientSize": "600, 300",
+          "NativeHandle": "2097167",
+          "GPU": "",
+          "GpuCommands": "0",
+          "NativeSwapchainPresents": "0",
+          "CpuFallbackCommands": "0",
+          "CpuLayerCommands": "0",
+          "CompletedBatches": "0",
+          "GpuCompletionMs": "0",
+          "FallbackReasons": "",
+          "ManagedAssemblies": "System.Private.CoreLib,CrossPlatform,System.Runtime,SimdSkia.Avalonia.Gpu,System.Linq,SimdSkia.Avalonia,Avalonia.Controls,Avalonia.Base,System.ObjectModel,SimdSkia.Avalonia.Desktop,System.Collections.Concurrent,System.Threading,SimdSkia.Core,System.Collections,Avalonia.Native,MicroCom.Runtime,System.Runtime.InteropServices,Avalonia.X11,Avalonia.Win32,System.Numerics.Vectors,Avalonia.OpenGL,System.ComponentModel.Primitives,System.Private.Uri,System.Memory,SimdSkia.Text,Avalonia.FreeDesktop,Tmds.DBus.Protocol,System.Threading.Thread,System.Console,Avalonia.Vulkan,Avalonia.FreeDesktop.AtSpi,Avalonia.Themes.Fluent,System.ComponentModel,Avalonia.Markup.Xaml,System.ComponentModel.TypeConverter,Avalonia.Dialogs,System.Diagnostics.TraceSource,SimdSkia.Cpu,Clipper2Lib,netstandard,System.Threading.Channels,System.Diagnostics.Process,System.Threading.ThreadPool,Microsoft.Win32.Primitives,System.Diagnostics.DiagnosticSource,System.Runtime.Intrinsics,Avalonia.Markup,System.IO.Compression,System.Collections.NonGeneric,SimdSkia.Imaging"
+        }
+      },
+      {
+        "artifact": "desktop-Linux-X64",
+        "file": "desktop-package-consumer/results/result.txt",
+        "values": {
+          "OS": "Ubuntu 24.04.5 LTS",
+          "Architecture": "X64",
+          "Frames": "3",
+          "Font": "DejaVu Sans",
+          "ClientSize": "1000, 720",
+          "NativeHandle": "2097167",
+          "GPU": "",
+          "GpuCommands": "0",
+          "NativeSwapchainPresents": "0",
+          "CpuFallbackCommands": "0",
+          "CpuLayerCommands": "0",
+          "CompletedBatches": "0",
+          "GpuCompletionMs": "0",
+          "FallbackReasons": "",
+          "ManagedAssemblies": "System.Private.CoreLib,CrossPlatform,System.Runtime,SimdSkia.Avalonia.Gpu,System.Linq,SimdSkia.Avalonia,Avalonia.Controls,Avalonia.Base,System.ObjectModel,SimdSkia.Avalonia.Desktop,System.Collections.Concurrent,System.Threading,SimdSkia.Core,System.Collections,Avalonia.Native,MicroCom.Runtime,System.Runtime.InteropServices,Avalonia.X11,Avalonia.Win32,System.Numerics.Vectors,Avalonia.OpenGL,System.ComponentModel.Primitives,System.Private.Uri,System.Memory,SimdSkia.Text,Avalonia.FreeDesktop,Tmds.DBus.Protocol,System.Threading.Thread,System.Console,Avalonia.Vulkan,Avalonia.FreeDesktop.AtSpi,Avalonia.Themes.Fluent,System.ComponentModel,Avalonia.Markup.Xaml,System.ComponentModel.TypeConverter,Avalonia.Dialogs,System.Diagnostics.TraceSource,SimdSkia.Cpu,Clipper2Lib,netstandard,System.Threading.Channels,System.Threading.ThreadPool,Microsoft.Win32.Primitives,System.Diagnostics.Process,System.Diagnostics.DiagnosticSource,System.Runtime.Intrinsics,Avalonia.Markup,System.IO.Compression,System.Collections.NonGeneric,SimdSkia.Imaging"
+        }
+      },
+      {
+        "artifact": "desktop-Linux-X64",
+        "file": "pdf-package-consumer/results/result.json",
+        "values": {
+          "checks": 18,
+          "pdf": "SimdSkia.Pdf",
+          "nativeAot": false
+        }
+      }
+    ],
+    "artifacts": [
+      {
+        "id": 12728742160,
+        "name": "desktop-macOS-ARM64",
+        "bytes": 211589
+      },
+      {
+        "id": 12728107526,
+        "name": "desktop-Windows-X64",
+        "bytes": 213233
+      },
+      {
+        "id": 12727597522,
+        "name": "desktop-Linux-X64",
+        "bytes": 213030
+      }
+    ]
+  },
+  "nativeAotValidation": {
+    "runId": 40490546007,
+    "url": "https://github.com/donet-org-cn/SimdSkia/actions/runs/40490546007",
+    "sha": "044d9e30176aa55eadd9e487f551a695eff24906",
+    "status": "completed",
+    "conclusion": "success",
+    "records": [
+      {
+        "artifact": "windows-aot-smoke",
+        "file": "standalone-aot/compat-results/result.json",
+        "values": {
+          "checks": 38,
+          "nativeAot": true
+        }
+      },
+      {
+        "artifact": "windows-aot-smoke",
+        "file": "standalone-aot/pdf-results/result.json",
+        "values": {
+          "checks": 19,
+          "pdf": "SimdSkia.Pdf",
+          "nativeAot": true
+        }
+      }
+    ],
+    "artifacts": [
+      {
+        "id": 12728252338,
+        "name": "windows-aot-smoke",
+        "bytes": 362942
+      }
+    ]
+  },
+  "packageConsumerValidation": {
+    "runId": 40490758078,
+    "url": "https://github.com/donet-org-cn/SimdSkia/actions/runs/40490758078",
+    "sha": "044d9e30176aa55eadd9e487f551a695eff24906",
+    "status": "in_progress",
+    "conclusion": null,
+    "records": [
+      {
+        "artifact": "nuget-preview-0.1.0-preview.9",
+        "file": "desktop-package-consumer/results/result.txt",
+        "values": {
+          "OS": "Microsoft Windows 10.0.26100",
+          "Architecture": "X64",
+          "Frames": "2",
+          "Font": "站酷小薇体",
+          "ClientSize": "1000, 720",
+          "NativeHandle": "327936",
+          "GPU": "",
+          "GpuCommands": "0",
+          "NativeSwapchainPresents": "0",
+          "CpuFallbackCommands": "0",
+          "CpuLayerCommands": "0",
+          "CompletedBatches": "0",
+          "GpuCompletionMs": "0",
+          "FallbackReasons": "",
+          "ManagedAssemblies": "System.Private.CoreLib,CrossPlatform,System.Runtime,SimdSkia.Avalonia.Gpu,System.Linq,SimdSkia.Avalonia,Avalonia.Controls,Avalonia.Base,System.ObjectModel,SimdSkia.Avalonia.Desktop,System.Collections.Concurrent,System.Threading,SimdSkia.Core,System.Collections,Avalonia.Native,MicroCom.Runtime,System.Runtime.InteropServices,Avalonia.X11,Avalonia.Win32,System.Numerics.Vectors,Avalonia.OpenGL,System.ComponentModel.Primitives,System.Private.Uri,System.Memory,SimdSkia.Text,Microsoft.Win32.Primitives,System.ComponentModel,System.Threading.Thread,Avalonia.Vulkan,Avalonia.Themes.Fluent,Avalonia.Markup.Xaml,System.ComponentModel.TypeConverter,Avalonia.Dialogs,System.Diagnostics.TraceSource,SimdSkia.Cpu,Clipper2Lib,netstandard,Avalonia.Win32.Automation,Avalonia.MicroCom,System.Runtime.Intrinsics,System.Diagnostics.DiagnosticSource,Avalonia.Markup,System.Console,System.IO.Compression,System.Diagnostics.Process,System.Collections.NonGeneric,SimdSkia.Imaging"
+        }
+      },
+      {
+        "artifact": "nuget-preview-0.1.0-preview.9",
+        "file": "pdf-package-consumer/results/result.json",
+        "values": {
+          "checks": 18,
+          "pdf": "SimdSkia.Pdf",
+          "nativeAot": false
+        }
+      }
+    ],
+    "artifacts": [
+      {
+        "id": 12728112817,
+        "name": "nuget-preview-0.1.0-preview.9",
+        "bytes": 1477180
+      }
+    ]
+  },
+  "limits": [
+    "Preview source facade only; no binary replacement guarantee",
+    "VelaShell is not fully compatible; combining marks, resource-monitor latency, input and Skia previews remain blockers",
+    "Whole-page quality and some round-rectangle/text comparisons remain below their original thresholds",
+    "PDF generation is raster; PDF input supports only the documented subset",
+    "No complete Avalonia CPU/GPU performance or resident-memory retest in this release"
+  ]
+}
