@@ -2,11 +2,13 @@
 
 ## 第九预览版 0.1.0-preview.9
 
-**代码和 [GitHub 预发行](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.0-preview.9)已发布；NuGet 尚未上传。** 标签固定于 `044d9e30176aa55eadd9e487f551a695eff24906`。12 个包统一版本，新增可选 `SimdSkia.Pdf`。本版包括真实像素指针、系统字体族/样式、GIF Codec、圆角/图层/几何和采样 API、多页栅格 PDF 导出、受限 PDF 阅读，以及 VelaShell 字体 Try 回退/图片舍入边界修复。
+**已公开发布：12 个包均已实际下载并核对内容。** [可信发布流水线第 3 次执行](https://github.com/donet-org-cn/SimdSkia/actions/runs/40490758078/attempts/3)成功，全部公开包的 DLL、README、CHANGELOG、MIT 许可证和 nuspec（含发行说明）与冻结的 CI 产物一致。标签 `v0.1.0-preview.9` 固定于 `044d9e30176aa55eadd9e487f551a695eff24906`，[GitHub 预发行](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.0-preview.9)保留完整更新内容；[发布证据](evidence/nuget-preview9-2026-10-27.json)列出全部公开下载地址、内容核对与历史失败。
 
-[三平台托管检查](https://github.com/donet-org-cn/SimdSkia/actions/runs/40490757996)、[三平台 JIT/AOT/nupkg 窗口和 PDF 包消费](https://github.com/donet-org-cn/SimdSkia/actions/runs/40490757943)、[Windows 双 AOT 与新增兼容/PDF AOT](https://github.com/donet-org-cn/SimdSkia/actions/runs/40490546007)均成功。已下载核对同一源码提交的 9 份桌面记录与 3 份 PDF 包消费记录（每平台 18 项）。[NuGet 流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/40490758078)的 build 作业成功，完成 12 包检查及隔离 AOT/桌面/PDF 消费；publish 在 OIDC 身份交换阶段失败，没有执行上传。
+12 个包统一版本，新增可选 `SimdSkia.Pdf`。本版包括真实像素指针、系统字体族/样式、GIF Codec、圆角/图层/几何和采样 API、多页栅格 PDF 导出、受限 PDF 阅读，以及 VelaShell 字体 Try 回退/图片舍入边界修复。
 
-NuGet 返回 HTTP 401：`No matching trust policy owned by user 'dotnet.org.cn' was found.` 仓库已从 `hnlyf168/SimdSkia` 迁至 `donet-org-cn/SimdSkia`（仓库 ID 相同，所有者已变化）；需要策略创建用户在 [NuGet.org 可信发布](https://www.nuget.org/account/trustedpublishing)中为当前 Owner=`donet-org-cn`、Repository=`SimdSkia`、Workflow File=`nuget-preview.yml`、Environment=`nuget-preview` 配置有效策略。策略与 GitHub 所有者身份绑定，规则见[官方说明](https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing)。更新后可重跑失败的 publish 作业，使用已验证的相同 CI 包；在实际下载校验通过前不标记“NuGet 已发布”。[当前发行证据](evidence/nuget-preview9-2026-10-27.json)保留本次失败状态。
+[三平台托管检查](https://github.com/donet-org-cn/SimdSkia/actions/runs/40490757996)、[三平台 JIT/AOT/nupkg 窗口和 PDF 包消费](https://github.com/donet-org-cn/SimdSkia/actions/runs/40490757943)、[Windows 双 AOT 与新增兼容/PDF AOT](https://github.com/donet-org-cn/SimdSkia/actions/runs/40490546007)均成功。已下载核对同一源码提交的 9 份桌面记录与 3 份 PDF 包消费记录（每平台 18 项）。发布 build 作业验证全部 12 包和隔离 AOT/桌面/PDF 消费，publish 完成 OIDC 身份交换、上传和公开下载内容核对。
+
+前两次 publish 在 OIDC 阶段返回 HTTP 401，未上传包；仓库从 `hnlyf168/SimdSkia` 转移至 `donet-org-cn/SimdSkia` 后，更新 NuGet 可信发布策略，第 3 次成功。版本、标签和已验证 CI 包均未改变。历史失败保留在发行证据中，不将认证失败当作构建或画质失败。
 
 每个包包含对应 README、`CHANGELOG.md`、NuGet 发行说明及许可证；PDF 的 PdfPig 依赖与 Apache-2.0 通知只进入可选 PDF 模块。发行变化详见[preview.9 更新记录](RELEASE-NOTES.md)。Avalonia 固定 12.1.4、SkiaSharp 源码基线固定 3.119.4。
 

@@ -1,6 +1,6 @@
 {
   "version": "0.1.0-preview.9",
-  "recordedUtc": "2026-10-27T10:52:17.412488+00:00",
+  "recordedUtc": "2026-10-27T12:36:53.923668+00:00",
   "sourceCommit": "044d9e30176aa55eadd9e487f551a695eff24906",
   "repositoryId": 1428164442,
   "repository": "donet-org-cn/SimdSkia",
@@ -13,22 +13,9 @@
     "draft": false,
     "published_at": "2026-10-27T10:44:51Z"
   },
-  "nugetPublished": false,
-  "publicationState": "Awaiting NuGet trusted-publishing policy for transferred repository owner; no packages uploaded",
+  "nugetPublished": true,
+  "publicationState": "All 12 packages publicly downloaded; DLLs, metadata, README, CHANGELOG and license match the frozen CI packages",
   "publicationRun": "https://github.com/donet-org-cn/SimdSkia/actions/runs/40490758078",
-  "publicationFailure": {
-    "jobId": 122145617792,
-    "step": "Exchange GitHub OIDC for a short-lived NuGet key",
-    "httpStatus": 401,
-    "message": "No matching trust policy owned by user 'dotnet.org.cn' was found.",
-    "requiredPolicy": {
-      "creator": "dotnet.org.cn",
-      "owner": "donet-org-cn",
-      "repository": "SimdSkia",
-      "workflowFile": "nuget-preview.yml",
-      "environment": "nuget-preview"
-    }
-  },
   "ciRuns": [
     {
       "id": 40490758078,
@@ -36,27 +23,21 @@
       "event": "push",
       "url": "https://github.com/donet-org-cn/SimdSkia/actions/runs/40490758078",
       "status": "completed",
-      "conclusion": "failure",
+      "conclusion": "success",
       "jobs": [
         {
-          "id": 122143803344,
-          "name": "build",
+          "id": 122188852556,
+          "name": "publish",
           "status": "completed",
           "conclusion": "success",
           "steps": []
         },
         {
-          "id": 122145617792,
-          "name": "publish",
+          "id": 122188853818,
+          "name": "build",
           "status": "completed",
-          "conclusion": "failure",
-          "steps": [
-            {
-              "name": "Exchange GitHub OIDC for a short-lived NuGet key",
-              "status": "completed",
-              "conclusion": "failure"
-            }
-          ]
+          "conclusion": "success",
+          "steps": []
         }
       ]
     },
@@ -655,5 +636,122 @@
     "Whole-page quality and some round-rectangle/text comparisons remain below their original thresholds",
     "PDF generation is raster; PDF input supports only the documented subset",
     "No complete Avalonia CPU/GPU performance or resident-memory retest in this release"
-  ]
+  ],
+  "previousPublicationFailures": [
+    {
+      "attempt": 1,
+      "jobId": 122145617792,
+      "step": "Exchange GitHub OIDC for a short-lived NuGet key",
+      "httpStatus": 401,
+      "message": "No matching trust policy owned by user 'dotnet.org.cn' was found.",
+      "requiredPolicy": {
+        "creator": "dotnet.org.cn",
+        "owner": "donet-org-cn",
+        "repository": "SimdSkia",
+        "workflowFile": "nuget-preview.yml",
+        "environment": "nuget-preview"
+      }
+    },
+    {
+      "attempt": 2,
+      "jobId": 122155354936,
+      "httpStatus": 401,
+      "message": "No matching trust policy owned by user 'dotnet.org.cn' was found."
+    }
+  ],
+  "successfulRunAttempt": 3,
+  "publicVerification": [
+    {
+      "id": "SimdSkia.Core",
+      "version": "0.1.0-preview.9",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.core/0.1.0-preview.9/simdskia.core.0.1.0-preview.9.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "ffddba4d81dc4752345834d8db1cd9a1702430241c1e32cddb112b66f7423581"
+    },
+    {
+      "id": "SimdSkia.Avalonia",
+      "version": "0.1.0-preview.9",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.avalonia/0.1.0-preview.9/simdskia.avalonia.0.1.0-preview.9.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "77428ce65029dfe17ea421558267ce854f4d2da17fa8debb55cbf25e5bdd43ef"
+    },
+    {
+      "id": "SimdSkia.Imaging",
+      "version": "0.1.0-preview.9",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.imaging/0.1.0-preview.9/simdskia.imaging.0.1.0-preview.9.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "09132c66109dccf783c67dddf40db5e66df4a07833e098b95f1d0ed16db43868"
+    },
+    {
+      "id": "SimdSkia.Gpu",
+      "version": "0.1.0-preview.9",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.gpu/0.1.0-preview.9/simdskia.gpu.0.1.0-preview.9.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "5721315685447751d306732be7f3e7a97f4c6b9fdfd5a717e422f06aebd7b764"
+    },
+    {
+      "id": "SimdSkia.Text",
+      "version": "0.1.0-preview.9",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.text/0.1.0-preview.9/simdskia.text.0.1.0-preview.9.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "3ffdccee344937030a49501cd59939a92a305b080f21a989419be1763702e376"
+    },
+    {
+      "id": "SimdSkia.Avalonia.Desktop",
+      "version": "0.1.0-preview.9",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.avalonia.desktop/0.1.0-preview.9/simdskia.avalonia.desktop.0.1.0-preview.9.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "cccade637a3d4e18d563052c596c2b64dd1a79dedba6d0bc303bdd833384c89e"
+    },
+    {
+      "id": "SimdSkia.Avalonia.Gpu",
+      "version": "0.1.0-preview.9",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.avalonia.gpu/0.1.0-preview.9/simdskia.avalonia.gpu.0.1.0-preview.9.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "5ea24b10195918f1c1342e8992f91688d3d2a4090ae1856e73e621f67e87b3ed"
+    },
+    {
+      "id": "SimdSkia",
+      "version": "0.1.0-preview.9",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia/0.1.0-preview.9/simdskia.0.1.0-preview.9.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "fa300b8148b030a97f38d4328d122e30f00f29f55d5fa57347b7dbd074e68d79"
+    },
+    {
+      "id": "SimdSkia.Pdf",
+      "version": "0.1.0-preview.9",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.pdf/0.1.0-preview.9/simdskia.pdf.0.1.0-preview.9.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "dba00f5eec378d4587cc44012ca2e04cc5c7477e5b394ae13b8534b6966bca9b"
+    },
+    {
+      "id": "SimdSkia.Cpu",
+      "version": "0.1.0-preview.9",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.cpu/0.1.0-preview.9/simdskia.cpu.0.1.0-preview.9.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "72edf38f0b6dcf3f003a8804ff005d611dfbf60fd1410c6c958ff9cec1f2e456"
+    },
+    {
+      "id": "SimdSkia.Gpu.Direct2D",
+      "version": "0.1.0-preview.9",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.gpu.direct2d/0.1.0-preview.9/simdskia.gpu.direct2d.0.1.0-preview.9.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "1914baa378c8426a5221f9f373f9e5b0e0c921190b391bc7282a7317254853ae"
+    },
+    {
+      "id": "SimdSkia.Compatibility",
+      "version": "0.1.0-preview.9",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.compatibility/0.1.0-preview.9/simdskia.compatibility.0.1.0-preview.9.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "39655738f2ecfcb110d5071ddfdf4c08a40e323f052764e2c4ec395ce3be804d"
+    }
+  ],
+  "successfulPublicationRun": {
+    "id": 40490758078,
+    "html_url": "https://github.com/donet-org-cn/SimdSkia/actions/runs/40490758078",
+    "head_sha": "044d9e30176aa55eadd9e487f551a695eff24906",
+    "run_attempt": 3,
+    "status": "completed",
+    "conclusion": "success"
+  }
 }
