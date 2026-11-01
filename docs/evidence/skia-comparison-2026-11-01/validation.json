@@ -1,0 +1,27 @@
+{
+  "evidenceFileHashes": true,
+  "cpuRuns": 27,
+  "identicalCpuFontTableAudits": 27,
+  "cpuQualityPassed": 0,
+  "gpuRuns": 36,
+  "gpuGate": {
+    "vulkan": {
+      "geometricMeanToFasterOriginal": 0.6782951653620882,
+      "worstRatio": 0.7033507081584033,
+      "performancePassed": true
+    },
+    "direct2d": {
+      "geometricMeanToFasterOriginal": 0.6235873463278301,
+      "worstRatio": 0.757285675410023,
+      "performancePassed": true
+    },
+    "qualityPassed": false,
+    "formalCollection": true,
+    "releaseEligible": false
+  },
+  "codecRuns": 60,
+  "losslessPngPairs": 4,
+  "jpegEncodingHeaders": 4,
+  "measuredRuntimeHashesRechecked": 108,
+  "sourceHashesRechecked": 212
+}

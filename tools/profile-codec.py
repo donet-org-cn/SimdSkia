@@ -50,7 +50,7 @@ internal static class Profile {public static long Parse,Inflate,Filter,Adler;}
 ''', encoding="utf-8")
 subprocess.run(["dotnet", "build", str(build / "Profile.csproj"), "-c", "Release", "--nologo"], check=True)
 env = dict(os.environ, DOTNET_TieredCompilation="0", DOTNET_ReadyToRun="0", DOTNET_gcServer="0")
-result = subprocess.run(["dotnet", str(build / "bin/Release/net8.0/SimdSkia.Imaging.dll"), *[str(Path(p).resolve()) for p in args.images]], env=env, check=True, capture_output=True, text=True)
+result = subprocess.run(["dotnet", str(build / "bin/Release/net10.0/SimdSkia.Imaging.dll"), *[str(Path(p).resolve()) for p in args.images]], env=env, check=True, capture_output=True, text=True)
 (output / "profile.json").write_text(result.stdout, encoding="utf-8")
 (output / "sources.json").write_text(json.dumps(hashes, indent=2), encoding="utf-8")
 print(result.stdout)

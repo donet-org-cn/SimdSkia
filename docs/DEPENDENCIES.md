@@ -1,5 +1,19 @@
 # 依赖与许可证
 
+preview.10 将下列完整 .NET 10 / Sdcb.SimdCodecs 接入纳入公开预览发行，用户已授权发布；实际公开状态见[发布记录](NUGET-PREVIEW.md)。下文“本地试用/未公开”是接入验证时的快照，旧 preview.9 依赖与包内容不改写。
+
+## 当前源码完整试用：2026-11-01
+
+用户已明确允许 **.NET 自带原生压缩**，并要求完整替换试用。当前源码默认 .NET 10 / C# 14；Imaging 直接精确引用 **`Sdcb.SimdCodecs [1.2.0]`**，传递图为 15 个同版本 MIT 托管包：Facade、Abstractions、Bmp、Color.Icc、Gif、Ico、Jbig2、Jpeg、Jpeg.GainMap、Jpeg2000、Png、Pnm、Qoi、Tiff、Webp。包源码提交 `02b1f5aab83fee545748801639b12002ee7d2462`，锁文件固定实际内容；随 Imaging 输出/打包保留 `Sdcb.SimdCodecs-MIT.txt`。
+
+JPEG/PNG 像素编解码和 GIF LZW/合成全部使用该依赖，生产 `JpegLibrary` 引用已移除。颜色转换、严格输入验证、像素预算、stride/Alpha 和生命周期仍由适配层承担；通用 ManagedZlib 保留用于 PDF/元数据等既有合同，不作为旧图片解码回退。PNG/TIFF 的 BCL 压缩会调用 .NET 自带原生实现；仍不引入 Google Skia/libpng/libjpeg 等第三方原生绘图库。Core/Cpu/Text/Gpu 的无 NuGet 包约束保持，Avalonia/Compatibility 传递引入新编解码图。
+
+本次仅生成本地 `0.1.0-codecs-trial.1` 包，不上传公共源；公开 preview.9 保持原 .NET 8/JpegLibrary 版本。独立测试使用 Pillow/libwebp/OpenJPEG 作为黑盒生成自有图案夹具，未将其代码或二进制加入产品。实际接入、测试、颜色差距和性能见[完整试用报告](SIMDCODECS-INTEGRATION-2026-11-01.md)。
+
+## 下列为切换之前的调查/发行快照
+
+2026-11-01 隔离编解码评估：`benchmarks/CodecEvaluation` 通过 NuGet 精确引用 `Sdcb.SimdCodecs.Jpeg`、`Sdcb.SimdCodecs.Png` **1.2.0**，传递引入同版本 Abstractions、Color.Icc；四者均 MIT、仅 net10.0。包不含原生绘图库，PNG 使用 BCL ZLibStream，实测加载 `System.IO.Compression.Native.dll`，因此没有将其视为满足当前全 C# 压缩约束的生产实现。JPEG/PNG 性能、颜色转换失败和实际 Native AOT 对照见[评估报告](SIMDCODECS-EVALUATION-2026-11-01.md)。这些依赖只进入独立基准和 AOT 探针；生产源项目、net8.0 基线和包依赖图保持不变，未复制上游算法。
+
 VelaShell 整体兼容验证：固定公开提交 `3c8a20ef739ef4fc2d3363a9d7aaf8ba15ca7b7c`，第三方宿主按其 AGPL-3.0/商业双授权条款保留于隔离 artifacts。未将目标应用代码或原版绘图库加入 SimdSkia 生产依赖；报告截图/测试补丁保留目标归属。只读性能定位工具 dotnet-stack 10.0.750501 安装于实验目录，不进入产品或包。本轮无新增生产 NuGet 依赖，未发布任何新包。
 
 未发布兼容扩展：可选 `SimdSkia.Pdf` 新增精确 `[0.1.16]` **PdfPig**（Apache-2.0，C# PDF 结构/字形轮廓解析）。包记录源码 `a7bb35662bbbf405efddad50aedc9bcdcf515afc`；net8.0 资产没有额外包依赖、native/runtime assets，SHA-512 固定于模块锁文件。阅读器使用自有 `ManagedZlib` 替换默认 Flate 解码；不调用 Skia、PDFium、MuPDF、FreeType 或 native zlib。未引用 PDF 模块的 Compatibility/Avalonia 不增加这一依赖。许可及说明见 `licenses/Apache-2.0.txt`、`licenses/PdfPig-NOTICE.txt`。

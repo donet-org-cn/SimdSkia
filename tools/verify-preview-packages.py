@@ -14,16 +14,18 @@ args=parser.parse_args()
 if not re.fullmatch(r'\d+\.\d+\.\d+-preview\.\d+',args.version):
     raise SystemExit('Only preview versions are accepted.')
 ids=['SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Text','SimdSkia.Imaging','SimdSkia.Gpu','SimdSkia.Gpu.Direct2D','SimdSkia.Compatibility','SimdSkia.Avalonia','SimdSkia.Avalonia.Desktop','SimdSkia.Avalonia.Gpu','SimdSkia']
-if args.version=='0.1.0-preview.9':
+if args.version in ('0.1.0-preview.9','0.1.0-preview.10'):
     ids.append('SimdSkia.Pdf')
 release_topics={
     '0.1.0-preview.7':(('AVX2','24/24'),'AVX2'),
     '0.1.0-preview.8':(('SSE2','28.05','画质'),'SSE2'),
     '0.1.0-preview.9':(('SKBitmap.GetPixels','PDF','preview.9'),'SKBitmap.GetPixels'),
+    '0.1.0-preview.10':(('Sdcb.SimdCodecs','123','画质'),'Sdcb.SimdCodecs'),
 }
 if args.version not in release_topics:
     raise SystemExit('Configure release topics and the package list before publishing a new version.')
 topics,release_topic=release_topics[args.version]
+framework='net10.0' if args.version=='0.1.0-preview.10' else 'net8.0'
 assert {path.name for path in args.directory.glob('*.nupkg')}=={f'{name}.{args.version}.nupkg' for name in ids},'Unexpected or missing packages in output directory'
 rows=[]
 for package_id in ids:
@@ -49,6 +51,12 @@ for package_id in ids:
         release_notes=metadata.findtext(prefix+'releaseNotes') or ''
         assert release_notes.strip() and release_topic in release_notes and 'CHANGELOG.md' in release_notes,(path,'Missing NuGet release notes')
         dependencies={element.attrib['id']:element.attrib['version'] for element in metadata.iter(prefix+'dependency')}
+        if args.version=='0.1.0-preview.10':
+            assert not any(name.startswith('lib/net8.0/') for name in names),path
+            assert 'JpegLibrary' not in dependencies,path
+            if package_id=='SimdSkia.Imaging':
+                assert dependencies.get('Sdcb.SimdCodecs')=='[1.2.0]',dependencies
+                assert 'licenses/Sdcb.SimdCodecs-MIT.txt' in names,path
         if package_id=='SimdSkia.Pdf':
             assert dependencies.get('PdfPig')=='[0.1.16]',dependencies
             for notice in ('Apache-2.0.txt','PdfPig-NOTICE.txt','PdfPig-UPSTREAM-NOTICES.txt'):
@@ -59,7 +67,7 @@ for package_id in ids:
             if dependency.startswith('SimdSkia'):
                 assert version.strip('[]')==args.version,(path,dependency,version)
         if package_id!='SimdSkia':
-            assert f'lib/net8.0/{package_id}.dll' in names,path
+            assert f'lib/{framework}/{package_id}.dll' in names,path
             with zipfile.ZipFile(args.directory/f'{package_id}.{args.version}.snupkg') as symbols:
                 assert any(name.endswith('.pdb') for name in symbols.namelist()),path
         if package_id=='SimdSkia.Gpu':
@@ -73,7 +81,7 @@ for package_id in ids:
         if package_id=='SimdSkia.Avalonia.Desktop':
             assert dependencies.get('Avalonia.Native')=='[12.1.4]',dependencies
             for host in ['Avalonia.Win32.dll','Avalonia.Win32.Automation.dll','Avalonia.X11.dll']:
-                assert f'lib/net8.0/{host}' in names,(path,host)
+                assert f'lib/{framework}/{host}' in names,(path,host)
         if package_id=='SimdSkia.Gpu.Direct2D':
             assert set(dependencies)=={'SimdSkia.Core'},dependencies
         rows.append({'id':package_id,'version':args.version,'bytes':path.stat().st_size,'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'dependencies':dependencies})

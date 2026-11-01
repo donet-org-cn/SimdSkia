@@ -7,6 +7,7 @@ public class SKCodec : SKObject
 {
     private GifImage? gif;
     private PixelBuffer? still;
+    private ImageFrames? sequence;
     private Stream? ownedStream;
     private readonly SKEncodedImageFormat format;
     private readonly SKImageInfo info;
@@ -28,9 +29,39 @@ public class SKCodec : SKObject
                     Blend=SKCodecAnimationBlend.SrcOver,FrameRect=new(f.Left,f.Top,Math.Min(info.Width,f.Left+f.Width),Math.Min(info.Height,f.Top+f.Height))};
             }
         }
+        else if(ImageCodec.DetectFormat(bytes)==ImageFileFormat.Webp)
+        {
+            format=SKEncodedImageFormat.Webp;var descriptors=WebpMetadata.ReadFrames(bytes);
+            if(descriptors.Length>0)
+            {
+                var reader=ImageCodec.OpenFrames(bytes);
+                try
+                {
+                    var size=reader.GetFrameInfo(0);bool opaque=descriptors.All(f=>!f.HasAlpha&&f.X==0&&f.Y==0&&f.Width==size.Width&&f.Height==size.Height);
+                    info=new(size.Width,size.Height,SKColorType.Bgra8888,opaque?SKAlphaType.Opaque:SKAlphaType.Unpremul);
+                    frames=new SKCodecFrameInfo[descriptors.Length];
+                    if(reader.FrameCount!=frames.Length)throw new InvalidDataException("WebP frame metadata differs.");
+                    for(int i=0;i<frames.Length;i++)
+                    {
+                        var f=descriptors[i];if((long)f.X+f.Width>info.Width||(long)f.Y+f.Height>info.Height)throw new InvalidDataException("WebP frame exceeds canvas.");
+                        bool full=f.X==0&&f.Y==0&&f.Width==info.Width&&f.Height==info.Height;
+                        frames[i]=new(){Duration=f.Duration,RequiredFrame=i==0||full&&!f.Blend?-1:i-1,FullyRecieved=true,HasAlphaWithinBounds=f.HasAlpha,
+                            AlphaType=full&&!f.HasAlpha?SKAlphaType.Opaque:SKAlphaType.Unpremul,DisposalMethod=f.DisposeToBackground?SKCodecAnimationDisposalMethod.RestoreBackgroundColor:SKCodecAnimationDisposalMethod.Keep,
+                            Blend=f.Blend?SKCodecAnimationBlend.SrcOver:SKCodecAnimationBlend.Src,FrameRect=new(f.X,f.Y,f.X+f.Width,f.Y+f.Height)};
+                    }
+                    sequence=reader;
+                }
+                catch{reader.Dispose();throw;}
+            }
+            else
+            {
+                still=ImageCodec.Decode(bytes);bool opaque=true;var pixels=still.GetPixelSpan();for(int i=3;i<pixels.Length;i+=4)if(pixels[i]!=255){opaque=false;break;}
+                info=new(still.Width,still.Height,SKColorType.Bgra8888,opaque?SKAlphaType.Opaque:SKAlphaType.Unpremul);frames=[];
+            }
+        }
         else
         {
-            still=ImageCodec.Decode(bytes);format=bytes.Length>1&&bytes[0]==255?SKEncodedImageFormat.Jpeg:SKEncodedImageFormat.Png;
+            format=CodecFormats.ToSkia(ImageCodec.DetectFormat(bytes));still=ImageCodec.Decode(bytes);
             bool opaque=true;var span=still.GetPixelSpan();for(int i=3;i<span.Length;i+=4)if(span[i]!=255){opaque=false;break;}
             info=new(still.Width,still.Height,SKColorType.Bgra8888,opaque?SKAlphaType.Opaque:SKAlphaType.Unpremul);frames=[];
         }
@@ -38,7 +69,7 @@ public class SKCodec : SKObject
     public SKImageInfo Info {get{ThrowIfDisposed();return info;}}
     public SKEncodedImageFormat EncodedFormat {get{ThrowIfDisposed();return format;}}
     public int FrameCount {get{ThrowIfDisposed();return frames.Length;}}
-    public int RepetitionCount {get{ThrowIfDisposed();return gif?.RepetitionCount??0;}}
+    public int RepetitionCount {get{ThrowIfDisposed();return gif?.RepetitionCount??(sequence?.LoopCount is {} loops?loops==0?-1:Math.Max(0,loops-1):0);}}
     public SKCodecFrameInfo[] FrameInfo {get{ThrowIfDisposed();return (SKCodecFrameInfo[])frames.Clone();}}
     public bool GetFrameInfo(int index,out SKCodecFrameInfo frameInfo){ThrowIfDisposed();frameInfo=default;if((uint)index>=(uint)frames.Length)return false;frameInfo=frames[index];return true;}
     public byte[] Pixels {get{var result=GetPixels(out var pixels);if(result!=SKCodecResult.Success)throw new InvalidDataException(result.ToString());return pixels;}}
@@ -88,7 +119,8 @@ public class SKCodec : SKObject
         if(options.HasSubset)return SKCodecResult.Unimplemented;
         try
         {
-            var source=gif is null?still!:gif.DecodeFrameCore(options.FrameIndex);
+            using var frame=sequence?.DecodeFrame(options.FrameIndex);
+            var source=frame??(gif is null?still!:gif.DecodeFrameCore(options.FrameIndex));
             int length=checked(rowBytes*(info.Height-1)+info.RowBytes);var target=new Span<byte>((void*)pixels,length);
             for(int y=0;y<info.Height;y++)
             {
@@ -106,5 +138,5 @@ public class SKCodec : SKObject
         }
         catch(InvalidDataException){return SKCodecResult.ErrorInInput;}
     }
-    protected override void Dispose(bool disposing){gif?.Dispose();gif=null;still?.Dispose();still=null;ownedStream?.Dispose();ownedStream=null;}
+    protected override void Dispose(bool disposing){gif?.Dispose();gif=null;sequence?.Dispose();sequence=null;still?.Dispose();still=null;ownedStream?.Dispose();ownedStream=null;}
 }

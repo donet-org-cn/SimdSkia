@@ -1,5 +1,37 @@
 # SimdSkia 更新日志 / Release notes
 
+## 0.1.0-preview.10 — 2026-11-01
+
+- 将源码目标框架迁移至 .NET 10 / C# 14，完整引用精确版本 `Sdcb.SimdCodecs 1.2.0`（15 个同版本包），移除生产 `JpegLibrary` 引用和自有 PNG/JPEG 像素编解码、GIF LZW/合成；输入校验、ICC/gamma→sRGB、Alpha/stride、GIF 元数据与生命周期合同留在适配层。
+- 用户已确认允许 .NET 自带原生压缩。该例外用于 PNG/TIFF 等压缩路径，不引入 Skia/libpng/libjpeg 等第三方原生绘图库。
+- 新增 BMP/ICO/GIF 编码、TIFF/QOI/Netpbm 品牌 API 编码，接入 WebP/动画、多页 TIFF、JPEG2000/JBIG2 等受支持解码；缺失的 WebP 编码、无法映射到基线 SKEncodedImageFormat 的格式及不支持的 HDR/CMYK ICC 路径明确报错。
+- 接回 Display-P3 转换；增加 PNG 过滤器、调色板索引及精确膨胀长度验证，避免新库较宽松的输入路径降低原有检查。保持原版质量阈值，JPEG 24 组回读中仍有 3 组最大通道差 2（阈值 1），未改判为成功。
+- 新增集成回归、独立 Pillow/OpenJPEG/libwebp 夹具、AOT 探针和切换前后性能报告。先前 `0.1.0-codecs-trial.1` 的本地验证现纳入 preview.10，十二包统一发布；旧 preview.9 包/标签不改写。**升级需要 .NET 10，不能直接供 .NET 8 应用使用。**
+
+### 本版测试与性能记录
+
+同机 .NET 10.0.13 JIT / Windows x64 / i7-8700K / GTX 1050 Ti，共 **123 个独立计时进程**，三轮中位数。固定 SkiaSharp 3.119.4、Avalonia 12.1.4、中文字体和尺寸；GPU 包含完成等待和回读，不是 Native AOT 或显示器 FPS。
+
+| 项目 | 原版 | preview.10 源码 |
+| --- | ---: | ---: |
+| CPU 控件页 100% | 0.891 ms/帧 | 0.549 ms/帧 |
+| CPU 控件页 150% | 1.701 ms/帧 | 1.353 ms/帧 |
+| CPU 滚动 | 0.372 ms/帧 | 0.348 ms/帧 |
+| 控件页 WS / Private | 90.39 / 47.36 MiB | 109.81 / 71.08 MiB |
+| Vulkan / Direct2D 综合耗时比 | 各例较快原版 = 1 | 0.678 / 0.624 |
+| JPEG 解码 | 基线 | 本例快约 2.27–2.90 倍 |
+
+JPEG 编码本例快约 4.09–5.93 倍，但 UI 文件大约增加 52%；不能当成相同码率压缩效率的胜出。纹理 PNG 解码耗时为原版 **2.03 倍**、UI PNG 编码慢约 **19%**；CPU 工作集仍高约 **18%–22%**。这些慢项和内存代价没有排除。
+
+- 本地完整接入：编解码集成 1,416、标量 1,416、真实 Native AOT 1,417、精确优化 471,569、真实控件 9,750 项通过；独立解码夹具 41/41、JPEG 门槛前图片/损坏输入/压缩 369 项通过。实际十二个本地试用包验证、CPU/Direct2D/Vulkan 窗口均通过，GPU 冒烟不冒充性能数据。
+- 原版 JPEG 联合回读 **21/24 通过、3/24 失败**，最大差 2，门槛 1 不变。默认 Imaging 测试继续严格失败；发布/多平台 CI 将功能集和严格 JPEG 对照分开，JSON 保留 `qualityPassed=false`，只为这三个已披露身份和已观察到的 RGB 差异启用 preview.10 发布例外，其余差异阻止发布。
+- 原版整页画质 **CPU 0/3、GPU 0/12**，max≤32 且 RMSE≤2 的门槛未放宽。组合字符、字体、API、HDR/CMYK+ICC 与通用 PDF 等既有缺口未因性能较快而解决。
+- 此处是版本改号前、相同绘图实现的源码实测；发布验证与三平台 CI 结果另列[发布记录](NUGET-PREVIEW.md)，未将待运行作业写成通过。
+
+详见[带图原版对照报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/SKIA-COMPARISON-2026-11-01.md)、[完整接入和测试记录](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/SIMDCODECS-INTEGRATION-2026-11-01.md)。十二包均包含本 CHANGELOG、使用 README、NuGet 发行说明及许可证。桌面安装 `SimdSkia.Avalonia.Desktop 0.1.0-preview.10` 并调用 `.UseSimdSkiaDesktop()`；GPU/PDF 按需安装同版本包。
+
+完整使用、测试数据、性能及剩余差距见[试用报告](SIMDCODECS-INTEGRATION-2026-11-01.md)。下面的 preview.9 及更早内容仍是历史发行说明。
+
 ## 0.1.0-preview.9 — 2026-10-27
 
 本版补齐独立 SK* 调用链、GIF 和受限 PDF 支持，并修正真实 VelaShell 接入问题。新增可选 `SimdSkia.Pdf`，共 **12 个包**统一版本；Avalonia **12.1.4**、SkiaSharp 源码兼容基线 **3.119.4** 不变。公开上传和下载验证状态见[发布记录](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/NUGET-PREVIEW.md)。

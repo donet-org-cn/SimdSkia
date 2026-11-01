@@ -26,9 +26,9 @@ try {
     if(Test-Path -LiteralPath (Join-Path $outputPath 'run.json')){throw 'Output contains an earlier run. Supply a new -Output directory; existing evidence is preserved.'}
     New-Item -ItemType Directory -Path $outputPath -Force | Out-Null
     $fontPath=(Resolve-Path -LiteralPath $Font).Path
-    $managedPath=Join-Path $workspacePath 'benchmarks/GpuManaged/bin/Release/net8.0/SimdSkia.Benchmark.GpuManaged.dll'
+    $managedPath=Join-Path $workspacePath 'benchmarks/GpuManaged/bin/Release/net10.0/SimdSkia.Benchmark.GpuManaged.dll'
     if($ManagedDirectory){$managedPath=Join-Path ([IO.Path]::GetFullPath($ManagedDirectory)) 'SimdSkia.Benchmark.GpuManaged.dll';if(-not(Test-Path -LiteralPath $managedPath)){throw 'Frozen managed GPU worker is missing.'}}
-    $referencePath=Join-Path $workspacePath 'benchmarks/GpuReference/bin/Release/net8.0/SimdSkia.Benchmark.GpuReference.dll'
+    $referencePath=Join-Path $workspacePath 'benchmarks/GpuReference/bin/Release/net10.0/SimdSkia.Benchmark.GpuReference.dll'
     $env:DOTNET_TieredCompilation='0'
     $env:DOTNET_ReadyToRun='0'
     $env:DOTNET_gcServer='0'
@@ -62,7 +62,7 @@ try {
     foreach($runtimeFile in $runtimeHashes.Keys){if((Get-FileHash -LiteralPath $runtimeFile).Hash -ne $runtimeHashes[$runtimeFile]){throw ('Worker runtime changed during measurement: '+$runtimeFile)}}
     $manifest.Complete=$true
     $manifest|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $outputPath 'run.json') -Encoding UTF8
-    dotnet benchmarks/GpuReport/bin/Release/net8.0/GpuReport.dll $outputPath $Report
+    dotnet benchmarks/GpuReport/bin/Release/net10.0/GpuReport.dll $outputPath $Report
     if($LASTEXITCODE -eq 2){Write-Output 'Measurements completed; native GPU pixel quality gate FAILED. Reports retain failed rows.';exit 2}
     if($LASTEXITCODE -ne 0){throw 'Report generation failed.'}
 }

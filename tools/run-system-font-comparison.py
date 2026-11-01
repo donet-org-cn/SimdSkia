@@ -17,9 +17,9 @@ if args.runs<1 or args.frames<100:raise SystemExit('Use positive runs and at lea
 if (args.output/'manifest.json').exists():raise SystemExit('Choose a fresh output directory.')
 args.output.mkdir(parents=True,exist_ok=True)
 engines={
-    'after':(Path('tests/AvaloniaControls/bin/Release/net8.0/SimdSkia.Avalonia.Controls.Tests.dll'),[]),
-    'reference':(Path('tests/AvaloniaControls.Reference/bin/Release/net8.0/AvaloniaControls.Reference.dll'),[]),
-    'default':(Path('tests/AvaloniaControls.Reference/bin/Release/net8.0/AvaloniaControls.Reference.dll'),['--native-default-opacity']),
+    'after':(Path('tests/AvaloniaControls/bin/Release/net10.0/SimdSkia.Avalonia.Controls.Tests.dll'),[]),
+    'reference':(Path('tests/AvaloniaControls.Reference/bin/Release/net10.0/AvaloniaControls.Reference.dll'),[]),
+    'default':(Path('tests/AvaloniaControls.Reference/bin/Release/net10.0/AvaloniaControls.Reference.dll'),['--native-default-opacity']),
 }
 if args.before_directory:engines={'before':(args.before_directory/'SimdSkia.Avalonia.Controls.Tests.dll',[]),**engines}
 files={path.resolve() for binary,_ in engines.values() for path in binary.parent.glob('*.dll')}

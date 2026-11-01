@@ -108,7 +108,7 @@ f"[CPU 全表]({link(Path('docs/PERFORMANCE.md'))}) · [GPU 全表]({link(Path('
 '```powershell',
 'powershell -NoProfile -File tools/verify.ps1 -Gpu',
 '$env:DOTNET_EnableHWIntrinsic="0"',
-'dotnet tests/Optimization/bin/Release/net8.0/Optimization.dll baseline/fonts/ZenOldMincho-Regular.ttf',
+'dotnet tests/Optimization/bin/Release/net10.0/Optimization.dll baseline/fonts/ZenOldMincho-Regular.ttf',
     'Remove-Item Env:DOTNET_EnableHWIntrinsic',
 '# 网络不可用时，已有基准包可用 NuGetAudit=false 环境变量离线构建；不改变产品依赖。',
 'powershell -NoProfile -File tools/run-benchmarks.ps1 -Output artifacts/performance/my-new-run -Scenes clear,rectangles,blend,evenodd,stroke,rect-aa,gradient,image,curve-aa,chinese,png-encode,png-decode,curve-changing,chinese-changing -Samples 5 -SampleMilliseconds 70',

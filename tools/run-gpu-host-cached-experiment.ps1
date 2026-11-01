@@ -1,4 +1,4 @@
-﻿param(
+param(
     [string]$Baseline='artifacts/performance-gpu/reassessment-2026-10-12',
     [string]$Output='artifacts/performance-gpu/host-cached-experiment-2026-10-12'
 )
@@ -14,12 +14,12 @@ try {
     $outputPath=[IO.Path]::GetFullPath((Join-Path $workspacePath $Output))
     if(Test-Path -LiteralPath (Join-Path $outputPath 'run.json')){throw 'Evidence already exists; supply a new output.'}
     New-Item -ItemType Directory -Path $outputPath -Force | Out-Null
-    $prototypePath='experiments/GpuHostCached/Worker/bin/Release/net8.0/SimdSkia.Benchmark.GpuHostCached.dll'
+    $prototypePath='experiments/GpuHostCached/Worker/bin/Release/net10.0/SimdSkia.Benchmark.GpuHostCached.dll'
     dotnet build experiments/GpuHostCached/Worker -c Release --nologo
     if($LASTEXITCODE -ne 0){throw 'Prototype build failed.'}
     $hashes=[ordered]@{}
     foreach($sourceFile in @(rg --files experiments/GpuHostCached -g '*.cs' -g '*.csproj' -g '!**/obj/**' -g '!**/bin/**')){$hashes[$sourceFile]=(Get-FileHash -LiteralPath $sourceFile).Hash}
-    $manifest=[ordered]@{Baseline=[IO.Path]::GetFullPath((Join-Path $workspacePath $Baseline));Variant='isolated HOST_CACHED target-buffer preference; other product algorithms and shader unchanged';PrototypeSourceSha256=$hashes;GpuAssemblySha256=(Get-FileHash -LiteralPath 'experiments/GpuHostCached/Worker/bin/Release/net8.0/SimdSkia.Gpu.dll').Hash;Forks=$parent.Forks;Samples=$parent.Samples;TargetSampleMilliseconds=$parent.TargetSampleMilliseconds;WarmupMilliseconds=$parent.WarmupMilliseconds;Sizes=$parent.Sizes;Scenes=$parent.Scenes;Font=$parent.Font;Seed=$parent.Seed;Complete=$false}
+    $manifest=[ordered]@{Baseline=[IO.Path]::GetFullPath((Join-Path $workspacePath $Baseline));Variant='isolated HOST_CACHED target-buffer preference; other product algorithms and shader unchanged';PrototypeSourceSha256=$hashes;GpuAssemblySha256=(Get-FileHash -LiteralPath 'experiments/GpuHostCached/Worker/bin/Release/net10.0/SimdSkia.Gpu.dll').Hash;Forks=$parent.Forks;Samples=$parent.Samples;TargetSampleMilliseconds=$parent.TargetSampleMilliseconds;WarmupMilliseconds=$parent.WarmupMilliseconds;Sizes=$parent.Sizes;Scenes=$parent.Scenes;Font=$parent.Font;Seed=$parent.Seed;Complete=$false}
     $manifest|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $outputPath 'run.json') -Encoding UTF8
     $env:DOTNET_TieredCompilation='0';$env:DOTNET_ReadyToRun='0';$env:DOTNET_gcServer='0'
     $sceneArguments=@();if($parent.Scenes){$sceneArguments=@('--scenes',$parent.Scenes)}

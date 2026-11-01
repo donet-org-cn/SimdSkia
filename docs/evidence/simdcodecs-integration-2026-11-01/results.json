@@ -1,0 +1,2745 @@
+{
+  "date": "2026-11-01",
+  "unpublished": true,
+  "localVersion": "0.1.0-codecs-trial.1",
+  "provider": "Sdcb.SimdCodecs 1.2.0",
+  "allowedNativeException": "System .NET compression, explicitly approved by user",
+  "publicPreview9Unchanged": true,
+  "framework": "net10.0",
+  "language": "C# 14",
+  "performance": {
+    "summary": [
+      {
+        "scene": "ui",
+        "operation": "decode-jpeg444",
+        "before": {
+          "millisecondsPerImage": 90.70926428571428,
+          "cpuMillisecondsPerImage": 91.51785714285714,
+          "allocatedBytesPerImage": 199853.7142857143,
+          "workingSetMiB": 52.5859375,
+          "privateMiB": 31.25,
+          "outputBytes": 8294400
+        },
+        "after": {
+          "millisecondsPerImage": 4.086041156462585,
+          "cpuMillisecondsPerImage": 4.092261904761905,
+          "allocatedBytesPerImage": 905.795918367347,
+          "workingSetMiB": 45.38671875,
+          "privateMiB": 20.54296875,
+          "outputBytes": 8294400
+        },
+        "speedup": 22.199792124522837
+      },
+      {
+        "scene": "ui",
+        "operation": "decode-jpeg420",
+        "before": {
+          "millisecondsPerImage": 149.49183333333335,
+          "cpuMillisecondsPerImage": 151.04166666666666,
+          "allocatedBytesPerImage": 165170.66666666666,
+          "workingSetMiB": 51.40625,
+          "privateMiB": 30.1484375,
+          "outputBytes": 8294400
+        },
+        "after": {
+          "millisecondsPerImage": 3.5526588757396453,
+          "cpuMillisecondsPerImage": 3.5386029411764706,
+          "allocatedBytesPerImage": 905.5621301775147,
+          "workingSetMiB": 45.21875,
+          "privateMiB": 20.26953125,
+          "outputBytes": 8294400
+        },
+        "speedup": 42.07885940138565
+      },
+      {
+        "scene": "ui",
+        "operation": "decode-png",
+        "before": {
+          "millisecondsPerImage": 1.9409846526655896,
+          "cpuMillisecondsPerImage": 1.943659127625202,
+          "allocatedBytesPerImage": 31747.218093699514,
+          "workingSetMiB": 60.3203125,
+          "privateMiB": 37.1015625,
+          "outputBytes": 8294400
+        },
+        "after": {
+          "millisecondsPerImage": 1.873351326053042,
+          "cpuMillisecondsPerImage": 1.8740264797507789,
+          "allocatedBytesPerImage": 8888.823712948519,
+          "workingSetMiB": 53.84375,
+          "privateMiB": 29.59375,
+          "outputBytes": 8294400
+        },
+        "speedup": 1.0361028525039369
+      },
+      {
+        "scene": "ui",
+        "operation": "encode-jpeg444",
+        "before": {
+          "millisecondsPerImage": 66.00571578947368,
+          "cpuMillisecondsPerImage": 66.61184210526316,
+          "allocatedBytesPerImage": 715898.1052631579,
+          "workingSetMiB": 61.8828125,
+          "privateMiB": 39.87890625,
+          "outputBytes": 194433
+        },
+        "after": {
+          "millisecondsPerImage": 7.76577935483871,
+          "cpuMillisecondsPerImage": 7.963709677419355,
+          "allocatedBytesPerImage": 198528.25806451612,
+          "workingSetMiB": 80.59765625,
+          "privateMiB": 59.52734375,
+          "outputBytes": 196847
+        },
+        "speedup": 8.499561058008528
+      },
+      {
+        "scene": "ui",
+        "operation": "encode-png",
+        "before": {
+          "millisecondsPerImage": 61.013165,
+          "cpuMillisecondsPerImage": 61.71875,
+          "allocatedBytesPerImage": 8760933.2,
+          "workingSetMiB": 80.265625,
+          "privateMiB": 58.35546875,
+          "outputBytes": 109711
+        },
+        "after": {
+          "millisecondsPerImage": 76.94830625,
+          "cpuMillisecondsPerImage": 79.1015625,
+          "allocatedBytesPerImage": 57114,
+          "workingSetMiB": 50.09765625,
+          "privateMiB": 27.25390625,
+          "outputBytes": 12555
+        },
+        "speedup": 0.7929110850311926
+      },
+      {
+        "scene": "texture",
+        "operation": "decode-jpeg444",
+        "before": {
+          "millisecondsPerImage": 98.59200769230769,
+          "cpuMillisecondsPerImage": 100.96153846153847,
+          "allocatedBytesPerImage": 766064.6153846154,
+          "workingSetMiB": 59.98046875,
+          "privateMiB": 38.6796875,
+          "outputBytes": 8294400
+        },
+        "after": {
+          "millisecondsPerImage": 9.012094776119403,
+          "cpuMillisecondsPerImage": 9.444962686567164,
+          "allocatedBytesPerImage": 924.3582089552239,
+          "workingSetMiB": 45.80078125,
+          "privateMiB": 21.0234375,
+          "outputBytes": 8294400
+        },
+        "speedup": 10.939965695163416
+      },
+      {
+        "scene": "texture",
+        "operation": "decode-jpeg420",
+        "before": {
+          "millisecondsPerImage": 157.8308125,
+          "cpuMillisecondsPerImage": 160.15625,
+          "allocatedBytesPerImage": 733250,
+          "workingSetMiB": 55.9609375,
+          "privateMiB": 34.6796875,
+          "outputBytes": 8294400
+        },
+        "after": {
+          "millisecondsPerImage": 8.206495238095238,
+          "cpuMillisecondsPerImage": 8.503401360544217,
+          "allocatedBytesPerImage": 923.1020408163265,
+          "workingSetMiB": 45.63671875,
+          "privateMiB": 20.84765625,
+          "outputBytes": 8294400
+        },
+        "speedup": 19.232426013889114
+      },
+      {
+        "scene": "texture",
+        "operation": "decode-png",
+        "before": {
+          "millisecondsPerImage": 39.45181612903226,
+          "cpuMillisecondsPerImage": 40.32258064516129,
+          "allocatedBytesPerImage": 879909.5,
+          "workingSetMiB": 62.61328125,
+          "privateMiB": 39.9609375,
+          "outputBytes": 8294400
+        },
+        "after": {
+          "millisecondsPerImage": 43.433342857142854,
+          "cpuMillisecondsPerImage": 44.642857142857146,
+          "allocatedBytesPerImage": 8973.714285714286,
+          "workingSetMiB": 52.17578125,
+          "privateMiB": 30.0703125,
+          "outputBytes": 8294400
+        },
+        "speedup": 0.9083301798526933
+      },
+      {
+        "scene": "texture",
+        "operation": "encode-jpeg444",
+        "before": {
+          "millisecondsPerImage": 85.83490714285713,
+          "cpuMillisecondsPerImage": 85.9375,
+          "allocatedBytesPerImage": 2855018.8571428573,
+          "workingSetMiB": 87.69140625,
+          "privateMiB": 68.4296875,
+          "outputBytes": 760644
+        },
+        "after": {
+          "millisecondsPerImage": 9.832052845528455,
+          "cpuMillisecondsPerImage": 10.289634146341463,
+          "allocatedBytesPerImage": 751063.9349593496,
+          "workingSetMiB": 87.203125,
+          "privateMiB": 65.3203125,
+          "outputBytes": 749217
+        },
+        "speedup": 8.730110434861444
+      },
+      {
+        "scene": "texture",
+        "operation": "encode-png",
+        "before": {
+          "millisecondsPerImage": 243.70533999999998,
+          "cpuMillisecondsPerImage": 243.75,
+          "allocatedBytesPerImage": 37672659.2,
+          "workingSetMiB": 206.796875,
+          "privateMiB": 191.2578125,
+          "outputBytes": 6307964
+        },
+        "after": {
+          "millisecondsPerImage": 433.0652666666667,
+          "cpuMillisecondsPerImage": 432.2916666666667,
+          "allocatedBytesPerImage": 11070728,
+          "workingSetMiB": 63.78125,
+          "privateMiB": 41.08203125,
+          "outputBytes": 2631889
+        },
+        "speedup": 0.5627450612140217
+      }
+    ],
+    "raw": [
+      {
+        "backend": "after",
+        "scene": "texture",
+        "operation": "decode-jpeg420",
+        "frames": 147,
+        "millisecondsPerImage": 8.206495238095238,
+        "cpuMillisecondsPerImage": 8.503401360544217,
+        "allocatedBytesPerImage": 923.1020408163265,
+        "workingSetMiB": 45.62109375,
+        "privateMiB": 20.9296875,
+        "peakWorkingSetMiB": 45.62109375,
+        "lastLength": 8294400,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "texture",
+        "operation": "decode-jpeg420",
+        "frames": 153,
+        "millisecondsPerImage": 7.894475163398694,
+        "cpuMillisecondsPerImage": 8.272058823529411,
+        "allocatedBytesPerImage": 923.9215686274509,
+        "workingSetMiB": 45.640625,
+        "privateMiB": 20.84765625,
+        "peakWorkingSetMiB": 45.640625,
+        "lastLength": 8294400,
+        "sink": 15,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "texture",
+        "operation": "decode-jpeg420",
+        "frames": 141,
+        "millisecondsPerImage": 8.531256737588652,
+        "cpuMillisecondsPerImage": 8.865248226950355,
+        "allocatedBytesPerImage": 922.7801418439716,
+        "workingSetMiB": 45.63671875,
+        "privateMiB": 20.81640625,
+        "peakWorkingSetMiB": 45.63671875,
+        "lastLength": 8294400,
+        "sink": 15,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "texture",
+        "operation": "decode-jpeg420",
+        "frames": 8,
+        "millisecondsPerImage": 157.2258,
+        "cpuMillisecondsPerImage": 158.203125,
+        "allocatedBytesPerImage": 733250,
+        "workingSetMiB": 55.9609375,
+        "privateMiB": 34.80859375,
+        "peakWorkingSetMiB": 55.9609375,
+        "lastLength": 8294400,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "texture",
+        "operation": "decode-jpeg420",
+        "frames": 8,
+        "millisecondsPerImage": 157.8308125,
+        "cpuMillisecondsPerImage": 160.15625,
+        "allocatedBytesPerImage": 733250,
+        "workingSetMiB": 55.96484375,
+        "privateMiB": 34.6796875,
+        "peakWorkingSetMiB": 55.96484375,
+        "lastLength": 8294400,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "texture",
+        "operation": "decode-jpeg420",
+        "frames": 7,
+        "millisecondsPerImage": 184.40224285714288,
+        "cpuMillisecondsPerImage": 185.26785714285714,
+        "allocatedBytesPerImage": 733259.4285714285,
+        "workingSetMiB": 55.3203125,
+        "privateMiB": 34.01171875,
+        "peakWorkingSetMiB": 55.3203125,
+        "lastLength": 8294400,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "texture",
+        "operation": "decode-jpeg444",
+        "frames": 134,
+        "millisecondsPerImage": 9.012094776119403,
+        "cpuMillisecondsPerImage": 9.328358208955224,
+        "allocatedBytesPerImage": 923.7611940298508,
+        "workingSetMiB": 45.80078125,
+        "privateMiB": 21.0234375,
+        "peakWorkingSetMiB": 45.80078125,
+        "lastLength": 8294400,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "texture",
+        "operation": "decode-jpeg444",
+        "frames": 134,
+        "millisecondsPerImage": 8.986066417910449,
+        "cpuMillisecondsPerImage": 9.444962686567164,
+        "allocatedBytesPerImage": 924.3582089552239,
+        "workingSetMiB": 45.6328125,
+        "privateMiB": 20.89453125,
+        "peakWorkingSetMiB": 45.6328125,
+        "lastLength": 8294400,
+        "sink": 13,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "texture",
+        "operation": "decode-jpeg444",
+        "frames": 109,
+        "millisecondsPerImage": 11.059515596330275,
+        "cpuMillisecondsPerImage": 11.897935779816514,
+        "allocatedBytesPerImage": 944.440366972477,
+        "workingSetMiB": 45.89453125,
+        "privateMiB": 21.046875,
+        "peakWorkingSetMiB": 45.89453125,
+        "lastLength": 8294400,
+        "sink": 13,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "texture",
+        "operation": "decode-jpeg444",
+        "frames": 13,
+        "millisecondsPerImage": 98.59200769230769,
+        "cpuMillisecondsPerImage": 100.96153846153847,
+        "allocatedBytesPerImage": 766064.6153846154,
+        "workingSetMiB": 59.98046875,
+        "privateMiB": 38.6953125,
+        "peakWorkingSetMiB": 59.98046875,
+        "lastLength": 8294400,
+        "sink": 13,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "texture",
+        "operation": "decode-jpeg444",
+        "frames": 12,
+        "millisecondsPerImage": 101.69798333333334,
+        "cpuMillisecondsPerImage": 102.86458333333333,
+        "allocatedBytesPerImage": 766068,
+        "workingSetMiB": 59.0625,
+        "privateMiB": 37.828125,
+        "peakWorkingSetMiB": 59.0625,
+        "lastLength": 8294400,
+        "sink": 13,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "texture",
+        "operation": "decode-jpeg444",
+        "frames": 13,
+        "millisecondsPerImage": 98.35323076923078,
+        "cpuMillisecondsPerImage": 100.96153846153847,
+        "allocatedBytesPerImage": 766064.6153846154,
+        "workingSetMiB": 60.04296875,
+        "privateMiB": 38.6796875,
+        "peakWorkingSetMiB": 60.04296875,
+        "lastLength": 8294400,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "texture",
+        "operation": "decode-png",
+        "frames": 28,
+        "millisecondsPerImage": 43.57464642857143,
+        "cpuMillisecondsPerImage": 44.642857142857146,
+        "allocatedBytesPerImage": 8973.714285714286,
+        "workingSetMiB": 52.2265625,
+        "privateMiB": 30.08203125,
+        "peakWorkingSetMiB": 52.2265625,
+        "lastLength": 8294400,
+        "sink": 15,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll",
+          "System.IO.Compression.Native.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "texture",
+        "operation": "decode-png",
+        "frames": 29,
+        "millisecondsPerImage": 42.53637931034483,
+        "cpuMillisecondsPerImage": 43.10344827586207,
+        "allocatedBytesPerImage": 8972.965517241379,
+        "workingSetMiB": 52.17578125,
+        "privateMiB": 30.0703125,
+        "peakWorkingSetMiB": 52.17578125,
+        "lastLength": 8294400,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll",
+          "System.IO.Compression.Native.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "texture",
+        "operation": "decode-png",
+        "frames": 28,
+        "millisecondsPerImage": 43.433342857142854,
+        "cpuMillisecondsPerImage": 45.75892857142857,
+        "allocatedBytesPerImage": 8973.714285714286,
+        "workingSetMiB": 52.0859375,
+        "privateMiB": 30.0703125,
+        "peakWorkingSetMiB": 52.0859375,
+        "lastLength": 8294400,
+        "sink": 15,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll",
+          "System.IO.Compression.Native.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "texture",
+        "operation": "decode-png",
+        "frames": 32,
+        "millisecondsPerImage": 38.352746875,
+        "cpuMillisecondsPerImage": 39.55078125,
+        "allocatedBytesPerImage": 879909.5,
+        "workingSetMiB": 63.22265625,
+        "privateMiB": 39.95703125,
+        "peakWorkingSetMiB": 63.22265625,
+        "lastLength": 8294400,
+        "sink": 15,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "texture",
+        "operation": "decode-png",
+        "frames": 31,
+        "millisecondsPerImage": 39.45181612903226,
+        "cpuMillisecondsPerImage": 40.32258064516129,
+        "allocatedBytesPerImage": 879912,
+        "workingSetMiB": 62.61328125,
+        "privateMiB": 40.265625,
+        "peakWorkingSetMiB": 62.61328125,
+        "lastLength": 8294400,
+        "sink": 15,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "texture",
+        "operation": "decode-png",
+        "frames": 28,
+        "millisecondsPerImage": 43.20974642857143,
+        "cpuMillisecondsPerImage": 44.642857142857146,
+        "allocatedBytesPerImage": 879903.1428571428,
+        "workingSetMiB": 62.37890625,
+        "privateMiB": 39.9609375,
+        "peakWorkingSetMiB": 62.37890625,
+        "lastLength": 8294400,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "texture",
+        "operation": "encode-jpeg444",
+        "frames": 123,
+        "millisecondsPerImage": 9.758747967479675,
+        "cpuMillisecondsPerImage": 9.78150406504065,
+        "allocatedBytesPerImage": 751063.9349593496,
+        "workingSetMiB": 75.87109375,
+        "privateMiB": 54.0234375,
+        "peakWorkingSetMiB": 87.76953125,
+        "lastLength": 749217,
+        "sink": 191,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "texture",
+        "operation": "encode-jpeg444",
+        "frames": 123,
+        "millisecondsPerImage": 9.832052845528455,
+        "cpuMillisecondsPerImage": 10.289634146341463,
+        "allocatedBytesPerImage": 751063.9349593496,
+        "workingSetMiB": 88.80859375,
+        "privateMiB": 67.1171875,
+        "peakWorkingSetMiB": 88.80859375,
+        "lastLength": 749217,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "texture",
+        "operation": "encode-jpeg444",
+        "frames": 118,
+        "millisecondsPerImage": 10.235089830508475,
+        "cpuMillisecondsPerImage": 10.460805084745763,
+        "allocatedBytesPerImage": 751015.2542372881,
+        "workingSetMiB": 87.203125,
+        "privateMiB": 65.3203125,
+        "peakWorkingSetMiB": 87.203125,
+        "lastLength": 749217,
+        "sink": 191,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "texture",
+        "operation": "encode-jpeg444",
+        "frames": 14,
+        "millisecondsPerImage": 89.06605714285715,
+        "cpuMillisecondsPerImage": 89.28571428571429,
+        "allocatedBytesPerImage": 2855018.8571428573,
+        "workingSetMiB": 87.2578125,
+        "privateMiB": 67.9765625,
+        "peakWorkingSetMiB": 87.2578125,
+        "lastLength": 760644,
+        "sink": 253,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "texture",
+        "operation": "encode-jpeg444",
+        "frames": 14,
+        "millisecondsPerImage": 85.77506428571428,
+        "cpuMillisecondsPerImage": 85.9375,
+        "allocatedBytesPerImage": 2855018.8571428573,
+        "workingSetMiB": 87.76953125,
+        "privateMiB": 69.31640625,
+        "peakWorkingSetMiB": 87.76953125,
+        "lastLength": 760644,
+        "sink": 253,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "texture",
+        "operation": "encode-jpeg444",
+        "frames": 14,
+        "millisecondsPerImage": 85.83490714285713,
+        "cpuMillisecondsPerImage": 85.9375,
+        "allocatedBytesPerImage": 2855018.8571428573,
+        "workingSetMiB": 87.69140625,
+        "privateMiB": 68.4296875,
+        "peakWorkingSetMiB": 87.69140625,
+        "lastLength": 760644,
+        "sink": 253,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "texture",
+        "operation": "encode-png",
+        "frames": 3,
+        "millisecondsPerImage": 431.7090666666666,
+        "cpuMillisecondsPerImage": 427.0833333333333,
+        "allocatedBytesPerImage": 11070728,
+        "workingSetMiB": 63.7578125,
+        "privateMiB": 41.08203125,
+        "peakWorkingSetMiB": 78.13671875,
+        "lastLength": 2631889,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll",
+          "System.IO.Compression.Native.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "texture",
+        "operation": "encode-png",
+        "frames": 3,
+        "millisecondsPerImage": 433.0652666666667,
+        "cpuMillisecondsPerImage": 432.2916666666667,
+        "allocatedBytesPerImage": 11070728,
+        "workingSetMiB": 63.78125,
+        "privateMiB": 41.05859375,
+        "peakWorkingSetMiB": 78.16015625,
+        "lastLength": 2631889,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll",
+          "System.IO.Compression.Native.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "texture",
+        "operation": "encode-png",
+        "frames": 3,
+        "millisecondsPerImage": 443.8804333333333,
+        "cpuMillisecondsPerImage": 442.7083333333333,
+        "allocatedBytesPerImage": 11070728,
+        "workingSetMiB": 66.2421875,
+        "privateMiB": 43.62109375,
+        "peakWorkingSetMiB": 78.234375,
+        "lastLength": 2631889,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll",
+          "System.IO.Compression.Native.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "texture",
+        "operation": "encode-png",
+        "frames": 5,
+        "millisecondsPerImage": 240.28562000000002,
+        "cpuMillisecondsPerImage": 237.5,
+        "allocatedBytesPerImage": 37672659.2,
+        "workingSetMiB": 206.82421875,
+        "privateMiB": 191.45703125,
+        "peakWorkingSetMiB": 209.1484375,
+        "lastLength": 6307964,
+        "sink": 186,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "texture",
+        "operation": "encode-png",
+        "frames": 5,
+        "millisecondsPerImage": 247.6202,
+        "cpuMillisecondsPerImage": 250,
+        "allocatedBytesPerImage": 37672659.2,
+        "workingSetMiB": 206.68359375,
+        "privateMiB": 191.21484375,
+        "peakWorkingSetMiB": 209.015625,
+        "lastLength": 6307964,
+        "sink": 186,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "texture",
+        "operation": "encode-png",
+        "frames": 5,
+        "millisecondsPerImage": 243.70533999999998,
+        "cpuMillisecondsPerImage": 243.75,
+        "allocatedBytesPerImage": 37672659.2,
+        "workingSetMiB": 206.796875,
+        "privateMiB": 191.2578125,
+        "peakWorkingSetMiB": 208.18359375,
+        "lastLength": 6307964,
+        "sink": 186,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "ui",
+        "operation": "decode-jpeg420",
+        "frames": 340,
+        "millisecondsPerImage": 3.5368764705882354,
+        "cpuMillisecondsPerImage": 3.5386029411764706,
+        "allocatedBytesPerImage": 905.5529411764705,
+        "workingSetMiB": 45.11328125,
+        "privateMiB": 20.23828125,
+        "peakWorkingSetMiB": 45.11328125,
+        "lastLength": 8294400,
+        "sink": 218,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "ui",
+        "operation": "decode-jpeg420",
+        "frames": 338,
+        "millisecondsPerImage": 3.5526588757396453,
+        "cpuMillisecondsPerImage": 3.559541420118343,
+        "allocatedBytesPerImage": 905.5621301775147,
+        "workingSetMiB": 45.33984375,
+        "privateMiB": 20.578125,
+        "peakWorkingSetMiB": 45.33984375,
+        "lastLength": 8294400,
+        "sink": 218,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "ui",
+        "operation": "decode-jpeg420",
+        "frames": 338,
+        "millisecondsPerImage": 3.558909171597633,
+        "cpuMillisecondsPerImage": 3.5133136094674557,
+        "allocatedBytesPerImage": 905.5621301775147,
+        "workingSetMiB": 45.21875,
+        "privateMiB": 20.26953125,
+        "peakWorkingSetMiB": 45.21875,
+        "lastLength": 8294400,
+        "sink": 218,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "ui",
+        "operation": "decode-jpeg420",
+        "frames": 9,
+        "millisecondsPerImage": 149.49183333333335,
+        "cpuMillisecondsPerImage": 149.30555555555554,
+        "allocatedBytesPerImage": 165170.66666666666,
+        "workingSetMiB": 51.4140625,
+        "privateMiB": 30.1484375,
+        "peakWorkingSetMiB": 51.4140625,
+        "lastLength": 8294400,
+        "sink": 218,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "ui",
+        "operation": "decode-jpeg420",
+        "frames": 9,
+        "millisecondsPerImage": 149.3698111111111,
+        "cpuMillisecondsPerImage": 151.04166666666666,
+        "allocatedBytesPerImage": 165170.66666666666,
+        "workingSetMiB": 51.40625,
+        "privateMiB": 30.15234375,
+        "peakWorkingSetMiB": 51.40625,
+        "lastLength": 8294400,
+        "sink": 218,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "ui",
+        "operation": "decode-jpeg420",
+        "frames": 8,
+        "millisecondsPerImage": 154.15725,
+        "cpuMillisecondsPerImage": 156.25,
+        "allocatedBytesPerImage": 165178,
+        "workingSetMiB": 51.2421875,
+        "privateMiB": 30,
+        "peakWorkingSetMiB": 51.2421875,
+        "lastLength": 8294400,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "ui",
+        "operation": "decode-jpeg444",
+        "frames": 296,
+        "millisecondsPerImage": 4.054339527027027,
+        "cpuMillisecondsPerImage": 4.117398648648648,
+        "allocatedBytesPerImage": 913.3513513513514,
+        "workingSetMiB": 45.17578125,
+        "privateMiB": 21.015625,
+        "peakWorkingSetMiB": 45.17578125,
+        "lastLength": 8294400,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "ui",
+        "operation": "decode-jpeg444",
+        "frames": 294,
+        "millisecondsPerImage": 4.086041156462585,
+        "cpuMillisecondsPerImage": 4.039115646258503,
+        "allocatedBytesPerImage": 905.795918367347,
+        "workingSetMiB": 45.38671875,
+        "privateMiB": 20.53515625,
+        "peakWorkingSetMiB": 45.38671875,
+        "lastLength": 8294400,
+        "sink": 223,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "ui",
+        "operation": "decode-jpeg444",
+        "frames": 294,
+        "millisecondsPerImage": 4.0916193877551015,
+        "cpuMillisecondsPerImage": 4.092261904761905,
+        "allocatedBytesPerImage": 905.795918367347,
+        "workingSetMiB": 45.4140625,
+        "privateMiB": 20.54296875,
+        "peakWorkingSetMiB": 45.4140625,
+        "lastLength": 8294400,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "ui",
+        "operation": "decode-jpeg444",
+        "frames": 14,
+        "millisecondsPerImage": 90.70926428571428,
+        "cpuMillisecondsPerImage": 91.51785714285714,
+        "allocatedBytesPerImage": 199853.7142857143,
+        "workingSetMiB": 53.2578125,
+        "privateMiB": 31.40625,
+        "peakWorkingSetMiB": 53.2578125,
+        "lastLength": 8294400,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "ui",
+        "operation": "decode-jpeg444",
+        "frames": 14,
+        "millisecondsPerImage": 88.21856428571428,
+        "cpuMillisecondsPerImage": 90.40178571428571,
+        "allocatedBytesPerImage": 199853.7142857143,
+        "workingSetMiB": 52.5859375,
+        "privateMiB": 31.25,
+        "peakWorkingSetMiB": 52.5859375,
+        "lastLength": 8294400,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "ui",
+        "operation": "decode-jpeg444",
+        "frames": 13,
+        "millisecondsPerImage": 92.47259230769231,
+        "cpuMillisecondsPerImage": 93.75,
+        "allocatedBytesPerImage": 199856.61538461538,
+        "workingSetMiB": 52.4140625,
+        "privateMiB": 31.03515625,
+        "peakWorkingSetMiB": 52.4140625,
+        "lastLength": 8294400,
+        "sink": 223,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "ui",
+        "operation": "decode-png",
+        "frames": 641,
+        "millisecondsPerImage": 1.873351326053042,
+        "cpuMillisecondsPerImage": 1.87695007800312,
+        "allocatedBytesPerImage": 8888.823712948519,
+        "workingSetMiB": 53.75390625,
+        "privateMiB": 28.78515625,
+        "peakWorkingSetMiB": 53.75390625,
+        "lastLength": 8294400,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll",
+          "System.IO.Compression.Native.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "ui",
+        "operation": "decode-png",
+        "frames": 642,
+        "millisecondsPerImage": 1.870776168224299,
+        "cpuMillisecondsPerImage": 1.8740264797507789,
+        "allocatedBytesPerImage": 8888.822429906542,
+        "workingSetMiB": 53.84375,
+        "privateMiB": 29.59375,
+        "peakWorkingSetMiB": 53.84375,
+        "lastLength": 8294400,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll",
+          "System.IO.Compression.Native.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "ui",
+        "operation": "decode-png",
+        "frames": 639,
+        "millisecondsPerImage": 1.880100938967136,
+        "cpuMillisecondsPerImage": 1.8583724569640063,
+        "allocatedBytesPerImage": 8888.826291079813,
+        "workingSetMiB": 53.84765625,
+        "privateMiB": 29.6171875,
+        "peakWorkingSetMiB": 53.84765625,
+        "lastLength": 8294400,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll",
+          "System.IO.Compression.Native.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "ui",
+        "operation": "decode-png",
+        "frames": 611,
+        "millisecondsPerImage": 1.9655494271685763,
+        "cpuMillisecondsPerImage": 1.9691080196399344,
+        "allocatedBytesPerImage": 31747.26022913257,
+        "workingSetMiB": 60.73046875,
+        "privateMiB": 37.51171875,
+        "peakWorkingSetMiB": 60.73046875,
+        "lastLength": 8294400,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "ui",
+        "operation": "decode-png",
+        "frames": 619,
+        "millisecondsPerImage": 1.9409846526655896,
+        "cpuMillisecondsPerImage": 1.943659127625202,
+        "allocatedBytesPerImage": 31747.218093699514,
+        "workingSetMiB": 60.234375,
+        "privateMiB": 37.0234375,
+        "peakWorkingSetMiB": 60.234375,
+        "lastLength": 8294400,
+        "sink": 220,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "ui",
+        "operation": "decode-png",
+        "frames": 629,
+        "millisecondsPerImage": 1.9100804451510331,
+        "cpuMillisecondsPerImage": 1.912758346581876,
+        "allocatedBytesPerImage": 31747.16693163752,
+        "workingSetMiB": 60.3203125,
+        "privateMiB": 37.1015625,
+        "peakWorkingSetMiB": 60.3203125,
+        "lastLength": 8294400,
+        "sink": 220,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "ui",
+        "operation": "encode-jpeg444",
+        "frames": 155,
+        "millisecondsPerImage": 7.76577935483871,
+        "cpuMillisecondsPerImage": 7.963709677419355,
+        "allocatedBytesPerImage": 198528.25806451612,
+        "workingSetMiB": 80.6640625,
+        "privateMiB": 59.56640625,
+        "peakWorkingSetMiB": 80.6640625,
+        "lastLength": 196847,
+        "sink": 1,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "ui",
+        "operation": "encode-jpeg444",
+        "frames": 155,
+        "millisecondsPerImage": 7.7649799999999995,
+        "cpuMillisecondsPerImage": 7.963709677419355,
+        "allocatedBytesPerImage": 198528.25806451612,
+        "workingSetMiB": 80.59765625,
+        "privateMiB": 59.52734375,
+        "peakWorkingSetMiB": 80.59765625,
+        "lastLength": 196847,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "ui",
+        "operation": "encode-jpeg444",
+        "frames": 153,
+        "millisecondsPerImage": 7.847516993464053,
+        "cpuMillisecondsPerImage": 8.06781045751634,
+        "allocatedBytesPerImage": 198528.26143790848,
+        "workingSetMiB": 80.484375,
+        "privateMiB": 59.3828125,
+        "peakWorkingSetMiB": 80.484375,
+        "lastLength": 196847,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "ui",
+        "operation": "encode-jpeg444",
+        "frames": 19,
+        "millisecondsPerImage": 65.65711578947369,
+        "cpuMillisecondsPerImage": 65.78947368421052,
+        "allocatedBytesPerImage": 715898.1052631579,
+        "workingSetMiB": 61.8125,
+        "privateMiB": 39.80078125,
+        "peakWorkingSetMiB": 61.8125,
+        "lastLength": 194433,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "ui",
+        "operation": "encode-jpeg444",
+        "frames": 19,
+        "millisecondsPerImage": 66.72097368421052,
+        "cpuMillisecondsPerImage": 66.61184210526316,
+        "allocatedBytesPerImage": 715898.1052631579,
+        "workingSetMiB": 61.8828125,
+        "privateMiB": 39.87890625,
+        "peakWorkingSetMiB": 61.8828125,
+        "lastLength": 194433,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "ui",
+        "operation": "encode-jpeg444",
+        "frames": 19,
+        "millisecondsPerImage": 66.00571578947368,
+        "cpuMillisecondsPerImage": 66.61184210526316,
+        "allocatedBytesPerImage": 715898.1052631579,
+        "workingSetMiB": 62.04296875,
+        "privateMiB": 40.09765625,
+        "peakWorkingSetMiB": 62.04296875,
+        "lastLength": 194433,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "ui",
+        "operation": "encode-png",
+        "frames": 16,
+        "millisecondsPerImage": 79.465,
+        "cpuMillisecondsPerImage": 82.03125,
+        "allocatedBytesPerImage": 57114,
+        "workingSetMiB": 50.05078125,
+        "privateMiB": 27.203125,
+        "peakWorkingSetMiB": 50.05078125,
+        "lastLength": 12555,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll",
+          "System.IO.Compression.Native.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "ui",
+        "operation": "encode-png",
+        "frames": 16,
+        "millisecondsPerImage": 76.08093125,
+        "cpuMillisecondsPerImage": 76.171875,
+        "allocatedBytesPerImage": 57114,
+        "workingSetMiB": 50.09765625,
+        "privateMiB": 27.25390625,
+        "peakWorkingSetMiB": 50.09765625,
+        "lastLength": 12555,
+        "sink": 22,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll",
+          "System.IO.Compression.Native.dll"
+        ]
+      },
+      {
+        "backend": "after",
+        "scene": "ui",
+        "operation": "encode-png",
+        "frames": 16,
+        "millisecondsPerImage": 76.94830625,
+        "cpuMillisecondsPerImage": 79.1015625,
+        "allocatedBytesPerImage": 57114,
+        "workingSetMiB": 50.13671875,
+        "privateMiB": 27.359375,
+        "peakWorkingSetMiB": 50.13671875,
+        "lastLength": 12555,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll",
+          "System.IO.Compression.Native.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "ui",
+        "operation": "encode-png",
+        "frames": 20,
+        "millisecondsPerImage": 61.302200000000006,
+        "cpuMillisecondsPerImage": 61.71875,
+        "allocatedBytesPerImage": 8760933.2,
+        "workingSetMiB": 80.328125,
+        "privateMiB": 58.44140625,
+        "peakWorkingSetMiB": 118.65234375,
+        "lastLength": 109711,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "ui",
+        "operation": "encode-png",
+        "frames": 20,
+        "millisecondsPerImage": 60.89787,
+        "cpuMillisecondsPerImage": 63.28125,
+        "allocatedBytesPerImage": 8760933.2,
+        "workingSetMiB": 80.10546875,
+        "privateMiB": 57.390625,
+        "peakWorkingSetMiB": 118.453125,
+        "lastLength": 109711,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      },
+      {
+        "backend": "before",
+        "scene": "ui",
+        "operation": "encode-png",
+        "frames": 20,
+        "millisecondsPerImage": 61.013165,
+        "cpuMillisecondsPerImage": 61.71875,
+        "allocatedBytesPerImage": 8760933.2,
+        "workingSetMiB": 80.265625,
+        "privateMiB": 58.35546875,
+        "peakWorkingSetMiB": 118.609375,
+        "lastLength": 109711,
+        "sink": 0,
+        "runtime": ".NET 10.0.13",
+        "nativeAot": false,
+        "avx2": true,
+        "cpu": 12,
+        "os": "Microsoft Windows 10.0.26300",
+        "nativeModules": [
+          "SimdSkia.Core.dll",
+          "System.IO.Compression.dll",
+          "SimdSkia.Imaging.dll"
+        ]
+      }
+    ]
+  },
+  "adaptedDecodeValidation": [
+    {
+      "name": "png-0-8-adam0",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "788387111105D51BA2408DAD10533DEF9B03AFD9D95C85515C41F09379B55EED"
+    },
+    {
+      "name": "png-0-8-adam1",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "788387111105D51BA2408DAD10533DEF9B03AFD9D95C85515C41F09379B55EED"
+    },
+    {
+      "name": "png-0-16-adam0",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "788387111105D51BA2408DAD10533DEF9B03AFD9D95C85515C41F09379B55EED"
+    },
+    {
+      "name": "png-0-16-adam1",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "788387111105D51BA2408DAD10533DEF9B03AFD9D95C85515C41F09379B55EED"
+    },
+    {
+      "name": "png-2-8-adam0",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "F0E60F3F37334BB981C9D2B9BDBF70931515986C93DF61C281A57C78ECC453B1"
+    },
+    {
+      "name": "png-2-8-adam1",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "F0E60F3F37334BB981C9D2B9BDBF70931515986C93DF61C281A57C78ECC453B1"
+    },
+    {
+      "name": "png-2-16-adam0",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "F0E60F3F37334BB981C9D2B9BDBF70931515986C93DF61C281A57C78ECC453B1"
+    },
+    {
+      "name": "png-2-16-adam1",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "F0E60F3F37334BB981C9D2B9BDBF70931515986C93DF61C281A57C78ECC453B1"
+    },
+    {
+      "name": "png-4-8-adam0",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "D9820CFE5445FCF172B9B5B317EA6CF23213426E9C9137926304135F7399B75E"
+    },
+    {
+      "name": "png-4-8-adam1",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "D9820CFE5445FCF172B9B5B317EA6CF23213426E9C9137926304135F7399B75E"
+    },
+    {
+      "name": "png-4-16-adam0",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "D9820CFE5445FCF172B9B5B317EA6CF23213426E9C9137926304135F7399B75E"
+    },
+    {
+      "name": "png-4-16-adam1",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "D9820CFE5445FCF172B9B5B317EA6CF23213426E9C9137926304135F7399B75E"
+    },
+    {
+      "name": "png-6-8-adam0",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "C221DC260E32FCB725F0BB4F7B84A2349DBB5CB2608826DA5786D81D1D6C86B8"
+    },
+    {
+      "name": "png-6-8-adam1",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "C221DC260E32FCB725F0BB4F7B84A2349DBB5CB2608826DA5786D81D1D6C86B8"
+    },
+    {
+      "name": "png-6-16-adam0",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "C221DC260E32FCB725F0BB4F7B84A2349DBB5CB2608826DA5786D81D1D6C86B8"
+    },
+    {
+      "name": "png-6-16-adam1",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "C221DC260E32FCB725F0BB4F7B84A2349DBB5CB2608826DA5786D81D1D6C86B8"
+    },
+    {
+      "name": "png-0-1-adam0",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "CCB0C3CEA50183EFD71909E2A088E78778FAC819AA3E8F789CD2458D69C68DF9"
+    },
+    {
+      "name": "png-0-1-adam1",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "CCB0C3CEA50183EFD71909E2A088E78778FAC819AA3E8F789CD2458D69C68DF9"
+    },
+    {
+      "name": "png-0-2-adam0",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "C47C2B3A4E7DB65678A1C957ADBFE0D10C5D04473C3874C0766AA4297B54B67B"
+    },
+    {
+      "name": "png-0-2-adam1",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "C47C2B3A4E7DB65678A1C957ADBFE0D10C5D04473C3874C0766AA4297B54B67B"
+    },
+    {
+      "name": "png-0-4-adam0",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "69322E601EA65A9255A22E0716387320641288D91F8187A05BEF6A0ADCED7C6B"
+    },
+    {
+      "name": "png-0-4-adam1",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "69322E601EA65A9255A22E0716387320641288D91F8187A05BEF6A0ADCED7C6B"
+    },
+    {
+      "name": "png-3-1-adam0",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "7065F119862A5685E25B9E7C6C366E25189669C6082B3C385A3F58C40E6C5699"
+    },
+    {
+      "name": "png-3-1-adam1",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "7065F119862A5685E25B9E7C6C366E25189669C6082B3C385A3F58C40E6C5699"
+    },
+    {
+      "name": "png-3-2-adam0",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "F3FF999FB454ED8531A4BE39AD8B7FF2CAA0F5EA5D4D0A516A28FBBFC5F75616"
+    },
+    {
+      "name": "png-3-2-adam1",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "F3FF999FB454ED8531A4BE39AD8B7FF2CAA0F5EA5D4D0A516A28FBBFC5F75616"
+    },
+    {
+      "name": "png-3-4-adam0",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "EE3DE7F39A4FC7B80A712ECA78BE87082CB85D1A7DCE41B0F4BE73600E23A11B"
+    },
+    {
+      "name": "png-3-4-adam1",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "EE3DE7F39A4FC7B80A712ECA78BE87082CB85D1A7DCE41B0F4BE73600E23A11B"
+    },
+    {
+      "name": "jpeg-RGB-progressiveFalse-sampling0",
+      "engine": "existing",
+      "Max": 2,
+      "Rmse": 0.1270001270001905,
+      "passed": true,
+      "sha256": "8980E4FB17C4D2CEB180415654E0F2A625B1D87FC41FBA9DD596E0DA322894AF"
+    },
+    {
+      "name": "jpeg-RGB-progressiveFalse-sampling1",
+      "engine": "existing",
+      "Max": 2,
+      "Rmse": 0.408105120797716,
+      "passed": true,
+      "sha256": "F713E4B49D925953E7894EDEAEAE24478E29379CB514D2445D4501CA3208898D"
+    },
+    {
+      "name": "jpeg-RGB-progressiveFalse-sampling2",
+      "engine": "existing",
+      "Max": 2,
+      "Rmse": 0.42204338297241367,
+      "passed": true,
+      "sha256": "DAF51360A27DB1D71445EEF41DBE79AD97799A24488245391B6CA39D88E138D8"
+    },
+    {
+      "name": "jpeg-RGB-progressiveTrue-sampling0",
+      "engine": "existing",
+      "Max": 2,
+      "Rmse": 0.1270001270001905,
+      "passed": true,
+      "sha256": "8980E4FB17C4D2CEB180415654E0F2A625B1D87FC41FBA9DD596E0DA322894AF"
+    },
+    {
+      "name": "jpeg-RGB-progressiveTrue-sampling1",
+      "engine": "existing",
+      "Max": 2,
+      "Rmse": 0.408105120797716,
+      "passed": true,
+      "sha256": "F713E4B49D925953E7894EDEAEAE24478E29379CB514D2445D4501CA3208898D"
+    },
+    {
+      "name": "jpeg-RGB-progressiveTrue-sampling2",
+      "engine": "existing",
+      "Max": 2,
+      "Rmse": 0.42204338297241367,
+      "passed": true,
+      "sha256": "DAF51360A27DB1D71445EEF41DBE79AD97799A24488245391B6CA39D88E138D8"
+    },
+    {
+      "name": "jpeg-L-progressiveFalse-sampling0",
+      "engine": "existing",
+      "Max": 1,
+      "Rmse": 0.09729871876449238,
+      "passed": true,
+      "sha256": "51BA1B74F647F056BED9D959199AB60BDE784F4CC3340532178B13938523152F"
+    },
+    {
+      "name": "jpeg-L-progressiveTrue-sampling0",
+      "engine": "existing",
+      "Max": 1,
+      "Rmse": 0.09729871876449238,
+      "passed": true,
+      "sha256": "51BA1B74F647F056BED9D959199AB60BDE784F4CC3340532178B13938523152F"
+    },
+    {
+      "name": "jpeg-CMYK-progressiveFalse-sampling0",
+      "engine": "existing",
+      "Max": 1,
+      "Rmse": 0.056175441470485366,
+      "passed": true,
+      "sha256": "6178F71CF68AD8DFFFC3C739D321157D73F216DCCBEFAE68D78A450B7B136FFE"
+    },
+    {
+      "name": "jpeg-CMYK-progressiveTrue-sampling0",
+      "engine": "existing",
+      "Max": 1,
+      "Rmse": 0.056175441470485366,
+      "passed": true,
+      "sha256": "6178F71CF68AD8DFFFC3C739D321157D73F216DCCBEFAE68D78A450B7B136FFE"
+    },
+    {
+      "name": "png-srgb-icc",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "passed": true,
+      "sha256": "FCBFD838EAB83B2D97E9282BA125D7E6ABFDF6C6A9C69D4B524A4FA97C49B049"
+    },
+    {
+      "name": "jpeg-srgb-icc",
+      "engine": "existing",
+      "Max": 2,
+      "Rmse": 0.1213528232629344,
+      "passed": true,
+      "sha256": "461B8079137D44092CCBC912CE5903D5E85E4A9F412D277852471BA331991C39"
+    },
+    {
+      "name": "png-display-p3-to-srgb-icc",
+      "engine": "existing",
+      "Max": 1,
+      "Rmse": 0.10756778090804452,
+      "passed": true,
+      "sha256": "F012D0256F30BD75E47DB23C4941A3B285789FA578AB7C35C3EA1F10C3F2DE0B"
+    }
+  ],
+  "tests": {
+    "integration": 1416,
+    "aot": {
+      "checks": 1417,
+      "nativeAot": true,
+      "codec": "Sdcb.SimdCodecs 1.2.0"
+    },
+    "scalar": 1416,
+    "optimization": 471569,
+    "avaloniaControls": 9750,
+    "textChain": 595,
+    "glyphBatches": 60,
+    "basic": 36,
+    "pdf": 18,
+    "standalone": 37,
+    "imagingBeforeNativeJpegGate": 369
+  },
+  "originalJpegGate": {
+    "maximumAllowed": 1,
+    "cases": [
+      {
+        "actual": {
+          "alpha": "Opaque",
+          "a": 0,
+          "storage": "erase",
+          "r": 0,
+          "g": 0,
+          "b": 0,
+          "outAlpha": 255
+        },
+        "expected": {
+          "alpha": "Opaque",
+          "a": 0,
+          "storage": "erase",
+          "r": 0,
+          "g": 0,
+          "b": 0,
+          "outAlpha": 255
+        },
+        "max": 0
+      },
+      {
+        "actual": {
+          "alpha": "Opaque",
+          "a": 0,
+          "storage": "raw",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "expected": {
+          "alpha": "Opaque",
+          "a": 0,
+          "storage": "raw",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "max": 0
+      },
+      {
+        "actual": {
+          "alpha": "Opaque",
+          "a": 32,
+          "storage": "erase",
+          "r": 22,
+          "g": 11,
+          "b": 7,
+          "outAlpha": 255
+        },
+        "expected": {
+          "alpha": "Opaque",
+          "a": 32,
+          "storage": "erase",
+          "r": 22,
+          "g": 11,
+          "b": 5,
+          "outAlpha": 255
+        },
+        "max": 2
+      },
+      {
+        "actual": {
+          "alpha": "Opaque",
+          "a": 32,
+          "storage": "raw",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "expected": {
+          "alpha": "Opaque",
+          "a": 32,
+          "storage": "raw",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "max": 0
+      },
+      {
+        "actual": {
+          "alpha": "Opaque",
+          "a": 128,
+          "storage": "erase",
+          "r": 90,
+          "g": 45,
+          "b": 22,
+          "outAlpha": 255
+        },
+        "expected": {
+          "alpha": "Opaque",
+          "a": 128,
+          "storage": "erase",
+          "r": 90,
+          "g": 45,
+          "b": 22,
+          "outAlpha": 255
+        },
+        "max": 0
+      },
+      {
+        "actual": {
+          "alpha": "Opaque",
+          "a": 128,
+          "storage": "raw",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "expected": {
+          "alpha": "Opaque",
+          "a": 128,
+          "storage": "raw",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "max": 0
+      },
+      {
+        "actual": {
+          "alpha": "Opaque",
+          "a": 255,
+          "storage": "erase",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "expected": {
+          "alpha": "Opaque",
+          "a": 255,
+          "storage": "erase",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "max": 0
+      },
+      {
+        "actual": {
+          "alpha": "Opaque",
+          "a": 255,
+          "storage": "raw",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "expected": {
+          "alpha": "Opaque",
+          "a": 255,
+          "storage": "raw",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "max": 0
+      },
+      {
+        "actual": {
+          "alpha": "Premul",
+          "a": 0,
+          "storage": "erase",
+          "r": 0,
+          "g": 0,
+          "b": 0,
+          "outAlpha": 255
+        },
+        "expected": {
+          "alpha": "Premul",
+          "a": 0,
+          "storage": "erase",
+          "r": 0,
+          "g": 0,
+          "b": 0,
+          "outAlpha": 255
+        },
+        "max": 0
+      },
+      {
+        "actual": {
+          "alpha": "Premul",
+          "a": 0,
+          "storage": "raw",
+          "r": 0,
+          "g": 0,
+          "b": 0,
+          "outAlpha": 255
+        },
+        "expected": {
+          "alpha": "Premul",
+          "a": 0,
+          "storage": "raw",
+          "r": 0,
+          "g": 0,
+          "b": 0,
+          "outAlpha": 255
+        },
+        "max": 0
+      },
+      {
+        "actual": {
+          "alpha": "Premul",
+          "a": 32,
+          "storage": "erase",
+          "r": 22,
+          "g": 11,
+          "b": 7,
+          "outAlpha": 255
+        },
+        "expected": {
+          "alpha": "Premul",
+          "a": 32,
+          "storage": "erase",
+          "r": 22,
+          "g": 11,
+          "b": 5,
+          "outAlpha": 255
+        },
+        "max": 2
+      },
+      {
+        "actual": {
+          "alpha": "Premul",
+          "a": 32,
+          "storage": "raw",
+          "r": 22,
+          "g": 11,
+          "b": 7,
+          "outAlpha": 255
+        },
+        "expected": {
+          "alpha": "Premul",
+          "a": 32,
+          "storage": "raw",
+          "r": 22,
+          "g": 11,
+          "b": 5,
+          "outAlpha": 255
+        },
+        "max": 2
+      },
+      {
+        "actual": {
+          "alpha": "Premul",
+          "a": 128,
+          "storage": "erase",
+          "r": 90,
+          "g": 45,
+          "b": 22,
+          "outAlpha": 255
+        },
+        "expected": {
+          "alpha": "Premul",
+          "a": 128,
+          "storage": "erase",
+          "r": 90,
+          "g": 45,
+          "b": 22,
+          "outAlpha": 255
+        },
+        "max": 0
+      },
+      {
+        "actual": {
+          "alpha": "Premul",
+          "a": 128,
+          "storage": "raw",
+          "r": 90,
+          "g": 45,
+          "b": 22,
+          "outAlpha": 255
+        },
+        "expected": {
+          "alpha": "Premul",
+          "a": 128,
+          "storage": "raw",
+          "r": 90,
+          "g": 45,
+          "b": 22,
+          "outAlpha": 255
+        },
+        "max": 0
+      },
+      {
+        "actual": {
+          "alpha": "Premul",
+          "a": 255,
+          "storage": "erase",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "expected": {
+          "alpha": "Premul",
+          "a": 255,
+          "storage": "erase",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "max": 0
+      },
+      {
+        "actual": {
+          "alpha": "Premul",
+          "a": 255,
+          "storage": "raw",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "expected": {
+          "alpha": "Premul",
+          "a": 255,
+          "storage": "raw",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "max": 0
+      },
+      {
+        "actual": {
+          "alpha": "Unpremul",
+          "a": 0,
+          "storage": "erase",
+          "r": 0,
+          "g": 0,
+          "b": 0,
+          "outAlpha": 255
+        },
+        "expected": {
+          "alpha": "Unpremul",
+          "a": 0,
+          "storage": "erase",
+          "r": 0,
+          "g": 0,
+          "b": 0,
+          "outAlpha": 255
+        },
+        "max": 0
+      },
+      {
+        "actual": {
+          "alpha": "Unpremul",
+          "a": 0,
+          "storage": "raw",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "expected": {
+          "alpha": "Unpremul",
+          "a": 0,
+          "storage": "raw",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "max": 0
+      },
+      {
+        "actual": {
+          "alpha": "Unpremul",
+          "a": 32,
+          "storage": "erase",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "expected": {
+          "alpha": "Unpremul",
+          "a": 32,
+          "storage": "erase",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "max": 0
+      },
+      {
+        "actual": {
+          "alpha": "Unpremul",
+          "a": 32,
+          "storage": "raw",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "expected": {
+          "alpha": "Unpremul",
+          "a": 32,
+          "storage": "raw",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "max": 0
+      },
+      {
+        "actual": {
+          "alpha": "Unpremul",
+          "a": 128,
+          "storage": "erase",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "expected": {
+          "alpha": "Unpremul",
+          "a": 128,
+          "storage": "erase",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "max": 0
+      },
+      {
+        "actual": {
+          "alpha": "Unpremul",
+          "a": 128,
+          "storage": "raw",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "expected": {
+          "alpha": "Unpremul",
+          "a": 128,
+          "storage": "raw",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "max": 0
+      },
+      {
+        "actual": {
+          "alpha": "Unpremul",
+          "a": 255,
+          "storage": "erase",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "expected": {
+          "alpha": "Unpremul",
+          "a": 255,
+          "storage": "erase",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "max": 0
+      },
+      {
+        "actual": {
+          "alpha": "Unpremul",
+          "a": 255,
+          "storage": "raw",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "expected": {
+          "alpha": "Unpremul",
+          "a": 255,
+          "storage": "raw",
+          "r": 181,
+          "g": 90,
+          "b": 45,
+          "outAlpha": 255
+        },
+        "max": 0
+      }
+    ],
+    "passed": false
+  },
+  "windowTests": {
+    "cpu": {
+      "OS": "Microsoft Windows 10.0.26300",
+      "Architecture": "X64",
+      "Frames": "2",
+      "Font": "站酷小薇体",
+      "ClientSize": "1000, 720",
+      "NativeHandle": "2425092",
+      "GPU": "",
+      "GpuCommands": "0",
+      "NativeSwapchainPresents": "0",
+      "CpuFallbackCommands": "0",
+      "CpuLayerCommands": "0",
+      "CompletedBatches": "0",
+      "GpuCompletionMs": "0",
+      "FallbackReasons": "",
+      "ManagedAssemblies": "System.Private.CoreLib,CrossPlatform,System.Runtime,SimdSkia.Avalonia.Gpu,System.Memory,SimdSkia.Avalonia,Avalonia.Controls,Avalonia.Base,System.ObjectModel,SimdSkia.Avalonia.Desktop,System.Collections.Concurrent,System.Threading,SimdSkia.Core,System.Collections,Avalonia.Native,MicroCom.Runtime,System.Runtime.InteropServices,Avalonia.X11,Avalonia.Win32,System.Numerics.Vectors,Avalonia.OpenGL,System.Linq,System.ComponentModel.Primitives,System.Private.Uri,SimdSkia.Text,Microsoft.Win32.Primitives,System.ComponentModel,System.Threading.Thread,Avalonia.Vulkan,Avalonia.Themes.Fluent,Avalonia.Markup.Xaml,System.ComponentModel.TypeConverter,Avalonia.Dialogs,System.Diagnostics.TraceSource,SimdSkia.Cpu,Avalonia.Win32.Automation,Clipper2Lib,Avalonia.MicroCom,netstandard,System.Diagnostics.DiagnosticSource,System.Runtime.Intrinsics,Avalonia.Markup,System.Console,System.IO.Compression,System.Diagnostics.Process,System.Collections.NonGeneric,SimdSkia.Imaging"
+    },
+    "direct2d": {
+      "OS": "Microsoft Windows 10.0.26300",
+      "Architecture": "X64",
+      "Frames": "2",
+      "Font": "站酷小薇体",
+      "ClientSize": "1000, 720",
+      "NativeHandle": "4654030",
+      "GPU": "Direct2D: NVIDIA GeForce GTX 1050 Ti",
+      "GpuCommands": "132",
+      "NativeSwapchainPresents": "2",
+      "CpuFallbackCommands": "0",
+      "CpuLayerCommands": "6",
+      "CompletedBatches": "2",
+      "GpuCompletionMs": "35.1592",
+      "FallbackReasons": "",
+      "ManagedAssemblies": "System.Private.CoreLib,CrossPlatform,System.Runtime,SimdSkia.Avalonia.Gpu,System.Memory,SimdSkia.Avalonia,Avalonia.Controls,Avalonia.Base,System.ObjectModel,SimdSkia.Avalonia.Desktop,System.Collections.Concurrent,System.Threading,SimdSkia.Core,System.Collections,Avalonia.Native,MicroCom.Runtime,System.Runtime.InteropServices,Avalonia.X11,Avalonia.Win32,System.Numerics.Vectors,Avalonia.OpenGL,System.Linq,System.ComponentModel.Primitives,System.Private.Uri,SimdSkia.Text,Microsoft.Win32.Primitives,System.ComponentModel,System.Threading.Thread,Avalonia.Vulkan,Avalonia.Themes.Fluent,Avalonia.Markup.Xaml,System.ComponentModel.TypeConverter,Avalonia.Dialogs,System.Diagnostics.TraceSource,SimdSkia.Cpu,Clipper2Lib,netstandard,Avalonia.Win32.Automation,Avalonia.MicroCom,System.Diagnostics.DiagnosticSource,System.Runtime.Intrinsics,Avalonia.Markup,SimdSkia.Gpu.Direct2D,SimdSkia.Gpu,System.Console,System.IO.Compression,System.Diagnostics.Process,System.Collections.NonGeneric,SimdSkia.Imaging"
+    },
+    "vulkan": {
+      "OS": "Microsoft Windows 10.0.26300",
+      "Architecture": "X64",
+      "Frames": "2",
+      "Font": "站酷小薇体",
+      "ClientSize": "1000, 720",
+      "NativeHandle": "2229272",
+      "GPU": "Vulkan: NVIDIA GeForce GTX 1050 Ti",
+      "GpuCommands": "132",
+      "NativeSwapchainPresents": "0",
+      "CpuFallbackCommands": "0",
+      "CpuLayerCommands": "6",
+      "CompletedBatches": "2",
+      "GpuCompletionMs": "59.1491",
+      "FallbackReasons": "",
+      "ManagedAssemblies": "System.Private.CoreLib,CrossPlatform,System.Runtime,SimdSkia.Avalonia.Gpu,System.Memory,SimdSkia.Avalonia,Avalonia.Controls,Avalonia.Base,System.ObjectModel,SimdSkia.Avalonia.Desktop,System.Collections.Concurrent,System.Threading,SimdSkia.Core,System.Collections,Avalonia.Native,MicroCom.Runtime,System.Runtime.InteropServices,Avalonia.X11,Avalonia.Win32,System.Numerics.Vectors,Avalonia.OpenGL,System.Linq,System.ComponentModel.Primitives,System.Private.Uri,SimdSkia.Text,Microsoft.Win32.Primitives,System.ComponentModel,System.Threading.Thread,Avalonia.Vulkan,Avalonia.Themes.Fluent,Avalonia.Markup.Xaml,System.ComponentModel.TypeConverter,Avalonia.Dialogs,System.Diagnostics.TraceSource,SimdSkia.Cpu,Clipper2Lib,netstandard,Avalonia.Win32.Automation,Avalonia.MicroCom,System.Diagnostics.DiagnosticSource,System.Runtime.Intrinsics,Avalonia.Markup,SimdSkia.Gpu.Direct2D,SimdSkia.Gpu,System.Console,System.IO.Compression,System.Diagnostics.Process,System.Collections.NonGeneric,SimdSkia.Imaging"
+    }
+  },
+  "packages": [
+    {
+      "id": "SimdSkia",
+      "version": "0.1.0-codecs-trial.1",
+      "bytes": 14081,
+      "sha256": "d0fa1b714a254f76424171a9685dab7c53bd8616873b9062941481e961a1ea41",
+      "dependencies": {
+        "SimdSkia.Compatibility": "0.1.0-codecs-trial.1"
+      }
+    },
+    {
+      "id": "SimdSkia.Avalonia",
+      "version": "0.1.0-codecs-trial.1",
+      "bytes": 92256,
+      "sha256": "3a3a5558b8aebc6a5177b22b1601eaf986583d32d874794bfaf1c3c87776af42",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-codecs-trial.1",
+        "SimdSkia.Cpu": "0.1.0-codecs-trial.1",
+        "SimdSkia.Imaging": "0.1.0-codecs-trial.1",
+        "SimdSkia.Text": "0.1.0-codecs-trial.1",
+        "Avalonia": "[12.1.4]",
+        "Clipper2": "[2.0.0]"
+      }
+    },
+    {
+      "id": "SimdSkia.Avalonia.Desktop",
+      "version": "0.1.0-codecs-trial.1",
+      "bytes": 557028,
+      "sha256": "ef37eb6085c5bdd55c0dd8954334e703a19b100bf93e40f88a9cb290ad71f8b1",
+      "dependencies": {
+        "SimdSkia.Avalonia": "0.1.0-codecs-trial.1",
+        "Avalonia": "[12.1.4]",
+        "Avalonia.FreeDesktop": "[12.1.4]",
+        "Avalonia.FreeDesktop.AtSpi": "[12.1.4]",
+        "Avalonia.Native": "[12.1.4]"
+      }
+    },
+    {
+      "id": "SimdSkia.Avalonia.Gpu",
+      "version": "0.1.0-codecs-trial.1",
+      "bytes": 38402,
+      "sha256": "e43e8966a59630e765ff5b2d10d781cffa4f1445af8b82f3524fa8f82317ac58",
+      "dependencies": {
+        "SimdSkia.Avalonia": "0.1.0-codecs-trial.1",
+        "SimdSkia.Gpu.Direct2D": "0.1.0-codecs-trial.1",
+        "SimdSkia.Gpu": "0.1.0-codecs-trial.1",
+        "Avalonia": "[12.1.4]"
+      }
+    },
+    {
+      "id": "SimdSkia.Compatibility",
+      "version": "0.1.0-codecs-trial.1",
+      "bytes": 65791,
+      "sha256": "3d3af434e6f39203df5ed4ad359ddf730dbbd5b3ab09e0761c36f3f37bb9ed0c",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-codecs-trial.1",
+        "SimdSkia.Cpu": "0.1.0-codecs-trial.1",
+        "SimdSkia.Gpu": "0.1.0-codecs-trial.1",
+        "SimdSkia.Imaging": "0.1.0-codecs-trial.1",
+        "SimdSkia.Text": "0.1.0-codecs-trial.1"
+      }
+    },
+    {
+      "id": "SimdSkia.Core",
+      "version": "0.1.0-codecs-trial.1",
+      "bytes": 38555,
+      "sha256": "833ff7c6ee2f9d5ced39a0e7ca7b94fea7b1c7716be1b5719eb4a99a85d2c042",
+      "dependencies": {}
+    },
+    {
+      "id": "SimdSkia.Cpu",
+      "version": "0.1.0-codecs-trial.1",
+      "bytes": 57064,
+      "sha256": "2a477a2912252c8835a05d0eab003be331e0e4d12bab91def06708e384270f07",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-codecs-trial.1"
+      }
+    },
+    {
+      "id": "SimdSkia.Gpu",
+      "version": "0.1.0-codecs-trial.1",
+      "bytes": 73369,
+      "sha256": "2102f283eaab3ff747f7c41fdef3a01557cbd0f8b2026bf175e6445f0bb16d51",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-codecs-trial.1"
+      }
+    },
+    {
+      "id": "SimdSkia.Gpu.Direct2D",
+      "version": "0.1.0-codecs-trial.1",
+      "bytes": 30748,
+      "sha256": "3d15b952e5aa506010d06197adafc6e2260a2fdfec7b71d5ad5844ae29b5d123",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-codecs-trial.1"
+      }
+    },
+    {
+      "id": "SimdSkia.Imaging",
+      "version": "0.1.0-codecs-trial.1",
+      "bytes": 51522,
+      "sha256": "f8fde0cd938a31d16dcaf1b8349519d1c8eebc41df972fdfbe9a330143d9ca8e",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-codecs-trial.1",
+        "Sdcb.SimdCodecs": "[1.2.0]"
+      }
+    },
+    {
+      "id": "SimdSkia.Pdf",
+      "version": "0.1.0-codecs-trial.1",
+      "bytes": 32716,
+      "sha256": "272fa7ed74a03cf893540365464cc5e7ff34170e275ee0335c62836be7fcef0f",
+      "dependencies": {
+        "SimdSkia.Compatibility": "0.1.0-codecs-trial.1",
+        "PdfPig": "[0.1.16]"
+      }
+    },
+    {
+      "id": "SimdSkia.Text",
+      "version": "0.1.0-codecs-trial.1",
+      "bytes": 38210,
+      "sha256": "913a1a563c88285d7e5f3d5ea624d3946a910257e68344f9128ddce6ef81c3d0",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-codecs-trial.1"
+      }
+    }
+  ],
+  "packageCodecValidation": {
+    "checks": 1416,
+    "nativeAot": false,
+    "codec": "Sdcb.SimdCodecs 1.2.0"
+  },
+  "nativeExe": {
+    "bytes": 8846848,
+    "sha256": "a76e8c9c0ec40c116e6dac72019d6398ed9a036e2e6b3e4d95efcf281e63f4cd"
+  },
+  "sourceHashes": {
+    "src\\SimdSkia.Imaging\\AssemblyInfo.cs": "a1ce37dace0cf7f6357339185fb7459b21544713a53f193ffe35d673175373bb",
+    "src\\SimdSkia.Imaging\\CodecBackend.cs": "bff4d7fc0be67ef346f7165fb3cd833ecee5f2815a9bd03d64253c95beaec0e1",
+    "src\\SimdSkia.Imaging\\GifImage.cs": "aeae0ed5fab19dd9bfa2b7ceba0dd504b17855c60a7f83a3e0a180eb242da27c",
+    "src\\SimdSkia.Imaging\\IccProfile.cs": "ea228877a42796d80336d68258a8c771ca9f8ebe2bfd993f4d0cee29877b5768",
+    "src\\SimdSkia.Imaging\\ImageCodec.cs": "adde9385a07bd142e2c8472da0df778815b83be6ad720ccb07b57358846f2037",
+    "src\\SimdSkia.Imaging\\ImageFrames.cs": "4b982fffafdf66723f9f20bf5fdf8147187808e2c973877012ca5f3ddde05814",
+    "src\\SimdSkia.Imaging\\JpegCodec.cs": "9d4ce34aa10511769dae249e1f29b88e1d9c297cb679ac37cc6680b6e586fc95",
+    "src\\SimdSkia.Imaging\\ManagedZlib.cs": "c1db52c866b3adfbf0b2eb9eb763d9ffa0fcb325d8ebc22e04ded36ca8cb0f0e",
+    "src\\SimdSkia.Imaging\\PdfWriter.cs": "261af4eca75b3ede07a822487d6d915d414941c921a11ab091102d363a1297cd",
+    "src\\SimdSkia.Imaging\\PngCodec.cs": "dddacef2749de4525f19d9964b19fde7a5c8bfefba344268dee10fd4da0b2230",
+    "src\\SimdSkia.Imaging\\PngValidation.cs": "d6a43daccfd852adc175faeb05f2c5183a2f8270a28f04b64fcfab1a3ca0c53f",
+    "src\\SimdSkia.Imaging\\WebpMetadata.cs": "442dbf39dadd8fcc6fa94b52f9e0b917cbf6243cd238e24942953e9052ba231b"
+  },
+  "knownLimits": [
+    "Original JPEG roundtrip: 3/24 cases exceed the unchanged 1 LSB threshold; max error is 2",
+    "CMYK ICC conversion requires raw CMYK samples not exposed by the new display API; explicitly rejected",
+    "Float/HDR tone mapping and unsupported colour signalling are explicitly rejected",
+    "No WebP encoder in the package; unsupported encoding requests throw",
+    "SkiaSharp has no TIFF/QOI/JP2/JBIG2 SKEncodedImageFormat; brand APIs expose these formats without inventing enum values",
+    "Windows x64 JIT/AOT tested locally; no new Linux/macOS execution claim or universal performance claim"
+  ]
+}

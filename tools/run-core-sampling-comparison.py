@@ -12,9 +12,9 @@ out=options.output.resolve()
 if out.exists():raise RuntimeError('Choose a fresh output directory')
 out.mkdir(parents=True)
 programs={'before':options.before_directory.resolve()/'Sampling.dll',
-          'after':ROOT/'benchmarks/Sampling/bin/Release/net8.0/Sampling.dll',
-          'original':ROOT/'benchmarks/Sampling/bin/Release/net8.0/Sampling.dll',
-          'scalar':ROOT/'benchmarks/Sampling/bin/Release/net8.0/Sampling.dll'}
+          'after':ROOT/'benchmarks/Sampling/bin/Release/net10.0/Sampling.dll',
+          'original':ROOT/'benchmarks/Sampling/bin/Release/net10.0/Sampling.dll',
+          'scalar':ROOT/'benchmarks/Sampling/bin/Release/net10.0/Sampling.dll'}
 files={str(p):hashlib.sha256(p.read_bytes()).hexdigest() for exe in programs.values() for p in exe.parent.glob('*.dll')}
 env=dict(os.environ,DOTNET_TieredCompilation='0',DOTNET_ReadyToRun='0',DOTNET_gcServer='0')
 rows=[];engines=list(programs)

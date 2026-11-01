@@ -11,8 +11,8 @@ assert len(core['runs'])==96 and len(core['quality'])==24 and len(controls['runs
 assert all(q['beforeAfterScalarExactlyEqual'] for q in core['quality'])
 assert status=={'fullVerifyExit':2,'no-avx2':0,'no-intrinsics':0}
 for name,digest in core['runtimeFiles'].items():assert hashlib.sha256(Path(name).read_bytes()).hexdigest()==digest,name
-control_directories={'before':root/'before-controls','after':ROOT/'tests/AvaloniaControls/bin/Release/net8.0',
-                     'reference':ROOT/'tests/AvaloniaControls.Reference/bin/Release/net8.0','default':ROOT/'tests/AvaloniaControls.Reference/bin/Release/net8.0'}
+control_directories={'before':root/'before-controls','after':ROOT/'tests/AvaloniaControls/bin/Release/net10.0',
+                     'reference':ROOT/'tests/AvaloniaControls.Reference/bin/Release/net10.0','default':ROOT/'tests/AvaloniaControls.Reference/bin/Release/net10.0'}
 for entry in read(root/'controls/manifest.json')['Files']:
     path=control_directories[entry['Engine']]/entry['Name']
     assert hashlib.sha256(path.read_bytes()).hexdigest().upper()==entry['Sha256'],str(path)

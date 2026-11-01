@@ -1,7 +1,7 @@
 <Project>
   <Import Project="../Directory.Build.props" />
   <PropertyGroup>
-    <Version Condition="'$(Version)' == ''">0.1.0-preview.9</Version>
+    <Version Condition="'$(Version)' == ''">0.1.0-preview.10</Version>
     <Authors>hnlyf168</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/donet-org-cn/SimdSkia</PackageProjectUrl>
@@ -11,7 +11,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Description>Experimental managed C# 2D rendering components. Preview only; API and rendering compatibility are incomplete. No Google Skia rendering dependency.</Description>
     <PackageTags>SimdSkia;graphics;rendering;managed;preview</PackageTags>
-    <PackageReleaseNotes>Preview 9 / 预览版 9：补齐 SKBitmap.GetPixels 真实像素指针、系统字体 FromFamilyName、GIF SKCodec、SKRoundRect/SaveLayer/Inflate 与采样重载；新增多页栅格 PDF 导出及可选纯托管 SimdSkia.Pdf 阅读模块。修复 VelaShell 字体 Try 回退和图片布局舍入边界，CPU/Direct2D/Vulkan 各 23 个常规场景通过，控件回归 9,750 项通过。仍有组合字符异常、复杂页面耗时、输入/Skia 专属预览及原版画质差距；PDF 仅支持明确子集。没有重测完整 CPU/GPU 性能，不沿用旧成绩宣称新版全面追平。12 个包统一版本，Avalonia 12.1.4、SkiaSharp 源码基线 3.119.4；不承诺二进制或全面兼容。完整更新、测试和限制见包内 CHANGELOG.md、README.md 和 https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-NOTES.md</PackageReleaseNotes>
+    <PackageReleaseNotes>Preview 10 / 预览版 10：升级 .NET 10 / C# 14，完整接入 Sdcb.SimdCodecs 1.2.0，替换 JPEG/PNG/GIF 像素编解码并扩展 WebP/动画、TIFF 等格式；允许 .NET 系统原生压缩，仍不调用 Google Skia 绘图。新增 123 个独立进程的同机 CPU/Vulkan/Direct2D/JPEG/PNG 对照：CPU 控件 0.891→0.549 ms，JPEG 解码快约 2.27–2.90 倍；仅限 .NET 10 JIT 与已测场景。CPU 工作集仍高约 18%–22%，纹理 PNG 解码耗时 2.03 倍，UI PNG 编码慢约 19%，JPEG 文件大小有增加；整页画质 CPU 0/3、GPU 0/12 达标，原版 JPEG 联合回读 3/24 组失败，未放宽阈值。12 包统一版本，Avalonia 12.1.4 / SkiaSharp 源码基线 3.119.4 不变；不兼容 .NET 8，不承诺全面或二进制替换。完整测试记录、性能图和限制见包内 CHANGELOG.md、README.md 及 https://github.com/donet-org-cn/SimdSkia/blob/main/docs/SKIA-COMPARISON-2026-11-01.md</PackageReleaseNotes>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>

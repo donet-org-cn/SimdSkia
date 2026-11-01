@@ -80,7 +80,7 @@ try
         Check(crossing.SequenceEqual(bytes.AsSpan(16382,8)),"Stream reads cross page boundaries correctly.");
         stream.Seek(2,SeekOrigin.End);Check(stream.ReadByte()==-1,"Seeking past EOF reads zero bytes.");
         Throws<IOException>(()=>stream.Seek(-1,SeekOrigin.Begin));
-        Throws<ArgumentNullException>(()=>stream.Read(null!,0,0));
+        Throws<ArgumentNullException>(()=>Check(stream.Read(null!,0,0)==0,"Unreachable null-buffer read"));
         stream.Dispose();Throws<ObjectDisposedException>(()=>stream.ReadByte());
     }
     Check(pagedFont.TryGetTable("glyf",out var exported)&&font.TryGetTable("glyf",out var original)&&exported.Span.SequenceEqual(original.Span),"Large explicit table exports are exact.");

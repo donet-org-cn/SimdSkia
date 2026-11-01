@@ -25,8 +25,8 @@ try {
     New-Item -ItemType Directory -Path $outputPath -Force | Out-Null
     $fontPath=(Resolve-Path -LiteralPath $Font).Path
     $fixturePath=Join-Path $outputPath 'fixtures'
-    $managedPath=Join-Path $workspacePath 'benchmarks/Managed/bin/Release/net8.0/SimdSkia.Benchmark.Managed.dll'
-    $referencePath=Join-Path $workspacePath 'benchmarks/Reference/bin/Release/net8.0/SimdSkia.Benchmark.Reference.dll'
+    $managedPath=Join-Path $workspacePath 'benchmarks/Managed/bin/Release/net10.0/SimdSkia.Benchmark.Managed.dll'
+    $referencePath=Join-Path $workspacePath 'benchmarks/Reference/bin/Release/net10.0/SimdSkia.Benchmark.Reference.dll'
     $env:DOTNET_TieredCompilation='0'
     $env:DOTNET_ReadyToRun='0'
     $env:DOTNET_gcServer='0'
@@ -53,7 +53,7 @@ try {
     foreach($sourceFile in $sourceHashes.Keys){if((Get-FileHash -LiteralPath $sourceFile).Hash -ne $sourceHashes[$sourceFile]){throw ('Product source changed during measurement: '+$sourceFile)}}
     $manifest.Complete=$true
     $manifest|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $outputPath 'run.json') -Encoding UTF8
-    dotnet benchmarks/Report/bin/Release/net8.0/Report.dll $outputPath $Report
+    dotnet benchmarks/Report/bin/Release/net10.0/Report.dll $outputPath $Report
     if($LASTEXITCODE -ne 0){throw 'Report generation failed.'}
 }
 finally{$env:DOTNET_TieredCompilation=$savedTier;$env:DOTNET_ReadyToRun=$savedR2R;$env:DOTNET_gcServer=$savedServer;Pop-Location}

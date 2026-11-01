@@ -17,8 +17,8 @@
     <PackageDownload Include="Avalonia.Win32" Version="[12.1.4]" />
     <Reference Include="$(NuGetPackageRoot)/avalonia.x11/12.1.4/lib/net8.0/Avalonia.X11.dll" />
     <Reference Include="$(NuGetPackageRoot)/avalonia.win32/12.1.4/lib/net8.0/*.dll" />
-    <None Include="$(NuGetPackageRoot)/avalonia.x11/12.1.4/lib/net8.0/Avalonia.X11.dll" Pack="true" PackagePath="lib/net8.0/" />
-    <None Include="$(NuGetPackageRoot)/avalonia.win32/12.1.4/lib/net8.0/*.dll" Pack="true" PackagePath="lib/net8.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.x11/12.1.4/lib/net8.0/Avalonia.X11.dll" Pack="true" PackagePath="lib/$(TargetFramework)/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.win32/12.1.4/lib/net8.0/*.dll" Pack="true" PackagePath="lib/$(TargetFramework)/" />
     <None Include="../../docs/licenses/Avalonia-MIT.txt" Pack="true" PackagePath="licenses/" />
   </ItemGroup>
 </Project>

@@ -12,7 +12,7 @@ try{
     $manifest|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $outputPath 'manifest.json') -Encoding utf8
     foreach($fork in 0..($Forks-1)){
         $modes=if($fork%2 -eq 0){@('scalar','simd')}else{@('simd','scalar')}
-        foreach($mode in $modes){dotnet benchmarks/Filters/bin/Release/net8.0/Filters.dll $mode (Join-Path $outputPath ($mode+'-'+$fork+'.json'));if($LASTEXITCODE -ne 0){throw 'Filter worker failed.'}}
+        foreach($mode in $modes){dotnet benchmarks/Filters/bin/Release/net10.0/Filters.dll $mode (Join-Path $outputPath ($mode+'-'+$fork+'.json'));if($LASTEXITCODE -ne 0){throw 'Filter worker failed.'}}
     }
     if((Get-FileHash src/SimdSkia.Cpu/ManagedFilters.cs).Hash -ne $manifest.SourceSha256){throw 'Filter source changed during measurement.'}
     python tools/report-filter-benchmarks.py $outputPath

@@ -6,6 +6,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../SimdSkia.Compatibility/SimdSkia.Compatibility.csproj" />
-    <None Include="_._" Pack="true" PackagePath="lib/net8.0/_._" />
+    <None Include="_._" Pack="true" PackagePath="lib/$(TargetFramework)/_._" />
   </ItemGroup>
 </Project>

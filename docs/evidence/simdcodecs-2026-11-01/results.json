@@ -1,0 +1,3412 @@
+{
+  "date": "2026-11-01",
+  "version": "Sdcb.SimdCodecs 1.2.0",
+  "cpu": "Intel(R) Core(TM) i7-8700K CPU @ 3.70GHz",
+  "cpuLogical": 12,
+  "runtime": ".NET 10.0.13",
+  "resolution": [
+    1920,
+    1080
+  ],
+  "rounds": 3,
+  "measurement": "Separate serial processes; 0.5s warmup, at least 1.2s measurement, 3-process medians; no disk IO in timing",
+  "fixtures": "Deterministic first-party opaque UI and texture patterns; not a photographic corpus",
+  "aot": "41 Sdcb fixture hashes equal across JIT SIMD, JIT scalar and actual Native AOT; AOT speed not measured",
+  "packages": [
+    {
+      "id": "sdcb.simdcodecs.jpeg",
+      "version": "1.2.0",
+      "license": "MIT",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/sdcb/SimdCodecs.git",
+        "commit": "02b1f5aab83fee545748801639b12002ee7d2462"
+      },
+      "dlls": [
+        {
+          "path": "lib\\net10.0\\Sdcb.SimdCodecs.Jpeg.dll",
+          "bytes": 181248
+        }
+      ],
+      "dependencies": [
+        {
+          "id": "Sdcb.SimdCodecs.Abstractions",
+          "version": "1.2.0",
+          "exclude": "Build,Analyzers"
+        }
+      ]
+    },
+    {
+      "id": "sdcb.simdcodecs.png",
+      "version": "1.2.0",
+      "license": "MIT",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/sdcb/SimdCodecs.git",
+        "commit": "02b1f5aab83fee545748801639b12002ee7d2462"
+      },
+      "dlls": [
+        {
+          "path": "lib\\net10.0\\Sdcb.SimdCodecs.Png.dll",
+          "bytes": 129024
+        }
+      ],
+      "dependencies": [
+        {
+          "id": "Sdcb.SimdCodecs.Abstractions",
+          "version": "1.2.0",
+          "exclude": "Build,Analyzers"
+        },
+        {
+          "id": "Sdcb.SimdCodecs.Color.Icc",
+          "version": "1.2.0",
+          "exclude": "Build,Analyzers"
+        }
+      ]
+    },
+    {
+      "id": "sdcb.simdcodecs.abstractions",
+      "version": "1.2.0",
+      "license": "MIT",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/sdcb/SimdCodecs.git",
+        "commit": "02b1f5aab83fee545748801639b12002ee7d2462"
+      },
+      "dlls": [
+        {
+          "path": "lib\\net10.0\\Sdcb.SimdCodecs.Abstractions.dll",
+          "bytes": 45056
+        }
+      ],
+      "dependencies": []
+    },
+    {
+      "id": "sdcb.simdcodecs.color.icc",
+      "version": "1.2.0",
+      "license": "MIT",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/sdcb/SimdCodecs.git",
+        "commit": "02b1f5aab83fee545748801639b12002ee7d2462"
+      },
+      "dlls": [
+        {
+          "path": "lib\\net10.0\\Sdcb.SimdCodecs.Color.Icc.dll",
+          "bytes": 26112
+        }
+      ],
+      "dependencies": [
+        {
+          "id": "Sdcb.SimdCodecs.Abstractions",
+          "version": "1.2.0",
+          "exclude": "Build,Analyzers"
+        }
+      ]
+    }
+  ],
+  "summary": [
+    {
+      "scene": "ui",
+      "operation": "decode-jpeg444",
+      "existing": {
+        "millisecondsPerImage": 94.99046923076922,
+        "cpuMillisecondsPerImage": 97.09821428571429,
+        "allocatedBytesPerImage": 199856.61538461538,
+        "workingSetMiB": 52.4140625,
+        "privateMiB": 31.0546875,
+        "peakWorkingSetMiB": 52.4140625
+      },
+      "sdcb": {
+        "millisecondsPerImage": 4.3896102189781026,
+        "cpuMillisecondsPerImage": 4.447992700729927,
+        "allocatedBytesPerImage": 89.92700729927007,
+        "workingSetMiB": 43.62890625,
+        "privateMiB": 19.8671875,
+        "peakWorkingSetMiB": 43.62890625
+      },
+      "speedup": 21.639841464758327
+    },
+    {
+      "scene": "ui",
+      "operation": "decode-jpeg420",
+      "existing": {
+        "millisecondsPerImage": 153.12435,
+        "cpuMillisecondsPerImage": 156.25,
+        "allocatedBytesPerImage": 165178,
+        "workingSetMiB": 51.1328125,
+        "privateMiB": 29.87890625,
+        "peakWorkingSetMiB": 51.1328125
+      },
+      "sdcb": {
+        "millisecondsPerImage": 3.8005481012658224,
+        "cpuMillisecondsPerImage": 3.90625,
+        "allocatedBytesPerImage": 89.67088607594937,
+        "workingSetMiB": 43.62890625,
+        "privateMiB": 19.875,
+        "peakWorkingSetMiB": 43.62890625
+      },
+      "speedup": 40.2900702530248
+    },
+    {
+      "scene": "ui",
+      "operation": "decode-png",
+      "existing": {
+        "millisecondsPerImage": 2.33962865497076,
+        "cpuMillisecondsPerImage": 2.314814814814815,
+        "allocatedBytesPerImage": 31746.931773879143,
+        "workingSetMiB": 60.15234375,
+        "privateMiB": 36.8984375,
+        "peakWorkingSetMiB": 60.15234375
+      },
+      "sdcb": {
+        "millisecondsPerImage": 1.4890705955334989,
+        "cpuMillisecondsPerImage": 1.492710918114144,
+        "allocatedBytesPerImage": 8417.260545905707,
+        "workingSetMiB": 53.48046875,
+        "privateMiB": 30.26953125,
+        "peakWorkingSetMiB": 53.48046875
+      },
+      "speedup": 1.5712006280887754
+    },
+    {
+      "scene": "ui",
+      "operation": "encode-jpeg444",
+      "existing": {
+        "millisecondsPerImage": 70.78543888888889,
+        "cpuMillisecondsPerImage": 71.18055555555556,
+        "allocatedBytesPerImage": 715898.2222222222,
+        "workingSetMiB": 63.57421875,
+        "privateMiB": 42.2734375,
+        "peakWorkingSetMiB": 63.57421875
+      },
+      "sdcb": {
+        "millisecondsPerImage": 8.08713288590604,
+        "cpuMillisecondsPerImage": 8.179530201342281,
+        "allocatedBytesPerImage": 198448.26845637584,
+        "workingSetMiB": 79.41015625,
+        "privateMiB": 58.328125,
+        "peakWorkingSetMiB": 79.41015625
+      },
+      "speedup": 8.752847255947923
+    },
+    {
+      "scene": "ui",
+      "operation": "encode-png",
+      "existing": {
+        "millisecondsPerImage": 62.932249999999996,
+        "cpuMillisecondsPerImage": 64.84375,
+        "allocatedBytesPerImage": 8760933.2,
+        "workingSetMiB": 80.08203125,
+        "privateMiB": 58.15234375,
+        "peakWorkingSetMiB": 118.546875
+      },
+      "sdcb": {
+        "millisecondsPerImage": 83.90126000000001,
+        "cpuMillisecondsPerImage": 84.375,
+        "allocatedBytesPerImage": 56850.666666666664,
+        "workingSetMiB": 49.96484375,
+        "privateMiB": 27.1640625,
+        "peakWorkingSetMiB": 49.96484375
+      },
+      "speedup": 0.7500751478583276
+    },
+    {
+      "scene": "texture",
+      "operation": "decode-jpeg444",
+      "existing": {
+        "millisecondsPerImage": 104.625175,
+        "cpuMillisecondsPerImage": 108.07291666666667,
+        "allocatedBytesPerImage": 766068,
+        "workingSetMiB": 59.109375,
+        "privateMiB": 37.83203125,
+        "peakWorkingSetMiB": 59.109375
+      },
+      "sdcb": {
+        "millisecondsPerImage": 9.310003875968993,
+        "cpuMillisecondsPerImage": 9.689922480620154,
+        "allocatedBytesPerImage": 92.09302325581395,
+        "workingSetMiB": 44.2265625,
+        "privateMiB": 20.5390625,
+        "peakWorkingSetMiB": 44.2265625
+      },
+      "speedup": 11.237930337500586
+    },
+    {
+      "scene": "texture",
+      "operation": "decode-jpeg420",
+      "existing": {
+        "millisecondsPerImage": 169.9655125,
+        "cpuMillisecondsPerImage": 169.921875,
+        "allocatedBytesPerImage": 733250,
+        "workingSetMiB": 55.9921875,
+        "privateMiB": 34.8125,
+        "peakWorkingSetMiB": 55.9921875
+      },
+      "sdcb": {
+        "millisecondsPerImage": 8.317588965517242,
+        "cpuMillisecondsPerImage": 8.620689655172415,
+        "allocatedBytesPerImage": 91.64137931034483,
+        "workingSetMiB": 44.2421875,
+        "privateMiB": 20.57421875,
+        "peakWorkingSetMiB": 44.2421875
+      },
+      "speedup": 20.43446883521617
+    },
+    {
+      "scene": "texture",
+      "operation": "decode-png",
+      "existing": {
+        "millisecondsPerImage": 39.50492580645162,
+        "cpuMillisecondsPerImage": 40.32258064516129,
+        "allocatedBytesPerImage": 879912,
+        "workingSetMiB": 62.390625,
+        "privateMiB": 39.95703125,
+        "peakWorkingSetMiB": 62.390625
+      },
+      "sdcb": {
+        "millisecondsPerImage": 24.563751020408166,
+        "cpuMillisecondsPerImage": 26.147959183673468,
+        "allocatedBytesPerImage": 8489.469387755102,
+        "workingSetMiB": 50.9453125,
+        "privateMiB": 26.9921875,
+        "peakWorkingSetMiB": 50.9453125
+      },
+      "speedup": 1.6082611232148525
+    },
+    {
+      "scene": "texture",
+      "operation": "encode-jpeg444",
+      "existing": {
+        "millisecondsPerImage": 96.06623076923077,
+        "cpuMillisecondsPerImage": 98.5576923076923,
+        "allocatedBytesPerImage": 2855019.076923077,
+        "workingSetMiB": 85.3203125,
+        "privateMiB": 65.828125,
+        "peakWorkingSetMiB": 85.3203125
+      },
+      "sdcb": {
+        "millisecondsPerImage": 10.671558407079646,
+        "cpuMillisecondsPerImage": 11.061946902654867,
+        "allocatedBytesPerImage": 750941.592920354,
+        "workingSetMiB": 82.99609375,
+        "privateMiB": 61.16015625,
+        "peakWorkingSetMiB": 84.95703125
+      },
+      "speedup": 9.002080774397413
+    },
+    {
+      "scene": "texture",
+      "operation": "encode-png",
+      "existing": {
+        "millisecondsPerImage": 257.48284,
+        "cpuMillisecondsPerImage": 253.125,
+        "allocatedBytesPerImage": 37672659.2,
+        "workingSetMiB": 206.6640625,
+        "privateMiB": 191.26171875,
+        "peakWorkingSetMiB": 208.24609375
+      },
+      "sdcb": {
+        "millisecondsPerImage": 458.211,
+        "cpuMillisecondsPerImage": 458.3333333333333,
+        "allocatedBytesPerImage": 11057213.333333334,
+        "workingSetMiB": 66.03125,
+        "privateMiB": 43.40625,
+        "peakWorkingSetMiB": 78.140625
+      },
+      "speedup": 0.5619307262374758
+    }
+  ],
+  "raw": [
+    {
+      "backend": "existing",
+      "scene": "texture",
+      "operation": "decode-jpeg420",
+      "frames": 8,
+      "millisecondsPerImage": 169.9655125,
+      "cpuMillisecondsPerImage": 169.921875,
+      "allocatedBytesPerImage": 733250,
+      "workingSetMiB": 55.9921875,
+      "privateMiB": 34.859375,
+      "peakWorkingSetMiB": 55.9921875,
+      "lastLength": 8294400,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "texture",
+      "operation": "decode-jpeg420",
+      "frames": 7,
+      "millisecondsPerImage": 185.0053142857143,
+      "cpuMillisecondsPerImage": 189.73214285714286,
+      "allocatedBytesPerImage": 733259.4285714285,
+      "workingSetMiB": 55.3671875,
+      "privateMiB": 34.1640625,
+      "peakWorkingSetMiB": 55.3671875,
+      "lastLength": 8294400,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "texture",
+      "operation": "decode-jpeg420",
+      "frames": 8,
+      "millisecondsPerImage": 165.622,
+      "cpuMillisecondsPerImage": 167.96875,
+      "allocatedBytesPerImage": 733250,
+      "workingSetMiB": 56.01953125,
+      "privateMiB": 34.8125,
+      "peakWorkingSetMiB": 56.01953125,
+      "lastLength": 8294400,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "texture",
+      "operation": "decode-jpeg420",
+      "frames": 145,
+      "millisecondsPerImage": 8.317588965517242,
+      "cpuMillisecondsPerImage": 8.620689655172415,
+      "allocatedBytesPerImage": 91.64137931034483,
+      "workingSetMiB": 44.3046875,
+      "privateMiB": 20.59765625,
+      "peakWorkingSetMiB": 44.3046875,
+      "lastLength": 8294400,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "texture",
+      "operation": "decode-jpeg420",
+      "frames": 150,
+      "millisecondsPerImage": 8.018502,
+      "cpuMillisecondsPerImage": 8.333333333333334,
+      "allocatedBytesPerImage": 91.52,
+      "workingSetMiB": 44.234375,
+      "privateMiB": 20.484375,
+      "peakWorkingSetMiB": 44.234375,
+      "lastLength": 8294400,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "texture",
+      "operation": "decode-jpeg420",
+      "frames": 145,
+      "millisecondsPerImage": 8.32334,
+      "cpuMillisecondsPerImage": 8.620689655172415,
+      "allocatedBytesPerImage": 91.64137931034483,
+      "workingSetMiB": 44.2421875,
+      "privateMiB": 20.57421875,
+      "peakWorkingSetMiB": 44.2421875,
+      "lastLength": 8294400,
+      "sink": 15,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "texture",
+      "operation": "decode-jpeg444",
+      "frames": 12,
+      "millisecondsPerImage": 104.625175,
+      "cpuMillisecondsPerImage": 108.07291666666667,
+      "allocatedBytesPerImage": 766068,
+      "workingSetMiB": 59.109375,
+      "privateMiB": 37.83203125,
+      "peakWorkingSetMiB": 59.109375,
+      "lastLength": 8294400,
+      "sink": 13,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "texture",
+      "operation": "decode-jpeg444",
+      "frames": 12,
+      "millisecondsPerImage": 106.38176666666668,
+      "cpuMillisecondsPerImage": 111.97916666666667,
+      "allocatedBytesPerImage": 766068,
+      "workingSetMiB": 59.078125,
+      "privateMiB": 37.80859375,
+      "peakWorkingSetMiB": 59.078125,
+      "lastLength": 8294400,
+      "sink": 13,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "texture",
+      "operation": "decode-jpeg444",
+      "frames": 12,
+      "millisecondsPerImage": 103.70866666666666,
+      "cpuMillisecondsPerImage": 108.07291666666667,
+      "allocatedBytesPerImage": 766068,
+      "workingSetMiB": 59.25390625,
+      "privateMiB": 37.94140625,
+      "peakWorkingSetMiB": 59.25390625,
+      "lastLength": 8294400,
+      "sink": 13,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "texture",
+      "operation": "decode-jpeg444",
+      "frames": 124,
+      "millisecondsPerImage": 9.68210322580645,
+      "cpuMillisecondsPerImage": 9.954637096774194,
+      "allocatedBytesPerImage": 92.25806451612904,
+      "workingSetMiB": 44.23046875,
+      "privateMiB": 20.60546875,
+      "peakWorkingSetMiB": 44.23046875,
+      "lastLength": 8294400,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "texture",
+      "operation": "decode-jpeg444",
+      "frames": 134,
+      "millisecondsPerImage": 9.016950746268657,
+      "cpuMillisecondsPerImage": 9.444962686567164,
+      "allocatedBytesPerImage": 91.94029850746269,
+      "workingSetMiB": 44.15234375,
+      "privateMiB": 20.50390625,
+      "peakWorkingSetMiB": 44.15234375,
+      "lastLength": 8294400,
+      "sink": 13,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "texture",
+      "operation": "decode-jpeg444",
+      "frames": 129,
+      "millisecondsPerImage": 9.310003875968993,
+      "cpuMillisecondsPerImage": 9.689922480620154,
+      "allocatedBytesPerImage": 92.09302325581395,
+      "workingSetMiB": 44.2265625,
+      "privateMiB": 20.5390625,
+      "peakWorkingSetMiB": 44.2265625,
+      "lastLength": 8294400,
+      "sink": 13,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "texture",
+      "operation": "decode-png",
+      "frames": 30,
+      "millisecondsPerImage": 40.88442666666666,
+      "cpuMillisecondsPerImage": 41.666666666666664,
+      "allocatedBytesPerImage": 879914.6666666666,
+      "workingSetMiB": 62.390625,
+      "privateMiB": 39.92578125,
+      "peakWorkingSetMiB": 62.390625,
+      "lastLength": 8294400,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "texture",
+      "operation": "decode-png",
+      "frames": 31,
+      "millisecondsPerImage": 39.50492580645162,
+      "cpuMillisecondsPerImage": 40.32258064516129,
+      "allocatedBytesPerImage": 879912,
+      "workingSetMiB": 62.484375,
+      "privateMiB": 40.0625,
+      "peakWorkingSetMiB": 62.484375,
+      "lastLength": 8294400,
+      "sink": 15,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "texture",
+      "operation": "decode-png",
+      "frames": 31,
+      "millisecondsPerImage": 38.74828709677419,
+      "cpuMillisecondsPerImage": 38.306451612903224,
+      "allocatedBytesPerImage": 879912,
+      "workingSetMiB": 62.3828125,
+      "privateMiB": 39.95703125,
+      "peakWorkingSetMiB": 62.3828125,
+      "lastLength": 8294400,
+      "sink": 15,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "texture",
+      "operation": "decode-png",
+      "frames": 49,
+      "millisecondsPerImage": 24.763616326530613,
+      "cpuMillisecondsPerImage": 26.147959183673468,
+      "allocatedBytesPerImage": 8489.469387755102,
+      "workingSetMiB": 50.96484375,
+      "privateMiB": 27.04296875,
+      "peakWorkingSetMiB": 50.96484375,
+      "lastLength": 8294400,
+      "sink": 15,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll",
+        "System.IO.Compression.Native.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "texture",
+      "operation": "decode-png",
+      "frames": 49,
+      "millisecondsPerImage": 24.563751020408166,
+      "cpuMillisecondsPerImage": 26.147959183673468,
+      "allocatedBytesPerImage": 8489.469387755102,
+      "workingSetMiB": 50.921875,
+      "privateMiB": 26.90234375,
+      "peakWorkingSetMiB": 50.921875,
+      "lastLength": 8294400,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll",
+        "System.IO.Compression.Native.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "texture",
+      "operation": "decode-png",
+      "frames": 51,
+      "millisecondsPerImage": 23.97792156862745,
+      "cpuMillisecondsPerImage": 26.041666666666668,
+      "allocatedBytesPerImage": 8485.64705882353,
+      "workingSetMiB": 50.9453125,
+      "privateMiB": 26.9921875,
+      "peakWorkingSetMiB": 50.9453125,
+      "lastLength": 8294400,
+      "sink": 15,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll",
+        "System.IO.Compression.Native.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "texture",
+      "operation": "encode-jpeg444",
+      "frames": 14,
+      "millisecondsPerImage": 90.94940714285714,
+      "cpuMillisecondsPerImage": 91.51785714285714,
+      "allocatedBytesPerImage": 2855018.8571428573,
+      "workingSetMiB": 87.8125,
+      "privateMiB": 68.546875,
+      "peakWorkingSetMiB": 87.8125,
+      "lastLength": 760644,
+      "sink": 253,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "texture",
+      "operation": "encode-jpeg444",
+      "frames": 13,
+      "millisecondsPerImage": 96.06623076923077,
+      "cpuMillisecondsPerImage": 98.5576923076923,
+      "allocatedBytesPerImage": 2855019.076923077,
+      "workingSetMiB": 85.3203125,
+      "privateMiB": 65.828125,
+      "peakWorkingSetMiB": 85.3203125,
+      "lastLength": 760644,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "texture",
+      "operation": "encode-jpeg444",
+      "frames": 13,
+      "millisecondsPerImage": 98.59225384615385,
+      "cpuMillisecondsPerImage": 99.75961538461539,
+      "allocatedBytesPerImage": 2855019.076923077,
+      "workingSetMiB": 84.79296875,
+      "privateMiB": 65.25,
+      "peakWorkingSetMiB": 84.79296875,
+      "lastLength": 760644,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "texture",
+      "operation": "encode-jpeg444",
+      "frames": 113,
+      "millisecondsPerImage": 10.671558407079646,
+      "cpuMillisecondsPerImage": 11.061946902654867,
+      "allocatedBytesPerImage": 750941.592920354,
+      "workingSetMiB": 85.15625,
+      "privateMiB": 63.32421875,
+      "peakWorkingSetMiB": 86.3828125,
+      "lastLength": 749217,
+      "sink": 191,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "texture",
+      "operation": "encode-jpeg444",
+      "frames": 113,
+      "millisecondsPerImage": 10.697325663716814,
+      "cpuMillisecondsPerImage": 11.061946902654867,
+      "allocatedBytesPerImage": 750941.592920354,
+      "workingSetMiB": 82.23828125,
+      "privateMiB": 60.4609375,
+      "peakWorkingSetMiB": 84.1953125,
+      "lastLength": 749217,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "texture",
+      "operation": "encode-jpeg444",
+      "frames": 114,
+      "millisecondsPerImage": 10.554880701754385,
+      "cpuMillisecondsPerImage": 10.69078947368421,
+      "allocatedBytesPerImage": 750940.5614035088,
+      "workingSetMiB": 82.99609375,
+      "privateMiB": 61.16015625,
+      "peakWorkingSetMiB": 84.95703125,
+      "lastLength": 749217,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "texture",
+      "operation": "encode-png",
+      "frames": 5,
+      "millisecondsPerImage": 250.56106,
+      "cpuMillisecondsPerImage": 253.125,
+      "allocatedBytesPerImage": 37672659.2,
+      "workingSetMiB": 206.86328125,
+      "privateMiB": 191.3515625,
+      "peakWorkingSetMiB": 208.24609375,
+      "lastLength": 6307964,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "texture",
+      "operation": "encode-png",
+      "frames": 5,
+      "millisecondsPerImage": 264.82710000000003,
+      "cpuMillisecondsPerImage": 265.625,
+      "allocatedBytesPerImage": 37672659.2,
+      "workingSetMiB": 206.6640625,
+      "privateMiB": 191.22265625,
+      "peakWorkingSetMiB": 208.12109375,
+      "lastLength": 6307964,
+      "sink": 186,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "texture",
+      "operation": "encode-png",
+      "frames": 5,
+      "millisecondsPerImage": 257.48284,
+      "cpuMillisecondsPerImage": 253.125,
+      "allocatedBytesPerImage": 37672659.2,
+      "workingSetMiB": 206.65625,
+      "privateMiB": 191.26171875,
+      "peakWorkingSetMiB": 208.4765625,
+      "lastLength": 6307964,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "texture",
+      "operation": "encode-png",
+      "frames": 3,
+      "millisecondsPerImage": 449.05493333333334,
+      "cpuMillisecondsPerImage": 447.9166666666667,
+      "allocatedBytesPerImage": 11057213.333333334,
+      "workingSetMiB": 66.03125,
+      "privateMiB": 43.40625,
+      "peakWorkingSetMiB": 78.0234375,
+      "lastLength": 2631876,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "System.IO.Compression.Native.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "texture",
+      "operation": "encode-png",
+      "frames": 3,
+      "millisecondsPerImage": 458.211,
+      "cpuMillisecondsPerImage": 458.3333333333333,
+      "allocatedBytesPerImage": 11057213.333333334,
+      "workingSetMiB": 63.81640625,
+      "privateMiB": 41.34375,
+      "peakWorkingSetMiB": 78.140625,
+      "lastLength": 2631876,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "System.IO.Compression.Native.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "texture",
+      "operation": "encode-png",
+      "frames": 3,
+      "millisecondsPerImage": 461.7176666666667,
+      "cpuMillisecondsPerImage": 463.5416666666667,
+      "allocatedBytesPerImage": 11057213.333333334,
+      "workingSetMiB": 66.23046875,
+      "privateMiB": 43.7421875,
+      "peakWorkingSetMiB": 78.2265625,
+      "lastLength": 2631876,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "System.IO.Compression.Native.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "ui",
+      "operation": "decode-jpeg420",
+      "frames": 8,
+      "millisecondsPerImage": 151.287975,
+      "cpuMillisecondsPerImage": 152.34375,
+      "allocatedBytesPerImage": 165178,
+      "workingSetMiB": 51.1328125,
+      "privateMiB": 29.83984375,
+      "peakWorkingSetMiB": 51.1328125,
+      "lastLength": 8294400,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "ui",
+      "operation": "decode-jpeg420",
+      "frames": 8,
+      "millisecondsPerImage": 161.1353375,
+      "cpuMillisecondsPerImage": 167.96875,
+      "allocatedBytesPerImage": 165178,
+      "workingSetMiB": 51.22265625,
+      "privateMiB": 29.984375,
+      "peakWorkingSetMiB": 51.22265625,
+      "lastLength": 8294400,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "ui",
+      "operation": "decode-jpeg420",
+      "frames": 8,
+      "millisecondsPerImage": 153.12435,
+      "cpuMillisecondsPerImage": 156.25,
+      "allocatedBytesPerImage": 165178,
+      "workingSetMiB": 51.0390625,
+      "privateMiB": 29.87890625,
+      "peakWorkingSetMiB": 51.0390625,
+      "lastLength": 8294400,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "ui",
+      "operation": "decode-jpeg420",
+      "frames": 329,
+      "millisecondsPerImage": 3.6481990881458963,
+      "cpuMillisecondsPerImage": 3.6094224924012157,
+      "allocatedBytesPerImage": 89.6048632218845,
+      "workingSetMiB": 43.65234375,
+      "privateMiB": 19.875,
+      "peakWorkingSetMiB": 43.65234375,
+      "lastLength": 8294400,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "ui",
+      "operation": "decode-jpeg420",
+      "frames": 308,
+      "millisecondsPerImage": 3.9052370129870133,
+      "cpuMillisecondsPerImage": 3.90625,
+      "allocatedBytesPerImage": 89.71428571428571,
+      "workingSetMiB": 43.59375,
+      "privateMiB": 19.8359375,
+      "peakWorkingSetMiB": 43.59375,
+      "lastLength": 8294400,
+      "sink": 218,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "ui",
+      "operation": "decode-jpeg420",
+      "frames": 316,
+      "millisecondsPerImage": 3.8005481012658224,
+      "cpuMillisecondsPerImage": 3.90625,
+      "allocatedBytesPerImage": 89.67088607594937,
+      "workingSetMiB": 43.62890625,
+      "privateMiB": 20.58203125,
+      "peakWorkingSetMiB": 43.62890625,
+      "lastLength": 8294400,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "ui",
+      "operation": "decode-jpeg444",
+      "frames": 14,
+      "millisecondsPerImage": 92.69321428571428,
+      "cpuMillisecondsPerImage": 97.09821428571429,
+      "allocatedBytesPerImage": 199853.7142857143,
+      "workingSetMiB": 52.578125,
+      "privateMiB": 31.171875,
+      "peakWorkingSetMiB": 52.578125,
+      "lastLength": 8294400,
+      "sink": 223,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "ui",
+      "operation": "decode-jpeg444",
+      "frames": 13,
+      "millisecondsPerImage": 97.8688,
+      "cpuMillisecondsPerImage": 97.35576923076923,
+      "allocatedBytesPerImage": 199856.61538461538,
+      "workingSetMiB": 52.39453125,
+      "privateMiB": 30.99609375,
+      "peakWorkingSetMiB": 52.39453125,
+      "lastLength": 8294400,
+      "sink": 223,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "ui",
+      "operation": "decode-jpeg444",
+      "frames": 13,
+      "millisecondsPerImage": 94.99046923076922,
+      "cpuMillisecondsPerImage": 96.15384615384616,
+      "allocatedBytesPerImage": 199856.61538461538,
+      "workingSetMiB": 52.4140625,
+      "privateMiB": 31.0546875,
+      "peakWorkingSetMiB": 52.4140625,
+      "lastLength": 8294400,
+      "sink": 223,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "ui",
+      "operation": "decode-jpeg444",
+      "frames": 279,
+      "millisecondsPerImage": 4.312743010752689,
+      "cpuMillisecondsPerImage": 4.312275985663082,
+      "allocatedBytesPerImage": 89.89247311827957,
+      "workingSetMiB": 43.6015625,
+      "privateMiB": 19.8671875,
+      "peakWorkingSetMiB": 43.6015625,
+      "lastLength": 8294400,
+      "sink": 223,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "ui",
+      "operation": "decode-jpeg444",
+      "frames": 274,
+      "millisecondsPerImage": 4.3896102189781026,
+      "cpuMillisecondsPerImage": 4.447992700729927,
+      "allocatedBytesPerImage": 89.92700729927007,
+      "workingSetMiB": 43.77734375,
+      "privateMiB": 20.05078125,
+      "peakWorkingSetMiB": 43.77734375,
+      "lastLength": 8294400,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "ui",
+      "operation": "decode-jpeg444",
+      "frames": 249,
+      "millisecondsPerImage": 4.835057831325301,
+      "cpuMillisecondsPerImage": 4.769076305220883,
+      "allocatedBytesPerImage": 90.12048192771084,
+      "workingSetMiB": 43.62890625,
+      "privateMiB": 19.84765625,
+      "peakWorkingSetMiB": 43.62890625,
+      "lastLength": 8294400,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "ui",
+      "operation": "decode-png",
+      "frames": 537,
+      "millisecondsPerImage": 2.236526070763501,
+      "cpuMillisecondsPerImage": 2.2404562383612663,
+      "allocatedBytesPerImage": 31746.800744878958,
+      "workingSetMiB": 60.203125,
+      "privateMiB": 36.8984375,
+      "peakWorkingSetMiB": 60.203125,
+      "lastLength": 8294400,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "ui",
+      "operation": "decode-png",
+      "frames": 492,
+      "millisecondsPerImage": 2.440583536585366,
+      "cpuMillisecondsPerImage": 2.4136178861788617,
+      "allocatedBytesPerImage": 31747.056910569107,
+      "workingSetMiB": 59.82421875,
+      "privateMiB": 36.5625,
+      "peakWorkingSetMiB": 59.82421875,
+      "lastLength": 8294400,
+      "sink": 220,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "ui",
+      "operation": "decode-png",
+      "frames": 513,
+      "millisecondsPerImage": 2.33962865497076,
+      "cpuMillisecondsPerImage": 2.314814814814815,
+      "allocatedBytesPerImage": 31746.931773879143,
+      "workingSetMiB": 60.15234375,
+      "privateMiB": 36.9375,
+      "peakWorkingSetMiB": 60.15234375,
+      "lastLength": 8294400,
+      "sink": 220,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "ui",
+      "operation": "decode-png",
+      "frames": 828,
+      "millisecondsPerImage": 1.4497762077294687,
+      "cpuMillisecondsPerImage": 1.4530495169082125,
+      "allocatedBytesPerImage": 8417.227053140097,
+      "workingSetMiB": 53.60546875,
+      "privateMiB": 30.42578125,
+      "peakWorkingSetMiB": 53.60546875,
+      "lastLength": 8294400,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll",
+        "System.IO.Compression.Native.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "ui",
+      "operation": "decode-png",
+      "frames": 755,
+      "millisecondsPerImage": 1.5906554966887416,
+      "cpuMillisecondsPerImage": 1.593543046357616,
+      "allocatedBytesPerImage": 8417.345695364238,
+      "workingSetMiB": 53.48046875,
+      "privateMiB": 30.26953125,
+      "peakWorkingSetMiB": 53.48046875,
+      "lastLength": 8294400,
+      "sink": 220,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll",
+        "System.IO.Compression.Native.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "ui",
+      "operation": "decode-png",
+      "frames": 806,
+      "millisecondsPerImage": 1.4890705955334989,
+      "cpuMillisecondsPerImage": 1.492710918114144,
+      "allocatedBytesPerImage": 8417.260545905707,
+      "workingSetMiB": 53.44921875,
+      "privateMiB": 29.48828125,
+      "peakWorkingSetMiB": 53.44921875,
+      "lastLength": 8294400,
+      "sink": 220,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll",
+        "System.IO.Compression.Native.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "ui",
+      "operation": "encode-jpeg444",
+      "frames": 17,
+      "millisecondsPerImage": 73.28746470588236,
+      "cpuMillisecondsPerImage": 74.44852941176471,
+      "allocatedBytesPerImage": 715898.3529411765,
+      "workingSetMiB": 62.8046875,
+      "privateMiB": 41.546875,
+      "peakWorkingSetMiB": 62.8046875,
+      "lastLength": 194433,
+      "sink": 10,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "ui",
+      "operation": "encode-jpeg444",
+      "frames": 18,
+      "millisecondsPerImage": 70.38053333333333,
+      "cpuMillisecondsPerImage": 71.18055555555556,
+      "allocatedBytesPerImage": 715898.2222222222,
+      "workingSetMiB": 63.57421875,
+      "privateMiB": 42.2734375,
+      "peakWorkingSetMiB": 63.57421875,
+      "lastLength": 194433,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "ui",
+      "operation": "encode-jpeg444",
+      "frames": 18,
+      "millisecondsPerImage": 70.78543888888889,
+      "cpuMillisecondsPerImage": 71.18055555555556,
+      "allocatedBytesPerImage": 715898.2222222222,
+      "workingSetMiB": 63.66015625,
+      "privateMiB": 42.375,
+      "peakWorkingSetMiB": 63.66015625,
+      "lastLength": 194433,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "ui",
+      "operation": "encode-jpeg444",
+      "frames": 149,
+      "millisecondsPerImage": 8.055611409395974,
+      "cpuMillisecondsPerImage": 8.179530201342281,
+      "allocatedBytesPerImage": 198448.26845637584,
+      "workingSetMiB": 79.4140625,
+      "privateMiB": 59.0546875,
+      "peakWorkingSetMiB": 79.4140625,
+      "lastLength": 196847,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "ui",
+      "operation": "encode-jpeg444",
+      "frames": 149,
+      "millisecondsPerImage": 8.08713288590604,
+      "cpuMillisecondsPerImage": 8.179530201342281,
+      "allocatedBytesPerImage": 198448.26845637584,
+      "workingSetMiB": 79.41015625,
+      "privateMiB": 58.328125,
+      "peakWorkingSetMiB": 79.41015625,
+      "lastLength": 196847,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "ui",
+      "operation": "encode-jpeg444",
+      "frames": 145,
+      "millisecondsPerImage": 8.346875172413794,
+      "cpuMillisecondsPerImage": 8.620689655172415,
+      "allocatedBytesPerImage": 198448.27586206896,
+      "workingSetMiB": 78.61328125,
+      "privateMiB": 57.5625,
+      "peakWorkingSetMiB": 78.61328125,
+      "lastLength": 196847,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "ui",
+      "operation": "encode-png",
+      "frames": 18,
+      "millisecondsPerImage": 67.45309444444445,
+      "cpuMillisecondsPerImage": 70.3125,
+      "allocatedBytesPerImage": 8760930.666666666,
+      "workingSetMiB": 72.23046875,
+      "privateMiB": 50.29296875,
+      "peakWorkingSetMiB": 118.546875,
+      "lastLength": 109711,
+      "sink": 0,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "ui",
+      "operation": "encode-png",
+      "frames": 20,
+      "millisecondsPerImage": 62.63532,
+      "cpuMillisecondsPerImage": 64.0625,
+      "allocatedBytesPerImage": 8760933.2,
+      "workingSetMiB": 80.08203125,
+      "privateMiB": 58.15234375,
+      "peakWorkingSetMiB": 118.46484375,
+      "lastLength": 109711,
+      "sink": 115,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "existing",
+      "scene": "ui",
+      "operation": "encode-png",
+      "frames": 20,
+      "millisecondsPerImage": 62.932249999999996,
+      "cpuMillisecondsPerImage": 64.84375,
+      "allocatedBytesPerImage": 8760933.2,
+      "workingSetMiB": 80.2421875,
+      "privateMiB": 58.30859375,
+      "peakWorkingSetMiB": 118.6171875,
+      "lastLength": 109711,
+      "sink": 115,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "SimdSkia.Imaging.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "ui",
+      "operation": "encode-png",
+      "frames": 15,
+      "millisecondsPerImage": 84.97680666666666,
+      "cpuMillisecondsPerImage": 87.5,
+      "allocatedBytesPerImage": 56850.666666666664,
+      "workingSetMiB": 50.02734375,
+      "privateMiB": 27.30859375,
+      "peakWorkingSetMiB": 50.02734375,
+      "lastLength": 12542,
+      "sink": 181,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "System.IO.Compression.Native.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "ui",
+      "operation": "encode-png",
+      "frames": 15,
+      "millisecondsPerImage": 83.90126000000001,
+      "cpuMillisecondsPerImage": 84.375,
+      "allocatedBytesPerImage": 56850.666666666664,
+      "workingSetMiB": 49.93359375,
+      "privateMiB": 27.0703125,
+      "peakWorkingSetMiB": 49.93359375,
+      "lastLength": 12542,
+      "sink": 181,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "System.IO.Compression.Native.dll"
+      ]
+    },
+    {
+      "backend": "sdcb",
+      "scene": "ui",
+      "operation": "encode-png",
+      "frames": 15,
+      "millisecondsPerImage": 82.55383333333333,
+      "cpuMillisecondsPerImage": 84.375,
+      "allocatedBytesPerImage": 56850.666666666664,
+      "workingSetMiB": 49.96484375,
+      "privateMiB": 27.1640625,
+      "peakWorkingSetMiB": 49.96484375,
+      "lastLength": 12542,
+      "sink": 181,
+      "runtime": ".NET 10.0.13",
+      "nativeAot": false,
+      "avx2": true,
+      "cpu": 12,
+      "os": "Microsoft Windows 10.0.26300",
+      "nativeModules": [
+        "SimdSkia.Core.dll",
+        "System.IO.Compression.dll",
+        "System.IO.Compression.Native.dll"
+      ]
+    }
+  ],
+  "validation": {
+    "runtime": ".NET 10.0.13",
+    "nativeAot": false,
+    "avx2": true,
+    "rows": [
+      {
+        "name": "png-0-8-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "788387111105D51BA2408DAD10533DEF9B03AFD9D95C85515C41F09379B55EED"
+      },
+      {
+        "name": "png-0-8-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "788387111105D51BA2408DAD10533DEF9B03AFD9D95C85515C41F09379B55EED"
+      },
+      {
+        "name": "png-0-8-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "788387111105D51BA2408DAD10533DEF9B03AFD9D95C85515C41F09379B55EED"
+      },
+      {
+        "name": "png-0-8-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "788387111105D51BA2408DAD10533DEF9B03AFD9D95C85515C41F09379B55EED"
+      },
+      {
+        "name": "png-0-16-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "788387111105D51BA2408DAD10533DEF9B03AFD9D95C85515C41F09379B55EED"
+      },
+      {
+        "name": "png-0-16-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "788387111105D51BA2408DAD10533DEF9B03AFD9D95C85515C41F09379B55EED"
+      },
+      {
+        "name": "png-0-16-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "788387111105D51BA2408DAD10533DEF9B03AFD9D95C85515C41F09379B55EED"
+      },
+      {
+        "name": "png-0-16-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "788387111105D51BA2408DAD10533DEF9B03AFD9D95C85515C41F09379B55EED"
+      },
+      {
+        "name": "png-2-8-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "F0E60F3F37334BB981C9D2B9BDBF70931515986C93DF61C281A57C78ECC453B1"
+      },
+      {
+        "name": "png-2-8-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "F0E60F3F37334BB981C9D2B9BDBF70931515986C93DF61C281A57C78ECC453B1"
+      },
+      {
+        "name": "png-2-8-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "F0E60F3F37334BB981C9D2B9BDBF70931515986C93DF61C281A57C78ECC453B1"
+      },
+      {
+        "name": "png-2-8-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "F0E60F3F37334BB981C9D2B9BDBF70931515986C93DF61C281A57C78ECC453B1"
+      },
+      {
+        "name": "png-2-16-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "F0E60F3F37334BB981C9D2B9BDBF70931515986C93DF61C281A57C78ECC453B1"
+      },
+      {
+        "name": "png-2-16-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "F0E60F3F37334BB981C9D2B9BDBF70931515986C93DF61C281A57C78ECC453B1"
+      },
+      {
+        "name": "png-2-16-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "F0E60F3F37334BB981C9D2B9BDBF70931515986C93DF61C281A57C78ECC453B1"
+      },
+      {
+        "name": "png-2-16-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "F0E60F3F37334BB981C9D2B9BDBF70931515986C93DF61C281A57C78ECC453B1"
+      },
+      {
+        "name": "png-4-8-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "D9820CFE5445FCF172B9B5B317EA6CF23213426E9C9137926304135F7399B75E"
+      },
+      {
+        "name": "png-4-8-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "D9820CFE5445FCF172B9B5B317EA6CF23213426E9C9137926304135F7399B75E"
+      },
+      {
+        "name": "png-4-8-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "D9820CFE5445FCF172B9B5B317EA6CF23213426E9C9137926304135F7399B75E"
+      },
+      {
+        "name": "png-4-8-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "D9820CFE5445FCF172B9B5B317EA6CF23213426E9C9137926304135F7399B75E"
+      },
+      {
+        "name": "png-4-16-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "D9820CFE5445FCF172B9B5B317EA6CF23213426E9C9137926304135F7399B75E"
+      },
+      {
+        "name": "png-4-16-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "D9820CFE5445FCF172B9B5B317EA6CF23213426E9C9137926304135F7399B75E"
+      },
+      {
+        "name": "png-4-16-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "D9820CFE5445FCF172B9B5B317EA6CF23213426E9C9137926304135F7399B75E"
+      },
+      {
+        "name": "png-4-16-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "D9820CFE5445FCF172B9B5B317EA6CF23213426E9C9137926304135F7399B75E"
+      },
+      {
+        "name": "png-6-8-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "C221DC260E32FCB725F0BB4F7B84A2349DBB5CB2608826DA5786D81D1D6C86B8"
+      },
+      {
+        "name": "png-6-8-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "C221DC260E32FCB725F0BB4F7B84A2349DBB5CB2608826DA5786D81D1D6C86B8"
+      },
+      {
+        "name": "png-6-8-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "C221DC260E32FCB725F0BB4F7B84A2349DBB5CB2608826DA5786D81D1D6C86B8"
+      },
+      {
+        "name": "png-6-8-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "C221DC260E32FCB725F0BB4F7B84A2349DBB5CB2608826DA5786D81D1D6C86B8"
+      },
+      {
+        "name": "png-6-16-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "C221DC260E32FCB725F0BB4F7B84A2349DBB5CB2608826DA5786D81D1D6C86B8"
+      },
+      {
+        "name": "png-6-16-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "C221DC260E32FCB725F0BB4F7B84A2349DBB5CB2608826DA5786D81D1D6C86B8"
+      },
+      {
+        "name": "png-6-16-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "C221DC260E32FCB725F0BB4F7B84A2349DBB5CB2608826DA5786D81D1D6C86B8"
+      },
+      {
+        "name": "png-6-16-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "C221DC260E32FCB725F0BB4F7B84A2349DBB5CB2608826DA5786D81D1D6C86B8"
+      },
+      {
+        "name": "png-0-1-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "CCB0C3CEA50183EFD71909E2A088E78778FAC819AA3E8F789CD2458D69C68DF9"
+      },
+      {
+        "name": "png-0-1-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "CCB0C3CEA50183EFD71909E2A088E78778FAC819AA3E8F789CD2458D69C68DF9"
+      },
+      {
+        "name": "png-0-1-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "CCB0C3CEA50183EFD71909E2A088E78778FAC819AA3E8F789CD2458D69C68DF9"
+      },
+      {
+        "name": "png-0-1-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "CCB0C3CEA50183EFD71909E2A088E78778FAC819AA3E8F789CD2458D69C68DF9"
+      },
+      {
+        "name": "png-0-2-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "C47C2B3A4E7DB65678A1C957ADBFE0D10C5D04473C3874C0766AA4297B54B67B"
+      },
+      {
+        "name": "png-0-2-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "C47C2B3A4E7DB65678A1C957ADBFE0D10C5D04473C3874C0766AA4297B54B67B"
+      },
+      {
+        "name": "png-0-2-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "C47C2B3A4E7DB65678A1C957ADBFE0D10C5D04473C3874C0766AA4297B54B67B"
+      },
+      {
+        "name": "png-0-2-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "C47C2B3A4E7DB65678A1C957ADBFE0D10C5D04473C3874C0766AA4297B54B67B"
+      },
+      {
+        "name": "png-0-4-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "69322E601EA65A9255A22E0716387320641288D91F8187A05BEF6A0ADCED7C6B"
+      },
+      {
+        "name": "png-0-4-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "69322E601EA65A9255A22E0716387320641288D91F8187A05BEF6A0ADCED7C6B"
+      },
+      {
+        "name": "png-0-4-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "69322E601EA65A9255A22E0716387320641288D91F8187A05BEF6A0ADCED7C6B"
+      },
+      {
+        "name": "png-0-4-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "69322E601EA65A9255A22E0716387320641288D91F8187A05BEF6A0ADCED7C6B"
+      },
+      {
+        "name": "png-3-1-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "7065F119862A5685E25B9E7C6C366E25189669C6082B3C385A3F58C40E6C5699"
+      },
+      {
+        "name": "png-3-1-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "7065F119862A5685E25B9E7C6C366E25189669C6082B3C385A3F58C40E6C5699"
+      },
+      {
+        "name": "png-3-1-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "7065F119862A5685E25B9E7C6C366E25189669C6082B3C385A3F58C40E6C5699"
+      },
+      {
+        "name": "png-3-1-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "7065F119862A5685E25B9E7C6C366E25189669C6082B3C385A3F58C40E6C5699"
+      },
+      {
+        "name": "png-3-2-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "F3FF999FB454ED8531A4BE39AD8B7FF2CAA0F5EA5D4D0A516A28FBBFC5F75616"
+      },
+      {
+        "name": "png-3-2-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "F3FF999FB454ED8531A4BE39AD8B7FF2CAA0F5EA5D4D0A516A28FBBFC5F75616"
+      },
+      {
+        "name": "png-3-2-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "F3FF999FB454ED8531A4BE39AD8B7FF2CAA0F5EA5D4D0A516A28FBBFC5F75616"
+      },
+      {
+        "name": "png-3-2-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "F3FF999FB454ED8531A4BE39AD8B7FF2CAA0F5EA5D4D0A516A28FBBFC5F75616"
+      },
+      {
+        "name": "png-3-4-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "EE3DE7F39A4FC7B80A712ECA78BE87082CB85D1A7DCE41B0F4BE73600E23A11B"
+      },
+      {
+        "name": "png-3-4-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "EE3DE7F39A4FC7B80A712ECA78BE87082CB85D1A7DCE41B0F4BE73600E23A11B"
+      },
+      {
+        "name": "png-3-4-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "EE3DE7F39A4FC7B80A712ECA78BE87082CB85D1A7DCE41B0F4BE73600E23A11B"
+      },
+      {
+        "name": "png-3-4-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "EE3DE7F39A4FC7B80A712ECA78BE87082CB85D1A7DCE41B0F4BE73600E23A11B"
+      },
+      {
+        "name": "jpeg-RGB-progressiveFalse-sampling0",
+        "engine": "existing",
+        "Max": 2,
+        "Rmse": 0.1270001270001905,
+        "passed": true,
+        "sha256": "8980E4FB17C4D2CEB180415654E0F2A625B1D87FC41FBA9DD596E0DA322894AF"
+      },
+      {
+        "name": "jpeg-RGB-progressiveFalse-sampling0",
+        "engine": "sdcb",
+        "Max": 2,
+        "Rmse": 0.1270001270001905,
+        "passed": true,
+        "sha256": "8980E4FB17C4D2CEB180415654E0F2A625B1D87FC41FBA9DD596E0DA322894AF"
+      },
+      {
+        "name": "jpeg-RGB-progressiveFalse-sampling1",
+        "engine": "existing",
+        "Max": 2,
+        "Rmse": 0.408105120797716,
+        "passed": true,
+        "sha256": "F713E4B49D925953E7894EDEAEAE24478E29379CB514D2445D4501CA3208898D"
+      },
+      {
+        "name": "jpeg-RGB-progressiveFalse-sampling1",
+        "engine": "sdcb",
+        "Max": 2,
+        "Rmse": 0.408105120797716,
+        "passed": true,
+        "sha256": "F713E4B49D925953E7894EDEAEAE24478E29379CB514D2445D4501CA3208898D"
+      },
+      {
+        "name": "jpeg-RGB-progressiveFalse-sampling2",
+        "engine": "existing",
+        "Max": 2,
+        "Rmse": 0.42204338297241367,
+        "passed": true,
+        "sha256": "DAF51360A27DB1D71445EEF41DBE79AD97799A24488245391B6CA39D88E138D8"
+      },
+      {
+        "name": "jpeg-RGB-progressiveFalse-sampling2",
+        "engine": "sdcb",
+        "Max": 2,
+        "Rmse": 0.42204338297241367,
+        "passed": true,
+        "sha256": "DAF51360A27DB1D71445EEF41DBE79AD97799A24488245391B6CA39D88E138D8"
+      },
+      {
+        "name": "jpeg-RGB-progressiveTrue-sampling0",
+        "engine": "existing",
+        "Max": 2,
+        "Rmse": 0.1270001270001905,
+        "passed": true,
+        "sha256": "8980E4FB17C4D2CEB180415654E0F2A625B1D87FC41FBA9DD596E0DA322894AF"
+      },
+      {
+        "name": "jpeg-RGB-progressiveTrue-sampling0",
+        "engine": "sdcb",
+        "Max": 2,
+        "Rmse": 0.1270001270001905,
+        "passed": true,
+        "sha256": "8980E4FB17C4D2CEB180415654E0F2A625B1D87FC41FBA9DD596E0DA322894AF"
+      },
+      {
+        "name": "jpeg-RGB-progressiveTrue-sampling1",
+        "engine": "existing",
+        "Max": 2,
+        "Rmse": 0.408105120797716,
+        "passed": true,
+        "sha256": "F713E4B49D925953E7894EDEAEAE24478E29379CB514D2445D4501CA3208898D"
+      },
+      {
+        "name": "jpeg-RGB-progressiveTrue-sampling1",
+        "engine": "sdcb",
+        "Max": 2,
+        "Rmse": 0.408105120797716,
+        "passed": true,
+        "sha256": "F713E4B49D925953E7894EDEAEAE24478E29379CB514D2445D4501CA3208898D"
+      },
+      {
+        "name": "jpeg-RGB-progressiveTrue-sampling2",
+        "engine": "existing",
+        "Max": 2,
+        "Rmse": 0.42204338297241367,
+        "passed": true,
+        "sha256": "DAF51360A27DB1D71445EEF41DBE79AD97799A24488245391B6CA39D88E138D8"
+      },
+      {
+        "name": "jpeg-RGB-progressiveTrue-sampling2",
+        "engine": "sdcb",
+        "Max": 2,
+        "Rmse": 0.42204338297241367,
+        "passed": true,
+        "sha256": "DAF51360A27DB1D71445EEF41DBE79AD97799A24488245391B6CA39D88E138D8"
+      },
+      {
+        "name": "jpeg-L-progressiveFalse-sampling0",
+        "engine": "existing",
+        "Max": 1,
+        "Rmse": 0.09729871876449238,
+        "passed": true,
+        "sha256": "51BA1B74F647F056BED9D959199AB60BDE784F4CC3340532178B13938523152F"
+      },
+      {
+        "name": "jpeg-L-progressiveFalse-sampling0",
+        "engine": "sdcb",
+        "Max": 1,
+        "Rmse": 0.09729871876449238,
+        "passed": true,
+        "sha256": "51BA1B74F647F056BED9D959199AB60BDE784F4CC3340532178B13938523152F"
+      },
+      {
+        "name": "jpeg-L-progressiveTrue-sampling0",
+        "engine": "existing",
+        "Max": 1,
+        "Rmse": 0.09729871876449238,
+        "passed": true,
+        "sha256": "51BA1B74F647F056BED9D959199AB60BDE784F4CC3340532178B13938523152F"
+      },
+      {
+        "name": "jpeg-L-progressiveTrue-sampling0",
+        "engine": "sdcb",
+        "Max": 1,
+        "Rmse": 0.09729871876449238,
+        "passed": true,
+        "sha256": "51BA1B74F647F056BED9D959199AB60BDE784F4CC3340532178B13938523152F"
+      },
+      {
+        "name": "jpeg-CMYK-progressiveFalse-sampling0",
+        "engine": "existing",
+        "Max": 1,
+        "Rmse": 0.056175441470485366,
+        "passed": true,
+        "sha256": "6178F71CF68AD8DFFFC3C739D321157D73F216DCCBEFAE68D78A450B7B136FFE"
+      },
+      {
+        "name": "jpeg-CMYK-progressiveFalse-sampling0",
+        "engine": "sdcb",
+        "Max": 1,
+        "Rmse": 0.056175441470485366,
+        "passed": true,
+        "sha256": "6178F71CF68AD8DFFFC3C739D321157D73F216DCCBEFAE68D78A450B7B136FFE"
+      },
+      {
+        "name": "jpeg-CMYK-progressiveTrue-sampling0",
+        "engine": "existing",
+        "passed": false,
+        "error": "NotSupportedException",
+        "message": "The pinned managed decoder cannot safely flush four-component progressive JPEG. Baseline CMYK is supported; progressive CMYK is explicitly rejected."
+      },
+      {
+        "name": "jpeg-CMYK-progressiveTrue-sampling0",
+        "engine": "sdcb",
+        "Max": 1,
+        "Rmse": 0.056175441470485366,
+        "passed": true,
+        "sha256": "6178F71CF68AD8DFFFC3C739D321157D73F216DCCBEFAE68D78A450B7B136FFE"
+      },
+      {
+        "name": "png-srgb-icc",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "FCBFD838EAB83B2D97E9282BA125D7E6ABFDF6C6A9C69D4B524A4FA97C49B049"
+      },
+      {
+        "name": "png-srgb-icc",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "FCBFD838EAB83B2D97E9282BA125D7E6ABFDF6C6A9C69D4B524A4FA97C49B049"
+      },
+      {
+        "name": "jpeg-srgb-icc",
+        "engine": "existing",
+        "Max": 2,
+        "Rmse": 0.122789001339411,
+        "passed": true,
+        "sha256": "2A88446462AD13FC857818D5D61A8E8A2EB5F548FBB3BF4F09C2DD507DC830BB"
+      },
+      {
+        "name": "jpeg-srgb-icc",
+        "engine": "sdcb",
+        "Max": 2,
+        "Rmse": 0.1213528232629344,
+        "passed": true,
+        "sha256": "461B8079137D44092CCBC912CE5903D5E85E4A9F412D277852471BA331991C39"
+      },
+      {
+        "name": "png-display-p3-to-srgb-icc",
+        "engine": "existing",
+        "Max": 1,
+        "Rmse": 0.10756778090804452,
+        "passed": true,
+        "sha256": "F012D0256F30BD75E47DB23C4941A3B285789FA578AB7C35C3EA1F10C3F2DE0B"
+      },
+      {
+        "name": "png-display-p3-to-srgb-icc",
+        "engine": "sdcb",
+        "Max": 74,
+        "Rmse": 9.247132909214251,
+        "passed": false,
+        "sha256": "FCBFD838EAB83B2D97E9282BA125D7E6ABFDF6C6A9C69D4B524A4FA97C49B049"
+      }
+    ]
+  },
+  "scalarValidation": {
+    "runtime": ".NET 10.0.13",
+    "nativeAot": false,
+    "avx2": false,
+    "rows": [
+      {
+        "name": "png-0-8-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "788387111105D51BA2408DAD10533DEF9B03AFD9D95C85515C41F09379B55EED"
+      },
+      {
+        "name": "png-0-8-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "788387111105D51BA2408DAD10533DEF9B03AFD9D95C85515C41F09379B55EED"
+      },
+      {
+        "name": "png-0-8-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "788387111105D51BA2408DAD10533DEF9B03AFD9D95C85515C41F09379B55EED"
+      },
+      {
+        "name": "png-0-8-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "788387111105D51BA2408DAD10533DEF9B03AFD9D95C85515C41F09379B55EED"
+      },
+      {
+        "name": "png-0-16-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "788387111105D51BA2408DAD10533DEF9B03AFD9D95C85515C41F09379B55EED"
+      },
+      {
+        "name": "png-0-16-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "788387111105D51BA2408DAD10533DEF9B03AFD9D95C85515C41F09379B55EED"
+      },
+      {
+        "name": "png-0-16-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "788387111105D51BA2408DAD10533DEF9B03AFD9D95C85515C41F09379B55EED"
+      },
+      {
+        "name": "png-0-16-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "788387111105D51BA2408DAD10533DEF9B03AFD9D95C85515C41F09379B55EED"
+      },
+      {
+        "name": "png-2-8-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "F0E60F3F37334BB981C9D2B9BDBF70931515986C93DF61C281A57C78ECC453B1"
+      },
+      {
+        "name": "png-2-8-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "F0E60F3F37334BB981C9D2B9BDBF70931515986C93DF61C281A57C78ECC453B1"
+      },
+      {
+        "name": "png-2-8-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "F0E60F3F37334BB981C9D2B9BDBF70931515986C93DF61C281A57C78ECC453B1"
+      },
+      {
+        "name": "png-2-8-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "F0E60F3F37334BB981C9D2B9BDBF70931515986C93DF61C281A57C78ECC453B1"
+      },
+      {
+        "name": "png-2-16-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "F0E60F3F37334BB981C9D2B9BDBF70931515986C93DF61C281A57C78ECC453B1"
+      },
+      {
+        "name": "png-2-16-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "F0E60F3F37334BB981C9D2B9BDBF70931515986C93DF61C281A57C78ECC453B1"
+      },
+      {
+        "name": "png-2-16-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "F0E60F3F37334BB981C9D2B9BDBF70931515986C93DF61C281A57C78ECC453B1"
+      },
+      {
+        "name": "png-2-16-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "F0E60F3F37334BB981C9D2B9BDBF70931515986C93DF61C281A57C78ECC453B1"
+      },
+      {
+        "name": "png-4-8-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "D9820CFE5445FCF172B9B5B317EA6CF23213426E9C9137926304135F7399B75E"
+      },
+      {
+        "name": "png-4-8-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "D9820CFE5445FCF172B9B5B317EA6CF23213426E9C9137926304135F7399B75E"
+      },
+      {
+        "name": "png-4-8-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "D9820CFE5445FCF172B9B5B317EA6CF23213426E9C9137926304135F7399B75E"
+      },
+      {
+        "name": "png-4-8-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "D9820CFE5445FCF172B9B5B317EA6CF23213426E9C9137926304135F7399B75E"
+      },
+      {
+        "name": "png-4-16-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "D9820CFE5445FCF172B9B5B317EA6CF23213426E9C9137926304135F7399B75E"
+      },
+      {
+        "name": "png-4-16-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "D9820CFE5445FCF172B9B5B317EA6CF23213426E9C9137926304135F7399B75E"
+      },
+      {
+        "name": "png-4-16-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "D9820CFE5445FCF172B9B5B317EA6CF23213426E9C9137926304135F7399B75E"
+      },
+      {
+        "name": "png-4-16-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "D9820CFE5445FCF172B9B5B317EA6CF23213426E9C9137926304135F7399B75E"
+      },
+      {
+        "name": "png-6-8-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "C221DC260E32FCB725F0BB4F7B84A2349DBB5CB2608826DA5786D81D1D6C86B8"
+      },
+      {
+        "name": "png-6-8-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "C221DC260E32FCB725F0BB4F7B84A2349DBB5CB2608826DA5786D81D1D6C86B8"
+      },
+      {
+        "name": "png-6-8-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "C221DC260E32FCB725F0BB4F7B84A2349DBB5CB2608826DA5786D81D1D6C86B8"
+      },
+      {
+        "name": "png-6-8-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "C221DC260E32FCB725F0BB4F7B84A2349DBB5CB2608826DA5786D81D1D6C86B8"
+      },
+      {
+        "name": "png-6-16-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "C221DC260E32FCB725F0BB4F7B84A2349DBB5CB2608826DA5786D81D1D6C86B8"
+      },
+      {
+        "name": "png-6-16-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "C221DC260E32FCB725F0BB4F7B84A2349DBB5CB2608826DA5786D81D1D6C86B8"
+      },
+      {
+        "name": "png-6-16-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "C221DC260E32FCB725F0BB4F7B84A2349DBB5CB2608826DA5786D81D1D6C86B8"
+      },
+      {
+        "name": "png-6-16-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "C221DC260E32FCB725F0BB4F7B84A2349DBB5CB2608826DA5786D81D1D6C86B8"
+      },
+      {
+        "name": "png-0-1-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "CCB0C3CEA50183EFD71909E2A088E78778FAC819AA3E8F789CD2458D69C68DF9"
+      },
+      {
+        "name": "png-0-1-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "CCB0C3CEA50183EFD71909E2A088E78778FAC819AA3E8F789CD2458D69C68DF9"
+      },
+      {
+        "name": "png-0-1-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "CCB0C3CEA50183EFD71909E2A088E78778FAC819AA3E8F789CD2458D69C68DF9"
+      },
+      {
+        "name": "png-0-1-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "CCB0C3CEA50183EFD71909E2A088E78778FAC819AA3E8F789CD2458D69C68DF9"
+      },
+      {
+        "name": "png-0-2-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "C47C2B3A4E7DB65678A1C957ADBFE0D10C5D04473C3874C0766AA4297B54B67B"
+      },
+      {
+        "name": "png-0-2-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "C47C2B3A4E7DB65678A1C957ADBFE0D10C5D04473C3874C0766AA4297B54B67B"
+      },
+      {
+        "name": "png-0-2-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "C47C2B3A4E7DB65678A1C957ADBFE0D10C5D04473C3874C0766AA4297B54B67B"
+      },
+      {
+        "name": "png-0-2-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "C47C2B3A4E7DB65678A1C957ADBFE0D10C5D04473C3874C0766AA4297B54B67B"
+      },
+      {
+        "name": "png-0-4-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "69322E601EA65A9255A22E0716387320641288D91F8187A05BEF6A0ADCED7C6B"
+      },
+      {
+        "name": "png-0-4-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "69322E601EA65A9255A22E0716387320641288D91F8187A05BEF6A0ADCED7C6B"
+      },
+      {
+        "name": "png-0-4-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "69322E601EA65A9255A22E0716387320641288D91F8187A05BEF6A0ADCED7C6B"
+      },
+      {
+        "name": "png-0-4-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "69322E601EA65A9255A22E0716387320641288D91F8187A05BEF6A0ADCED7C6B"
+      },
+      {
+        "name": "png-3-1-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "7065F119862A5685E25B9E7C6C366E25189669C6082B3C385A3F58C40E6C5699"
+      },
+      {
+        "name": "png-3-1-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "7065F119862A5685E25B9E7C6C366E25189669C6082B3C385A3F58C40E6C5699"
+      },
+      {
+        "name": "png-3-1-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "7065F119862A5685E25B9E7C6C366E25189669C6082B3C385A3F58C40E6C5699"
+      },
+      {
+        "name": "png-3-1-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "7065F119862A5685E25B9E7C6C366E25189669C6082B3C385A3F58C40E6C5699"
+      },
+      {
+        "name": "png-3-2-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "F3FF999FB454ED8531A4BE39AD8B7FF2CAA0F5EA5D4D0A516A28FBBFC5F75616"
+      },
+      {
+        "name": "png-3-2-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "F3FF999FB454ED8531A4BE39AD8B7FF2CAA0F5EA5D4D0A516A28FBBFC5F75616"
+      },
+      {
+        "name": "png-3-2-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "F3FF999FB454ED8531A4BE39AD8B7FF2CAA0F5EA5D4D0A516A28FBBFC5F75616"
+      },
+      {
+        "name": "png-3-2-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "F3FF999FB454ED8531A4BE39AD8B7FF2CAA0F5EA5D4D0A516A28FBBFC5F75616"
+      },
+      {
+        "name": "png-3-4-adam0",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "EE3DE7F39A4FC7B80A712ECA78BE87082CB85D1A7DCE41B0F4BE73600E23A11B"
+      },
+      {
+        "name": "png-3-4-adam0",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "EE3DE7F39A4FC7B80A712ECA78BE87082CB85D1A7DCE41B0F4BE73600E23A11B"
+      },
+      {
+        "name": "png-3-4-adam1",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "EE3DE7F39A4FC7B80A712ECA78BE87082CB85D1A7DCE41B0F4BE73600E23A11B"
+      },
+      {
+        "name": "png-3-4-adam1",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "EE3DE7F39A4FC7B80A712ECA78BE87082CB85D1A7DCE41B0F4BE73600E23A11B"
+      },
+      {
+        "name": "jpeg-RGB-progressiveFalse-sampling0",
+        "engine": "existing",
+        "Max": 2,
+        "Rmse": 0.1270001270001905,
+        "passed": true,
+        "sha256": "8980E4FB17C4D2CEB180415654E0F2A625B1D87FC41FBA9DD596E0DA322894AF"
+      },
+      {
+        "name": "jpeg-RGB-progressiveFalse-sampling0",
+        "engine": "sdcb",
+        "Max": 2,
+        "Rmse": 0.1270001270001905,
+        "passed": true,
+        "sha256": "8980E4FB17C4D2CEB180415654E0F2A625B1D87FC41FBA9DD596E0DA322894AF"
+      },
+      {
+        "name": "jpeg-RGB-progressiveFalse-sampling1",
+        "engine": "existing",
+        "Max": 2,
+        "Rmse": 0.408105120797716,
+        "passed": true,
+        "sha256": "F713E4B49D925953E7894EDEAEAE24478E29379CB514D2445D4501CA3208898D"
+      },
+      {
+        "name": "jpeg-RGB-progressiveFalse-sampling1",
+        "engine": "sdcb",
+        "Max": 2,
+        "Rmse": 0.408105120797716,
+        "passed": true,
+        "sha256": "F713E4B49D925953E7894EDEAEAE24478E29379CB514D2445D4501CA3208898D"
+      },
+      {
+        "name": "jpeg-RGB-progressiveFalse-sampling2",
+        "engine": "existing",
+        "Max": 2,
+        "Rmse": 0.42204338297241367,
+        "passed": true,
+        "sha256": "DAF51360A27DB1D71445EEF41DBE79AD97799A24488245391B6CA39D88E138D8"
+      },
+      {
+        "name": "jpeg-RGB-progressiveFalse-sampling2",
+        "engine": "sdcb",
+        "Max": 2,
+        "Rmse": 0.42204338297241367,
+        "passed": true,
+        "sha256": "DAF51360A27DB1D71445EEF41DBE79AD97799A24488245391B6CA39D88E138D8"
+      },
+      {
+        "name": "jpeg-RGB-progressiveTrue-sampling0",
+        "engine": "existing",
+        "Max": 2,
+        "Rmse": 0.1270001270001905,
+        "passed": true,
+        "sha256": "8980E4FB17C4D2CEB180415654E0F2A625B1D87FC41FBA9DD596E0DA322894AF"
+      },
+      {
+        "name": "jpeg-RGB-progressiveTrue-sampling0",
+        "engine": "sdcb",
+        "Max": 2,
+        "Rmse": 0.1270001270001905,
+        "passed": true,
+        "sha256": "8980E4FB17C4D2CEB180415654E0F2A625B1D87FC41FBA9DD596E0DA322894AF"
+      },
+      {
+        "name": "jpeg-RGB-progressiveTrue-sampling1",
+        "engine": "existing",
+        "Max": 2,
+        "Rmse": 0.408105120797716,
+        "passed": true,
+        "sha256": "F713E4B49D925953E7894EDEAEAE24478E29379CB514D2445D4501CA3208898D"
+      },
+      {
+        "name": "jpeg-RGB-progressiveTrue-sampling1",
+        "engine": "sdcb",
+        "Max": 2,
+        "Rmse": 0.408105120797716,
+        "passed": true,
+        "sha256": "F713E4B49D925953E7894EDEAEAE24478E29379CB514D2445D4501CA3208898D"
+      },
+      {
+        "name": "jpeg-RGB-progressiveTrue-sampling2",
+        "engine": "existing",
+        "Max": 2,
+        "Rmse": 0.42204338297241367,
+        "passed": true,
+        "sha256": "DAF51360A27DB1D71445EEF41DBE79AD97799A24488245391B6CA39D88E138D8"
+      },
+      {
+        "name": "jpeg-RGB-progressiveTrue-sampling2",
+        "engine": "sdcb",
+        "Max": 2,
+        "Rmse": 0.42204338297241367,
+        "passed": true,
+        "sha256": "DAF51360A27DB1D71445EEF41DBE79AD97799A24488245391B6CA39D88E138D8"
+      },
+      {
+        "name": "jpeg-L-progressiveFalse-sampling0",
+        "engine": "existing",
+        "Max": 1,
+        "Rmse": 0.09729871876449238,
+        "passed": true,
+        "sha256": "51BA1B74F647F056BED9D959199AB60BDE784F4CC3340532178B13938523152F"
+      },
+      {
+        "name": "jpeg-L-progressiveFalse-sampling0",
+        "engine": "sdcb",
+        "Max": 1,
+        "Rmse": 0.09729871876449238,
+        "passed": true,
+        "sha256": "51BA1B74F647F056BED9D959199AB60BDE784F4CC3340532178B13938523152F"
+      },
+      {
+        "name": "jpeg-L-progressiveTrue-sampling0",
+        "engine": "existing",
+        "Max": 1,
+        "Rmse": 0.09729871876449238,
+        "passed": true,
+        "sha256": "51BA1B74F647F056BED9D959199AB60BDE784F4CC3340532178B13938523152F"
+      },
+      {
+        "name": "jpeg-L-progressiveTrue-sampling0",
+        "engine": "sdcb",
+        "Max": 1,
+        "Rmse": 0.09729871876449238,
+        "passed": true,
+        "sha256": "51BA1B74F647F056BED9D959199AB60BDE784F4CC3340532178B13938523152F"
+      },
+      {
+        "name": "jpeg-CMYK-progressiveFalse-sampling0",
+        "engine": "existing",
+        "Max": 1,
+        "Rmse": 0.056175441470485366,
+        "passed": true,
+        "sha256": "6178F71CF68AD8DFFFC3C739D321157D73F216DCCBEFAE68D78A450B7B136FFE"
+      },
+      {
+        "name": "jpeg-CMYK-progressiveFalse-sampling0",
+        "engine": "sdcb",
+        "Max": 1,
+        "Rmse": 0.056175441470485366,
+        "passed": true,
+        "sha256": "6178F71CF68AD8DFFFC3C739D321157D73F216DCCBEFAE68D78A450B7B136FFE"
+      },
+      {
+        "name": "jpeg-CMYK-progressiveTrue-sampling0",
+        "engine": "existing",
+        "passed": false,
+        "error": "NotSupportedException",
+        "message": "The pinned managed decoder cannot safely flush four-component progressive JPEG. Baseline CMYK is supported; progressive CMYK is explicitly rejected."
+      },
+      {
+        "name": "jpeg-CMYK-progressiveTrue-sampling0",
+        "engine": "sdcb",
+        "Max": 1,
+        "Rmse": 0.056175441470485366,
+        "passed": true,
+        "sha256": "6178F71CF68AD8DFFFC3C739D321157D73F216DCCBEFAE68D78A450B7B136FFE"
+      },
+      {
+        "name": "png-srgb-icc",
+        "engine": "existing",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "FCBFD838EAB83B2D97E9282BA125D7E6ABFDF6C6A9C69D4B524A4FA97C49B049"
+      },
+      {
+        "name": "png-srgb-icc",
+        "engine": "sdcb",
+        "Max": 0,
+        "Rmse": 0,
+        "passed": true,
+        "sha256": "FCBFD838EAB83B2D97E9282BA125D7E6ABFDF6C6A9C69D4B524A4FA97C49B049"
+      },
+      {
+        "name": "jpeg-srgb-icc",
+        "engine": "existing",
+        "Max": 2,
+        "Rmse": 0.122789001339411,
+        "passed": true,
+        "sha256": "2A88446462AD13FC857818D5D61A8E8A2EB5F548FBB3BF4F09C2DD507DC830BB"
+      },
+      {
+        "name": "jpeg-srgb-icc",
+        "engine": "sdcb",
+        "Max": 2,
+        "Rmse": 0.1213528232629344,
+        "passed": true,
+        "sha256": "461B8079137D44092CCBC912CE5903D5E85E4A9F412D277852471BA331991C39"
+      },
+      {
+        "name": "png-display-p3-to-srgb-icc",
+        "engine": "existing",
+        "Max": 1,
+        "Rmse": 0.10756778090804452,
+        "passed": true,
+        "sha256": "F012D0256F30BD75E47DB23C4941A3B285789FA578AB7C35C3EA1F10C3F2DE0B"
+      },
+      {
+        "name": "png-display-p3-to-srgb-icc",
+        "engine": "sdcb",
+        "Max": 74,
+        "Rmse": 9.247132909214251,
+        "passed": false,
+        "sha256": "FCBFD838EAB83B2D97E9282BA125D7E6ABFDF6C6A9C69D4B524A4FA97C49B049"
+      }
+    ]
+  },
+  "aotValidation": {
+    "nativeAot": true,
+    "rows": [
+      {
+        "name": "png-0-8-adam0",
+        "sha256": "788387111105D51BA2408DAD10533DEF9B03AFD9D95C85515C41F09379B55EED"
+      },
+      {
+        "name": "png-0-8-adam1",
+        "sha256": "788387111105D51BA2408DAD10533DEF9B03AFD9D95C85515C41F09379B55EED"
+      },
+      {
+        "name": "png-0-16-adam0",
+        "sha256": "788387111105D51BA2408DAD10533DEF9B03AFD9D95C85515C41F09379B55EED"
+      },
+      {
+        "name": "png-0-16-adam1",
+        "sha256": "788387111105D51BA2408DAD10533DEF9B03AFD9D95C85515C41F09379B55EED"
+      },
+      {
+        "name": "png-2-8-adam0",
+        "sha256": "F0E60F3F37334BB981C9D2B9BDBF70931515986C93DF61C281A57C78ECC453B1"
+      },
+      {
+        "name": "png-2-8-adam1",
+        "sha256": "F0E60F3F37334BB981C9D2B9BDBF70931515986C93DF61C281A57C78ECC453B1"
+      },
+      {
+        "name": "png-2-16-adam0",
+        "sha256": "F0E60F3F37334BB981C9D2B9BDBF70931515986C93DF61C281A57C78ECC453B1"
+      },
+      {
+        "name": "png-2-16-adam1",
+        "sha256": "F0E60F3F37334BB981C9D2B9BDBF70931515986C93DF61C281A57C78ECC453B1"
+      },
+      {
+        "name": "png-4-8-adam0",
+        "sha256": "D9820CFE5445FCF172B9B5B317EA6CF23213426E9C9137926304135F7399B75E"
+      },
+      {
+        "name": "png-4-8-adam1",
+        "sha256": "D9820CFE5445FCF172B9B5B317EA6CF23213426E9C9137926304135F7399B75E"
+      },
+      {
+        "name": "png-4-16-adam0",
+        "sha256": "D9820CFE5445FCF172B9B5B317EA6CF23213426E9C9137926304135F7399B75E"
+      },
+      {
+        "name": "png-4-16-adam1",
+        "sha256": "D9820CFE5445FCF172B9B5B317EA6CF23213426E9C9137926304135F7399B75E"
+      },
+      {
+        "name": "png-6-8-adam0",
+        "sha256": "C221DC260E32FCB725F0BB4F7B84A2349DBB5CB2608826DA5786D81D1D6C86B8"
+      },
+      {
+        "name": "png-6-8-adam1",
+        "sha256": "C221DC260E32FCB725F0BB4F7B84A2349DBB5CB2608826DA5786D81D1D6C86B8"
+      },
+      {
+        "name": "png-6-16-adam0",
+        "sha256": "C221DC260E32FCB725F0BB4F7B84A2349DBB5CB2608826DA5786D81D1D6C86B8"
+      },
+      {
+        "name": "png-6-16-adam1",
+        "sha256": "C221DC260E32FCB725F0BB4F7B84A2349DBB5CB2608826DA5786D81D1D6C86B8"
+      },
+      {
+        "name": "png-0-1-adam0",
+        "sha256": "CCB0C3CEA50183EFD71909E2A088E78778FAC819AA3E8F789CD2458D69C68DF9"
+      },
+      {
+        "name": "png-0-1-adam1",
+        "sha256": "CCB0C3CEA50183EFD71909E2A088E78778FAC819AA3E8F789CD2458D69C68DF9"
+      },
+      {
+        "name": "png-0-2-adam0",
+        "sha256": "C47C2B3A4E7DB65678A1C957ADBFE0D10C5D04473C3874C0766AA4297B54B67B"
+      },
+      {
+        "name": "png-0-2-adam1",
+        "sha256": "C47C2B3A4E7DB65678A1C957ADBFE0D10C5D04473C3874C0766AA4297B54B67B"
+      },
+      {
+        "name": "png-0-4-adam0",
+        "sha256": "69322E601EA65A9255A22E0716387320641288D91F8187A05BEF6A0ADCED7C6B"
+      },
+      {
+        "name": "png-0-4-adam1",
+        "sha256": "69322E601EA65A9255A22E0716387320641288D91F8187A05BEF6A0ADCED7C6B"
+      },
+      {
+        "name": "png-3-1-adam0",
+        "sha256": "7065F119862A5685E25B9E7C6C366E25189669C6082B3C385A3F58C40E6C5699"
+      },
+      {
+        "name": "png-3-1-adam1",
+        "sha256": "7065F119862A5685E25B9E7C6C366E25189669C6082B3C385A3F58C40E6C5699"
+      },
+      {
+        "name": "png-3-2-adam0",
+        "sha256": "F3FF999FB454ED8531A4BE39AD8B7FF2CAA0F5EA5D4D0A516A28FBBFC5F75616"
+      },
+      {
+        "name": "png-3-2-adam1",
+        "sha256": "F3FF999FB454ED8531A4BE39AD8B7FF2CAA0F5EA5D4D0A516A28FBBFC5F75616"
+      },
+      {
+        "name": "png-3-4-adam0",
+        "sha256": "EE3DE7F39A4FC7B80A712ECA78BE87082CB85D1A7DCE41B0F4BE73600E23A11B"
+      },
+      {
+        "name": "png-3-4-adam1",
+        "sha256": "EE3DE7F39A4FC7B80A712ECA78BE87082CB85D1A7DCE41B0F4BE73600E23A11B"
+      },
+      {
+        "name": "jpeg-RGB-progressiveFalse-sampling0",
+        "sha256": "8980E4FB17C4D2CEB180415654E0F2A625B1D87FC41FBA9DD596E0DA322894AF"
+      },
+      {
+        "name": "jpeg-RGB-progressiveFalse-sampling1",
+        "sha256": "F713E4B49D925953E7894EDEAEAE24478E29379CB514D2445D4501CA3208898D"
+      },
+      {
+        "name": "jpeg-RGB-progressiveFalse-sampling2",
+        "sha256": "DAF51360A27DB1D71445EEF41DBE79AD97799A24488245391B6CA39D88E138D8"
+      },
+      {
+        "name": "jpeg-RGB-progressiveTrue-sampling0",
+        "sha256": "8980E4FB17C4D2CEB180415654E0F2A625B1D87FC41FBA9DD596E0DA322894AF"
+      },
+      {
+        "name": "jpeg-RGB-progressiveTrue-sampling1",
+        "sha256": "F713E4B49D925953E7894EDEAEAE24478E29379CB514D2445D4501CA3208898D"
+      },
+      {
+        "name": "jpeg-RGB-progressiveTrue-sampling2",
+        "sha256": "DAF51360A27DB1D71445EEF41DBE79AD97799A24488245391B6CA39D88E138D8"
+      },
+      {
+        "name": "jpeg-L-progressiveFalse-sampling0",
+        "sha256": "51BA1B74F647F056BED9D959199AB60BDE784F4CC3340532178B13938523152F"
+      },
+      {
+        "name": "jpeg-L-progressiveTrue-sampling0",
+        "sha256": "51BA1B74F647F056BED9D959199AB60BDE784F4CC3340532178B13938523152F"
+      },
+      {
+        "name": "jpeg-CMYK-progressiveFalse-sampling0",
+        "sha256": "6178F71CF68AD8DFFFC3C739D321157D73F216DCCBEFAE68D78A450B7B136FFE"
+      },
+      {
+        "name": "jpeg-CMYK-progressiveTrue-sampling0",
+        "sha256": "6178F71CF68AD8DFFFC3C739D321157D73F216DCCBEFAE68D78A450B7B136FFE"
+      },
+      {
+        "name": "png-srgb-icc",
+        "sha256": "FCBFD838EAB83B2D97E9282BA125D7E6ABFDF6C6A9C69D4B524A4FA97C49B049"
+      },
+      {
+        "name": "jpeg-srgb-icc",
+        "sha256": "461B8079137D44092CCBC912CE5903D5E85E4A9F412D277852471BA331991C39"
+      },
+      {
+        "name": "png-display-p3-to-srgb-icc",
+        "sha256": "FCBFD838EAB83B2D97E9282BA125D7E6ABFDF6C6A9C69D4B524A4FA97C49B049"
+      }
+    ],
+    "cases": 41
+  },
+  "quality": [
+    {
+      "kind": "decode",
+      "name": "ui",
+      "format": "png",
+      "Max": 0,
+      "Rmse": 0,
+      "inputBytes": 12542,
+      "inputSha256": "F5BFE8E278DD4118CC676543404E6E60A2D5D895BAE57E9FCC7092659006CCA5"
+    },
+    {
+      "kind": "decode",
+      "name": "ui",
+      "format": "jpeg444",
+      "Max": 0,
+      "Rmse": 0,
+      "inputBytes": 194433,
+      "inputSha256": "D4D407E80106C86E7E42BC9E2CA154E6ED7C3C75272ED73103212FF5C823EF3E"
+    },
+    {
+      "kind": "decode",
+      "name": "ui",
+      "format": "jpeg420",
+      "Max": 1,
+      "Rmse": 0.1576327703168912,
+      "inputBytes": 159734,
+      "inputSha256": "612D5F0745FE3E71AF6E8FF1D1F6A3A464CC7570942679124C7862193BCDF863"
+    },
+    {
+      "kind": "encode",
+      "name": "ui",
+      "format": "jpeg444",
+      "engine": "existing",
+      "Max": 19,
+      "Rmse": 0.9573659066243515,
+      "psnrRgb": 47.259857092995944,
+      "outputBytes": 194433
+    },
+    {
+      "kind": "encode",
+      "name": "ui",
+      "format": "jpeg444",
+      "engine": "sdcb",
+      "Max": 20,
+      "Rmse": 0.8925648275899165,
+      "psnrRgb": 47.868620861934026,
+      "outputBytes": 196847
+    },
+    {
+      "kind": "encode",
+      "name": "ui",
+      "format": "png",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "psnrRgb": null,
+      "outputBytes": 109711
+    },
+    {
+      "kind": "encode",
+      "name": "ui",
+      "format": "png",
+      "engine": "sdcb",
+      "Max": 0,
+      "Rmse": 0,
+      "psnrRgb": null,
+      "outputBytes": 12542
+    },
+    {
+      "kind": "decode",
+      "name": "texture",
+      "format": "png",
+      "Max": 0,
+      "Rmse": 0,
+      "inputBytes": 2631876,
+      "inputSha256": "67D05A26C91687D738A0992930FEA72E2987E3EC68778654BDEA722CAE44F971"
+    },
+    {
+      "kind": "decode",
+      "name": "texture",
+      "format": "jpeg444",
+      "Max": 2,
+      "Rmse": 0.12518938200079407,
+      "inputBytes": 760644,
+      "inputSha256": "8EB30100416327A8171F1B66021B3EEC73B903DD1F7F963AC4624CC2E00CBE17"
+    },
+    {
+      "kind": "decode",
+      "name": "texture",
+      "format": "jpeg420",
+      "Max": 2,
+      "Rmse": 0.28150879725525235,
+      "inputBytes": 727803,
+      "inputSha256": "75296AC5E5BD62FB0EA9FC114B4554168C3FC2F7D47C4F5986902FB9F4A0DD74"
+    },
+    {
+      "kind": "encode",
+      "name": "texture",
+      "format": "jpeg444",
+      "engine": "existing",
+      "Max": 20,
+      "Rmse": 3.3821142724870334,
+      "psnrRgb": 36.297650699702594,
+      "outputBytes": 760644
+    },
+    {
+      "kind": "encode",
+      "name": "texture",
+      "format": "jpeg444",
+      "engine": "sdcb",
+      "Max": 20,
+      "Rmse": 3.3770438662955296,
+      "psnrRgb": 36.310682203317796,
+      "outputBytes": 749217
+    },
+    {
+      "kind": "encode",
+      "name": "texture",
+      "format": "png",
+      "engine": "existing",
+      "Max": 0,
+      "Rmse": 0,
+      "psnrRgb": null,
+      "outputBytes": 6307964
+    },
+    {
+      "kind": "encode",
+      "name": "texture",
+      "format": "png",
+      "engine": "sdcb",
+      "Max": 0,
+      "Rmse": 0,
+      "psnrRgb": null,
+      "outputBytes": 2631876
+    }
+  ],
+  "binarySha256": {
+    "CodecEvaluation.dll": "44be253f85abc5a707515e8cba83352fec96343170fc315c6b0889d4864f7f7f",
+    "JpegLibrary.dll": "573527d55649dddfbd9590bb41757d0eb33ea8074422a5fb43027efa920eb792",
+    "Sdcb.SimdCodecs.Abstractions.dll": "51cff2a8e6a6edbe2e54be0a281cdd15f89d8f2536a165d2d166e8d6cce68968",
+    "Sdcb.SimdCodecs.Color.Icc.dll": "a494e8a3896c5dc8532924cde9864e240db4b0e44214a16d481228e7a6489c76",
+    "Sdcb.SimdCodecs.Jpeg.dll": "123fbf3b8d5fcf0704c43175aefcf5cb57f9caa1b6b8718c747ef2dc08bef0e6",
+    "Sdcb.SimdCodecs.Png.dll": "2c55607b65866e0f841188120226d61d6a433fb7e069ad97defbbece67584262",
+    "SimdSkia.Core.dll": "c9f7af042d6752b25d0188ddc2dee18d35d6a3a569e42d4ec639883d7983ea85",
+    "SimdSkia.Imaging.dll": "f2a36b903af8f56a9a40b2bff43a0b3f2c59237bf36c0489203330a7cd853bf7"
+  },
+  "nativeCompressionObserved": true,
+  "productionDependenciesChanged": false,
+  "net8ReferenceProbe": "Actual NuGet restore failed with NU1202: Sdcb.SimdCodecs.Jpeg 1.2.0 supports only net10.0",
+  "productionVerification": "Whole solution Release: 0 warnings/errors; production dependency isolation check passed; production source/dependencies unchanged"
+}

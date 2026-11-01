@@ -1,7 +1,7 @@
 {
   "version": 1,
   "dependencies": {
-    "net8.0": {
+    "net10.0": {
       "Avalonia": {
         "type": "Direct",
         "requested": "[12.1.4, 12.1.4]",
@@ -29,15 +29,146 @@
         "resolved": "12.1.4",
         "contentHash": "9ajC+Ff+U9S21JJKGbJgnwp9fY+zwJG+bSEC//o/vJU2M6IEMRGp+D1+AUoqTR79FAA/iDYgf4f4EF4PZKhZsg=="
       },
-      "JpegLibrary": {
-        "type": "Transitive",
-        "resolved": "0.4.32",
-        "contentHash": "Lv11HXsyGZxuRUG/0sw+3itw930/c08VkEVXDPin819yheN3Y3YpWQYccs1dW+sBlsGs9S4Y4q6DzyBCctsEeQ=="
-      },
       "MicroCom.Runtime": {
         "type": "Transitive",
         "resolved": "0.11.6",
         "contentHash": "NdNWGDiZ6eS/Mf/9+QHR91cj1K7Hy+PX9yrHI/zM7xFYuj9IWT2uxtB6sCHjrnxAeLV9fut1R6zHDUGKX6f9lQ=="
+      },
+      "Sdcb.SimdCodecs": {
+        "type": "Transitive",
+        "resolved": "1.2.0",
+        "contentHash": "lEFixMKumrvN+5Qy54f28KTxxeV2pj/fOgLAg0YUXUVCKiKgpKkTNeFUWGC3+A5EX6o2kUmtPdo9gtKo/CKdcg==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.2.0",
+          "Sdcb.SimdCodecs.Bmp": "1.2.0",
+          "Sdcb.SimdCodecs.Gif": "1.2.0",
+          "Sdcb.SimdCodecs.Ico": "1.2.0",
+          "Sdcb.SimdCodecs.Jbig2": "1.2.0",
+          "Sdcb.SimdCodecs.Jpeg": "1.2.0",
+          "Sdcb.SimdCodecs.Jpeg.GainMap": "1.2.0",
+          "Sdcb.SimdCodecs.Jpeg2000": "1.2.0",
+          "Sdcb.SimdCodecs.Png": "1.2.0",
+          "Sdcb.SimdCodecs.Pnm": "1.2.0",
+          "Sdcb.SimdCodecs.Qoi": "1.2.0",
+          "Sdcb.SimdCodecs.Tiff": "1.2.0",
+          "Sdcb.SimdCodecs.Webp": "1.2.0"
+        }
+      },
+      "Sdcb.SimdCodecs.Abstractions": {
+        "type": "Transitive",
+        "resolved": "1.2.0",
+        "contentHash": "cbwA4BBWzlDocfIATVCqlYG4la7EqgQyah8245ww7EHouKNScdxIbRqrAH7OSw+sM02t/XgHt2osdTWSsFNQxA=="
+      },
+      "Sdcb.SimdCodecs.Bmp": {
+        "type": "Transitive",
+        "resolved": "1.2.0",
+        "contentHash": "dRDBX+v3CDxO+4wkR1JwXrF/vHF/t9SZQAEuAI+JMWQyYSp3wpArpxblbVYED1C7EqXvSVFvbu+3hNSwUkxSOw==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.2.0",
+          "Sdcb.SimdCodecs.Png": "1.2.0"
+        }
+      },
+      "Sdcb.SimdCodecs.Color.Icc": {
+        "type": "Transitive",
+        "resolved": "1.2.0",
+        "contentHash": "EXv5s3v6hhJvlvA2Z3ggBKd/1hm/sSwR23p4sMTukhqnGJStsWydtY47tyiIvMZlinnPwewbib2eI0S01wzOOA==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.2.0"
+        }
+      },
+      "Sdcb.SimdCodecs.Gif": {
+        "type": "Transitive",
+        "resolved": "1.2.0",
+        "contentHash": "GtaKXUfMUdeM2Bo/FzNiLIUDVyPkDoV0Woj93LJSL4Z3NZEk4Wi3U8Diaa73gWeLWykZ4ly2YZYR+qZeS8liWA==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.2.0"
+        }
+      },
+      "Sdcb.SimdCodecs.Ico": {
+        "type": "Transitive",
+        "resolved": "1.2.0",
+        "contentHash": "DEn2lCzFMx5uwIHPRVEtgWWqZ2Ob7KSGS8Ne7Rf4dWOMYMLmNbmeFMe308amUv8m+aYksZNk+4Gsn6bZlyYJ2g==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.2.0",
+          "Sdcb.SimdCodecs.Bmp": "1.2.0",
+          "Sdcb.SimdCodecs.Png": "1.2.0"
+        }
+      },
+      "Sdcb.SimdCodecs.Jbig2": {
+        "type": "Transitive",
+        "resolved": "1.2.0",
+        "contentHash": "8J5sisgxkCOizQnSPzggNc6ckKs6msvgvw91vq6o+lmA6bshPmU891W2e0AfB5oMcrQDrhmeudIctTWnMvvStg==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.2.0"
+        }
+      },
+      "Sdcb.SimdCodecs.Jpeg": {
+        "type": "Transitive",
+        "resolved": "1.2.0",
+        "contentHash": "TPY7nh3sZ9EN5LxRedUBz3u8nF+P7rmisBwHLE+lB5AKHorhi58SYoyzDKgyt/KPlx5j2b83Dqn8aUI5IMa08Q==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.2.0"
+        }
+      },
+      "Sdcb.SimdCodecs.Jpeg.GainMap": {
+        "type": "Transitive",
+        "resolved": "1.2.0",
+        "contentHash": "ndwZpqwhQGkjnGVgmJOnR/A0jXSj3cHWpGU29JcSQsXT/OfpI2WfMHU9OCO2XksGh6GhYv/PpeKcfjYgoxNMfw==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.2.0",
+          "Sdcb.SimdCodecs.Color.Icc": "1.2.0",
+          "Sdcb.SimdCodecs.Jpeg": "1.2.0"
+        }
+      },
+      "Sdcb.SimdCodecs.Jpeg2000": {
+        "type": "Transitive",
+        "resolved": "1.2.0",
+        "contentHash": "B8XCZlQvwU43N/xfThtns4dgc533VL9ghgw3JhAqM4ylb1eEYnC4gKdZZUyiGGElA4DfaPAb9LiWky4wX3WoPA==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.2.0"
+        }
+      },
+      "Sdcb.SimdCodecs.Png": {
+        "type": "Transitive",
+        "resolved": "1.2.0",
+        "contentHash": "2KTaNKnY/2h3w7ucXp9drg5DrB+c67lCmJxUWghbHgIAO+a8wrY5blYkVN2vZV2eufEzSY4amHnPIKnTExoxHw==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.2.0",
+          "Sdcb.SimdCodecs.Color.Icc": "1.2.0"
+        }
+      },
+      "Sdcb.SimdCodecs.Pnm": {
+        "type": "Transitive",
+        "resolved": "1.2.0",
+        "contentHash": "aaEY+DQ8Py2Enj7AgZD2IVLOQMrlUGiwWT3tzIEv+NimUT399/ecaNRumeoOhWfGWIDsvZNZSefp0CsUsS3Abg==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.2.0"
+        }
+      },
+      "Sdcb.SimdCodecs.Qoi": {
+        "type": "Transitive",
+        "resolved": "1.2.0",
+        "contentHash": "Uf03p1yhU9KGKLYuTFLTuJcLDbaXDXAGDqtla0lEgWTkzQZ64ShcylIQZkvZnFXZC/OgukMBQn3r5S55LYgsnA==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.2.0"
+        }
+      },
+      "Sdcb.SimdCodecs.Tiff": {
+        "type": "Transitive",
+        "resolved": "1.2.0",
+        "contentHash": "yl/5FKseCr4iptZASOKycNn5QlHhyrSCT8vHKRwu7pEopt6cwNb8kjAyGpkShM1GcYqf1bM2X0fVHr3g0s8MWA==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.2.0",
+          "Sdcb.SimdCodecs.Png": "1.2.0"
+        }
+      },
+      "Sdcb.SimdCodecs.Webp": {
+        "type": "Transitive",
+        "resolved": "1.2.0",
+        "contentHash": "CUyxdXUBU6U1wWEkjomQj+6d+qcZCKLLIVr7RTAji15ju4YFEnng+mgJ2GkXKJNhI6o1GLw1ntzByeSTMW14SA==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.2.0"
+        }
       },
       "simdskia.core": {
         "type": "Project"
@@ -45,20 +176,20 @@
       "simdskia.cpu": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.0-preview.9, )"
+          "SimdSkia.Core": "[0.1.0-preview.10, )"
         }
       },
       "simdskia.imaging": {
         "type": "Project",
         "dependencies": {
-          "JpegLibrary": "[0.4.32, 0.4.32]",
-          "SimdSkia.Core": "[0.1.0-preview.9, )"
+          "Sdcb.SimdCodecs": "[1.2.0, 1.2.0]",
+          "SimdSkia.Core": "[0.1.0-preview.10, )"
         }
       },
       "simdskia.text": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.0-preview.9, )"
+          "SimdSkia.Core": "[0.1.0-preview.10, )"
         }
       }
     }

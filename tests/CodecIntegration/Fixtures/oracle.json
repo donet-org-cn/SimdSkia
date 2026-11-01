@@ -1,0 +1,76 @@
+{
+  "generator": "Pillow 12.2.0; native libwebp/OpenJPEG/TIFF used only as isolated black boxes",
+  "fixtures": [
+    {
+      "file": "still.webp",
+      "width": 13,
+      "height": 9,
+      "frames": [
+        {
+          "rgba": "000000ff130007ff26000eff390015ff4c001cff5f0023ff72002aff850031ff980038ffab003fffbe0046ffd1004dffe40054ff001b0bff131b12ff261b19ff391b20ff4c1b27ff5f1b2eff721b35ff851b3cff981b43ffab1b4affbe1b51ffd11b58ffe41b5fff003616ff13361dff263624ff39362bff4c3632ff5f3639ff723640ff853647ff98364effab3655ffbe365cffd13663ffe4366aff005121ff135128ff26512fff395136ff4c513dff5f5144ff72514bff855152ff985159ffab5160ffbe5167ffd1516effe45175ff006c2cff136c33ff266c3aff396c41ff4c6c48ff5f6c4fff726c56ff856c5dff986c64ffab6c6bffbe6c72ffd16c79ffe46c80ff008737ff13873eff268745ff39874cff4c8753ff5f875aff728761ff858768ff98876fffab8776ffbe877dffd18784ffe4878bff00a242ff13a249ff26a250ff39a257ff4ca25eff5fa265ff72a26cff85a273ff98a27affaba281ffbea288ffd1a28fffe4a296ff00bd4dff13bd54ff26bd5bff39bd62ff4cbd69ff5fbd70ff72bd77ff85bd7eff98bd85ffabbd8cffbebd93ffd1bd9affe4bda1ff00d858ff13d85fff26d866ff39d86dff4cd874ff5fd87bff72d882ff85d889ff98d890ffabd897ffbed89effd1d8a5ffe4d8acff",
+          "duration": 0
+        }
+      ]
+    },
+    {
+      "file": "animation.webp",
+      "width": 13,
+      "height": 9,
+      "frames": [
+        {
+          "rgba": "000000ff130007ff26000eff390015ff4c001cff5f0023ff72002aff850031ff980038ffab003fffbe0046ffd1004dffe40054ff001b0bff131b12ff261b19ff391b20ff4c1b27ff5f1b2eff721b35ff851b3cff981b43ffab1b4affbe1b51ffd11b58ffe41b5fff003616ff13361dff263624ff39362bff4c3632ff5f3639ff723640ff853647ff98364effab3655ffbe365cffd13663ffe4366aff005121ff135128ff26512fff395136ff4c513dff5f5144ff72514bff855152ff985159ffab5160ffbe5167ffd1516effe45175ff006c2cff136c33ff266c3aff396c41ff4c6c48ff5f6c4fff726c56ff856c5dff986c64ffab6c6bffbe6c72ffd16c79ffe46c80ff008737ff13873eff268745ff39874cff4c8753ff5f875aff728761ff858768ff98876fffab8776ffbe877dffd18784ffe4878bff00a242ff13a249ff26a250ff39a257ff4ca25eff5fa265ff72a26cff85a273ff98a27affaba281ffbea288ffd1a28fffe4a296ff00bd4dff13bd54ff26bd5bff39bd62ff4cbd69ff5fbd70ff72bd77ff85bd7eff98bd85ffabbd8cffbebd93ffd1bd9affe4bda1ff00d858ff13d85fff26d866ff39d86dff4cd874ff5fd87bff72d882ff85d889ff98d890ffabd897ffbed89effd1d8a5ffe4d8acff",
+          "duration": 70
+        },
+        {
+          "rgba": "253d2bff383d32ff4b3d39ff5e3d40ff713d47ff843d4eff973d55ffaa3d5cffbd3d63ffd03d6affe33d71fff63d78ff093d7fff255836ff38583dff4b5844ff5e584bff715852ff845859ff975860ffaa5867ffbd586effd05875ffe3587cfff65883ff09588aff257341ff387348ff4b734fff5e7356ff71735dff847364ff97736bffaa7372ffbd7379ffd07380ffe37387fff6738eff097395ff258e4cff388e53ff4b8e5aff5e8e61ff718e68ff848e6fff978e76ffaa8e7dffbd8e84ffd08e8bffe38e92fff68e99ff098ea0ff25a957ff38a95eff4ba965ff5ea96cff71a973ff84a97aff97a981ffaaa988ffbda98fffd0a996ffe3a99dfff6a9a4ff09a9abff25c462ff38c469ff4bc470ff5ec477ff71c47eff84c485ff97c48cffaac493ffbdc49affd0c4a1ffe3c4a8fff6c4afff09c4b6ff25df6dff38df74ff4bdf7bff5edf82ff71df89ff84df90ff97df97ffaadf9effbddfa5ffd0dfacffe3dfb3fff6dfbaff09dfc1ff25fa78ff38fa7fff4bfa86ff5efa8dff71fa94ff84fa9bff97faa2ffaafaa9ffbdfab0ffd0fab7ffe3fabefff6fac5ff09faccff251583ff38158aff4b1591ff5e1598ff71159fff8415a6ff9715adffaa15b4ffbd15bbffd015c2ffe315c9fff615d0ff0915d7ff",
+          "duration": 90
+        },
+        {
+          "rgba": "4a7a56ff5d7a5dff707a64ff837a6bff967a72ffa97a79ffbc7a80ffcf7a87ffe27a8efff57a95ff087a9cff1b7aa3ff2e7aaaff4a9561ff5d9568ff70956fff839576ff96957dffa99584ffbc958bffcf9592ffe29599fff595a0ff0895a7ff1b95aeff2e95b5ff4ab06cff5db073ff70b07aff83b081ff96b088ffa9b08fffbcb096ffcfb09dffe2b0a4fff5b0abff08b0b2ff1bb0b9ff2eb0c0ff4acb77ff5dcb7eff70cb85ff83cb8cff96cb93ffa9cb9affbccba1ffcfcba8ffe2cbaffff5cbb6ff08cbbdff1bcbc4ff2ecbcbff4ae682ff5de689ff70e690ff83e697ff96e69effa9e6a5ffbce6acffcfe6b3ffe2e6bafff5e6c1ff08e6c8ff1be6cfff2ee6d6ff4a018dff5d0194ff70019bff8301a2ff9601a9ffa901b0ffbc01b7ffcf01beffe201c5fff501ccff0801d3ff1b01daff2e01e1ff4a1c98ff5d1c9fff701ca6ff831cadff961cb4ffa91cbbffbc1cc2ffcf1cc9ffe21cd0fff51cd7ff081cdeff1b1ce5ff2e1cecff4a37a3ff5d37aaff7037b1ff8337b8ff9637bfffa937c6ffbc37cdffcf37d4ffe237dbfff537e2ff0837e9ff1b37f0ff2e37f7ff4a52aeff5d52b5ff7052bcff8352c3ff9652caffa952d1ffbc52d8ffcf52dfffe252e6fff552edff0852f4ff1b52fbff2e5202ff",
+          "duration": 110
+        }
+      ]
+    },
+    {
+      "file": "pages.tiff",
+      "width": 13,
+      "height": 9,
+      "frames": [
+        {
+          "rgba": "000000ff130007ff26000eff390015ff4c001cff5f0023ff72002aff850031ff980038ffab003fffbe0046ffd1004dffe40054ff001b0bff131b12ff261b19ff391b20ff4c1b27ff5f1b2eff721b35ff851b3cff981b43ffab1b4affbe1b51ffd11b58ffe41b5fff003616ff13361dff263624ff39362bff4c3632ff5f3639ff723640ff853647ff98364effab3655ffbe365cffd13663ffe4366aff005121ff135128ff26512fff395136ff4c513dff5f5144ff72514bff855152ff985159ffab5160ffbe5167ffd1516effe45175ff006c2cff136c33ff266c3aff396c41ff4c6c48ff5f6c4fff726c56ff856c5dff986c64ffab6c6bffbe6c72ffd16c79ffe46c80ff008737ff13873eff268745ff39874cff4c8753ff5f875aff728761ff858768ff98876fffab8776ffbe877dffd18784ffe4878bff00a242ff13a249ff26a250ff39a257ff4ca25eff5fa265ff72a26cff85a273ff98a27affaba281ffbea288ffd1a28fffe4a296ff00bd4dff13bd54ff26bd5bff39bd62ff4cbd69ff5fbd70ff72bd77ff85bd7eff98bd85ffabbd8cffbebd93ffd1bd9affe4bda1ff00d858ff13d85fff26d866ff39d86dff4cd874ff5fd87bff72d882ff85d889ff98d890ffabd897ffbed89effd1d8a5ffe4d8acff",
+          "duration": null
+        },
+        {
+          "rgba": "253d2bff383d32ff4b3d39ff5e3d40ff713d47ff843d4eff973d55ffaa3d5cffbd3d63ffd03d6affe33d71fff63d78ff093d7fff255836ff38583dff4b5844ff5e584bff715852ff845859ff975860ffaa5867ffbd586effd05875ffe3587cfff65883ff09588aff257341ff387348ff4b734fff5e7356ff71735dff847364ff97736bffaa7372ffbd7379ffd07380ffe37387fff6738eff097395ff258e4cff388e53ff4b8e5aff5e8e61ff718e68ff848e6fff978e76ffaa8e7dffbd8e84ffd08e8bffe38e92fff68e99ff098ea0ff25a957ff38a95eff4ba965ff5ea96cff71a973ff84a97aff97a981ffaaa988ffbda98fffd0a996ffe3a99dfff6a9a4ff09a9abff25c462ff38c469ff4bc470ff5ec477ff71c47eff84c485ff97c48cffaac493ffbdc49affd0c4a1ffe3c4a8fff6c4afff09c4b6ff25df6dff38df74ff4bdf7bff5edf82ff71df89ff84df90ff97df97ffaadf9effbddfa5ffd0dfacffe3dfb3fff6dfbaff09dfc1ff25fa78ff38fa7fff4bfa86ff5efa8dff71fa94ff84fa9bff97faa2ffaafaa9ffbdfab0ffd0fab7ffe3fabefff6fac5ff09faccff251583ff38158aff4b1591ff5e1598ff71159fff8415a6ff9715adffaa15b4ffbd15bbffd015c2ffe315c9fff615d0ff0915d7ff",
+          "duration": null
+        },
+        {
+          "rgba": "4a7a56ff5d7a5dff707a64ff837a6bff967a72ffa97a79ffbc7a80ffcf7a87ffe27a8efff57a95ff087a9cff1b7aa3ff2e7aaaff4a9561ff5d9568ff70956fff839576ff96957dffa99584ffbc958bffcf9592ffe29599fff595a0ff0895a7ff1b95aeff2e95b5ff4ab06cff5db073ff70b07aff83b081ff96b088ffa9b08fffbcb096ffcfb09dffe2b0a4fff5b0abff08b0b2ff1bb0b9ff2eb0c0ff4acb77ff5dcb7eff70cb85ff83cb8cff96cb93ffa9cb9affbccba1ffcfcba8ffe2cbaffff5cbb6ff08cbbdff1bcbc4ff2ecbcbff4ae682ff5de689ff70e690ff83e697ff96e69effa9e6a5ffbce6acffcfe6b3ffe2e6bafff5e6c1ff08e6c8ff1be6cfff2ee6d6ff4a018dff5d0194ff70019bff8301a2ff9601a9ffa901b0ffbc01b7ffcf01beffe201c5fff501ccff0801d3ff1b01daff2e01e1ff4a1c98ff5d1c9fff701ca6ff831cadff961cb4ffa91cbbffbc1cc2ffcf1cc9ffe21cd0fff51cd7ff081cdeff1b1ce5ff2e1cecff4a37a3ff5d37aaff7037b1ff8337b8ff9637bfffa937c6ffbc37cdffcf37d4ffe237dbfff537e2ff0837e9ff1b37f0ff2e37f7ff4a52aeff5d52b5ff7052bcff8352c3ff9652caffa952d1ffbc52d8ffcf52dfffe252e6fff552edff0852f4ff1b52fbff2e5202ff",
+          "duration": null
+        }
+      ]
+    },
+    {
+      "file": "lossless.jp2",
+      "width": 13,
+      "height": 9,
+      "frames": [
+        {
+          "rgba": "000000ff130007ff26000eff390015ff4c001cff5f0023ff72002aff850031ff980038ffab003fffbe0046ffd1004dffe40054ff001b0bff131b12ff261b19ff391b20ff4c1b27ff5f1b2eff721b35ff851b3cff981b43ffab1b4affbe1b51ffd11b58ffe41b5fff003616ff13361dff263624ff39362bff4c3632ff5f3639ff723640ff853647ff98364effab3655ffbe365cffd13663ffe4366aff005121ff135128ff26512fff395136ff4c513dff5f5144ff72514bff855152ff985159ffab5160ffbe5167ffd1516effe45175ff006c2cff136c33ff266c3aff396c41ff4c6c48ff5f6c4fff726c56ff856c5dff986c64ffab6c6bffbe6c72ffd16c79ffe46c80ff008737ff13873eff268745ff39874cff4c8753ff5f875aff728761ff858768ff98876fffab8776ffbe877dffd18784ffe4878bff00a242ff13a249ff26a250ff39a257ff4ca25eff5fa265ff72a26cff85a273ff98a27affaba281ffbea288ffd1a28fffe4a296ff00bd4dff13bd54ff26bd5bff39bd62ff4cbd69ff5fbd70ff72bd77ff85bd7eff98bd85ffabbd8cffbebd93ffd1bd9affe4bda1ff00d858ff13d85fff26d866ff39d86dff4cd874ff5fd87bff72d882ff85d889ff98d890ffabd897ffbed89effd1d8a5ffe4d8acff",
+          "duration": null
+        }
+      ]
+    },
+    {
+      "file": "gamma.png",
+      "width": 1,
+      "height": 1,
+      "frames": [
+        {
+          "rgba": "bcbcbcff",
+          "duration": null
+        }
+      ]
+    }
+  ]
+}

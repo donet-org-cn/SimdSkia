@@ -14,8 +14,8 @@ try {
     $manifestFile=Join-Path $root ($Phase+'-run.json');if(Test-Path -LiteralPath $manifestFile){throw 'Evidence already exists; use a new output path.'}
     foreach($project in @('benchmarks/Avalonia/Managed','benchmarks/Avalonia/Reference')){dotnet build $project -c Release --nologo;if($LASTEXITCODE -ne 0){throw 'Build failed.'}}
     $fontPath=(Resolve-Path -LiteralPath $Font).Path;$fixturePath=Join-Path $root 'fixtures'
-    $referencePath=Join-Path $workspacePath 'benchmarks/Avalonia/Reference/bin/Release/net8.0/SimdSkia.AvaloniaBench.Reference.dll'
-    $managedPath=Join-Path $workspacePath 'benchmarks/Avalonia/Managed/bin/Release/net8.0/SimdSkia.AvaloniaBench.Managed.dll'
+    $referencePath=Join-Path $workspacePath 'benchmarks/Avalonia/Reference/bin/Release/net10.0/SimdSkia.AvaloniaBench.Reference.dll'
+    $managedPath=Join-Path $workspacePath 'benchmarks/Avalonia/Managed/bin/Release/net10.0/SimdSkia.AvaloniaBench.Managed.dll'
     $env:DOTNET_TieredCompilation='0';$env:DOTNET_ReadyToRun='0';$env:DOTNET_gcServer='0'
     if(-not(Test-Path -LiteralPath (Join-Path $fixturePath 'labels.json'))){dotnet $referencePath --make-labels $fixturePath $fontPath;if($LASTEXITCODE -ne 0){throw 'Label fixture failed.'}}
     if($Phase -eq 'before'){

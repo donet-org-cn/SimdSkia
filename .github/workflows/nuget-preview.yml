@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Preview version (for example 0.1.0-preview.9)'
+        description: 'Preview version (for example 0.1.0-preview.10)'
         required: true
-        default: '0.1.0-preview.9'
+        default: '0.1.0-preview.10'
       publish:
         description: 'Publish verified packages to NuGet.org using trusted publishing'
         type: boolean
@@ -62,7 +62,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           dotnet run --project tests/Optimization -c Release --no-build -- baseline/fonts/ZenOldMincho-Regular.ttf
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          dotnet run --project tests/Imaging -c Release --no-build
+          dotnet run --project tests/Imaging -c Release --no-build -- --independent-only
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           dotnet run --project tests/CompatibilityExpansion/Managed -c Release --no-build
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
@@ -74,11 +74,26 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           dotnet run --project tests/AvaloniaControls -c Release --no-build -- --frames 5 --output artifacts/nuget-controls
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Record unchanged JPEG gate and enforce only disclosed preview exceptions
+        run: python tools/check-jpeg-parity.py --output artifacts/jpeg-parity --allow-known-preview10
+      - name: Verify full codec integration
+        run: dotnet run --project tests/CodecIntegration -c Release --no-build
+      - name: Verify scalar codec fallback
+        shell: pwsh
+        run: |
+          $env:DOTNET_EnableHWIntrinsic = '0'
+          dotnet run --project tests/CodecIntegration -c Release --no-build
+          exit $LASTEXITCODE
       - name: Pack preview packages and inspect dependency graph
         shell: pwsh
         env:
           PREVIEW_VERSION: ${{ steps.version.outputs.version }}
         run: ./tools/pack-preview.ps1 -Version $env:PREVIEW_VERSION
+      - name: Consume actual codec packages (not source project references)
+        shell: pwsh
+        env:
+          PREVIEW_VERSION: ${{ steps.version.outputs.version }}
+        run: ./tools/test-codec-package.ps1 -Version $env:PREVIEW_VERSION -Packages artifacts/nuget-preview
       - name: Consume the packages and verify a real Native AOT window
         shell: pwsh
         env:
@@ -101,6 +116,8 @@ jobs:
             artifacts/nuget-preview/*.nupkg
             artifacts/nuget-preview/*.snupkg
             artifacts/nuget-preview/manifest.json
+            artifacts/jpeg-parity/
+            artifacts/codec-package-consumer/results/
             artifacts/nuget-consumer/metrics.json
             artifacts/nuget-consumer/window.png
             artifacts/desktop-package-consumer/results/
@@ -110,7 +127,12 @@ jobs:
         if: failure()
         with:
           name: preview-validation-logs
-          path: artifacts/nuget-consumer/*.log
+          path: |
+            artifacts/nuget-consumer/*.log
+            artifacts/jpeg-parity/
+            artifacts/codec-package-consumer/*.log
+            artifacts/desktop-package-consumer/*.log
+            artifacts/pdf-package-consumer/*.log
           if-no-files-found: ignore
 
   publish:

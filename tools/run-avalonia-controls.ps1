@@ -12,8 +12,8 @@ if(-not $NoBuild){
 $outputPath=[IO.Path]::GetFullPath((Join-Path $workspacePath $Output))
 if(Test-Path -LiteralPath (Join-Path $outputPath 'manifest.json')){throw 'Use a new output directory to preserve earlier evidence.'}
 New-Item -ItemType Directory -Path $outputPath -Force | Out-Null
-$managedPath=Join-Path $workspacePath 'tests/AvaloniaControls/bin/Release/net8.0/SimdSkia.Avalonia.Controls.Tests.dll'
-$referencePath=Join-Path $workspacePath 'tests/AvaloniaControls.Reference/bin/Release/net8.0/AvaloniaControls.Reference.dll'
+$managedPath=Join-Path $workspacePath 'tests/AvaloniaControls/bin/Release/net10.0/SimdSkia.Avalonia.Controls.Tests.dll'
+$referencePath=Join-Path $workspacePath 'tests/AvaloniaControls.Reference/bin/Release/net10.0/AvaloniaControls.Reference.dll'
 $engines=@([pscustomobject]@{Name='after';Path=$managedPath;Arguments=@()},[pscustomobject]@{Name='reference';Path=$referencePath;Arguments=@()},[pscustomobject]@{Name='default';Path=$referencePath;Arguments=@('--native-default-opacity')})
 if($BeforeDirectory){$engines=@([pscustomobject]@{Name='before';Path=(Join-Path ([IO.Path]::GetFullPath((Join-Path $workspacePath $BeforeDirectory))) 'SimdSkia.Avalonia.Controls.Tests.dll');Arguments=@()})+$engines}
 $configurations=@([pscustomobject]@{Scene='controls';Scale='1'},[pscustomobject]@{Scene='scroll';Scale='1'},[pscustomobject]@{Scene='controls';Scale='1.5'})

@@ -25,8 +25,8 @@ for data,native in [(startup,False),(aot,True)]:
 manifests={name:read(root/name/'manifest.json') for name in ['system','fixed','tile','desktop','startup','startup-aot']}
 for manifest in manifests.values():
     for name,digest in manifest.get('runtimeFileSha256',{}).items():assert sha(Path(name))==digest,name
-dirs={'before':baseline/'before-controls','after':Path('tests/AvaloniaControls/bin/Release/net8.0'),
-      'reference':Path('tests/AvaloniaControls.Reference/bin/Release/net8.0'),'default':Path('tests/AvaloniaControls.Reference/bin/Release/net8.0')}
+dirs={'before':baseline/'before-controls','after':Path('tests/AvaloniaControls/bin/Release/net10.0'),
+      'reference':Path('tests/AvaloniaControls.Reference/bin/Release/net10.0'),'default':Path('tests/AvaloniaControls.Reference/bin/Release/net10.0')}
 for r in manifests['fixed']['Files']:assert sha(dirs[r['Engine']]/r['Name']).upper()==r['Sha256']
 for name,digest in read(baseline/'before-sha256.json').items():assert sha(baseline/name)==digest,name
 pairs=[]

@@ -12,8 +12,8 @@ if a.runs<1:raise SystemExit('runs must be positive')
 if (a.output/'manifest.json').exists():raise SystemExit('Use a fresh output directory')
 a.output.mkdir(parents=True,exist_ok=True)
 engines={'before':a.before_directory/'SimdSkia.Avalonia.Controls.Tests.dll',
-         'after':Path('tests/AvaloniaControls/bin/Release/net8.0/SimdSkia.Avalonia.Controls.Tests.dll'),
-         'reference':Path('tests/AvaloniaControls.Reference/bin/Release/net8.0/AvaloniaControls.Reference.dll')}
+         'after':Path('tests/AvaloniaControls/bin/Release/net10.0/SimdSkia.Avalonia.Controls.Tests.dll'),
+         'reference':Path('tests/AvaloniaControls.Reference/bin/Release/net10.0/AvaloniaControls.Reference.dll')}
 files=sorted({p.resolve() for binary in engines.values() for pattern in ['*.dll','*.deps.json','*.runtimeconfig.json'] for p in binary.parent.glob(pattern)})
 hashes={str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
 (a.output/'manifest.json').write_text(json.dumps({'scenario':'160 updates of one 512x512 source / 320x240 ImageBrush tile; 8 warmup updates; CPU only',

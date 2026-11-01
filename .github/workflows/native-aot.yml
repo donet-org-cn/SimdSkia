@@ -59,6 +59,10 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & artifacts/standalone-aot/pdf/Pdf.exe artifacts/standalone-aot/pdf-results
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet publish tests/CodecIntegration -c Release -r win-x64 -p:NativeAotTest=true -o artifacts/codec-aot
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & artifacts/codec-aot/CodecIntegration.exe artifacts/codec-aot-results
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -67,4 +71,5 @@ jobs:
             artifacts/aot-comparison/smoke-*
             artifacts/sampling-aot/*.txt
             artifacts/standalone-aot/*-results/
+            artifacts/codec-aot-results/
           if-no-files-found: ignore

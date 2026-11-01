@@ -84,7 +84,7 @@ PERF
 
 ```powershell
 dotnet build benchmarks/Sampling -c Release
-dotnet benchmarks/Sampling/bin/Release/net8.0/Sampling.dll --alpha-probe --output artifacts/new-native-probe
+dotnet benchmarks/Sampling/bin/Release/net10.0/Sampling.dll --alpha-probe --output artifacts/new-native-probe
 dotnet run --project tests/Optimization -c Release -- baseline/fonts/ZCOOLXiaoWei-Regular.ttf
 powershell -NoProfile -File tools/build-shader.ps1
 powershell -NoProfile -File tools/verify.ps1 -Reference -Gpu

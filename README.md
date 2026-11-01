@@ -1,5 +1,32 @@
 # SimdSkia
 
+## 0.1.0-preview.10：.NET 10 编解码更新与原版性能实测
+
+本版将十二个包统一为 **`0.1.0-preview.10`**，需要 **.NET 10 / C# 14**，Avalonia 固定 **12.1.4**、SkiaSharp 源码兼容基线固定 **3.119.4**。从 .NET 8 项目升级须改为 `net10.0`；需要保留 .NET 8 的用户请继续使用 preview.9。公开上传和下载验证状态以[发布记录](docs/NUGET-PREVIEW.md)为准。
+
+完整接入 **`Sdcb.SimdCodecs 1.2.0`**，替换 JPEG/PNG 像素编解码及 GIF LZW/合成，并扩展 WebP/动画、多页 TIFF、BMP/ICO、QOI、Netpbm 及受支持 JPEG2000/JBIG2 输入。PNG/TIFF 允许使用 **.NET 自带原生压缩**；仍不调用 Google Skia 绘图。缺失编码器、不能表达的 API 和不支持的颜色路径明确报错。
+
+### 本版测试记录
+
+同机 Windows x64 / i7-8700K / GTX 1050 Ti / .NET 10.0.13 JIT，共 **123 个独立计时进程**，每例三轮中位数；双方同字体/尺寸/输入。GPU 包含等待完成和回读，不是提交计时、AOT 或显示器 FPS。
+
+| 测试 | 原版 | SimdSkia |
+| --- | ---: | ---: |
+| CPU 控件页 100% DPI | 0.891 ms/帧 | 0.549 ms/帧 |
+| CPU 控件页 150% DPI | 1.701 ms/帧 | 1.353 ms/帧 |
+| CPU 滚动列表 | 0.372 ms/帧 | 0.348 ms/帧 |
+| 控件页工作集 / Private | 90.39 / 47.36 MiB | 109.81 / 71.08 MiB |
+| JPEG 解码，两张 1080p 图案 | 基线 | 快约 2.27–2.90 倍 |
+| GPU Vulkan / Direct2D 综合耗时比 | 各例较快原版 = 1 | 0.678 / 0.624 |
+
+**没有全面追平：** CPU 工作集仍高约 18%–22%；纹理 PNG 解码耗时为原版 **2.03 倍**，UI PNG 编码慢约 **19%**；JPEG 编码较快但 UI 输出大约增加 **52%**。整页画质 **CPU 0/3、GPU 0/12** 达到既定门槛；JPEG 联合回读 **3/24** 组最大差 2 超过原门槛 1，没有放宽阈值。
+
+本地验证记录：1,416 项编解码集成、1,417 项实际 Native AOT、471,569 项精确优化、9,750 项控件回归通过；原版 JPEG 严格画质仍失败。发布流水线将功能/损坏输入测试与这三项已知 JPEG 差异分开记录，只对披露的三个样例启用预览发布例外，新差异仍阻止发布，不能把 CI 可发布当作画质全绿。
+
+[完整性能图、CPU/内存、质量与复现命令](docs/SKIA-COMPARISON-2026-11-01.md) · [编解码接入记录](docs/SIMDCODECS-INTEGRATION-2026-11-01.md) · [更新日志](docs/RELEASE-NOTES.md)。先前本地 `0.1.0-codecs-trial.1` 为接入验证快照，旧 preview.9 包和标签不改写。
+
+以下保留旧版使用和测量的历史背景；当前安装命令见后面的快速开始：
+
 2026-10-27 preview.9 实测：[VelaShell 整体兼容报告](docs/VELASHELL-COMPATIBILITY-2026-10-27.md)。已实际拉取并运行真实应用，修正字体 Try 回退和图片舍入边界；CPU、Direct2D、Vulkan 各 23 个常规场景可绘制。**组合字符、资源监视滚动、部分输入行为、Skia 专属预览和整页一致性仍有缺口，尚不能宣称整体替换成功。**
 
 **preview.9 新增：** 已补 `SKBitmap.GetPixels()`、`SKTypeface.FromFamilyName`、GIF `SKCodec`、`SKRoundRect`、`SaveLayer` 和 `SKRect.Inflate`，新增多页栅格 PDF 导出与可选纯托管 PDF 页面阅读/窗口示例。固定 SkiaSharp 3.119.4 源码基线不变，完整 API、圆角/文字画质及通用 PDF 仍有缺口；**这些功能从 preview.9 开始提供，公开状态见[发布记录](docs/NUGET-PREVIEW.md)**。代码、命令、原版对照及限制见[独立兼容层与 PDF 报告](docs/STANDALONE-COMPATIBILITY-2026-10-27.md)。可直接运行：`dotnet run -c Release --project examples/PdfViewer -- tests/Pdf/Fixtures/external.pdf`。
@@ -22,46 +49,43 @@
 
 独立 C# 2D 引擎，内部使用 `SimdSkia`，源码兼容层保留 `SkiaSharp.SK*`。不使用 Google Skia 绘图；字体、基础排版及图片编解码均由 C# 实现。通过 `SimdSkia.Avalonia` 可以接入 Avalonia，无需重新编译 Avalonia。
 
-本轮版本为 **`0.1.0-preview.9`**，固定支持 **Avalonia 12.1.4**。Windows、Linux X11/XWayland、macOS 已通过真实窗口验证；macOS 使用经用户确认允许的官方原生窗口宿主，绘图、字体、排版和编解码仍是 C#。默认使用 CPU，可选 Windows Direct2D 原生交换链或 Windows/Linux Vulkan 绘图。**macOS GPU/Metal 尚未实现，完整兼容性和画质验收仍未全部通过。**
+本轮版本为 **`0.1.0-preview.10`**，固定支持 **Avalonia 12.1.4**。Windows、Linux X11/XWayland、macOS 已通过真实窗口验证；macOS 使用经用户确认允许的官方原生窗口宿主，绘图、字体、排版和编解码仍是 C#。默认使用 CPU，可选 Windows Direct2D 原生交换链或 Windows/Linux Vulkan 绘图。**macOS GPU/Metal 尚未实现，完整兼容性和画质验收仍未全部通过。**
 
-## preview.9 更新了什么
+## preview.10 更新了什么
 
-12 个包统一版本，包内提供 NuGet 发行说明、完整使用 README 和 `CHANGELOG.md`。公开下载状态以[发布记录](docs/NUGET-PREVIEW.md)为准；本次不是完整兼容正式版。
-
-- **独立兼容层**：真实像素指针 `SKBitmap.GetPixels`、系统字体族/样式发现、GIF `SKCodec`、圆角、图层整组透明度、几何与采样重载。固定基线公共条目匹配 **892/3235**，仍缺 2343 项，不承诺二进制兼容。
-- **PDF**：`SKDocument.CreatePdf` 多页栅格导出；新增可选包 **`SimdSkia.Pdf`** 读取已有 PDF 并绘制受支持的页面内容，普通 Avalonia 用户不引入 PDF 解析依赖。无矢量导出、可搜索文字或 PDF/A；阅读器超出支持范围明确报错。
-- **真实应用修复**：修正 VelaShell 字体 Try 回退和图片布局舍入边界，9,750 项控件回归通过。常规 CPU/Direct2D/Vulkan 各 23/23；深层视图仍有失败、超时和 Skia 专属预览缺口，不能宣称整个应用已替换。
-- **性能范围**：本版只新增 1080p 带 stride 像素逐行复制对照，0.5907 vs 原版 0.5921 ms/帧，视为基本持平。**未重测完整 Avalonia CPU/GPU 吞吐和常驻内存**；上文 preview.8 数字保留历史版本，不作为本版成绩。
-- **示例和限制**：新增 Documents、PdfViewer、独立原版调用对照及 VelaShell 测试工具。圆角/文字和整页画质、组合字符、资源监视性能、部分输入及 macOS GPU 等缺口详见[更新日志](docs/RELEASE-NOTES.md)。
+- **框架和编解码**：.NET 10 / C# 14，完整引用 Sdcb.SimdCodecs 1.2.0；保留颜色、stride/Alpha、预算及生命周期适配，严格 PNG 验证不省略。
+- **更多格式**：WebP/动画、多页 TIFF 及扩展格式；GIF 元数据和随机帧调用保持既有合同。WebP 编码、部分 HDR/CMYK+ICC 等仍明确拒绝。
+- **测试和性能记录**：上述 123 进程原版对照、CPU/内存与性能图，以及标量、AOT、实际包消费验证进入本版更新日志。JPEG 更快不等于所有 PNG、内存和整页画质通过。
+- **继承 preview.9**：真实像素指针、系统字体族/样式、GIF SKCodec、圆角/图层/采样、受限 PDF 导出/阅读和 VelaShell 接入修复；不宣称完整 API 或二进制替换。
 
 ## NuGet 包怎么选
 
-本轮包含下列十二个包，统一版本 `0.1.0-preview.9`；发布状态见 [预览发布](docs/NUGET-PREVIEW.md)。在 Visual Studio 的 NuGet 搜索中勾选“包括预发行版”。
+本轮包含下列十二个包，统一版本 `0.1.0-preview.10`；发布状态见 [预览发布](docs/NUGET-PREVIEW.md)。在 Visual Studio 的 NuGet 搜索中勾选“包括预发行版”。
 
 | 包名 | 用途 |
 | --- | --- |
-| [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.0-preview.9) | **桌面应用优先选这个**：自动选择 Windows/Linux/macOS 宿主，传递引入渲染适配器 |
-| [SimdSkia.Avalonia](https://www.nuget.org/packages/SimdSkia.Avalonia/0.1.0-preview.9) | 绘图、字体和基础文字排版服务，也可配合自行配置的宿主 |
-| [SimdSkia.Avalonia.Gpu](https://www.nuget.org/packages/SimdSkia.Avalonia.Gpu/0.1.0-preview.9) | 可选 Avalonia GPU 绘图、Direct2D 直接呈现和回退/缓存诊断 |
-| [SimdSkia.Gpu.Direct2D](https://www.nuget.org/packages/SimdSkia.Gpu.Direct2D/0.1.0-preview.9) | Windows Direct2D/D3D11，纯 C# 系统 API 互操作，无第三方绑定包 |
-| [SimdSkia](https://www.nuget.org/packages/SimdSkia/0.1.0-preview.9) | 需要 `SkiaSharp.SK*` 源码兼容 API 时使用的依赖汇总包 |
-| [SimdSkia.Compatibility](https://www.nuget.org/packages/SimdSkia.Compatibility/0.1.0-preview.9) | `SKBitmap`、`SKCanvas` 等兼容层，也由 `SimdSkia` 汇总包引入 |
-| [SimdSkia.Core](https://www.nuget.org/packages/SimdSkia.Core/0.1.0-preview.9) | 几何、路径和绘图状态 |
-| [SimdSkia.Cpu](https://www.nuget.org/packages/SimdSkia.Cpu/0.1.0-preview.9) | CPU 光栅化、像素合成及 SIMD |
-| [SimdSkia.Text](https://www.nuget.org/packages/SimdSkia.Text/0.1.0-preview.9) | TrueType 字体解析和基础排版 |
-| [SimdSkia.Imaging](https://www.nuget.org/packages/SimdSkia.Imaging/0.1.0-preview.9) | 图片编解码和颜色处理 |
-| [SimdSkia.Gpu](https://www.nuget.org/packages/SimdSkia.Gpu/0.1.0-preview.9) | Vulkan 离屏后端，需要系统 Vulkan loader/驱动 |
-| [SimdSkia.Pdf](https://www.nuget.org/packages/SimdSkia.Pdf/0.1.0-preview.9) | 可选纯托管 PDF 阅读/页面绘制；导出 PDF 无需安装此包 |
+| [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.0-preview.10) | **桌面应用优先选这个**：自动选择 Windows/Linux/macOS 宿主，传递引入渲染适配器 |
+| [SimdSkia.Avalonia](https://www.nuget.org/packages/SimdSkia.Avalonia/0.1.0-preview.10) | 绘图、字体和基础文字排版服务，也可配合自行配置的宿主 |
+| [SimdSkia.Avalonia.Gpu](https://www.nuget.org/packages/SimdSkia.Avalonia.Gpu/0.1.0-preview.10) | 可选 Avalonia GPU 绘图、Direct2D 直接呈现和回退/缓存诊断 |
+| [SimdSkia.Gpu.Direct2D](https://www.nuget.org/packages/SimdSkia.Gpu.Direct2D/0.1.0-preview.10) | Windows Direct2D/D3D11，纯 C# 系统 API 互操作，无第三方绑定包 |
+| [SimdSkia](https://www.nuget.org/packages/SimdSkia/0.1.0-preview.10) | 需要 `SkiaSharp.SK*` 源码兼容 API 时使用的依赖汇总包 |
+| [SimdSkia.Compatibility](https://www.nuget.org/packages/SimdSkia.Compatibility/0.1.0-preview.10) | `SKBitmap`、`SKCanvas` 等兼容层，也由 `SimdSkia` 汇总包引入 |
+| [SimdSkia.Core](https://www.nuget.org/packages/SimdSkia.Core/0.1.0-preview.10) | 几何、路径和绘图状态 |
+| [SimdSkia.Cpu](https://www.nuget.org/packages/SimdSkia.Cpu/0.1.0-preview.10) | CPU 光栅化、像素合成及 SIMD |
+| [SimdSkia.Text](https://www.nuget.org/packages/SimdSkia.Text/0.1.0-preview.10) | TrueType 字体解析和基础排版 |
+| [SimdSkia.Imaging](https://www.nuget.org/packages/SimdSkia.Imaging/0.1.0-preview.10) | 图片编解码和颜色处理 |
+| [SimdSkia.Gpu](https://www.nuget.org/packages/SimdSkia.Gpu/0.1.0-preview.10) | Vulkan 离屏后端，需要系统 Vulkan loader/驱动 |
+| [SimdSkia.Pdf](https://www.nuget.org/packages/SimdSkia.Pdf/0.1.0-preview.10) | 可选纯托管 PDF 阅读/页面绘制；导出 PDF 无需安装此包 |
 
 新桌面应用添加 `SimdSkia.Avalonia.Desktop`，其渲染服务和引擎依赖会自动还原，无需额外安装 `SimdSkia` 或手动复制底层 DLL：
 
 ```powershell
-dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.0-preview.9
+dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.0-preview.10
 ```
 
 **安装包后还必须配置启动代码。** 以下是完整的新程序示例；现有项目按后面的迁移步骤调整。
 
-从旧预览版升级时，将直接引用的所有 `SimdSkia.*` 包统一到 `0.1.0-preview.9`，Avalonia 包继续统一为 `12.1.4`。这次新增独立 SK* API、GIF、PDF 和真实应用接入修复，继承之前的 SIMD、半透明修复、系统字体和启动准备；无需重新编译 Avalonia。具体性能、画质限制与发布验收见 [发布记录](docs/NUGET-PREVIEW.md)。
+从旧预览版升级时，将直接引用的所有 `SimdSkia.*` 包统一到 `0.1.0-preview.10`，Avalonia 包继续统一为 `12.1.4`。本次要求 .NET 10，并更新编解码依赖、格式支持及测试报告；继承此前独立 SK* API、PDF、SIMD 和启动准备，无需重新编译 Avalonia。具体性能、画质限制与发布验收见 [发布记录](docs/NUGET-PREVIEW.md)。
 
 ## Avalonia 快速开始（Windows / Linux / macOS）
 
@@ -78,7 +102,7 @@ dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.0-preview.9
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SimdSkia.Avalonia.Desktop" Version="0.1.0-preview.9" />
+    <PackageReference Include="SimdSkia.Avalonia.Desktop" Version="0.1.0-preview.10" />
     <PackageReference Include="Avalonia" Version="[12.1.4]" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.4]" />
   </ItemGroup>
@@ -147,7 +171,7 @@ Windows 的 `WinExe` 避免额外控制台窗口。三平台自动发现受支�
 在上面的桌面程序中增加可选包：
 
 ```powershell
-dotnet add package SimdSkia.Avalonia.Gpu --version 0.1.0-preview.9
+dotnet add package SimdSkia.Avalonia.Gpu --version 0.1.0-preview.10
 ```
 
 Windows 将 `.UseSimdSkiaDesktop()` 改为：
@@ -210,7 +234,7 @@ dotnet publish -c Release -r osx-arm64 -p:PublishAot=true -o publish/osx-arm64
 
 新增 [Avalonia Native AOT 双后端程序](examples/AvaloniaAot/README.md)：相同控件分别使用 SimdSkia 与原版，提供 Windows x64 通用及 AVX2 版本，实际比较完整发布体积、启动/绘制速度、CPU 和内存。结果见 [AOT 实测报告](docs/AVALONIA-AOT-COMPARISON.md)；既有报告是另一套 JIT/离屏基准，数据不混用。
 
-SK* 源码兼容的固定基线是 Avalonia.Skia 12.1.4 实际解析的 SkiaSharp 3.119.4。Core/Cpu/Text/Gpu 无第三方 NuGet 依赖，Imaging/Compatibility 使用固定版本纯托管 JpegLibrary；可选 Avalonia 层另有纯托管依赖，见 [许可证与依赖](docs/DEPENDENCIES.md)。
+SK* 源码兼容的固定基线是 Avalonia.Skia 12.1.4 实际解析的 SkiaSharp 3.119.4。Core/Cpu/Text/Gpu 无第三方 NuGet 依赖，Imaging/Compatibility 使用固定 Sdcb.SimdCodecs 1.2.0，PNG/TIFF 允许 .NET 自带原生压缩；可选 Avalonia 层另有纯托管依赖，见 [许可证与依赖](docs/DEPENDENCIES.md)。
 
 路径、抗锯齿、基本中英文 glyf TTF/TTC 字体、PNG/JPEG/部分 ICC、图像/视觉画刷、模糊/阴影、SIMD、Vulkan 离屏及窗口回读呈现、Direct2D 原生交换链均有真实实现。**完整 Avalonia 替换尚未通过验收**：文字/曲线及部分新功能画质仍失败，通用字体排版、Vulkan 直接交换链和 macOS GPU 等仍有缺口。
 
@@ -232,7 +256,7 @@ dotnet run --project examples/AvaloniaControls -c Release -- --window
 
 ## 构建和运行
 
-需要 .NET 10 SDK 和 .NET 8 runtime。
+需要 .NET 10 SDK 和对应运行时；Native AOT 发布还需安装目标平台的编译工具链。
 
     dotnet build SimdSkia.sln -c Release
     dotnet run --project tests/SimdSkia.Tests -c Release

@@ -22,8 +22,8 @@ manifests={name:read(root/name/'manifest.json') for name in ['system-complete','
 # Recheck every measured DLL/config at report time, not just at the end of a run.
 for manifest in manifests.values():
     for name,digest in manifest.get('runtimeFileSha256',{}).items():assert hashlib.sha256(Path(name).read_bytes()).hexdigest()==digest,name
-fixed_dirs={'before':root/'before-controls','after':Path('tests/AvaloniaControls/bin/Release/net8.0'),
-    'reference':Path('tests/AvaloniaControls.Reference/bin/Release/net8.0'),'default':Path('tests/AvaloniaControls.Reference/bin/Release/net8.0')}
+fixed_dirs={'before':root/'before-controls','after':Path('tests/AvaloniaControls/bin/Release/net10.0'),
+    'reference':Path('tests/AvaloniaControls.Reference/bin/Release/net10.0'),'default':Path('tests/AvaloniaControls.Reference/bin/Release/net10.0')}
 for row in manifests['fixed-complete']['Files']:assert hashlib.sha256((fixed_dirs[row['Engine']]/row['Name']).read_bytes()).hexdigest().upper()==row['Sha256']
 for name,digest in read(root/'before-sha256.json').items():assert hashlib.sha256((root/name).read_bytes()).hexdigest()==digest,name
 frame_manifest=read(root/'complete-cpu-frames-manifest.json')

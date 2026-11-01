@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <PublishAot>true</PublishAot>
+    <IlcTreatWarningsAsErrors>true</IlcTreatWarningsAsErrors>
+    <ILLinkTreatWarningsAsErrors>true</ILLinkTreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="AotSmoke.cs" />
+    <PackageReference Include="Sdcb.SimdCodecs.Jpeg" Version="[1.2.0]" />
+    <PackageReference Include="Sdcb.SimdCodecs.Png" Version="[1.2.0]" />
+  </ItemGroup>
+</Project>

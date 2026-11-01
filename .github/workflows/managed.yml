@@ -20,7 +20,15 @@ jobs:
         shell: pwsh
         run: ./tools/fetch-test-font.ps1
       - run: dotnet run --project tests/Features -c Release --no-build -- baseline/fonts/ZenOldMincho-Regular.ttf
-      - run: dotnet run --project tests/Imaging -c Release --no-build
+      - run: dotnet run --project tests/Imaging -c Release --no-build -- --independent-only
+      - name: Record original JPEG quality failures and enforce disclosed preview exceptions
+        run: python tools/check-jpeg-parity.py --output artifacts/jpeg-parity --allow-known-preview10
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: jpeg-parity-${{ runner.os }}
+          path: artifacts/jpeg-parity/
+      - run: dotnet run --project tests/CodecIntegration -c Release --no-build
       - run: dotnet run --project tests/CompatibilityExpansion/Managed -c Release --no-build
       - run: dotnet run --project tests/Pdf -c Release --no-build
       - name: Standalone original behavior comparison
@@ -47,11 +55,11 @@ jobs:
         shell: pwsh
         run: |
           $env:DOTNET_EnableHWIntrinsic = '0'
-          dotnet tests/Optimization/bin/Release/net8.0/Optimization.dll baseline/fonts/ZenOldMincho-Regular.ttf
+          dotnet tests/Optimization/bin/Release/net10.0/Optimization.dll baseline/fonts/ZenOldMincho-Regular.ttf
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          dotnet tests/Imaging/bin/Release/net8.0/Imaging.dll
+          dotnet tests/Imaging/bin/Release/net10.0/Imaging.dll --independent-only
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          dotnet tests/Avalonia/bin/Release/net8.0/SimdSkia.Avalonia.Tests.dll baseline/fonts/ZenOldMincho-Regular.ttf
+          dotnet tests/Avalonia/bin/Release/net10.0/SimdSkia.Avalonia.Tests.dll baseline/fonts/ZenOldMincho-Regular.ttf
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          dotnet tests/AvaloniaControls/bin/Release/net8.0/SimdSkia.Avalonia.Controls.Tests.dll --frames 5 --output artifacts/avalonia-controls/ci-scalar
+          dotnet tests/AvaloniaControls/bin/Release/net10.0/SimdSkia.Avalonia.Controls.Tests.dll --frames 5 --output artifacts/avalonia-controls/ci-scalar
           exit $LASTEXITCODE

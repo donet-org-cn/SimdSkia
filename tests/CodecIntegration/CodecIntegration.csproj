@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <PropertyGroup Condition="'$(NativeAotTest)' == 'true'"><PublishAot>true</PublishAot><DefineConstants>$(DefineConstants);NATIVE_AOT</DefineConstants><IlcTreatWarningsAsErrors>true</IlcTreatWarningsAsErrors><ILLinkTreatWarningsAsErrors>true</ILLinkTreatWarningsAsErrors></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/SimdSkia.Compatibility/SimdSkia.Compatibility.csproj" Condition="'$(UsePackedSimdSkia)' != 'true'" />
+    <PackageReference Include="SimdSkia.Compatibility" Version="$(SimdSkiaPackageVersion)" Condition="'$(UsePackedSimdSkia)' == 'true'" />
+    <None Include="../Imaging/fixtures.json" Link="fixtures.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../CompatibilityExpansion/Fixtures/*.gif" Link="Fixtures/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="Fixtures/*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

@@ -33,7 +33,7 @@ with zipfile.ZipFile(package) as z:
         assert name in names, name
     assert not any(n.startswith("runtimes/") or n.endswith((".so", ".dylib", ".ttf", ".ttc")) for n in names)
 
-engine = root / "benchmarks/PixelAccess/Managed/bin/Release/net8.0"
+engine = root / "benchmarks/PixelAccess/Managed/bin/Release/net10.0"
 files = [dict(name=p.name, bytes=p.stat().st_size, sha256=digest(p)) for p in sorted(engine.glob("*.dll")) if p.name != "Managed.dll"]
 for group in ("managed", "original", "compat-aot-results", "pdf", "pdf-aot-results", "pdf-independent"):
     shutil.copyfile(data / group / "result.json", out / (group + ".json"))

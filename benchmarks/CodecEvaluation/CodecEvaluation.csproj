@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <SimdSkiaEngineRoot Condition="'$(SimdSkiaEngineRoot)' == ''">$(MSBuildThisFileDirectory)../../src</SimdSkiaEngineRoot>
+    <IlcTreatWarningsAsErrors>true</IlcTreatWarningsAsErrors>
+    <ILLinkTreatWarningsAsErrors>true</ILLinkTreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup><Compile Remove="AotSmoke/**;obj-aot/**" /></ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="$(SimdSkiaEngineRoot)/SimdSkia.Imaging/SimdSkia.Imaging.csproj" />
+    <PackageReference Include="Sdcb.SimdCodecs.Jpeg" Version="[1.2.0]" />
+    <PackageReference Include="Sdcb.SimdCodecs.Png" Version="[1.2.0]" />
+  </ItemGroup>
+</Project>

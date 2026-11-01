@@ -8,6 +8,8 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Build failed.' }
     dotnet run --project tests/SimdSkia.Tests -c Release --no-build
     if ($LASTEXITCODE -ne 0) { throw 'Behavior tests failed.' }
+    dotnet run --project tests/CodecIntegration -c Release --no-build
+    if ($LASTEXITCODE -ne 0) { throw 'Full codec integration tests failed.' }
     dotnet run --project tests/CompatibilityExpansion/Managed -c Release --no-build -- artifacts/compat-expansion/managed
     if ($LASTEXITCODE -ne 0) { throw 'Standalone compatibility expansion tests failed.' }
     dotnet run --project tests/Pdf -c Release --no-build
@@ -30,7 +32,7 @@ try {
     if($LASTEXITCODE -ne 0){throw 'Real Avalonia control, glyph-mask and lifetime checks failed.'}
     dotnet run --project examples/Rectangle -c Release --no-build
     if ($LASTEXITCODE -ne 0) { throw 'Rectangle example failed.' }
-    dotnet run --project tools/ApiAudit -c Release --no-build -- extract src/SimdSkia.Compatibility/bin/Release/net8.0/SimdSkia.Compatibility.dll docs/api/implemented.json
+    dotnet run --project tools/ApiAudit -c Release --no-build -- extract src/SimdSkia.Compatibility/bin/Release/net10.0/SimdSkia.Compatibility.dll docs/api/implemented.json
     if ($LASTEXITCODE -ne 0) { throw 'Replacement API extraction failed.' }
     if ($Reference) {
         if (-not (Test-Path -LiteralPath baseline/skiasharp.3.119.4/lib/net6.0/SkiaSharp.dll)) { throw 'Run tools/fetch-baseline.ps1 first.' }

@@ -13,7 +13,7 @@ out.mkdir(parents=True, exist_ok=True)
 data = {"Original": [], "Managed": []}
 for fork in range(3):
     for backend in ("Original", "Managed"):
-        dll = root / f"benchmarks/PixelAccess/{backend}/bin/Release/net8.0/{backend}.dll"
+        dll = root / f"benchmarks/PixelAccess/{backend}/bin/Release/net10.0/{backend}.dll"
         target = out / f"{backend.lower()}-{fork}.json"
         subprocess.run(["dotnet", str(dll), str(target)], cwd=root, check=True, capture_output=True, text=True)
         data[backend].append(json.loads(target.read_text(encoding="utf-8")))

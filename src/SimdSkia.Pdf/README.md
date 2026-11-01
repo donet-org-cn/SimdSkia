@@ -2,7 +2,9 @@
 
 Optional C# PDF parsing and page rendering, using PdfPig **0.1.16** (Apache-2.0)
 for PDF structure/fonts and SimdSkia for rasterization. No Skia, PDFium, MuPDF,
-native font library or native zlib is used by this module.
+native font library is used for PDF rendering. PDF Flate streams use the managed implementation; image codecs may use the explicitly permitted .NET native compression.
+
+**0.1.0-preview.10 requires .NET 10.** Full **Sdcb.SimdCodecs 1.2.0** integration is inherited through Imaging. The **123**-process CPU/GPU/codec test record is included in `CHANGELOG.md`: CPU controls 0.891→0.549 ms, but working set 90.39→109.81 MiB, slow PNG cases and original 画质 failures remain. JPEG 3/24 strict cases and CPU/GPU full-page quality still fail; no thresholds were relaxed. See the [measured report](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/SKIA-COMPARISON-2026-11-01.md). This is not a general PDF compatibility or performance claim.
 
 **New in 0.1.0-preview.9:** optional PDF reading/rendering. The same release adds
 `SKBitmap.GetPixels`, GIF `SKCodec`, system font family discovery and the PDF
@@ -11,7 +13,7 @@ writer in the compatibility module. Ordinary `SimdSkia.Compatibility` and
 direct SimdSkia package references on the same preview version.
 
 ```shell
-dotnet add package SimdSkia.Pdf --version 0.1.0-preview.9
+dotnet add package SimdSkia.Pdf --version 0.1.0-preview.10
 ```
 
 Every package includes `CHANGELOG.md` and NuGet release notes. This preview is a

@@ -25,7 +25,7 @@ public class SKBitmap : SKObject
     public static SKBitmap Decode(string filename){ArgumentNullException.ThrowIfNull(filename);return Decode(File.ReadAllBytes(filename));}
     public static SKBitmap Decode(Stream stream){ArgumentNullException.ThrowIfNull(stream);using var copy=new MemoryStream();stream.CopyTo(copy);return Decode(copy.ToArray());}
     public SKData Encode(SKEncodedImageFormat format,int quality)
-    {ThrowIfDisposed();if(quality is <0 or >100)throw new ArgumentOutOfRangeException(nameof(quality));return new(format switch{SKEncodedImageFormat.Png=>PngCodec.Encode(Buffer),SKEncodedImageFormat.Jpeg=>JpegCodec.Encode(Buffer,quality),_=>throw new NotSupportedException("Managed encoding supports PNG and JPEG.")});}
+    {ThrowIfDisposed();if(quality is <0 or >100)throw new ArgumentOutOfRangeException(nameof(quality));return new(ImageCodec.Encode(Buffer,CodecFormats.ToEngine(format),quality));}
     public static SKBitmap FromImage(SKImage image)
     {
         ArgumentNullException.ThrowIfNull(image);

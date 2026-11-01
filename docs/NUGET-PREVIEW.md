@@ -1,5 +1,22 @@
 # NuGet 预览版发布
 
+## 第十预览版 0.1.0-preview.10
+
+**已获授权，正在执行发布前验证；尚未标记为公开上架。** 十二包统一版本，升级为 .NET 10 / C# 14，完整接入 Sdcb.SimdCodecs 1.2.0；保留允许 .NET 系统原生压缩的明确例外。Avalonia 12.1.4 / SkiaSharp 源码基线 3.119.4 不变，.NET 8 用户需先迁移或保留 preview.9。
+
+README、每包 CHANGELOG 和 NuGet 发行说明均写入[123 进程原版性能对照](SKIA-COMPARISON-2026-11-01.md)：CPU 控件页 0.891→0.549 ms，Vulkan/Direct2D 含完成回读的综合耗时比为 0.678/0.624；CPU 工作集 90.39→109.81 MiB，纹理 PNG 解码耗时 2.03 倍、UI PNG 编码慢约 19%，JPEG 编码文件大小代价同时披露。不是整体同画质/同内存持平结论。
+
+本地源码 Release 0 警告/错误，369 项独立图片/损坏输入/压缩、1,416 项集成与标量、471,569 项精确优化、9,750 项控件及既有兼容/PDF 回归通过。严格 JPEG 对照仍为 21/24，原门槛不变；发布与托管 CI 显式记录 `qualityPassed=false`，只允许三个已披露的精确差异作为本版预览发布例外，新差异阻止发布。CPU/GPU 整页画质仍为 0/3、0/12；发布验证通过不能改写该结论。
+
+```shell
+dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.0-preview.10
+dotnet add package SimdSkia.Avalonia.Gpu --version 0.1.0-preview.10
+# 按需读取 PDF：
+dotnet add package SimdSkia.Pdf --version 0.1.0-preview.10
+```
+
+最终流水线、标签、公开下载与实际包内容验证将在本节和独立证据中记录；旧版本、标签与测量快照保持原样。
+
 ## 第九预览版 0.1.0-preview.9
 
 **已公开发布：12 个包均已实际下载并核对内容。** [可信发布流水线第 3 次执行](https://github.com/donet-org-cn/SimdSkia/actions/runs/40490758078/attempts/3)成功，全部公开包的 DLL、README、CHANGELOG、MIT 许可证和 nuspec（含发行说明）与冻结的 CI 产物一致。标签 `v0.1.0-preview.9` 固定于 `044d9e30176aa55eadd9e487f551a695eff24906`，[GitHub 预发行](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.0-preview.9)保留完整更新内容；[发布证据](evidence/nuget-preview9-2026-10-27.json)列出全部公开下载地址、内容核对与历史失败。
