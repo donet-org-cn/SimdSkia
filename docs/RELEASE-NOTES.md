@@ -2,6 +2,8 @@
 
 ## 0.1.0-preview.10 — 2026-11-01
 
+发布补记：**十二包已公开上架并下载核验**；三平台托管、桌面 JIT/AOT/实际包消费、Windows AOT 及本版发布验证全部成功。严格 JPEG 与整页质量失败没有改判；完整链接及证据见[发布记录](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/NUGET-PREVIEW.md)。此补记不改写冻结的已发布包内容或历史测量。
+
 - 将源码目标框架迁移至 .NET 10 / C# 14，完整引用精确版本 `Sdcb.SimdCodecs 1.2.0`（15 个同版本包），移除生产 `JpegLibrary` 引用和自有 PNG/JPEG 像素编解码、GIF LZW/合成；输入校验、ICC/gamma→sRGB、Alpha/stride、GIF 元数据与生命周期合同留在适配层。
 - 用户已确认允许 .NET 自带原生压缩。该例外用于 PNG/TIFF 等压缩路径，不引入 Skia/libpng/libjpeg 等第三方原生绘图库。
 - 新增 BMP/ICO/GIF 编码、TIFF/QOI/Netpbm 品牌 API 编码，接入 WebP/动画、多页 TIFF、JPEG2000/JBIG2 等受支持解码；缺失的 WebP 编码、无法映射到基线 SKEncodedImageFormat 的格式及不支持的 HDR/CMYK ICC 路径明确报错。

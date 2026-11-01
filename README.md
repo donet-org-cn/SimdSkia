@@ -2,6 +2,8 @@
 
 ## 0.1.0-preview.10：.NET 10 编解码更新与原版性能实测
 
+**已公开发布，12 个 NuGet 包全部下载核验通过。** [NuGet 包](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.0-preview.10) · [GitHub 预发行](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.0-preview.10)。三平台桌面 JIT/AOT/实际包消费、托管回归和 Windows AOT 专项均通过；JPEG 与整页画质失败仍按下文披露。
+
 本版将十二个包统一为 **`0.1.0-preview.10`**，需要 **.NET 10 / C# 14**，Avalonia 固定 **12.1.4**、SkiaSharp 源码兼容基线固定 **3.119.4**。从 .NET 8 项目升级须改为 `net10.0`；需要保留 .NET 8 的用户请继续使用 preview.9。公开上传和下载验证状态以[发布记录](docs/NUGET-PREVIEW.md)为准。
 
 完整接入 **`Sdcb.SimdCodecs 1.2.0`**，替换 JPEG/PNG 像素编解码及 GIF LZW/合成，并扩展 WebP/动画、多页 TIFF、BMP/ICO、QOI、Netpbm 及受支持 JPEG2000/JBIG2 输入。PNG/TIFF 允许使用 **.NET 自带原生压缩**；仍不调用 Google Skia 绘图。缺失编码器、不能表达的 API 和不支持的颜色路径明确报错。

@@ -1,8 +1,10 @@
 # 进度：2026-11-01
 
-## preview.10 发布准备
+发布状态以本节及[发布记录](NUGET-PREVIEW.md)为准；后续“未发布/本地试用”均保留测量时点的历史状态。
 
-用户已授权将完整 .NET 10 / Sdcb.SimdCodecs 接入和本轮 123 进程原版性能记录推送并发布。十二包统一为 `0.1.0-preview.10`，README、包内 CHANGELOG 和 NuGet releaseNotes 列出新增能力、实际速度/CPU/内存及未过质量门槛；发布状态以[发布记录](NUGET-PREVIEW.md)为准，当前尚未标记上架。已完成改号后 Release 构建和功能复核，严格 JPEG 仍 21/24，仅为披露的三个差异设置显式预览发布例外，失败 JSON 保留。
+## preview.10 已公开发布
+
+用户已授权将完整 .NET 10 / Sdcb.SimdCodecs 接入和本轮 123 进程原版性能记录推送并发布。十二包统一为 `0.1.0-preview.10`，README、包内 CHANGELOG 和 NuGet releaseNotes 列出新增能力、实际速度/CPU/内存及未过质量门槛；发布状态以[发布记录](NUGET-PREVIEW.md)为准，十二包已公开下载并核对实际 CI 内容，三平台托管、桌面 JIT/AOT/实际包、Windows AOT 及发布检查全部成功。已完成改号后 Release 构建和功能复核，严格 JPEG 仍 21/24，仅为披露的三个差异设置显式预览发布例外，失败 JSON 保留。
 
 ## 当前源码与原版性能复测
 

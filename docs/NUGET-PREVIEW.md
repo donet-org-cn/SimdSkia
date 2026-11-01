@@ -2,7 +2,7 @@
 
 ## 第十预览版 0.1.0-preview.10
 
-**已获授权，正在执行发布前验证；尚未标记为公开上架。** 十二包统一版本，升级为 .NET 10 / C# 14，完整接入 Sdcb.SimdCodecs 1.2.0；保留允许 .NET 系统原生压缩的明确例外。Avalonia 12.1.4 / SkiaSharp 源码基线 3.119.4 不变，.NET 8 用户需先迁移或保留 preview.9。
+**已公开发布：12 个包均已实际公开下载并核对 DLL、nuspec、README、CHANGELOG 和 LICENSE，与冻结的 CI 产物一致。** [NuGet 可信发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/41310992540)成功，标签 `v0.1.0-preview.10` 固定在 `115ffdf87e9fb446932e8fe3ed5f25fb6148b9b6`，[GitHub 预发行](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.0-preview.10)与[完整发布证据](evidence/nuget-preview10-2026-11-01.json)记录实际结果。 十二包统一版本，升级为 .NET 10 / C# 14，完整接入 Sdcb.SimdCodecs 1.2.0；保留允许 .NET 系统原生压缩的明确例外。Avalonia 12.1.4 / SkiaSharp 源码基线 3.119.4 不变，.NET 8 用户需先迁移或保留 preview.9。
 
 README、每包 CHANGELOG 和 NuGet 发行说明均写入[123 进程原版性能对照](SKIA-COMPARISON-2026-11-01.md)：CPU 控件页 0.891→0.549 ms，Vulkan/Direct2D 含完成回读的综合耗时比为 0.678/0.624；CPU 工作集 90.39→109.81 MiB，纹理 PNG 解码耗时 2.03 倍、UI PNG 编码慢约 19%，JPEG 编码文件大小代价同时披露。不是整体同画质/同内存持平结论。
 
@@ -15,7 +15,7 @@ dotnet add package SimdSkia.Avalonia.Gpu --version 0.1.0-preview.10
 dotnet add package SimdSkia.Pdf --version 0.1.0-preview.10
 ```
 
-最终流水线、标签、公开下载与实际包内容验证将在本节和独立证据中记录；旧版本、标签与测量快照保持原样。
+[三平台托管回归](https://github.com/donet-org-cn/SimdSkia/actions/runs/41310605824)、[三平台桌面 JIT/AOT/实际 nupkg 和 PDF 消费](https://github.com/donet-org-cn/SimdSkia/actions/runs/41310605830)、[Windows 双采样 AOT 与兼容/PDF/编解码 AOT](https://github.com/donet-org-cn/SimdSkia/actions/runs/41310605792)全部成功。已下载核对三平台 9 份桌面运行记录，Windows 新编解码实际 AOT 1,417 项通过；三平台 JPEG JSON 均保留 21/24 / qualityPassed=false。发布作业额外消费实际编解码包 1,416 项、真实 AOT 像素窗口、桌面/PDF 包后上传。旧版本、标签与测量快照保持原样。
 
 ## 第九预览版 0.1.0-preview.9
 

@@ -2,8 +2,8 @@
   "version": "0.1.0-preview.10",
   "repository": "donet-org-cn/SimdSkia",
   "repositoryId": 1428164442,
-  "nugetPublished": false,
-  "publicationState": "Local functional and package checks completed; GitHub CI/publication pending",
+  "nugetPublished": true,
+  "publicationState": "All 12 public downloads verified against frozen CI DLLs, nuspec, README, CHANGELOG and LICENSE",
   "localTests": [
     {
       "Passed": true,
@@ -1312,5 +1312,2082 @@
   "gpuQualityPassed": false,
   "cpuQualityPassed": false,
   "runtime": "net10.0",
-  "localPackageCodecAssertions": 1416
+  "localPackageCodecAssertions": 1416,
+  "recordedUtc": "2026-11-01T13:34:20.467164+00:00",
+  "sourceCommit": "115ffdf87e9fb446932e8fe3ed5f25fb6148b9b6",
+  "ciRuns": [
+    {
+      "id": 41310605824,
+      "name": "Managed engine verification",
+      "url": "https://github.com/donet-org-cn/SimdSkia/actions/runs/41310605824",
+      "status": "completed",
+      "conclusion": "success",
+      "headSha": "115ffdf87e9fb446932e8fe3ed5f25fb6148b9b6",
+      "attempt": 1
+    },
+    {
+      "id": 41310605830,
+      "name": "Cross-platform desktop",
+      "url": "https://github.com/donet-org-cn/SimdSkia/actions/runs/41310605830",
+      "status": "completed",
+      "conclusion": "success",
+      "headSha": "115ffdf87e9fb446932e8fe3ed5f25fb6148b9b6",
+      "attempt": 1
+    },
+    {
+      "id": 41310605792,
+      "name": "Windows Native AOT smoke",
+      "url": "https://github.com/donet-org-cn/SimdSkia/actions/runs/41310605792",
+      "status": "completed",
+      "conclusion": "success",
+      "headSha": "115ffdf87e9fb446932e8fe3ed5f25fb6148b9b6",
+      "attempt": 1
+    },
+    {
+      "id": 41310992540,
+      "name": "NuGet preview",
+      "url": "https://github.com/donet-org-cn/SimdSkia/actions/runs/41310992540",
+      "status": "completed",
+      "conclusion": "success",
+      "headSha": "115ffdf87e9fb446932e8fe3ed5f25fb6148b9b6",
+      "attempt": 1
+    }
+  ],
+  "publicDownloads": [
+    {
+      "id": "SimdSkia.Gpu",
+      "version": "0.1.0-preview.10",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.gpu/0.1.0-preview.10/simdskia.gpu.0.1.0-preview.10.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "0f06862a7ee0e02b54bd53e31dd157f96659458da1e6e10fcf16610624aeb530"
+    },
+    {
+      "id": "SimdSkia.Core",
+      "version": "0.1.0-preview.10",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.core/0.1.0-preview.10/simdskia.core.0.1.0-preview.10.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "a0bc0e4d29d42db63ade18ee85c8ae4050ddc532249fb8e0b9f2af703d081b7e"
+    },
+    {
+      "id": "SimdSkia.Avalonia.Gpu",
+      "version": "0.1.0-preview.10",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.avalonia.gpu/0.1.0-preview.10/simdskia.avalonia.gpu.0.1.0-preview.10.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "68969fa8c5896f0f8e4ccdd4ed77330db3f30224117892a3b5857335426a5392"
+    },
+    {
+      "id": "SimdSkia",
+      "version": "0.1.0-preview.10",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia/0.1.0-preview.10/simdskia.0.1.0-preview.10.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "76e93a85111887fbbacf7ccb1a176b8630b7a4676450de8ce82d5d211d13ccd7"
+    },
+    {
+      "id": "SimdSkia.Cpu",
+      "version": "0.1.0-preview.10",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.cpu/0.1.0-preview.10/simdskia.cpu.0.1.0-preview.10.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "410e68ead9364b08f93b39acf3c3a541a96395470984813ce682d2cb01cf7bee"
+    },
+    {
+      "id": "SimdSkia.Text",
+      "version": "0.1.0-preview.10",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.text/0.1.0-preview.10/simdskia.text.0.1.0-preview.10.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "787ce25fdaec5141e8750e83b0485b5a4aa28190bb14dbf08a085880adec5de9"
+    },
+    {
+      "id": "SimdSkia.Gpu.Direct2D",
+      "version": "0.1.0-preview.10",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.gpu.direct2d/0.1.0-preview.10/simdskia.gpu.direct2d.0.1.0-preview.10.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "4fd70cc8cc5b9413bc3f89b89ebd458010466b0f36d07bd81ed05062dd3e0d48"
+    },
+    {
+      "id": "SimdSkia.Avalonia",
+      "version": "0.1.0-preview.10",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.avalonia/0.1.0-preview.10/simdskia.avalonia.0.1.0-preview.10.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "c98018da76f7e052469103bad6fcc6c087fba77f1f1254da38af267ab9ad3890"
+    },
+    {
+      "id": "SimdSkia.Avalonia.Desktop",
+      "version": "0.1.0-preview.10",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.avalonia.desktop/0.1.0-preview.10/simdskia.avalonia.desktop.0.1.0-preview.10.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "34dbbea25af225cb1d884241f1c659648efe2041ca12b3a0abaaac4685406973"
+    },
+    {
+      "id": "SimdSkia.Imaging",
+      "version": "0.1.0-preview.10",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.imaging/0.1.0-preview.10/simdskia.imaging.0.1.0-preview.10.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "6033f94a55e63779d49b2a7f70f3f04351d6051b53bdd4024203b22e2cc7c777"
+    },
+    {
+      "id": "SimdSkia.Compatibility",
+      "version": "0.1.0-preview.10",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.compatibility/0.1.0-preview.10/simdskia.compatibility.0.1.0-preview.10.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "84a0b85bdd12b62d7fd7d05509e20a4514e72912bc5005efb5a49060602d7893"
+    },
+    {
+      "id": "SimdSkia.Pdf",
+      "version": "0.1.0-preview.10",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.pdf/0.1.0-preview.10/simdskia.pdf.0.1.0-preview.10.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "530ca12c8c6380abbc0db37546e07f3394ea09c3d78e97ad06dc15745a23051a"
+    }
+  ],
+  "ciPackages": [
+    {
+      "id": "SimdSkia.Core",
+      "version": "0.1.0-preview.10",
+      "bytes": 39958,
+      "sha256": "42160bf2fb18b50ef29754b9a6996fa2acbeb805d78673b57557c1eae0bf335a",
+      "dependencies": {}
+    },
+    {
+      "id": "SimdSkia.Cpu",
+      "version": "0.1.0-preview.10",
+      "bytes": 58474,
+      "sha256": "b7e9ca7727fd91b458dcb642a5ef3de94ed71c297b64d521b4909287dbabe312",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.10"
+      }
+    },
+    {
+      "id": "SimdSkia.Text",
+      "version": "0.1.0-preview.10",
+      "bytes": 39631,
+      "sha256": "5e2d3d87bca0a107c007541a668df3bfc100f20fc897c6f2b26f86490c36d690",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.10"
+      }
+    },
+    {
+      "id": "SimdSkia.Imaging",
+      "version": "0.1.0-preview.10",
+      "bytes": 52933,
+      "sha256": "4416a3e1da17f44d06a57eaaf6998f7a904904737767a022b5c682865fd26a5b",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.10",
+        "Sdcb.SimdCodecs": "[1.2.0]"
+      }
+    },
+    {
+      "id": "SimdSkia.Gpu",
+      "version": "0.1.0-preview.10",
+      "bytes": 74784,
+      "sha256": "176ae45d5f49f316474aa6d5f77775c1185291220c08401c5c353844c358da30",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.10"
+      }
+    },
+    {
+      "id": "SimdSkia.Gpu.Direct2D",
+      "version": "0.1.0-preview.10",
+      "bytes": 32149,
+      "sha256": "e20ab376f144ab89ded5f21ebc1fedfd21e92c288480f02a75bd282d0116a4b7",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.10"
+      }
+    },
+    {
+      "id": "SimdSkia.Compatibility",
+      "version": "0.1.0-preview.10",
+      "bytes": 67202,
+      "sha256": "0cf78c3a737865fb3c7d8c3abaa565afb36ab98d6ad04e54321d96737f932197",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.10",
+        "SimdSkia.Cpu": "0.1.0-preview.10",
+        "SimdSkia.Gpu": "0.1.0-preview.10",
+        "SimdSkia.Imaging": "0.1.0-preview.10",
+        "SimdSkia.Text": "0.1.0-preview.10"
+      }
+    },
+    {
+      "id": "SimdSkia.Avalonia",
+      "version": "0.1.0-preview.10",
+      "bytes": 94113,
+      "sha256": "a3ba108be8adcc11c478c21f24c71ea1657d5c73085540b6be35a7412c2b2207",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0-preview.10",
+        "SimdSkia.Cpu": "0.1.0-preview.10",
+        "SimdSkia.Imaging": "0.1.0-preview.10",
+        "SimdSkia.Text": "0.1.0-preview.10",
+        "Avalonia": "[12.1.4]",
+        "Clipper2": "[2.0.0]"
+      }
+    },
+    {
+      "id": "SimdSkia.Avalonia.Desktop",
+      "version": "0.1.0-preview.10",
+      "bytes": 558897,
+      "sha256": "e6bae365ed229d1df60516b233e5f480e8ff12ffd5418e5c354b29b7a987c75f",
+      "dependencies": {
+        "SimdSkia.Avalonia": "0.1.0-preview.10",
+        "Avalonia": "[12.1.4]",
+        "Avalonia.FreeDesktop": "[12.1.4]",
+        "Avalonia.FreeDesktop.AtSpi": "[12.1.4]",
+        "Avalonia.Native": "[12.1.4]"
+      }
+    },
+    {
+      "id": "SimdSkia.Avalonia.Gpu",
+      "version": "0.1.0-preview.10",
+      "bytes": 40256,
+      "sha256": "5ea87b3467195b43c4b9f761c14c26c851e35a54b1dace53b1bacff48844a6d4",
+      "dependencies": {
+        "SimdSkia.Avalonia": "0.1.0-preview.10",
+        "SimdSkia.Gpu.Direct2D": "0.1.0-preview.10",
+        "SimdSkia.Gpu": "0.1.0-preview.10",
+        "Avalonia": "[12.1.4]"
+      }
+    },
+    {
+      "id": "SimdSkia",
+      "version": "0.1.0-preview.10",
+      "bytes": 15501,
+      "sha256": "b76007cfaade3aad6031269f132b0245e53ad096c20b294ea55fb9ef6519c55f",
+      "dependencies": {
+        "SimdSkia.Compatibility": "0.1.0-preview.10"
+      }
+    },
+    {
+      "id": "SimdSkia.Pdf",
+      "version": "0.1.0-preview.10",
+      "bytes": 34628,
+      "sha256": "8f4caefcabc13c772aa04952a33dbe7303bff90d8b1e64b51127d6138e725d5f",
+      "dependencies": {
+        "SimdSkia.Compatibility": "0.1.0-preview.10",
+        "PdfPig": "[0.1.16]"
+      }
+    }
+  ],
+  "githubRelease": {
+    "id": 430606280,
+    "tag_name": "v0.1.0-preview.10",
+    "html_url": "https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.0-preview.10",
+    "prerelease": true,
+    "draft": false,
+    "published_at": "2026-11-01T13:34:16Z"
+  },
+  "ciDesktopRecords": [
+    {
+      "path": "desktop-ci\\desktop-Linux-X64\\cross-platform\\result.txt",
+      "os": "Ubuntu 24.04.5 LTS",
+      "architecture": "X64",
+      "frames": 3,
+      "runtime": "NativeAot=False"
+    },
+    {
+      "path": "desktop-ci\\desktop-Linux-X64\\desktop-package-consumer\\results\\result.txt",
+      "os": "Ubuntu 24.04.5 LTS",
+      "architecture": "X64",
+      "frames": 3,
+      "runtime": "NativeAot=False"
+    },
+    {
+      "path": "desktop-ci\\desktop-Linux-X64\\cross-platform\\aot\\result.txt",
+      "os": "Ubuntu 24.04.5 LTS",
+      "architecture": "X64",
+      "frames": 3,
+      "runtime": "NativeAot=True"
+    },
+    {
+      "path": "desktop-ci\\desktop-macOS-ARM64\\cross-platform\\result.txt",
+      "os": "macOS 26.6.2",
+      "architecture": "Arm64",
+      "frames": 2,
+      "runtime": "NativeAot=False"
+    },
+    {
+      "path": "desktop-ci\\desktop-macOS-ARM64\\desktop-package-consumer\\results\\result.txt",
+      "os": "macOS 26.6.2",
+      "architecture": "Arm64",
+      "frames": 2,
+      "runtime": "NativeAot=False"
+    },
+    {
+      "path": "desktop-ci\\desktop-macOS-ARM64\\cross-platform\\aot\\result.txt",
+      "os": "macOS 26.6.2",
+      "architecture": "Arm64",
+      "frames": 2,
+      "runtime": "NativeAot=True"
+    },
+    {
+      "path": "desktop-ci\\desktop-Windows-X64\\cross-platform\\result.txt",
+      "os": "Microsoft Windows 10.0.26100",
+      "architecture": "X64",
+      "frames": 2,
+      "runtime": "NativeAot=False"
+    },
+    {
+      "path": "desktop-ci\\desktop-Windows-X64\\desktop-package-consumer\\results\\result.txt",
+      "os": "Microsoft Windows 10.0.26100",
+      "architecture": "X64",
+      "frames": 2,
+      "runtime": "NativeAot=False"
+    },
+    {
+      "path": "desktop-ci\\desktop-Windows-X64\\cross-platform\\aot\\result.txt",
+      "os": "Microsoft Windows 10.0.26100",
+      "architecture": "X64",
+      "frames": 2,
+      "runtime": "NativeAot=True"
+    }
+  ],
+  "ciJpegResults": {
+    "jpeg-parity-Linux": {
+      "threshold": 1,
+      "qualityPassed": false,
+      "passedCases": 21,
+      "totalCases": 24,
+      "releaseExceptionExplicitlyEnabled": true,
+      "knownExceptionsOnly": true,
+      "releaseCheckPassed": true,
+      "rows": [
+        {
+          "actual": {
+            "alpha": "Opaque",
+            "a": 0,
+            "storage": "erase",
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Opaque",
+            "a": 0,
+            "storage": "erase",
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Opaque",
+            "a": 0,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Opaque",
+            "a": 0,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Opaque",
+            "a": 32,
+            "storage": "erase",
+            "r": 22,
+            "g": 11,
+            "b": 7,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Opaque",
+            "a": 32,
+            "storage": "erase",
+            "r": 22,
+            "g": 11,
+            "b": 5,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 2,
+          "qualityPassed": false,
+          "knownPreview10Exception": true
+        },
+        {
+          "actual": {
+            "alpha": "Opaque",
+            "a": 32,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Opaque",
+            "a": 32,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Opaque",
+            "a": 128,
+            "storage": "erase",
+            "r": 90,
+            "g": 45,
+            "b": 22,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Opaque",
+            "a": 128,
+            "storage": "erase",
+            "r": 90,
+            "g": 45,
+            "b": 22,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Opaque",
+            "a": 128,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Opaque",
+            "a": 128,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Opaque",
+            "a": 255,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Opaque",
+            "a": 255,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Opaque",
+            "a": 255,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Opaque",
+            "a": 255,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Premul",
+            "a": 0,
+            "storage": "erase",
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Premul",
+            "a": 0,
+            "storage": "erase",
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Premul",
+            "a": 0,
+            "storage": "raw",
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Premul",
+            "a": 0,
+            "storage": "raw",
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Premul",
+            "a": 32,
+            "storage": "erase",
+            "r": 22,
+            "g": 11,
+            "b": 7,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Premul",
+            "a": 32,
+            "storage": "erase",
+            "r": 22,
+            "g": 11,
+            "b": 5,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 2,
+          "qualityPassed": false,
+          "knownPreview10Exception": true
+        },
+        {
+          "actual": {
+            "alpha": "Premul",
+            "a": 32,
+            "storage": "raw",
+            "r": 22,
+            "g": 11,
+            "b": 7,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Premul",
+            "a": 32,
+            "storage": "raw",
+            "r": 22,
+            "g": 11,
+            "b": 5,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 2,
+          "qualityPassed": false,
+          "knownPreview10Exception": true
+        },
+        {
+          "actual": {
+            "alpha": "Premul",
+            "a": 128,
+            "storage": "erase",
+            "r": 90,
+            "g": 45,
+            "b": 22,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Premul",
+            "a": 128,
+            "storage": "erase",
+            "r": 90,
+            "g": 45,
+            "b": 22,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Premul",
+            "a": 128,
+            "storage": "raw",
+            "r": 90,
+            "g": 45,
+            "b": 22,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Premul",
+            "a": 128,
+            "storage": "raw",
+            "r": 90,
+            "g": 45,
+            "b": 22,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Premul",
+            "a": 255,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Premul",
+            "a": 255,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Premul",
+            "a": 255,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Premul",
+            "a": 255,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Unpremul",
+            "a": 0,
+            "storage": "erase",
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Unpremul",
+            "a": 0,
+            "storage": "erase",
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Unpremul",
+            "a": 0,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Unpremul",
+            "a": 0,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Unpremul",
+            "a": 32,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Unpremul",
+            "a": 32,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Unpremul",
+            "a": 32,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Unpremul",
+            "a": 32,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Unpremul",
+            "a": 128,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Unpremul",
+            "a": 128,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Unpremul",
+            "a": 128,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Unpremul",
+            "a": 128,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Unpremul",
+            "a": 255,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Unpremul",
+            "a": 255,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Unpremul",
+            "a": 255,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Unpremul",
+            "a": 255,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        }
+      ]
+    },
+    "jpeg-parity-macOS": {
+      "threshold": 1,
+      "qualityPassed": false,
+      "passedCases": 21,
+      "totalCases": 24,
+      "releaseExceptionExplicitlyEnabled": true,
+      "knownExceptionsOnly": true,
+      "releaseCheckPassed": true,
+      "rows": [
+        {
+          "actual": {
+            "alpha": "Opaque",
+            "a": 0,
+            "storage": "erase",
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Opaque",
+            "a": 0,
+            "storage": "erase",
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Opaque",
+            "a": 0,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Opaque",
+            "a": 0,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Opaque",
+            "a": 32,
+            "storage": "erase",
+            "r": 22,
+            "g": 11,
+            "b": 7,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Opaque",
+            "a": 32,
+            "storage": "erase",
+            "r": 22,
+            "g": 11,
+            "b": 5,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 2,
+          "qualityPassed": false,
+          "knownPreview10Exception": true
+        },
+        {
+          "actual": {
+            "alpha": "Opaque",
+            "a": 32,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Opaque",
+            "a": 32,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Opaque",
+            "a": 128,
+            "storage": "erase",
+            "r": 90,
+            "g": 45,
+            "b": 22,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Opaque",
+            "a": 128,
+            "storage": "erase",
+            "r": 90,
+            "g": 45,
+            "b": 22,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Opaque",
+            "a": 128,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Opaque",
+            "a": 128,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Opaque",
+            "a": 255,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Opaque",
+            "a": 255,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Opaque",
+            "a": 255,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Opaque",
+            "a": 255,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Premul",
+            "a": 0,
+            "storage": "erase",
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Premul",
+            "a": 0,
+            "storage": "erase",
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Premul",
+            "a": 0,
+            "storage": "raw",
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Premul",
+            "a": 0,
+            "storage": "raw",
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Premul",
+            "a": 32,
+            "storage": "erase",
+            "r": 22,
+            "g": 11,
+            "b": 7,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Premul",
+            "a": 32,
+            "storage": "erase",
+            "r": 22,
+            "g": 11,
+            "b": 5,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 2,
+          "qualityPassed": false,
+          "knownPreview10Exception": true
+        },
+        {
+          "actual": {
+            "alpha": "Premul",
+            "a": 32,
+            "storage": "raw",
+            "r": 22,
+            "g": 11,
+            "b": 7,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Premul",
+            "a": 32,
+            "storage": "raw",
+            "r": 22,
+            "g": 11,
+            "b": 5,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 2,
+          "qualityPassed": false,
+          "knownPreview10Exception": true
+        },
+        {
+          "actual": {
+            "alpha": "Premul",
+            "a": 128,
+            "storage": "erase",
+            "r": 90,
+            "g": 45,
+            "b": 22,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Premul",
+            "a": 128,
+            "storage": "erase",
+            "r": 90,
+            "g": 45,
+            "b": 22,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Premul",
+            "a": 128,
+            "storage": "raw",
+            "r": 90,
+            "g": 45,
+            "b": 22,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Premul",
+            "a": 128,
+            "storage": "raw",
+            "r": 90,
+            "g": 45,
+            "b": 22,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Premul",
+            "a": 255,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Premul",
+            "a": 255,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Premul",
+            "a": 255,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Premul",
+            "a": 255,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Unpremul",
+            "a": 0,
+            "storage": "erase",
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Unpremul",
+            "a": 0,
+            "storage": "erase",
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Unpremul",
+            "a": 0,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Unpremul",
+            "a": 0,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Unpremul",
+            "a": 32,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Unpremul",
+            "a": 32,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Unpremul",
+            "a": 32,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Unpremul",
+            "a": 32,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Unpremul",
+            "a": 128,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Unpremul",
+            "a": 128,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Unpremul",
+            "a": 128,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Unpremul",
+            "a": 128,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Unpremul",
+            "a": 255,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Unpremul",
+            "a": 255,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Unpremul",
+            "a": 255,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Unpremul",
+            "a": 255,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        }
+      ]
+    },
+    "jpeg-parity-Windows": {
+      "threshold": 1,
+      "qualityPassed": false,
+      "passedCases": 21,
+      "totalCases": 24,
+      "releaseExceptionExplicitlyEnabled": true,
+      "knownExceptionsOnly": true,
+      "releaseCheckPassed": true,
+      "rows": [
+        {
+          "actual": {
+            "alpha": "Opaque",
+            "a": 0,
+            "storage": "erase",
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Opaque",
+            "a": 0,
+            "storage": "erase",
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Opaque",
+            "a": 0,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Opaque",
+            "a": 0,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Opaque",
+            "a": 32,
+            "storage": "erase",
+            "r": 22,
+            "g": 11,
+            "b": 7,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Opaque",
+            "a": 32,
+            "storage": "erase",
+            "r": 22,
+            "g": 11,
+            "b": 5,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 2,
+          "qualityPassed": false,
+          "knownPreview10Exception": true
+        },
+        {
+          "actual": {
+            "alpha": "Opaque",
+            "a": 32,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Opaque",
+            "a": 32,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Opaque",
+            "a": 128,
+            "storage": "erase",
+            "r": 90,
+            "g": 45,
+            "b": 22,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Opaque",
+            "a": 128,
+            "storage": "erase",
+            "r": 90,
+            "g": 45,
+            "b": 22,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Opaque",
+            "a": 128,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Opaque",
+            "a": 128,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Opaque",
+            "a": 255,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Opaque",
+            "a": 255,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Opaque",
+            "a": 255,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Opaque",
+            "a": 255,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Premul",
+            "a": 0,
+            "storage": "erase",
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Premul",
+            "a": 0,
+            "storage": "erase",
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Premul",
+            "a": 0,
+            "storage": "raw",
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Premul",
+            "a": 0,
+            "storage": "raw",
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Premul",
+            "a": 32,
+            "storage": "erase",
+            "r": 22,
+            "g": 11,
+            "b": 7,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Premul",
+            "a": 32,
+            "storage": "erase",
+            "r": 22,
+            "g": 11,
+            "b": 5,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 2,
+          "qualityPassed": false,
+          "knownPreview10Exception": true
+        },
+        {
+          "actual": {
+            "alpha": "Premul",
+            "a": 32,
+            "storage": "raw",
+            "r": 22,
+            "g": 11,
+            "b": 7,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Premul",
+            "a": 32,
+            "storage": "raw",
+            "r": 22,
+            "g": 11,
+            "b": 5,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 2,
+          "qualityPassed": false,
+          "knownPreview10Exception": true
+        },
+        {
+          "actual": {
+            "alpha": "Premul",
+            "a": 128,
+            "storage": "erase",
+            "r": 90,
+            "g": 45,
+            "b": 22,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Premul",
+            "a": 128,
+            "storage": "erase",
+            "r": 90,
+            "g": 45,
+            "b": 22,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Premul",
+            "a": 128,
+            "storage": "raw",
+            "r": 90,
+            "g": 45,
+            "b": 22,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Premul",
+            "a": 128,
+            "storage": "raw",
+            "r": 90,
+            "g": 45,
+            "b": 22,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Premul",
+            "a": 255,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Premul",
+            "a": 255,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Premul",
+            "a": 255,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Premul",
+            "a": 255,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Unpremul",
+            "a": 0,
+            "storage": "erase",
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Unpremul",
+            "a": 0,
+            "storage": "erase",
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Unpremul",
+            "a": 0,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Unpremul",
+            "a": 0,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Unpremul",
+            "a": 32,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Unpremul",
+            "a": 32,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Unpremul",
+            "a": 32,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Unpremul",
+            "a": 32,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Unpremul",
+            "a": 128,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Unpremul",
+            "a": 128,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Unpremul",
+            "a": 128,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Unpremul",
+            "a": 128,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Unpremul",
+            "a": 255,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Unpremul",
+            "a": 255,
+            "storage": "erase",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        },
+        {
+          "actual": {
+            "alpha": "Unpremul",
+            "a": 255,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "expected": {
+            "alpha": "Unpremul",
+            "a": 255,
+            "storage": "raw",
+            "r": 181,
+            "g": 90,
+            "b": 45,
+            "outAlpha": 255
+          },
+          "maximumChannelError": 0,
+          "qualityPassed": true,
+          "knownPreview10Exception": false
+        }
+      ]
+    }
+  },
+  "ciAotCodec": {
+    "checks": 1417,
+    "nativeAot": true,
+    "codec": "Sdcb.SimdCodecs 1.2.0"
+  },
+  "localAotConsumer": {
+    "NativeAot": true,
+    "Frames": 1,
+    "FontFamily": "\u7ad9\u9177\u5c0f\u8587\u4f53",
+    "LoadedModules": [
+      "PackageConsumer.exe",
+      "ntdll.dll",
+      "KERNEL32.DLL",
+      "KERNELBASE.dll",
+      "apphelp.dll",
+      "ADVAPI32.dll",
+      "msvcrt.dll",
+      "sechost.dll",
+      "RPCRT4.dll",
+      "CRYPT32.dll",
+      "ucrtbase.dll",
+      "bcrypt.dll",
+      "ole32.dll",
+      "msvcp_win.dll",
+      "IPHLPAPI.DLL",
+      "ncrypt.dll",
+      "GDI32.dll",
+      "win32u.dll",
+      "gdi32full.dll",
+      "USER32.dll",
+      "combase.dll",
+      "OLEAUT32.dll",
+      "WS2_32.dll",
+      "NTASN1.dll",
+      "IMM32.DLL",
+      "kernel.appcore.dll",
+      "bcryptPrimitives.dll",
+      "uxtheme.dll",
+      "icu.dll",
+      "MSCTF.dll",
+      "shcore.dll",
+      "clbcatq.dll",
+      "WinTypes.dll",
+      "rometadata.dll",
+      "Windows.UI.dll",
+      "Windows.UI.Immersive.dll",
+      "twinapi.dll",
+      "SHELL32.dll",
+      "twinapi.appcore.dll",
+      "dataexchange.dll",
+      "dwmapi.dll",
+      "textinputframework.dll",
+      "Oleacc.dll"
+    ],
+    "PixelsVerified": true
+  },
+  "localGpuPackageWindows": {
+    "direct2d": "PASS\nOS=Microsoft Windows 10.0.26300\nArchitecture=X64\nFrames=2\nFont=\u7ad9\u9177\u5c0f\u8587\u4f53\nClientSize=1000, 720\nNativeHandle=852876\nGPU=Direct2D: NVIDIA GeForce GTX 1050 Ti\nGpuCommands=132\nNativeSwapchainPresents=2\nCpuFallbackCommands=0\nCpuLayerCommands=6\nCompletedBatches=2\nGpuCompletionMs=23.9191\nFallbackReasons=\nManagedAssemblies=System.Private.CoreLib,CrossPlatform,System.Runtime,SimdSkia.Avalonia.Gpu,System.Memory,SimdSkia.Avalonia,Avalonia.Controls,Avalonia.Base,System.ObjectModel,SimdSkia.Avalonia.Desktop,System.Collections.Concurrent,System.Threading,SimdSkia.Core,System.Collections,Avalonia.Native,MicroCom.Runtime,System.Runtime.InteropServices,Avalonia.X11,Avalonia.Win32,System.Numerics.Vectors,Avalonia.OpenGL,System.Linq,System.ComponentModel.Primitives,System.Private.Uri,SimdSkia.Text,Microsoft.Win32.Primitives,System.ComponentModel,System.Threading.Thread,Avalonia.Vulkan,Avalonia.Themes.Fluent,Avalonia.Markup.Xaml,System.ComponentModel.TypeConverter,Avalonia.Dialogs,System.Diagnostics.TraceSource,SimdSkia.Cpu,Clipper2Lib,netstandard,Avalonia.Win32.Automation,Avalonia.MicroCom,System.Diagnostics.DiagnosticSource,System.Runtime.Intrinsics,Avalonia.Markup,SimdSkia.Gpu.Direct2D,SimdSkia.Gpu,System.Console,System.IO.Compression,System.Diagnostics.Process,System.Collections.NonGeneric,SimdSkia.Imaging\n",
+    "vulkan": "PASS\nOS=Microsoft Windows 10.0.26300\nArchitecture=X64\nFrames=2\nFont=\u7ad9\u9177\u5c0f\u8587\u4f53\nClientSize=1000, 720\nNativeHandle=3278164\nGPU=Vulkan: NVIDIA GeForce GTX 1050 Ti\nGpuCommands=132\nNativeSwapchainPresents=0\nCpuFallbackCommands=0\nCpuLayerCommands=6\nCompletedBatches=2\nGpuCompletionMs=55.0734\nFallbackReasons=\nManagedAssemblies=System.Private.CoreLib,CrossPlatform,System.Runtime,SimdSkia.Avalonia.Gpu,System.Memory,SimdSkia.Avalonia,Avalonia.Controls,Avalonia.Base,System.ObjectModel,SimdSkia.Avalonia.Desktop,System.Collections.Concurrent,System.Threading,SimdSkia.Core,System.Collections,Avalonia.Native,MicroCom.Runtime,System.Runtime.InteropServices,Avalonia.X11,Avalonia.Win32,System.Numerics.Vectors,Avalonia.OpenGL,System.Linq,System.ComponentModel.Primitives,System.Private.Uri,SimdSkia.Text,Microsoft.Win32.Primitives,System.ComponentModel,System.Threading.Thread,Avalonia.Vulkan,Avalonia.Themes.Fluent,Avalonia.Markup.Xaml,System.ComponentModel.TypeConverter,Avalonia.Dialogs,System.Diagnostics.TraceSource,SimdSkia.Cpu,Clipper2Lib,netstandard,Avalonia.Win32.Automation,Avalonia.MicroCom,System.Diagnostics.DiagnosticSource,System.Runtime.Intrinsics,Avalonia.Markup,SimdSkia.Gpu.Direct2D,SimdSkia.Gpu,System.Console,System.IO.Compression,System.Diagnostics.Process,System.Collections.NonGeneric,SimdSkia.Imaging\n"
+  },
+  "performanceEvidenceTextFilesPreservedInFollowupDocsCommit": true
 }
