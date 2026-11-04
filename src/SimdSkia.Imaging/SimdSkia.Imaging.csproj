@@ -1,5 +1,5 @@
-<Project Sdk="Microsoft.NET.Sdk"><ItemGroup><ProjectReference Include="../SimdSkia.Core/SimdSkia.Core.csproj" /></ItemGroup><ItemGroup>
-  <PackageReference Include="Sdcb.SimdCodecs" Version="[1.2.0]" />
+<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><AllowUnsafeBlocks>true</AllowUnsafeBlocks></PropertyGroup><ItemGroup><ProjectReference Include="../SimdSkia.Core/SimdSkia.Core.csproj" /></ItemGroup><ItemGroup>
+  <PackageReference Include="Sdcb.SimdCodecs" Version="[1.4.0]" />
 </ItemGroup><ItemGroup>
   <None Include="../../docs/licenses/Sdcb.SimdCodecs-MIT.txt" Link="licenses/Sdcb.SimdCodecs-MIT.txt" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="licenses" />
   <None Include="../../docs/licenses/Apache-2.0.txt" Link="licenses/Apache-2.0.txt" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="licenses" />

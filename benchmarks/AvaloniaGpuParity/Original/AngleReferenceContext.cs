@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 using SkiaSharp;
 
 // Isolated reference only: the ANGLE package/version is exactly the dependency
-// in the default Avalonia 12.1.4 application. No production project uses it.
+// in the default Avalonia 12.1.5 application. No production project uses it.
 internal static unsafe class AngleReferenceContext
 {
     private const string Library="av_libglesv2";

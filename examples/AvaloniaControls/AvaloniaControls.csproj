@@ -3,12 +3,12 @@
   <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))"><OutputType>WinExe</OutputType></PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/SimdSkia.Avalonia/SimdSkia.Avalonia.csproj" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.4]" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.5]" />
     <!-- Software Win32 uses OS APIs only; do not pull the ANGLE native dependency. -->
-    <PackageDownload Include="Avalonia.Win32" Version="[12.1.4]" />
-    <PackageDownload Include="Avalonia.Headless" Version="[12.1.4]" />
-    <Reference Include="$(NuGetPackageRoot)/avalonia.win32/12.1.4/lib/net8.0/*.dll" />
-    <Reference Include="$(NuGetPackageRoot)/avalonia.headless/12.1.4/lib/net8.0/Avalonia.Headless.dll" />
+    <PackageDownload Include="Avalonia.Win32" Version="[12.1.5]" />
+    <PackageDownload Include="Avalonia.Headless" Version="[12.1.5]" />
+    <Reference Include="$(NuGetPackageRoot)/avalonia.win32/12.1.5/lib/net8.0/*.dll" />
+    <Reference Include="$(NuGetPackageRoot)/avalonia.headless/12.1.5/lib/net8.0/Avalonia.Headless.dll" />
   </ItemGroup>
   <ItemGroup><Compile Include="../../tests/AvaloniaControls/ControlScene.cs" Link="ControlScene.cs" /><Compile Include="../../tests/AvaloniaControls/HeadlessHost.cs" Link="HeadlessHost.cs" /></ItemGroup>
 </Project>

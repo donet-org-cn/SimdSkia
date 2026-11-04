@@ -3,7 +3,7 @@ using SkiaSharp;
 namespace SimdSkia.Benchmarks;
 
 // Replays the SKTextBlobBuilder -> SKCanvas.DrawText pattern from Avalonia.Skia
-// 12.1.4 GlyphRunImpl / DrawingContextImpl. This does not run Avalonia layout,
+// 12.1.5 GlyphRunImpl / DrawingContextImpl. This does not run Avalonia layout,
 // its compositor, HarfBuzz, hit testing, platform windows, or a GPU swapchain.
 internal sealed class Workload : IDisposable
 {

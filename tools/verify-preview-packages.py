@@ -11,12 +11,13 @@ parser=argparse.ArgumentParser()
 parser.add_argument('--directory',required=True,type=Path)
 parser.add_argument('--version',required=True)
 args=parser.parse_args()
-if not re.fullmatch(r'\d+\.\d+\.\d+-preview\.\d+',args.version):
-    raise SystemExit('Only preview versions are accepted.')
+if not re.fullmatch(r'\d+\.\d+\.\d+(?:-preview\.\d+)?',args.version):
+    raise SystemExit('Expected a stable or preview SemVer.')
 ids=['SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Text','SimdSkia.Imaging','SimdSkia.Gpu','SimdSkia.Gpu.Direct2D','SimdSkia.Compatibility','SimdSkia.Avalonia','SimdSkia.Avalonia.Desktop','SimdSkia.Avalonia.Gpu','SimdSkia']
-if args.version in ('0.1.0-preview.9','0.1.0-preview.10'):
+if args.version in ('0.1.0-preview.9','0.1.0-preview.10','0.1.0'):
     ids.append('SimdSkia.Pdf')
 release_topics={
+    '0.1.0':(('Sdcb.SimdCodecs','性能','画质'),'Sdcb.SimdCodecs'),
     '0.1.0-preview.7':(('AVX2','24/24'),'AVX2'),
     '0.1.0-preview.8':(('SSE2','28.05','画质'),'SSE2'),
     '0.1.0-preview.9':(('SKBitmap.GetPixels','PDF','preview.9'),'SKBitmap.GetPixels'),
@@ -25,7 +26,7 @@ release_topics={
 if args.version not in release_topics:
     raise SystemExit('Configure release topics and the package list before publishing a new version.')
 topics,release_topic=release_topics[args.version]
-framework='net10.0' if args.version=='0.1.0-preview.10' else 'net8.0'
+framework='net10.0' if args.version in ('0.1.0-preview.10','0.1.0') else 'net8.0'
 assert {path.name for path in args.directory.glob('*.nupkg')}=={f'{name}.{args.version}.nupkg' for name in ids},'Unexpected or missing packages in output directory'
 rows=[]
 for package_id in ids:
@@ -51,11 +52,11 @@ for package_id in ids:
         release_notes=metadata.findtext(prefix+'releaseNotes') or ''
         assert release_notes.strip() and release_topic in release_notes and 'CHANGELOG.md' in release_notes,(path,'Missing NuGet release notes')
         dependencies={element.attrib['id']:element.attrib['version'] for element in metadata.iter(prefix+'dependency')}
-        if args.version=='0.1.0-preview.10':
+        if args.version in ('0.1.0-preview.10','0.1.0'):
             assert not any(name.startswith('lib/net8.0/') for name in names),path
             assert 'JpegLibrary' not in dependencies,path
             if package_id=='SimdSkia.Imaging':
-                assert dependencies.get('Sdcb.SimdCodecs')=='[1.2.0]',dependencies
+                assert dependencies.get('Sdcb.SimdCodecs')=='[1.4.0]',dependencies
                 assert 'licenses/Sdcb.SimdCodecs-MIT.txt' in names,path
         if package_id=='SimdSkia.Pdf':
             assert dependencies.get('PdfPig')=='[0.1.16]',dependencies
@@ -73,13 +74,13 @@ for package_id in ids:
         if package_id=='SimdSkia.Gpu':
             assert not any(name.endswith('vulkan-1.dll') for name in names),path
         if package_id=='SimdSkia.Avalonia':
-            assert dependencies.get('Avalonia')=='[12.1.4]',dependencies
+            assert dependencies.get('Avalonia')=='[12.1.5]',dependencies
             readme=package.read('README.md').decode('utf-8')
-            for step in ('Demo.csproj','Program.cs','dotnet restore','dotnet run','dotnet publish','UseSimdSkiaDesktop()','SimdSkia.Avalonia.Desktop','12.1.4'):
+            for step in ('Demo.csproj','Program.cs','dotnet restore','dotnet run','dotnet publish','UseSimdSkiaDesktop()','SimdSkia.Avalonia.Desktop','12.1.5'):
                 assert step in readme,(path,'Missing README instructions',step)
             assert '\u7cfb\u7edf' in readme and '\u9884\u89c8' in readme,path
         if package_id=='SimdSkia.Avalonia.Desktop':
-            assert dependencies.get('Avalonia.Native')=='[12.1.4]',dependencies
+            assert dependencies.get('Avalonia.Native')=='[12.1.5]',dependencies
             for host in ['Avalonia.Win32.dll','Avalonia.Win32.Automation.dll','Avalonia.X11.dll']:
                 assert f'lib/{framework}/{host}' in names,(path,host)
         if package_id=='SimdSkia.Gpu.Direct2D':

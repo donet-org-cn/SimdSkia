@@ -1,5 +1,22 @@
 # SimdSkia 更新日志 / Release notes
 
+## 0.1.0 — 2026-11-04
+
+首个按已实现功能范围发布的正式版，需要 .NET 10。Avalonia 升级到 12.1.5，完整 Sdcb.SimdCodecs 升级到 1.4.0；Clipper2 2.0.0、PdfPig 0.1.16 保持已核验的最新稳定版本。SkiaSharp 源码对照基线仍为 Avalonia.Skia 实际引用的 3.119.4，没有将其误升到不同契约的 SkiaSharp 4。
+
+- PNG 开启 LosslessReduction，在不改变 RGBA 像素的前提下优化编码表示；颜色处理、透明隐藏 RGB 和尺寸/预算验证保留。
+- PNG 严格校验不省略。直接从固定生命周期的分片 IDAT 输入流解压校验，省去全量压缩数据复制和对应池缓存；unsafe 仅用于该同步有界流，流不能逃逸 fixed 范围。
+- 新增逐字节分片、空 IDAT、带偏移 Span 和并发 GC 回归；独立损坏 PNG、所有颜色/位深/Adam7 与既有像素检查继续运行。
+- JPEG 优化 Huffman 表试验增加耗时和内存，未纳入默认配置。
+- 性能、CPU/内存、压缩大小与画质重新对照，最终数据见[本版报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/STABLE-0.1.0-2026-11-04.md)。本段测试数字将在正式采样完成后补全，不沿用旧版成绩。
+
+### 正式版支持范围
+
+稳定发布针对文档列出的已实现功能。SkiaSharp 为源码兼容子集，未承诺完整公共 API、强名称二进制替换或原版逐像素一致。JPEG 原版严格 1 LSB 检查与 CPU/GPU 整页画质差异仍需披露；不因正式改号把失败改判为通过。字体/复杂排版、未实现编码器、CMYK+ICC/HDR、PDF 子集和 macOS GPU 等既有限制仍明确报错。发布回归只允许已记录的精确 JPEG 差异；新差异和功能错误阻止发布。
+
+每个包包含本 CHANGELOG、README、NuGet 发行说明和许可证。十二包统一 0.1.0；桌面安装 SimdSkia.Avalonia.Desktop 并调用 UseSimdSkiaDesktop，GPU/PDF 按需安装同版本包。实际 CI 和公开下载状态见[发布记录](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/NUGET-PREVIEW.md)。
+
+
 ## 0.1.0-preview.10 — 2026-11-01
 
 发布补记：**十二包已公开上架并下载核验**；三平台托管、桌面 JIT/AOT/实际包消费、Windows AOT 及本版发布验证全部成功。严格 JPEG 与整页质量失败没有改判；完整链接及证据见[发布记录](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/NUGET-PREVIEW.md)。此补记不改写冻结的已发布包内容或历史测量。

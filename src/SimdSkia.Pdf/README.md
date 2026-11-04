@@ -1,4 +1,7 @@
-# SimdSkia.Pdf
+# SimdSkia.Pdf 0.1.0
+
+Requires .NET 10. The inherited image provider is Sdcb.SimdCodecs 1.4.0. This stable release supports the documented PDF subset; native-equivalent 画质 and full compatibility are not claimed. PNG lossless reduction and IDAT buffer optimization are included. 性能/CPU/memory results and original quality failures are recorded in CHANGELOG and the [0.1.0 report](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/STABLE-0.1.0-2026-11-04.md).
+
 
 Optional C# PDF parsing and page rendering, using PdfPig **0.1.16** (Apache-2.0)
 for PDF structure/fonts and SimdSkia for rasterization. No Skia, PDFium, MuPDF,
@@ -13,7 +16,7 @@ writer in the compatibility module. Ordinary `SimdSkia.Compatibility` and
 direct SimdSkia package references on the same preview version.
 
 ```shell
-dotnet add package SimdSkia.Pdf --version 0.1.0-preview.10
+dotnet add package SimdSkia.Pdf --version 0.1.0
 ```
 
 Every package includes `CHANGELOG.md` and NuGet release notes. This preview is a

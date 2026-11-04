@@ -1,5 +1,5 @@
 param(
-    [Parameter(Mandatory=$true)][ValidatePattern('^\d+\.\d+\.\d+-preview\.\d+$')][string]$Version,
+    [Parameter(Mandatory=$true)][ValidatePattern('^\d+\.\d+\.\d+(?:-preview\.\d+)?$')][string]$Version,
     [string]$Packages='artifacts/nuget-preview',
     [string]$Output='artifacts/pdf-package-consumer'
 )

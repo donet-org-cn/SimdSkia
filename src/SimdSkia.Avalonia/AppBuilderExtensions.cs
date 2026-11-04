@@ -21,11 +21,11 @@ public static class AppBuilderExtensions
     /// <summary>Uses installed static TrueType fonts on Windows, Linux and macOS, without bundled font files.</summary>
     public static AppBuilder UseSimdSkia(this AppBuilder builder)=>UseSimdSkia(builder,static _=>{});
 
-    /// <summary>Replaces Avalonia 12.1.4's drawing and font services with the managed CPU renderer.</summary>
+    /// <summary>Replaces Avalonia 12.1.5's drawing and font services with the managed CPU renderer.</summary>
     public static AppBuilder UseSimdSkia(this AppBuilder builder,Action<SimdSkiaOptions> configure)
     {
         ArgumentNullException.ThrowIfNull(builder);ArgumentNullException.ThrowIfNull(configure);
-        if(typeof(AppBuilder).Assembly.GetName().Version!=new Version(12,1,4,0))throw new NotSupportedException("This backend is validated only against Avalonia 12.1.4; its private rendering contracts require a version-specific adapter.");
+        if(typeof(AppBuilder).Assembly.GetName().Version!=new Version(12,1,5,0))throw new NotSupportedException("This backend is validated only against Avalonia 12.1.5; its private rendering contracts require a version-specific adapter.");
         var options=new SimdSkiaOptions();configure(options);var paths=options.FontFiles.ToArray();var factory=options.CanvasBackendFactory;var nativeFactory=options.NativeRenderTargetFactory;bool prepare=options.EnableStartupPreparation;
         return builder.UseRenderingSubsystem(()=>
         {

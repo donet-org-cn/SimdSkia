@@ -7,8 +7,8 @@
   <ItemGroup>
     <ProjectReference Include="../../src/SimdSkia.Pdf/SimdSkia.Pdf.csproj" />
     <ProjectReference Include="../../src/SimdSkia.Avalonia.Desktop/SimdSkia.Avalonia.Desktop.csproj" />
-    <PackageReference Include="Avalonia" Version="[12.1.4]" GeneratePathProperty="true" ExcludeAssets="compile" />
+    <PackageReference Include="Avalonia" Version="[12.1.5]" GeneratePathProperty="true" ExcludeAssets="compile" />
     <Reference Include="$(PkgAvalonia)/lib/net10.0/*.dll" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.4]" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.5]" />
   </ItemGroup>
 </Project>

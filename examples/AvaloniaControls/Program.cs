@@ -41,7 +41,7 @@ sealed class DemoApp:Application
         {
             var button=new Button{Content="更新 / Update",HorizontalAlignment=global::Avalonia.Layout.HorizontalAlignment.Left};
             var content=ControlScene.Create(button);int count=0;button.Click+=(_,_)=>button.Content=$"已点击 / Clicked {++count}";
-            desktop.MainWindow=new Window{Title="SimdSkia · Avalonia 12.1.4 · Managed CPU",Width=1000,Height=760,Content=content};
+            desktop.MainWindow=new Window{Title="SimdSkia · Avalonia 12.1.5 · Managed CPU",Width=1000,Height=760,Content=content};
             if(Smoke)
             {
                 desktop.MainWindow.Position=new PixelPoint(-20000,-20000);desktop.MainWindow.ShowInTaskbar=false;

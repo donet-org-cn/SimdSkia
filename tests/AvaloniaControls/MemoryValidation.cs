@@ -48,7 +48,7 @@ internal static class MemoryValidation
                 var bounds=step==11?new Rect(4,7,33,25):new Rect(2,3,51,37);
                 using(var context=reused.CreateDrawingContext()){context.Clear(Colors.White);context.DrawRectangle(brush,null,bounds);}
                 using var fresh=factory.CreateRenderTargetBitmap(new(64,48),new(96,96));
-                // Avalonia 12.1.4's radial copy constructor assigns RadiusX to
+                // Avalonia 12.1.5's radial copy constructor assigns RadiusX to
                 // RadiusY. Pass both radii explicitly to preserve this fixture.
                 IBrush snapshot=brush is RadialGradientBrush r
                     ?new ImmutableRadialGradientBrush(r.GradientStops.Select(s=>new ImmutableGradientStop(s.Offset,s.Color)).ToArray(),r.Opacity,r.Transform is {} t?new ImmutableTransform(t.Value):null,r.TransformOrigin,r.SpreadMethod,r.Center,r.GradientOrigin,r.RadiusX,r.RadiusY)

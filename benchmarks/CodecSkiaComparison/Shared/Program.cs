@@ -8,7 +8,7 @@ using SkiaSharp;
 // Each assembly references exactly one implementation. Input IO and source
 // bitmap construction are outside timing; owned outputs and Dispose are inside.
 #if MANAGED
-const string engine="SimdSkia + Sdcb.SimdCodecs 1.2.0";
+const string engine="SimdSkia + Sdcb.SimdCodecs 1.4.0";
 #else
 const string engine="SkiaSharp 3.119.4";
 #endif

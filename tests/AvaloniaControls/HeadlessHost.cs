@@ -10,8 +10,8 @@ internal static class HeadlessHost
     // initialize the exact same managed windowing platform without its font subsystem.
     internal static AppBuilder UseManagedHeadless(this AppBuilder builder)=>builder.UseWindowingSubsystem(()=>
     {
-        var method=typeof(AvaloniaHeadlessPlatform).GetMethod("Initialize",BindingFlags.NonPublic|BindingFlags.Static)??throw new MissingMethodException("Avalonia.Headless 12.1.4.Initialize");
+        var method=typeof(AvaloniaHeadlessPlatform).GetMethod("Initialize",BindingFlags.NonPublic|BindingFlags.Static)??throw new MissingMethodException("Avalonia.Headless 12.1.5.Initialize");
         try{method.Invoke(null,[new AvaloniaHeadlessPlatformOptions{UseHeadlessDrawing=false}]);}
         catch(TargetInvocationException e) when(e.InnerException is not null){System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(e.InnerException).Throw();}
-    },"ManagedHeadless12.1.4");
+    },"ManagedHeadless12.1.5");
 }

@@ -1,7 +1,7 @@
 <Project>
   <Import Project="../Directory.Build.props" />
   <PropertyGroup>
-    <Version Condition="'$(Version)' == ''">0.1.0-preview.10</Version>
+    <Version Condition="'$(Version)' == ''">0.1.0</Version>
     <Authors>hnlyf168</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/donet-org-cn/SimdSkia</PackageProjectUrl>
@@ -9,9 +9,9 @@
     <RepositoryType>git</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Description>Experimental managed C# 2D rendering components. Preview only; API and rendering compatibility are incomplete. No Google Skia rendering dependency.</Description>
-    <PackageTags>SimdSkia;graphics;rendering;managed;preview</PackageTags>
-    <PackageReleaseNotes>Preview 10 / 预览版 10：升级 .NET 10 / C# 14，完整接入 Sdcb.SimdCodecs 1.2.0，替换 JPEG/PNG/GIF 像素编解码并扩展 WebP/动画、TIFF 等格式；允许 .NET 系统原生压缩，仍不调用 Google Skia 绘图。新增 123 个独立进程的同机 CPU/Vulkan/Direct2D/JPEG/PNG 对照：CPU 控件 0.891→0.549 ms，JPEG 解码快约 2.27–2.90 倍；仅限 .NET 10 JIT 与已测场景。CPU 工作集仍高约 18%–22%，纹理 PNG 解码耗时 2.03 倍，UI PNG 编码慢约 19%，JPEG 文件大小有增加；整页画质 CPU 0/3、GPU 0/12 达标，原版 JPEG 联合回读 3/24 组失败，未放宽阈值。12 包统一版本，Avalonia 12.1.4 / SkiaSharp 源码基线 3.119.4 不变；不兼容 .NET 8，不承诺全面或二进制替换。完整测试记录、性能图和限制见包内 CHANGELOG.md、README.md 及 https://github.com/donet-org-cn/SimdSkia/blob/main/docs/SKIA-COMPARISON-2026-11-01.md</PackageReleaseNotes>
+    <Description>Managed C# 2D rendering components. Version 0.1 supports the documented subset; SkiaSharp source and rendering equivalence remain incomplete. No Google Skia rendering dependency.</Description>
+    <PackageTags>SimdSkia;graphics;rendering;managed;2d</PackageTags>
+    <PackageReleaseNotes>0.1.0 正式版，支持已实现功能子集。.NET 10 / C# 14，Avalonia 12.1.5，Sdcb.SimdCodecs 1.4.0。新增 PNG 无损缩减和有界 IDAT 校验流，保留颜色、透明度、损坏输入及生命周期验证，新增分片/并发 GC 回归。性能、CPU/内存及画质重新对照；严格 JPEG 和整页画质差异保留，完整 API/二进制等价及通用字体/PDF/GPU 能力不在本版承诺范围。PNG/TIFF 允许 .NET 系统原生压缩，不依赖 Google Skia 绘图。完整数据和使用说明见 README.md、CHANGELOG.md 及 https://github.com/donet-org-cn/SimdSkia/blob/main/docs/STABLE-0.1.0-2026-11-04.md</PackageReleaseNotes>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>

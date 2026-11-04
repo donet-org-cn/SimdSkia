@@ -20,14 +20,14 @@ internal sealed partial class DrawingContext
     // The runtime contract is deliberately internal in the pinned Avalonia
     // package. Cache the interface getter; never expose or fabricate a handle.
     private static readonly PropertyInfo imageSourceProperty=typeof(IImageBrushSource).GetProperty("Bitmap",BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic)
-        ??throw new MissingMemberException("Avalonia 12.1.4 IImageBrushSource.Bitmap contract is missing.");
+        ??throw new MissingMemberException("Avalonia 12.1.5 IImageBrushSource.Bitmap contract is missing.");
     private static readonly PropertyInfo imageReferenceItem=GetImageReferenceItem();
     // The pinned contract is IRef<IBitmapImpl>, instantiated by Avalonia's Bitmap.
     // Root its getter metadata explicitly; the trimmer cannot infer PropertyType's value.
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicProperties,"Avalonia.Utilities.IRef`1","Avalonia.Base")]
-    [UnconditionalSuppressMessage("Trimming","IL2075",Justification="The exact IRef<IBitmapImpl>.Item getter is retained by DynamicDependency on Avalonia 12.1.4's IRef<T> public properties.")]
+    [UnconditionalSuppressMessage("Trimming","IL2075",Justification="The exact IRef<IBitmapImpl>.Item getter is retained by DynamicDependency on Avalonia 12.1.5's IRef<T> public properties.")]
     private static PropertyInfo GetImageReferenceItem()=>imageSourceProperty.PropertyType.GetProperty("Item")
-        ??throw new MissingMemberException("Avalonia 12.1.4 image reference contract is missing.");
+        ??throw new MissingMemberException("Avalonia 12.1.5 image reference contract is missing.");
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private PaintLease CreatePaint(IBrush brush,Rect bounds,bool aa,CompositeMode composite=CompositeMode.SourceOver)
     {

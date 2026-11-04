@@ -30,7 +30,7 @@ try {
         for($i=$order.Count-1;$i -gt 0;$i--){$j=$rng.Next($i+1);$t=$order[$i];$order[$i]=$order[$j];$order[$j]=$t}
         foreach($engine in $order){$jobs+=@{Engine=$engine;Fork=$fork}}
     }
-    $manifest=[ordered]@{Date=(Get-Date -Format 'yyyy-MM-dd');Phase=$Phase;Avalonia='12.1.4';SkiaSharp='3.119.4';Backend='CPU raster SK call replay; fresh canvas per frame, not a full Avalonia app';Font=$fontPath;FontSha256=(Get-FileHash $fontPath).Hash;FixtureSha256=(Get-FileHash (Join-Path $fixturePath 'labels.json')).Hash;Forks=$Forks;Samples=$Samples;TargetSampleMilliseconds=$SampleMilliseconds;Sizes=$Sizes;TieredCompilation=0;ReadyToRun=0;ServerGc=0;Jobs=$jobs;SourceSha256=$hashes;Complete=$false}
+    $manifest=[ordered]@{Date=(Get-Date -Format 'yyyy-MM-dd');Phase=$Phase;Avalonia='12.1.5';SkiaSharp='3.119.4';Backend='CPU raster SK call replay; fresh canvas per frame, not a full Avalonia app';Font=$fontPath;FontSha256=(Get-FileHash $fontPath).Hash;FixtureSha256=(Get-FileHash (Join-Path $fixturePath 'labels.json')).Hash;Forks=$Forks;Samples=$Samples;TargetSampleMilliseconds=$SampleMilliseconds;Sizes=$Sizes;TieredCompilation=0;ReadyToRun=0;ServerGc=0;Jobs=$jobs;SourceSha256=$hashes;Complete=$false}
     $manifest|ConvertTo-Json -Depth 6|Set-Content -LiteralPath $manifestFile -Encoding UTF8
     foreach($job in $jobs){
         $program=if($job.Engine -eq 'original'){$referencePath}else{$managedPath};$engineArg=if($job.Engine -eq 'before'){'simd'}else{$job.Engine}

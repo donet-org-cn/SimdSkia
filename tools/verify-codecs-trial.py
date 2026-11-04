@@ -22,7 +22,7 @@ for path in sorted(args.directory.glob('*.nupkg')):
         for name,v in deps.items():
             if name.startswith('SimdSkia'):assert v.strip('[]')==version,(id,name,v)
         if id=='SimdSkia.Imaging':
-            assert deps.get('Sdcb.SimdCodecs')=='[1.2.0]',deps
+            assert deps.get('Sdcb.SimdCodecs')=='[1.4.0]',deps
             assert 'licenses/Sdcb.SimdCodecs-MIT.txt' in names
         assert 'JpegLibrary' not in deps
         rows.append(dict(id=id,version=version,bytes=path.stat().st_size,sha256=hashlib.sha256(path.read_bytes()).hexdigest(),dependencies=deps))

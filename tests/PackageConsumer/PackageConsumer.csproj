@@ -7,14 +7,14 @@
     <PublishAot Condition="'$(PackageConsumerAot)' == 'true'">true</PublishAot>
     <SelfContained>true</SelfContained>
     <OptimizationPreference>Speed</OptimizationPreference>
-    <SimdSkiaPackageVersion Condition="'$(SimdSkiaPackageVersion)' == ''">0.1.0-preview.10</SimdSkiaPackageVersion>
+    <SimdSkiaPackageVersion Condition="'$(SimdSkiaPackageVersion)' == ''">0.1.0</SimdSkiaPackageVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="SimdSkia" Version="[$(SimdSkiaPackageVersion)]" />
     <PackageReference Include="SimdSkia.Avalonia" Version="[$(SimdSkiaPackageVersion)]" />
-    <PackageReference Include="Avalonia" Version="[12.1.4]" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.4]" />
-    <PackageDownload Include="Avalonia.Win32" Version="[12.1.4]" />
-    <Reference Include="$(NuGetPackageRoot)/avalonia.win32/12.1.4/lib/net8.0/*.dll" />
+    <PackageReference Include="Avalonia" Version="[12.1.5]" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.5]" />
+    <PackageDownload Include="Avalonia.Win32" Version="[12.1.5]" />
+    <Reference Include="$(NuGetPackageRoot)/avalonia.win32/12.1.5/lib/net8.0/*.dll" />
   </ItemGroup>
 </Project>

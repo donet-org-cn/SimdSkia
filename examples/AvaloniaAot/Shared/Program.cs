@@ -69,7 +69,7 @@ internal sealed class ComparisonApp : Application
         TextElement.SetFontFamily(scene, collection[0]);
         var window = new Window
         {
-            Title = $"{Program.Engine} · Native AOT · Avalonia 12.1.4", Width = 1000, Height = 760, Content = scene,
+            Title = $"{Program.Engine} · Native AOT · Avalonia 12.1.5", Width = 1000, Height = 760, Content = scene,
             ShowInTaskbar = !Program.Options.Hidden,
         };
         if (Program.Options.Hidden) window.Position = new PixelPoint(-20000, -20000);

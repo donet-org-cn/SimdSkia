@@ -14,10 +14,10 @@
     <IlcInstructionSet Condition="'$(ComparisonIsa)' == 'v3'">x86-64-v3</IlcInstructionSet>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.4]" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.5]" />
     <!-- Only the managed Win32 implementation: software presentation uses Windows APIs. -->
-    <PackageDownload Include="Avalonia.Win32" Version="[12.1.4]" />
-    <Reference Include="$(NuGetPackageRoot)/avalonia.win32/12.1.4/lib/net8.0/*.dll" />
+    <PackageDownload Include="Avalonia.Win32" Version="[12.1.5]" />
+    <Reference Include="$(NuGetPackageRoot)/avalonia.win32/12.1.5/lib/net8.0/*.dll" />
     <Compile Include="../Shared/*.cs" Link="%(Filename)%(Extension)" />
     <Compile Include="../../../tests/AvaloniaControls/ControlScene.cs" Link="ControlScene.cs" />
     <None Include="../../../baseline/fonts/ZCOOLXiaoWei-Regular.ttf" Link="fonts/ZCOOLXiaoWei-Regular.ttf" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />

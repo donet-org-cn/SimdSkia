@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks><RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-    <Description>Preview C# rendering/font services for Avalonia 12.1.4. Windows/Linux/macOS installed-font discovery. Add SimdSkia.Avalonia.Desktop for OS window hosts and SimdSkia.Avalonia.Gpu for optional hardware drawing. Incomplete compatibility.</Description>
+    <Description>Managed C# rendering/font services for Avalonia 12.1.5. Windows/Linux/macOS installed-font discovery. Add SimdSkia.Avalonia.Desktop for OS window hosts and SimdSkia.Avalonia.Gpu for optional hardware drawing. Incomplete compatibility.</Description>
   </PropertyGroup>
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="/README.md" />
     <!-- Avalonia's consumer ref assemblies deliberately prohibit implementing backend contracts.
          Compile this fixed-version adapter against its unmodified runtime assemblies instead. -->
-    <PackageReference Include="Avalonia" Version="[12.1.4]" GeneratePathProperty="true" ExcludeAssets="compile" />
+    <PackageReference Include="Avalonia" Version="[12.1.5]" GeneratePathProperty="true" ExcludeAssets="compile" />
     <Reference Include="$(PkgAvalonia)/lib/net8.0/*.dll" />
     <PackageReference Include="Clipper2" Version="[2.0.0]" />
     <ProjectReference Include="../SimdSkia.Core/SimdSkia.Core.csproj" />

@@ -162,7 +162,7 @@ internal static class SimdSkiaVelaProbe
     private static string? Renderer()
     {
         // Avalonia's consumer reference assembly hides backend service access.
-        // The runtime adapter is pinned to 12.1.4; reflection is diagnostic only.
+        // The runtime adapter is pinned to 12.1.5; reflection is diagnostic only.
         var locator = typeof(AvaloniaLocator).GetProperty("Current", BindingFlags.Public | BindingFlags.Static)!.GetValue(null)!;
         var getService = locator.GetType().GetMethod("GetService", [typeof(Type)])!;
         return getService.Invoke(locator, [typeof(IPlatformRenderInterface)])?.GetType().FullName;

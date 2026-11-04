@@ -4,7 +4,7 @@ $workspacePath = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $baselinePath = Join-Path $workspacePath 'baseline'
 New-Item -ItemType Directory -Path $baselinePath -Force | Out-Null
 Add-Type -AssemblyName System.IO.Compression.FileSystem
-$packages = @(@{ Id='avalonia.skia'; Version='12.1.4' }, @{ Id='skiasharp'; Version='3.119.4' })
+$packages = @(@{ Id='avalonia.skia'; Version='12.1.5' }, @{ Id='skiasharp'; Version='3.119.4' })
 if ($IncludeWindowsReferenceRuntime) { $packages += @{ Id='skiasharp.nativeassets.win32'; Version='3.119.4' } }
 $records = @()
 foreach ($package in $packages) {

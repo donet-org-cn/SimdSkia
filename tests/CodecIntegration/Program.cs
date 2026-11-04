@@ -90,9 +90,10 @@ bool refused=false;try{using var invalid=ImageCodec.Decode(giantBmp);}catch(Exce
 Check(!AppDomain.CurrentDomain.GetAssemblies().Any(a=>a.GetName().Name=="JpegLibrary"),"Old JPEG dependency is absent");
 if(OperatingSystem.IsWindows())using(var process=Process.GetCurrentProcess())Check(!process.Modules.Cast<ProcessModule>().Any(m=>m.ModuleName?.Contains("libSkiaSharp",StringComparison.OrdinalIgnoreCase)==true),"No Google Skia codec loaded");
 bool aot=!RuntimeFeature.IsDynamicCodeSupported;
+Check(PngStreamValidation.Run(),"Fragmented PNG IDAT, sliced input, empty chunks and concurrent GC");
 #if NATIVE_AOT
 Check(aot,"Actual Native AOT execution");
 #endif
-File.WriteAllText(Path.Combine(output,"result.json"),$"{{\"checks\":{checks},\"nativeAot\":{aot.ToString().ToLowerInvariant()},\"codec\":\"Sdcb.SimdCodecs 1.2.0\"}}");
+File.WriteAllText(Path.Combine(output,"result.json"),$"{{\"checks\":{checks},\"nativeAot\":{aot.ToString().ToLowerInvariant()},\"codec\":\"Sdcb.SimdCodecs 1.4.0\"}}");
 Console.WriteLine($"PASS {checks} full codec integration assertions; NativeAot={aot}");
 static SKColor ToSkia(Rgba32 c)=>new(c.R,c.G,c.B,c.A);

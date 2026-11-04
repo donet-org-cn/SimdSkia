@@ -10,7 +10,7 @@
   <ItemGroup><Compile Remove="AotSmoke/**;obj-aot/**" /></ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(SimdSkiaEngineRoot)/SimdSkia.Imaging/SimdSkia.Imaging.csproj" />
-    <PackageReference Include="Sdcb.SimdCodecs.Jpeg" Version="[1.2.0]" />
-    <PackageReference Include="Sdcb.SimdCodecs.Png" Version="[1.2.0]" />
+    <PackageReference Include="Sdcb.SimdCodecs.Jpeg" Version="[1.4.0]" />
+    <PackageReference Include="Sdcb.SimdCodecs.Png" Version="[1.4.0]" />
   </ItemGroup>
 </Project>

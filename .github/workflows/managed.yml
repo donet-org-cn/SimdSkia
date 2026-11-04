@@ -22,7 +22,7 @@ jobs:
       - run: dotnet run --project tests/Features -c Release --no-build -- baseline/fonts/ZenOldMincho-Regular.ttf
       - run: dotnet run --project tests/Imaging -c Release --no-build -- --independent-only
       - name: Record original JPEG quality failures and enforce disclosed preview exceptions
-        run: python tools/check-jpeg-parity.py --output artifacts/jpeg-parity --allow-known-preview10
+        run: python tools/check-jpeg-parity.py --output artifacts/jpeg-parity --check-documented-differences
       - uses: actions/upload-artifact@v4
         if: always()
         with:

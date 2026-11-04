@@ -8,7 +8,7 @@ import subprocess
 p=argparse.ArgumentParser(description=__doc__)
 p.add_argument('--worker',type=Path,default=Path('tests/Imaging/bin/Release/net10.0/Imaging.dll'))
 p.add_argument('--output',type=Path,required=True)
-p.add_argument('--allow-known-preview10',action='store_true')
+p.add_argument('--allow-known-preview10','--check-documented-differences',dest='allow_known_preview10',action='store_true')
 args=p.parse_args();args.output.mkdir(parents=True,exist_ok=True)
 actual_path=args.output.resolve()/'actual.json'
 subprocess.run(['dotnet',str(args.worker),'--encode-probe',str(actual_path)],check=True)
@@ -35,11 +35,11 @@ result={'threshold':1,'qualityPassed':not failures,'passedCases':24-len(failures
 (args.output/'result.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
 print(f"JPEG QUALITY {'PASS' if not failures else 'FAIL'}: {24-len(failures)}/24, threshold=1; releaseException={accepted}",flush=True)
 if failures:
-    print('WARNING: disclosed JPEG quality failures remain failures; this preview release does not claim pixel parity.',flush=True)
+    print('WARNING: disclosed JPEG quality failures remain failures; this release does not claim pixel parity.',flush=True)
 summary=os.environ.get('GITHUB_STEP_SUMMARY')
 if summary:
     with open(summary,'a',encoding='utf-8') as f:
         f.write(f"\nJPEG strict quality: **{'FAIL' if failures else 'PASS'}**, {24-len(failures)}/24 at the unchanged 1-LSB threshold. "
-                f"Explicit preview.10 release exceptions accepted: **{accepted}**. "
+                f"Documented pixel-difference regression check accepted: **{accepted}**. "
                 "See the uploaded JSON; this is not full image quality or rendering parity.\n")
 raise SystemExit(0 if result['releaseCheckPassed'] else 2)

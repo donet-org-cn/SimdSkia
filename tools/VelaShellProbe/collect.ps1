@@ -65,7 +65,7 @@ $sources=@{}
 foreach($file in @('src/SimdSkia.Avalonia/Fonts.cs','src/SimdSkia.Avalonia/DrawingContext.cs','src/SimdSkia.Cpu/RasterCanvas.Sampling.cs','tools/VelaShellProbe/Probe.cs')){
     $sources[$file]=(Get-FileHash -LiteralPath (Join-Path $simdRoot $file) -Algorithm SHA256).Hash
 }
-$report=[pscustomobject]@{date='2026-10-27';upstream='https://github.com/joesdu/VelaShell';upstreamCommit=$head;configuration='Debug/net11.0';sdk='11.0.100-rc.1.26425.128';runtime=$original.runtime;avalonia='12.1.4';original=$original;backends=$backends;qualityScope='CPU RenderTargetBitmap snapshots under each application configuration; not GPU presented-frame quality or throughput benchmarks';threshold=[pscustomobject]@{maxChannelError=32;rmse=2};quality=$quality.ToArray();tests=$tests.ToArray();sourceHashes=$sources}
+$report=[pscustomobject]@{date='2026-10-27';upstream='https://github.com/joesdu/VelaShell';upstreamCommit=$head;configuration='Debug/net11.0';sdk='11.0.100-rc.1.26425.128';runtime=$original.runtime;avalonia='12.1.5';original=$original;backends=$backends;qualityScope='CPU RenderTargetBitmap snapshots under each application configuration; not GPU presented-frame quality or throughput benchmarks';threshold=[pscustomobject]@{maxChannelError=32;rmse=2};quality=$quality.ToArray();tests=$tests.ToArray();sourceHashes=$sources}
 $report|ConvertTo-Json -Depth 30|Set-Content -LiteralPath (Join-Path $evidenceRoot 'results.json') -Encoding UTF8
 $tests|Format-Table file,total,passed,failed,notExecuted
 $quality|Group-Object backend|ForEach-Object {Write-Output ($_.Name+': quality '+@($_.Group|Where-Object passed).Count+'/'+$_.Count)}

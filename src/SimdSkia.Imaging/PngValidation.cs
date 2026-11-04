@@ -7,7 +7,7 @@ namespace SimdSkia.Imaging;
 /// <summary>Strict input validation, not a pixel decoder. BCL inflate is explicitly permitted.</summary>
 internal static class PngValidation
 {
-    internal static void ValidateRows(ReadOnlySpan<byte> png,int firstIdat,int compressedLength,int idatCount,int width,int height,int depth,int type,int interlace,int paletteCount)
+    internal static unsafe void ValidateRows(ReadOnlySpan<byte> png,int firstIdat,int compressedLength,int idatCount,int width,int height,int depth,int type,int interlace,int paletteCount)
     {
         int channels=type==2?3:type==4?2:type==6?4:1;
         ReadOnlySpan<(int X,int Y,int Dx,int Dy)> passes=interlace==0?[(0,0,1,1)]:[(0,0,8,8),(4,0,8,8),(0,4,4,8),(2,0,4,4),(0,2,2,4),(1,0,2,2),(0,1,1,2)];
@@ -19,13 +19,15 @@ internal static class PngValidation
         }
         if(total>CodecBackend.InputLimit)throw new NotSupportedException("PNG inflation exceeds the 256 MiB budget.");
         int maxRow=checked((width*channels*depth+7)/8);
-        var compressed=ArrayPool<byte>.Shared.Rent(compressedLength);var rows=ArrayPool<byte>.Shared.Rent(checked(maxRow*2));
+        var rows=ArrayPool<byte>.Shared.Rent(checked(maxRow*2));
         try
         {
-            int chunk=firstIdat,at=0;
-            for(int i=0;i<idatCount;i++)
-            {int size=checked((int)BinaryPrimitives.ReadUInt32BigEndian(png[chunk..]));png.Slice(chunk+8,size).CopyTo(compressed.AsSpan(at,size));at+=size;chunk+=size+12;}
-            using var input=new MemoryStream(compressed,0,compressedLength,false,true);
+            // The read-only stream cannot escape this fixed scope. It reads the
+            // already checked IDAT chunks in place, avoiding an image-sized
+            // compressed copy and its retained ArrayPool bucket.
+            fixed(byte* encoded=png)
+            {
+            using var input=new IdatStream(encoded,png.Length,firstIdat,idatCount,compressedLength);
             using var inflater=new ZLibStream(input,CompressionMode.Decompress);
             foreach(var p in passes)
             {
@@ -50,8 +52,46 @@ internal static class PngValidation
                 }
             }
             if(inflater.ReadByte()!=-1)throw new InvalidDataException("Excess PNG inflated pixels.");
+            }
         }
-        finally{ArrayPool<byte>.Shared.Return(compressed);ArrayPool<byte>.Shared.Return(rows);}
+        finally{ArrayPool<byte>.Shared.Return(rows);}
+    }
+    private sealed unsafe class IdatStream(byte* encoded,int length,int chunk,int chunks,int compressedLength):Stream
+    {
+        private int position=chunk,remainingChunks=chunks,remaining,consumed;
+        public override bool CanRead=>true;
+        public override bool CanSeek=>false;
+        public override bool CanWrite=>false;
+        public override long Length=>compressedLength;
+        public override long Position{get=>consumed;set=>throw new NotSupportedException();}
+        public override int Read(byte[] buffer,int offset,int count)=>Read(buffer.AsSpan(offset,count));
+        public override int Read(Span<byte> buffer)
+        {
+            int count=0;
+            while(!buffer.IsEmpty)
+            {
+                if(remaining==0)
+                {
+                    if(remainingChunks==0)break;
+                    if(position<0||position>length-12)throw new InvalidDataException("Truncated IDAT header.");
+                    var header=new ReadOnlySpan<byte>(encoded+position,8);
+                    if(!header[4..].SequenceEqual("IDAT"u8))throw new InvalidDataException("Non-consecutive IDAT.");
+                    uint size=BinaryPrimitives.ReadUInt32BigEndian(header);
+                    if(size>(uint)(length-position-12))throw new InvalidDataException("Truncated IDAT payload.");
+                    remaining=(int)size;remainingChunks--;position+=8;
+                    if(remaining==0){position+=4;continue;}
+                }
+                int take=Math.Min(buffer.Length,remaining);
+                new ReadOnlySpan<byte>(encoded+position,take).CopyTo(buffer);
+                position+=take;remaining-=take;consumed+=take;count+=take;buffer=buffer[take..];
+                if(remaining==0)position+=4;
+            }
+            return count;
+        }
+        public override void Flush() { }
+        public override long Seek(long offset,SeekOrigin origin)=>throw new NotSupportedException();
+        public override void SetLength(long value)=>throw new NotSupportedException();
+        public override void Write(byte[] buffer,int offset,int count)=>throw new NotSupportedException();
     }
     private static int Paeth(int a,int b,int c){int p=a+b-c,da=Math.Abs(p-a),db=Math.Abs(p-b),dc=Math.Abs(p-c);return da<=db&&da<=dc?a:db<=dc?b:c;}
 }

@@ -1,5 +1,5 @@
 $ErrorActionPreference='Stop'
-$codecPackages=@('Sdcb.SimdCodecs/1.2.0','Sdcb.SimdCodecs.Abstractions/1.2.0','Sdcb.SimdCodecs.Bmp/1.2.0','Sdcb.SimdCodecs.Color.Icc/1.2.0','Sdcb.SimdCodecs.Gif/1.2.0','Sdcb.SimdCodecs.Ico/1.2.0','Sdcb.SimdCodecs.Jbig2/1.2.0','Sdcb.SimdCodecs.Jpeg/1.2.0','Sdcb.SimdCodecs.Jpeg.GainMap/1.2.0','Sdcb.SimdCodecs.Jpeg2000/1.2.0','Sdcb.SimdCodecs.Png/1.2.0','Sdcb.SimdCodecs.Pnm/1.2.0','Sdcb.SimdCodecs.Qoi/1.2.0','Sdcb.SimdCodecs.Tiff/1.2.0','Sdcb.SimdCodecs.Webp/1.2.0')
+$codecPackages=@('Sdcb.SimdCodecs/1.4.0','Sdcb.SimdCodecs.Abstractions/1.4.0','Sdcb.SimdCodecs.Bmp/1.4.0','Sdcb.SimdCodecs.Color.Icc/1.4.0','Sdcb.SimdCodecs.Gif/1.4.0','Sdcb.SimdCodecs.Ico/1.4.0','Sdcb.SimdCodecs.Jbig2/1.4.0','Sdcb.SimdCodecs.Jpeg/1.4.0','Sdcb.SimdCodecs.Jpeg.GainMap/1.4.0','Sdcb.SimdCodecs.Jpeg2000/1.4.0','Sdcb.SimdCodecs.Png/1.4.0','Sdcb.SimdCodecs.Pnm/1.4.0','Sdcb.SimdCodecs.Qoi/1.4.0','Sdcb.SimdCodecs.Tiff/1.4.0','Sdcb.SimdCodecs.Webp/1.4.0')
 $workspacePath = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 foreach ($name in @('SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Text','SimdSkia.Imaging','SimdSkia.Gpu','SimdSkia.Gpu.Direct2D','SimdSkia.Compatibility','SimdSkia.Pdf')) {
     $projectPath = Join-Path $workspacePath ('src/' + $name)
@@ -14,12 +14,12 @@ foreach ($name in @('SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Text','SimdSkia.Ima
     $forbidden = Get-ChildItem -LiteralPath (Join-Path $projectPath 'bin/Release/net10.0') -File | Where-Object { $_.Name -match '^(libSkiaSharp|SkiaSharp|HarfBuzzSharp)' }
     if ($forbidden) { throw ('Native/reference dependencies leaked into production output for ' + $name) }
 }
-Write-Output 'PASS: Core/Cpu/Text/Gpu/Gpu.Direct2D have zero NuGet packages; Imaging/Compatibility allow only the fifteen pinned Sdcb.SimdCodecs 1.2.0 packages. .NET system compression is explicitly permitted. GPU interop calls system Vulkan or Direct2D/D3D11; no native drawing component is bundled.'
+Write-Output 'PASS: Core/Cpu/Text/Gpu/Gpu.Direct2D have zero NuGet packages; Imaging/Compatibility allow only the fifteen pinned Sdcb.SimdCodecs 1.4.0 packages. .NET system compression is explicitly permitted. GPU interop calls system Vulkan or Direct2D/D3D11; no native drawing component is bundled.'
 Write-Output 'PASS: optional PDF reader additionally permits only PdfPig 0.1.16, with no native assets.'
 $adapterPath=Join-Path $workspacePath 'src/SimdSkia.Avalonia/obj/project.assets.json'
 if(Test-Path -LiteralPath $adapterPath){
     $assets=Get-Content -LiteralPath $adapterPath -Raw|ConvertFrom-Json
-    $allowed=@('Avalonia/12.1.4','Avalonia.BuildServices/11.3.2','Avalonia.Remote.Protocol/12.1.4','MicroCom.Runtime/0.11.6','Clipper2/2.0.0')+$codecPackages
+    $allowed=@('Avalonia/12.1.5','Avalonia.BuildServices/11.3.2','Avalonia.Remote.Protocol/12.1.5','MicroCom.Runtime/0.11.6','Clipper2/2.0.0')+$codecPackages
     foreach($library in $assets.libraries.PSObject.Properties){if($library.Value.type -eq 'package' -and $library.Name -notin $allowed){throw ('Unexpected Avalonia adapter dependency: '+$library.Name)}}
     foreach($target in $assets.targets.PSObject.Properties){foreach($library in $target.Value.PSObject.Properties){if($library.Value.native){throw ('Native asset in Avalonia adapter: '+$library.Name)};foreach($runtimeTarget in $library.Value.runtimeTargets.PSObject.Properties){if($runtimeTarget.Value.assetType -eq 'native'){throw ('Native runtime target in Avalonia adapter: '+$library.Name)}}}}
     $outputPath=Join-Path $workspacePath 'examples/AvaloniaControls/bin/Release/net10.0'

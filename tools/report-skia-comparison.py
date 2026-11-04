@@ -9,6 +9,7 @@ ROOT=Path(__file__).resolve().parents[1]
 p=argparse.ArgumentParser(description=__doc__)
 p.add_argument('input',type=Path)
 p.add_argument('--output',type=Path,required=True)
+p.add_argument('--date',default='2026-11-01')
 args=p.parse_args();source=args.input.resolve();out=args.output.resolve()
 if (out/'sha256.json').exists():raise ValueError('Completed evidence exists; choose a new output directory')
 out.mkdir(parents=True,exist_ok=True)  # Resume a failed plotting dependency setup.
@@ -37,14 +38,14 @@ for offset,variant,label,color in [(-.19,'default','SkiaSharp','#64748b'),(.19,'
         bars=ax.bar([i+offset for i in range(3)],[r[field] for r in rows],.36,label=label,color=color)
         ax.bar_label(bars,fmt='%.2f',fontsize=8,padding=3);ax.set_title(title,fontsize=10);ax.set_xticks(range(3),labels,fontsize=9)
         ax.set_ylim(0,max(r[field] for r in cpu['summary'] if r['variant'] in ('default','after'))*1.2);ax.spines[['top','right']].set_visible(False)
-axes[0].legend();fig.suptitle('2026-11-01 | .NET 10 JIT | CPU quality gate: FAIL',fontsize=11)
+axes[0].legend();fig.suptitle(f'{args.date} | .NET 10 JIT | CPU quality gate: FAIL',fontsize=11)
 fig.savefig(out/'cpu.png',dpi=160);plt.close(fig)
 fig,axes=plt.subplots(1,2,figsize=(11,4.2),layout='constrained')
 for offset,variant,label,color in [(-.30,'original-vulkan','Skia Vulkan','#64748b'),(-.10,'original-angle','Skia ANGLE','#94a3b8'),(.10,'vulkan','Simd Vulkan','#0284c7'),(.30,'direct2d','Simd Direct2D','#0d9488')]:
     for ax,field,title in zip(axes,['meanMs','sampledMedianWorkingSetMiB'],['GPU completed frame + readback (ms)','GPU process working set (MiB)']):
         ax.bar([i+offset for i in range(3)],[r[variant][field] for r in gpu],.19,label=label,color=color)
         ax.set_title(title,fontsize=10);ax.set_xticks(range(3),labels,fontsize=9);ax.spines[['top','right']].set_visible(False)
-axes[0].legend(fontsize=8,ncols=2);fig.suptitle('2026-11-01 | .NET 10 JIT | GPU quality gate: FAIL',fontsize=11)
+axes[0].legend(fontsize=8,ncols=2);fig.suptitle(f'{args.date} | .NET 10 JIT | GPU quality gate: FAIL',fontsize=11)
 fig.savefig(out/'gpu.png',dpi=160);plt.close(fig)
 fig,ax=plt.subplots(figsize=(9,4.5),layout='constrained')
 names=[r['scene']+' / '+r['operation'] for r in codec]

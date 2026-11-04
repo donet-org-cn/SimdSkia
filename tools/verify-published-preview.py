@@ -18,7 +18,7 @@ args=parser.parse_args()
 rows=json.loads(args.manifest.read_text(encoding='utf-8'))
 assert len(rows)>=8 and len({row['id'] for row in rows})==len(rows)
 for row in rows:
-    assert re.fullmatch(r'\d+\.\d+\.\d+-preview\.\d+',row['version'])
+    assert re.fullmatch(r'\d+\.\d+\.\d+(?:-preview\.\d+)?',row['version'])
 pending={row['id']:row for row in rows}
 verified=[]
 deadline=time.monotonic()+args.wait_seconds

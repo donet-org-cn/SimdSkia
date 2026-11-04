@@ -14,7 +14,7 @@ public static class PngCodec
         if(!Enum.IsDefined(compression))throw new ArgumentOutOfRangeException(nameof(compression));
         using var source=new EncodingPixels(pixels,true);
         return PngWriter.Encode(source.Span,pixels.Width,pixels.Height,new PngWriteOptions
-        {CompressionLevel=compression,ParallelFragments=1,SrgbRenderingIntent=0});
+        {CompressionLevel=compression,ParallelFragments=1,SrgbRenderingIntent=0,LosslessReduction=true});
     }
     public static PixelBuffer Decode(ReadOnlySpan<byte> png)
     {

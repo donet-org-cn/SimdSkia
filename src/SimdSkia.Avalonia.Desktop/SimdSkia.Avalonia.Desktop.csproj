@@ -6,19 +6,19 @@
   <ItemGroup>
     <None Include="../SimdSkia.Avalonia/README.md" Pack="true" PackagePath="/README.md" />
     <ProjectReference Include="../SimdSkia.Avalonia/SimdSkia.Avalonia.csproj" />
-    <PackageReference Include="Avalonia" Version="[12.1.4]" GeneratePathProperty="true" ExcludeAssets="compile" />
+    <PackageReference Include="Avalonia" Version="[12.1.5]" GeneratePathProperty="true" ExcludeAssets="compile" />
     <Reference Include="$(PkgAvalonia)/lib/net8.0/*.dll" />
-    <PackageReference Include="Avalonia.FreeDesktop" Version="[12.1.4]" />
-    <PackageReference Include="Avalonia.FreeDesktop.AtSpi" Version="[12.1.4]" />
-    <PackageReference Include="Avalonia.Native" Version="[12.1.4]" />
+    <PackageReference Include="Avalonia.FreeDesktop" Version="[12.1.5]" />
+    <PackageReference Include="Avalonia.FreeDesktop.AtSpi" Version="[12.1.5]" />
+    <PackageReference Include="Avalonia.Native" Version="[12.1.5]" />
     <!-- The X11 package declares an unused Skia dependency. Consume its managed
          assembly directly; do not bring the original rendering implementation. -->
-    <PackageDownload Include="Avalonia.X11" Version="[12.1.4]" />
-    <PackageDownload Include="Avalonia.Win32" Version="[12.1.4]" />
-    <Reference Include="$(NuGetPackageRoot)/avalonia.x11/12.1.4/lib/net8.0/Avalonia.X11.dll" />
-    <Reference Include="$(NuGetPackageRoot)/avalonia.win32/12.1.4/lib/net8.0/*.dll" />
-    <None Include="$(NuGetPackageRoot)/avalonia.x11/12.1.4/lib/net8.0/Avalonia.X11.dll" Pack="true" PackagePath="lib/$(TargetFramework)/" />
-    <None Include="$(NuGetPackageRoot)/avalonia.win32/12.1.4/lib/net8.0/*.dll" Pack="true" PackagePath="lib/$(TargetFramework)/" />
+    <PackageDownload Include="Avalonia.X11" Version="[12.1.5]" />
+    <PackageDownload Include="Avalonia.Win32" Version="[12.1.5]" />
+    <Reference Include="$(NuGetPackageRoot)/avalonia.x11/12.1.5/lib/net8.0/Avalonia.X11.dll" />
+    <Reference Include="$(NuGetPackageRoot)/avalonia.win32/12.1.5/lib/net8.0/*.dll" />
+    <None Include="$(NuGetPackageRoot)/avalonia.x11/12.1.5/lib/net8.0/Avalonia.X11.dll" Pack="true" PackagePath="lib/$(TargetFramework)/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.win32/12.1.5/lib/net8.0/*.dll" Pack="true" PackagePath="lib/$(TargetFramework)/" />
     <None Include="../../docs/licenses/Avalonia-MIT.txt" Pack="true" PackagePath="licenses/" />
   </ItemGroup>
 </Project>

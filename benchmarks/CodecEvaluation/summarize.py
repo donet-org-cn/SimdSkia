@@ -16,11 +16,11 @@ assets=json.loads((project/'obj/project.assets.json').read_text(encoding='utf-8-
 cache=Path(next(iter(assets['packageFolders'])))
 packages=[]
 for name in ('sdcb.simdcodecs.jpeg','sdcb.simdcodecs.png','sdcb.simdcodecs.abstractions','sdcb.simdcodecs.color.icc'):
-    folder=cache/name/'1.2.0'
+    folder=cache/name/'1.4.0'
     nuspec=ET.parse(next(folder.glob('*.nuspec'))).getroot()
     ns={'n':nuspec.tag.split('}')[0][1:]};metadata=nuspec.find('n:metadata',ns)
     repository=metadata.find('n:repository',ns)
-    packages.append(dict(id=name,version='1.2.0',license=metadata.findtext('n:license',None,ns),
+    packages.append(dict(id=name,version='1.4.0',license=metadata.findtext('n:license',None,ns),
                          repository=repository.attrib if repository is not None else {},
                          dlls=[dict(path=str(p.relative_to(folder)),bytes=p.stat().st_size) for p in folder.rglob('*.dll')],
                          dependencies=[e.attrib for e in metadata.findall('.//n:dependency',ns)]))
@@ -48,7 +48,7 @@ assert all(jit_hashes[r['name']]==r.get('sha256') for r in scalar['rows'] if r['
 binary_root=Path(__file__).resolve().parent/'bin/Release/net10.0'
 digests={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in binary_root.glob('*.dll')}
 date=re.search(r'\d{4}-\d{2}-\d{2}',root.name)
-result=dict(date=date[0] if date else 'not specified',version='Sdcb.SimdCodecs 1.2.0',cpu=host['cpu'],
+result=dict(date=date[0] if date else 'not specified',version='Sdcb.SimdCodecs 1.4.0',cpu=host['cpu'],
             cpuLogical=12,runtime=raw[0]['runtime'],resolution=[1920,1080],rounds=args.rounds,
             measurement=f"Separate serial processes; {host['warmupSeconds']}s warmup, at least {host['seconds']}s measurement, {args.rounds}-process medians; no disk IO in timing",
             fixtures='Deterministic first-party opaque UI and texture patterns; not a photographic corpus',

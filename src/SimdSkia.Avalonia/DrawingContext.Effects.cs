@@ -19,7 +19,7 @@ internal sealed partial class DrawingContext
             return Shadow?ManagedFilters.DropShadow(source,SigmaX,SigmaY,OffsetX,OffsetY,Color,blurBounds):ManagedFilters.Blur(source,SigmaX,SigmaY,blurBounds);
         }
     }
-    // This factor belongs to Avalonia 12.1.4's radius contract (not CSS blur).
+    // This factor belongs to Avalonia 12.1.5's radius contract (not CSS blur).
     private static float Sigma(double radius)
     {if(!double.IsFinite(radius)||radius<0)throw new ArgumentOutOfRangeException(nameof(radius));return radius==0?0:.288675f*(float)radius+.5f;}
     private static (float X,float Y) DeviceSigma(double radius,Matrix3 matrix)

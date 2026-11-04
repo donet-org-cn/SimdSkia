@@ -91,7 +91,7 @@ internal static class Bench
         capture=()=>pixels.ToArray();
 #endif
         // The same internal Avalonia wrappers are compiled once, outside timing.
-        // This diagnostic JIT harness deliberately pins the 12.1.4 API; it is
+        // This diagnostic JIT harness deliberately pins the 12.1.5 API; it is
         // neither production reflection nor a Native AOT measurement.
         var asm=typeof(DrawingContext).Assembly;
         var wrapper=asm.GetType("Avalonia.Media.PlatformDrawingContext",true)!;
