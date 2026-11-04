@@ -38,7 +38,7 @@ def check(row):
         assert public.testzip() is None,row['id']
         # NuGet repository-signs the container, so the whole ZIP hash can differ.
         # NuGet adds a ZIP-level signature; package metadata/release notes stay intact.
-        files=[name for name in built.namelist() if name.endswith(('.dll','.nuspec')) or name in ('README.md','CHANGELOG.md','LICENSE')]
+        files=[name for name in built.namelist() if name.endswith(('.dll','.nuspec')) or name.startswith(('hosts/','buildTransitive/')) or name in ('README.md','CHANGELOG.md','LICENSE')]
         for name in files:assert public.read(name)==built.read(name),(row['id'],name)
     return {'id':row['id'],'version':row['version'],'publicDownload':url,'contentVerified':True,'downloadSha256':hashlib.sha256(blob).hexdigest()}
 

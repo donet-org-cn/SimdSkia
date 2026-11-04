@@ -26,7 +26,7 @@ try{
  if(!$assets.libraries.PSObject.Properties["Avalonia/$AvaloniaVersion"]){throw 'The requested Avalonia version was not resolved.'}
  dotnet build examples/CrossPlatform/CrossPlatform.csproj -c Release -p:UsePackedSimdSkia=true -p:SimdSkiaPackageVersion=$Version -p:AvaloniaVersion=$AvaloniaVersion -p:NuGetLockFilePath=$outPath/packages.lock.json --no-restore -o "$outPath/bin" *> "$outPath/build.log"
  if($LASTEXITCODE -ne 0){Get-Content "$outPath/build.log";throw 'Packed desktop build failed.'}
- foreach($hostName in @('Avalonia.Win32','Avalonia.Win32.Automation','Avalonia.X11')){
+ foreach($hostName in @('Avalonia.Win32','Avalonia.Win32.Automation','Avalonia.X11','Avalonia.FreeDesktop','Avalonia.FreeDesktop.AtSpi','Avalonia.Native')){
   if([Reflection.AssemblyName]::GetAssemblyName("$outPath/bin/$hostName.dll").Version.ToString() -ne "$AvaloniaVersion.0"){throw "Mismatched $hostName for Avalonia $AvaloniaVersion."}
  }
  if(Test-Path "$outPath/bin/hosts"){throw 'Unused host variants leaked into application output.'}

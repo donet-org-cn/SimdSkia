@@ -41,7 +41,9 @@ for package_id in ids:
         assert args.version in readme and args.version in changelog,(path,'Missing current version notes')
         for topic in topics:
             assert topic in readme and topic in changelog,(path,'Missing release topic',topic)
-        assert not any(name.lower().endswith(('.ttf','.ttc','.otf','.woff','.woff2','.so','.dylib')) or name.lower().startswith('runtimes/') for name in names),path
+        allowed_bridges={f'hosts/12.1.{i}.0/native/libAvaloniaNative.dylib' for i in range(6)} if args.version=='0.1.1' and package_id=='SimdSkia.Avalonia.Desktop' else set()
+        assert not any((name.lower().endswith(('.ttf','.ttc','.otf','.woff','.woff2','.so','.dylib')) or name.lower().startswith('runtimes/')) and name not in allowed_bridges for name in names),path
+        assert allowed_bridges.issubset(names),path
         assert not any('skiasharp.dll' in name.lower() or 'harfbuzz' in name.lower() for name in names),path
         root=ET.fromstring(package.read(next(name for name in names if name.endswith('.nuspec'))))
         # Namespace versions are allowed to differ between SDK releases.
@@ -81,8 +83,14 @@ for package_id in ids:
                 assert step in readme,(path,'Missing README instructions',step)
             assert '\u7cfb\u7edf' in readme and '\u9884\u89c8' in readme,path
         if package_id=='SimdSkia.Avalonia.Desktop':
-            assert dependencies.get('Avalonia.Native')==('[12.1.0, 13.0.0)' if args.version=='0.1.1' else '[12.1.5]'),dependencies
-            for host in ['Avalonia.Win32.dll','Avalonia.Win32.Automation.dll','Avalonia.X11.dll']:
+            if args.version=='0.1.1':
+                assert dependencies.get('Tmds.DBus.Protocol')=='[0.94.1]',dependencies
+                assert not any(name in dependencies for name in ('Avalonia.Native','Avalonia.FreeDesktop','Avalonia.FreeDesktop.AtSpi')),dependencies
+            else:
+                assert dependencies.get('Avalonia.Native')=='[12.1.5]',dependencies
+            hosts=['Avalonia.Win32.dll','Avalonia.Win32.Automation.dll','Avalonia.X11.dll']
+            if args.version=='0.1.1':hosts+=['Avalonia.FreeDesktop.dll','Avalonia.FreeDesktop.AtSpi.dll','Avalonia.Native.dll']
+            for host in hosts:
                 if args.version=='0.1.1':
                     for patch in range(6):
                         assert f'hosts/12.1.{patch}.0/{host}' in names,(path,host,patch)

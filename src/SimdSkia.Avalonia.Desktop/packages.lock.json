@@ -13,33 +13,11 @@
           "MicroCom.Runtime": "0.11.6"
         }
       },
-      "Avalonia.FreeDesktop": {
+      "Tmds.DBus.Protocol": {
         "type": "Direct",
-        "requested": "[12.1.0, 13.0.0)",
-        "resolved": "12.1.0",
-        "contentHash": "89mrS7dSYtisJrjQufCOomHeAynlVVKZ+dq4leKtzHXXKVoWsE0Nb2ymiNYPMlirwzwpemflGj+K34opwyLeJQ==",
-        "dependencies": {
-          "Avalonia": "12.1.0",
-          "Tmds.DBus.Protocol": "0.94.1"
-        }
-      },
-      "Avalonia.FreeDesktop.AtSpi": {
-        "type": "Direct",
-        "requested": "[12.1.0, 13.0.0)",
-        "resolved": "12.1.0",
-        "contentHash": "WWahMjzKtDl2PGHa8mS6NHIVMT+JNKVIeT5xMLp9SBTMvjHNpEbXTX3PNbbIQ7hRMSETAJ/PAnvgOzatGktEKQ==",
-        "dependencies": {
-          "Avalonia": "12.1.0"
-        }
-      },
-      "Avalonia.Native": {
-        "type": "Direct",
-        "requested": "[12.1.0, 13.0.0)",
-        "resolved": "12.1.0",
-        "contentHash": "mfNMtGP7rEVWSZoii0l40mlNhgNR6ZISTvHP7OAMn5YQHiK66EjfN26SL/kLnz1buy2VtMIiGVBbIttL8FYCZg==",
-        "dependencies": {
-          "Avalonia": "12.1.0"
-        }
+        "requested": "[0.94.1, 0.94.1]",
+        "resolved": "0.94.1",
+        "contentHash": "11YMr7FnAbL83bQmVxlhbIKHvSLxjO81D12Ej0QMSGXMDTxNA9MTOa4MQxx43nv5el/efuPHwzyrj6a5ha2gug=="
       },
       "Avalonia.BuildServices": {
         "type": "Transitive",
@@ -197,20 +175,15 @@
           "Sdcb.SimdCodecs.Abstractions": "1.4.0"
         }
       },
-      "Tmds.DBus.Protocol": {
-        "type": "Transitive",
-        "resolved": "0.94.1",
-        "contentHash": "11YMr7FnAbL83bQmVxlhbIKHvSLxjO81D12Ej0QMSGXMDTxNA9MTOa4MQxx43nv5el/efuPHwzyrj6a5ha2gug=="
-      },
       "simdskia.avalonia": {
         "type": "Project",
         "dependencies": {
           "Avalonia": "[12.1.0, 13.0.0)",
           "Clipper2": "[2.0.0, 2.0.0]",
-          "SimdSkia.Core": "[0.1.0, )",
-          "SimdSkia.Cpu": "[0.1.0, )",
-          "SimdSkia.Imaging": "[0.1.0, )",
-          "SimdSkia.Text": "[0.1.0, )"
+          "SimdSkia.Core": "[0.1.1, )",
+          "SimdSkia.Cpu": "[0.1.1, )",
+          "SimdSkia.Imaging": "[0.1.1, )",
+          "SimdSkia.Text": "[0.1.1, )"
         }
       },
       "simdskia.core": {
@@ -219,20 +192,20 @@
       "simdskia.cpu": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.0, )"
+          "SimdSkia.Core": "[0.1.1, )"
         }
       },
       "simdskia.imaging": {
         "type": "Project",
         "dependencies": {
           "Sdcb.SimdCodecs": "[1.4.0, 1.4.0]",
-          "SimdSkia.Core": "[0.1.0, )"
+          "SimdSkia.Core": "[0.1.1, )"
         }
       },
       "simdskia.text": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.0, )"
+          "SimdSkia.Core": "[0.1.1, )"
         }
       }
     }

@@ -1,5 +1,9 @@
 # 依赖与许可证
 
+## 0.1.1 版本兼容
+
+渲染适配器以 Avalonia 12.1.0 编译，允许 [12.1.0,13.0.0)。桌面包保存 Avalonia 12.1.0–12.1.5 的 Win32/X11/FreeDesktop/AtSpi/Native 托管宿主与对应官方 macOS 窗口桥接库，均为 Avalonia MIT（包内 licenses/Avalonia-MIT.txt）；构建按实际核心版本选择一套，其他版本不进入应用输出。libAvaloniaNative.dylib 是此前允许的 macOS 窗口系统原生例外，不负责 Google Skia 绘图。Linux 原有托管 DBus 依赖 Tmds.DBus.Protocol 0.94.1（MIT，net9 资产传递 System.IO.Pipelines 8.0.0，无 native 资产）由传递改为显式引用；用途和最终依赖没有扩张。SDK >=10.0.403，采用已修复安全问题的 .NET 10.0.14 AOT 工具链，保留 NuGet 审计。
+
 ## 0.1.0 候选：2026-11-04
 
 直接依赖升级至 Avalonia 家族 12.1.5、Sdcb.SimdCodecs 1.4.0（相同十五包图，MIT、托管）；Clipper2 2.0.0、PdfPig 0.1.16 已是查询时最新稳定版本。Avalonia 仍 MIT，官方 macOS 窗口宿主原生例外保留；PNG/TIFF 的 .NET 系统原生压缩例外保留。没有增加 Google Skia 绘图/字体依赖。SDK 包元数据、测试与实测见[0.1.0 报告](STABLE-0.1.0-2026-11-04.md)。下文保留旧版依赖调查的历史时点。

@@ -19,12 +19,19 @@
       <_SimdSkiaHost Include="$(_SimdSkiaHostFolder)*.dll" />
     </ItemGroup>
     <ItemGroup Condition="'$(SimdSkiaSourceHosts)' == 'true'">
-      <_SimdSkiaHost Include="$(NuGetPackageRoot)avalonia.win32/$(_SimdSkiaHostPackageVersion)/lib/net8.0/*.dll;$(NuGetPackageRoot)avalonia.x11/$(_SimdSkiaHostPackageVersion)/lib/net8.0/Avalonia.X11.dll" />
+      <_SimdSkiaHost Include="$(NuGetPackageRoot)avalonia.win32/$(_SimdSkiaHostPackageVersion)/lib/net8.0/*.dll;$(NuGetPackageRoot)avalonia.x11/$(_SimdSkiaHostPackageVersion)/lib/net8.0/Avalonia.X11.dll;$(NuGetPackageRoot)avalonia.freedesktop/$(_SimdSkiaHostPackageVersion)/lib/net8.0/*.dll;$(NuGetPackageRoot)avalonia.freedesktop.atspi/$(_SimdSkiaHostPackageVersion)/lib/net8.0/*.dll;$(NuGetPackageRoot)avalonia.native/$(_SimdSkiaHostPackageVersion)/lib/net8.0/*.dll" />
     </ItemGroup>
     <Error Condition="'@(_SimdSkiaHost)' == ''" Text="SimdSkia has no matching desktop host for Avalonia $(_SimdSkiaHostVersion). This release supplies 12.1.0–12.1.5; update SimdSkia for newer Avalonia versions." />
     <ItemGroup>
       <Reference Include="@(_SimdSkiaHost)" Private="true" />
     </ItemGroup>
-    <Message Importance="High" Text="SimdSkia: selecting Avalonia $(_SimdSkiaHostVersion) Win32/X11 hosts." />
+    <PropertyGroup>
+      <_SimdSkiaMacBridge>$(_SimdSkiaHostFolder)native/libAvaloniaNative.dylib</_SimdSkiaMacBridge>
+      <_SimdSkiaMacBridge Condition="'$(SimdSkiaSourceHosts)' == 'true'">$(NuGetPackageRoot)avalonia.native/$(_SimdSkiaHostPackageVersion)/runtimes/osx/native/libAvaloniaNative.dylib</_SimdSkiaMacBridge>
+    </PropertyGroup>
+    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('OSX')) Or $([System.String]::Copy('$(RuntimeIdentifier)').StartsWith('osx'))">
+      <Content Include="$(_SimdSkiaMacBridge)" Link="libAvaloniaNative.dylib" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    </ItemGroup>
+    <Message Importance="High" Text="SimdSkia: selecting Avalonia $(_SimdSkiaHostVersion) Win32/X11/macOS hosts." />
   </Target>
 </Project>
