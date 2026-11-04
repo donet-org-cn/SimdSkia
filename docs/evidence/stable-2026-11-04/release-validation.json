@@ -1,0 +1,73 @@
+{
+  "sourceCommit": "a7aebcb1c098e91763eef9315303b5e0d5b92bc8",
+  "ciRuns": [
+    41811076454,
+    41811076236,
+    41811076297
+  ],
+  "ciDesktopRecords": [
+    {
+      "path": "desktop-ci\\desktop-Linux-X64\\cross-platform\\result.txt",
+      "architecture": "X64",
+      "frames": 4,
+      "runtime": "NativeAot=False"
+    },
+    {
+      "path": "desktop-ci\\desktop-Linux-X64\\desktop-package-consumer\\results\\result.txt",
+      "architecture": "X64",
+      "frames": 4,
+      "runtime": "NativeAot=False"
+    },
+    {
+      "path": "desktop-ci\\desktop-Linux-X64\\cross-platform\\aot\\result.txt",
+      "architecture": "X64",
+      "frames": 3,
+      "runtime": "NativeAot=True"
+    },
+    {
+      "path": "desktop-ci\\desktop-macOS-ARM64\\cross-platform\\result.txt",
+      "architecture": "Arm64",
+      "frames": 3,
+      "runtime": "NativeAot=False"
+    },
+    {
+      "path": "desktop-ci\\desktop-macOS-ARM64\\desktop-package-consumer\\results\\result.txt",
+      "architecture": "Arm64",
+      "frames": 2,
+      "runtime": "NativeAot=False"
+    },
+    {
+      "path": "desktop-ci\\desktop-macOS-ARM64\\cross-platform\\aot\\result.txt",
+      "architecture": "Arm64",
+      "frames": 2,
+      "runtime": "NativeAot=True"
+    },
+    {
+      "path": "desktop-ci\\desktop-Windows-X64\\cross-platform\\result.txt",
+      "architecture": "X64",
+      "frames": 2,
+      "runtime": "NativeAot=False"
+    },
+    {
+      "path": "desktop-ci\\desktop-Windows-X64\\desktop-package-consumer\\results\\result.txt",
+      "architecture": "X64",
+      "frames": 2,
+      "runtime": "NativeAot=False"
+    },
+    {
+      "path": "desktop-ci\\desktop-Windows-X64\\cross-platform\\aot\\result.txt",
+      "architecture": "X64",
+      "frames": 2,
+      "runtime": "NativeAot=True"
+    }
+  ],
+  "ciAotCodec": {
+    "checks": 1418,
+    "nativeAot": true,
+    "codec": "Sdcb.SimdCodecs 1.4.0"
+  },
+  "localPackageAssertions": 1417,
+  "nativeParityPassed": false,
+  "stableContract": "Documented implemented subset; no full native-equivalence guarantee",
+  "publicationState": "not yet published"
+}

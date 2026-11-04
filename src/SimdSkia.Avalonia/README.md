@@ -2,7 +2,7 @@
 
 ## 0.1.0 正式版：依赖升级与无损 PNG 优化
 
-当前为 **0.1.0 发布候选，最终上架状态见[发布记录](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/NUGET-PREVIEW.md)**。需要 .NET 10 / C# 14，适配器固定 **Avalonia 12.1.5**，完整图片依赖升级为 **Sdcb.SimdCodecs 1.4.0**。Clipper2 2.0.0、PdfPig 0.1.16 已是核验时的最新稳定版；原版对照仍用 Avalonia.Skia 实际依赖的 SkiaSharp 3.119.4。
+本轮发行版本为 **0.1.0**，公开下载状态见[发布记录](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/NUGET-PREVIEW.md)。需要 .NET 10 / C# 14，适配器固定 **Avalonia 12.1.5**，完整图片依赖升级为 **Sdcb.SimdCodecs 1.4.0**。Clipper2 2.0.0、PdfPig 0.1.16 已是核验时的最新稳定版；原版对照仍用 Avalonia.Skia 实际依赖的 SkiaSharp 3.119.4。
 
 **本正式版本稳定范围是文档列出的已实现功能。** SkiaSharp 命名空间仍是源码兼容子集，不承诺完整 API、原版逐像素等价或强名称二进制替换。原版 JPEG 严格对照及整页画质尚有失败，字体/复杂文字、部分 PDF/GPU 功能有明确边界；0.1.0 不把这些缺口改判为完成。
 
@@ -11,7 +11,22 @@
 - 几何、光栅、合成、字体和排版仍由 C# 实现，GPU 调用系统图形 API；PNG/TIFF 使用经允许的 .NET 自带原生压缩，不调用 Google Skia 绘图。
 - JPEG 优化 Huffman 表的试验增加了耗时与内存，未纳入默认路径；文件大小代价继续披露。
 
-性能、CPU/内存与画质正在同机复测；将写入[本版报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/STABLE-0.1.0-2026-11-04.md)与包内 [CHANGELOG](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-NOTES.md)。历史 preview.10 的 123 进程数据保持在[旧报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/SKIA-COMPARISON-2026-11-01.md)，不当作本版成绩。
+### 本版完整性能记录
+
+123 个独立串行进程，Windows x64 / .NET 10.0.13 JIT，三轮中位数。原版 SkiaSharp 3.119.4 / Avalonia 12.1.5；GPU包含完成等待及回读，非AOT或显示器FPS。
+
+| 场景 | 原版 | SimdSkia 0.1.0 源码 |
+| --- | ---: | ---: |
+| CPU控件100% | 0.842 ms/帧 | 0.525 ms/帧 |
+| CPU控件150% | 1.591 ms/帧 | 1.255 ms/帧 |
+| CPU滚动 | 0.352 ms/帧 | 0.332 ms/帧 |
+| PNG编码UI 1080p | 59.467 ms/张 | 10.177 ms/张（无损） |
+| PNG编码纹理1080p | 439.060 ms/张 | 156.274 ms/张（无损） |
+| 控件100% WS / Private | 91.26 / 47.40 MiB | 110.40 / 71.16 MiB |
+
+Vulkan / Direct2D 相对各例较快原版GPU的综合耗时比为 **0.691 / 0.629**。CPU输出与preview.10逐字节相同，但原版整页画质仍CPU 0/3、GPU 0/12，JPEG严格21/24。纹理PNG解码约慢一倍；部分编码内存/分配仍高，UI JPEG文件约大52%。正式改号不代表原版追平验收通过。
+
+性能图、CPU/内存与画质已写入[本版报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/STABLE-0.1.0-2026-11-04.md)与包内 [CHANGELOG](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-NOTES.md)。历史 preview.10 的 123 进程数据保持在[旧报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/SKIA-COMPARISON-2026-11-01.md)，不当作本版成绩。
 
 独立 C# 2D 引擎，内部使用 `SimdSkia`，源码兼容层保留 `SkiaSharp.SK*`。不使用 Google Skia 绘图；字体、基础排版及图片编解码均由 C# 实现。通过 `SimdSkia.Avalonia` 可以接入 Avalonia，无需重新编译 Avalonia。
 
