@@ -2,6 +2,8 @@
 
 ## 0.1.0 — 2026-11-04
 
+发布补记：十二包已公开上架并下载核验，三平台与 Windows AOT、实际包消费及发布验证均通过。原版画质失败保留；详见[正式发布记录](NUGET-PREVIEW.md)。此补记不改写已发布包内容。
+
 首个按已实现功能范围发布的正式版，需要 .NET 10。Avalonia 升级到 12.1.5，完整 Sdcb.SimdCodecs 升级到 1.4.0；Clipper2 2.0.0、PdfPig 0.1.16 保持已核验的最新稳定版本。SkiaSharp 源码对照基线仍为 Avalonia.Skia 实际引用的 3.119.4，没有将其误升到不同契约的 SkiaSharp 4。
 
 - PNG 开启 LosslessReduction，在不改变 RGBA 像素的前提下优化编码表示；颜色处理、透明隐藏 RGB 和尺寸/预算验证保留。

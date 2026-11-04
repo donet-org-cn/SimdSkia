@@ -2,7 +2,7 @@
 
 ## 正式版 0.1.0 — 2026-11-04
 
-已获用户授权，当前为发布候选，正在运行完整性能/兼容与包消费验证，尚未标记上传或上架。十二包将统一 0.1.0，.NET 10，Avalonia 12.1.5 / Sdcb.SimdCodecs 1.4.0。稳定范围限于文档列出的已实现功能；严格 JPEG 和原版整页画质仍有差距，原门槛不变。代码、测试与限制见[报告](STABLE-0.1.0-2026-11-04.md)。下面为历史预览发布记录。
+**已正式上架：12 包均已公开下载，并与冻结的 CI DLL、nuspec、README、CHANGELOG 和 LICENSE 核对一致。** [发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/41813144199)成功，标签 `v0.1.0` 固定在 `32988cf63c5f88c28f8622faf2b056788cf94ea9`；[正式发行](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.0)和[完整证据](evidence/nuget-stable-0.1.0-2026-11-04.json)保留数据。十二包统一 0.1.0，.NET 10，Avalonia 12.1.5 / Sdcb.SimdCodecs 1.4.0。稳定范围限于文档列出的已实现功能；严格 JPEG 和原版整页画质仍有差距，原门槛不变。代码、测试与限制见[报告](STABLE-0.1.0-2026-11-04.md)。下面为历史预览发布记录。
 
 
 ## 第十预览版 0.1.0-preview.10

@@ -1,0 +1,337 @@
+{
+  "version": "0.1.0",
+  "recordedUtc": "2026-11-04T10:28:57.008522+00:00",
+  "sourceCommit": "32988cf63c5f88c28f8622faf2b056788cf94ea9",
+  "repository": "donet-org-cn/SimdSkia",
+  "repositoryId": 1428164442,
+  "nugetPublished": true,
+  "publicPackages": [
+    {
+      "id": "SimdSkia.Pdf",
+      "version": "0.1.0",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.pdf/0.1.0/simdskia.pdf.0.1.0.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "e7bb1e966f4972b5965221797f7e4aa0426fb40bc2613368c2697e6eb480a955"
+    },
+    {
+      "id": "SimdSkia.Core",
+      "version": "0.1.0",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.core/0.1.0/simdskia.core.0.1.0.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "a60a0e44613e10ea8d2574ed87b6977b482604e83fa5dbbfafcdffa0a0a2cb9d"
+    },
+    {
+      "id": "SimdSkia.Cpu",
+      "version": "0.1.0",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.cpu/0.1.0/simdskia.cpu.0.1.0.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "02fb4dda88bdba92e9bab995336e53d06d98b6ba3e128fd75f95c64e4e459dfa"
+    },
+    {
+      "id": "SimdSkia.Text",
+      "version": "0.1.0",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.text/0.1.0/simdskia.text.0.1.0.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "befec8bed5557b490c54e559b207c7068b05a40190ab14dc58abda162121e48f"
+    },
+    {
+      "id": "SimdSkia.Imaging",
+      "version": "0.1.0",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.imaging/0.1.0/simdskia.imaging.0.1.0.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "0f38482b4d84c0cc8941883e991fc2bb8d942849b620e14ecf931aa7353678fe"
+    },
+    {
+      "id": "SimdSkia.Gpu",
+      "version": "0.1.0",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.gpu/0.1.0/simdskia.gpu.0.1.0.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "5bb0c45586c5f2a415f9b4d056ee3590baf72420efc9a7a74aa79a42a8c7f766"
+    },
+    {
+      "id": "SimdSkia.Gpu.Direct2D",
+      "version": "0.1.0",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.gpu.direct2d/0.1.0/simdskia.gpu.direct2d.0.1.0.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "42738bd3371fb01c83ac28da7b290f64a695f2cc219114a7c9c15cc35368ab37"
+    },
+    {
+      "id": "SimdSkia.Compatibility",
+      "version": "0.1.0",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.compatibility/0.1.0/simdskia.compatibility.0.1.0.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "75676a1679150bee132b8ec36841f6c4631487384891f869011845a225d7693e"
+    },
+    {
+      "id": "SimdSkia.Avalonia.Desktop",
+      "version": "0.1.0",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.avalonia.desktop/0.1.0/simdskia.avalonia.desktop.0.1.0.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "d44c5c5c2af8b264d98a970ec6752d335a1d408d0e47d11855549d5e33caa21e"
+    },
+    {
+      "id": "SimdSkia.Avalonia.Gpu",
+      "version": "0.1.0",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.avalonia.gpu/0.1.0/simdskia.avalonia.gpu.0.1.0.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "2647d9496f264e6702d45f63468a93b09b26c2bf39e705218d14904095c9ef96"
+    },
+    {
+      "id": "SimdSkia",
+      "version": "0.1.0",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia/0.1.0/simdskia.0.1.0.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "7145ba3554f72407dbdac52a5796c8ab6759fd164babe147deb5d51c2ee99788"
+    },
+    {
+      "id": "SimdSkia.Avalonia",
+      "version": "0.1.0",
+      "publicDownload": "https://api.nuget.org/v3-flatcontainer/simdskia.avalonia/0.1.0/simdskia.avalonia.0.1.0.nupkg",
+      "contentVerified": true,
+      "downloadSha256": "937e6d777076a8fa86b6f58546c58b3935c9802abfb68a2d667aeb4456707638"
+    }
+  ],
+  "ciPackageManifest": [
+    {
+      "id": "SimdSkia.Core",
+      "version": "0.1.0",
+      "bytes": 40334,
+      "sha256": "7dcf824c9299221b08e1f57726b2a15391299e0fc2e51dcaef1aaf7757d77c56",
+      "dependencies": {}
+    },
+    {
+      "id": "SimdSkia.Cpu",
+      "version": "0.1.0",
+      "bytes": 58836,
+      "sha256": "b0ba8e43332363154cdf55b228189a27d231dff7c4c0be2cd5e40efda4353fd3",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0"
+      }
+    },
+    {
+      "id": "SimdSkia.Text",
+      "version": "0.1.0",
+      "bytes": 39996,
+      "sha256": "ce7b3bd4b238570c60770ddd38c26b5a73d754a799fef0a1a1cde998dd73b833",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0"
+      }
+    },
+    {
+      "id": "SimdSkia.Imaging",
+      "version": "0.1.0",
+      "bytes": 54180,
+      "sha256": "41968a3d081f6014e20cf7da981cd4ab8bbb98f962dff2ead5be7007c426e3c0",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0",
+        "Sdcb.SimdCodecs": "[1.4.0]"
+      }
+    },
+    {
+      "id": "SimdSkia.Gpu",
+      "version": "0.1.0",
+      "bytes": 75158,
+      "sha256": "4cc13ab11dc9bfcb996237e2f35370924f6455844fdac3d70574e9fca239f476",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0"
+      }
+    },
+    {
+      "id": "SimdSkia.Gpu.Direct2D",
+      "version": "0.1.0",
+      "bytes": 32522,
+      "sha256": "3f8567386ab929496275b074d190c7f4386ad10df4338dd5b0aed00210d8f1f8",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0"
+      }
+    },
+    {
+      "id": "SimdSkia.Compatibility",
+      "version": "0.1.0",
+      "bytes": 67572,
+      "sha256": "9c3bbff9d37065e7779e46b4ecb8138ff01067c546036e45f368fa056d48a958",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0",
+        "SimdSkia.Cpu": "0.1.0",
+        "SimdSkia.Gpu": "0.1.0",
+        "SimdSkia.Imaging": "0.1.0",
+        "SimdSkia.Text": "0.1.0"
+      }
+    },
+    {
+      "id": "SimdSkia.Avalonia",
+      "version": "0.1.0",
+      "bytes": 92684,
+      "sha256": "3480c769204fb10e0299d9fb27af8f24d77c0bd6dcaba3d7e1f4f259814fce27",
+      "dependencies": {
+        "SimdSkia.Core": "0.1.0",
+        "SimdSkia.Cpu": "0.1.0",
+        "SimdSkia.Imaging": "0.1.0",
+        "SimdSkia.Text": "0.1.0",
+        "Avalonia": "[12.1.5]",
+        "Clipper2": "[2.0.0]"
+      }
+    },
+    {
+      "id": "SimdSkia.Avalonia.Desktop",
+      "version": "0.1.0",
+      "bytes": 559088,
+      "sha256": "8343bf01c26c025f9bea27fe33bde8c8a00bde50117e67549aa6503d5cc5555b",
+      "dependencies": {
+        "SimdSkia.Avalonia": "0.1.0",
+        "Avalonia": "[12.1.5]",
+        "Avalonia.FreeDesktop": "[12.1.5]",
+        "Avalonia.FreeDesktop.AtSpi": "[12.1.5]",
+        "Avalonia.Native": "[12.1.5]"
+      }
+    },
+    {
+      "id": "SimdSkia.Avalonia.Gpu",
+      "version": "0.1.0",
+      "bytes": 38921,
+      "sha256": "1b2c3cc93a0fb93ac198f8bb880990be5576b86a5df76e5498c6de55b5290afd",
+      "dependencies": {
+        "SimdSkia.Avalonia": "0.1.0",
+        "SimdSkia.Gpu.Direct2D": "0.1.0",
+        "SimdSkia.Gpu": "0.1.0",
+        "Avalonia": "[12.1.5]"
+      }
+    },
+    {
+      "id": "SimdSkia",
+      "version": "0.1.0",
+      "bytes": 15820,
+      "sha256": "ce7e8eac0f68266e1ebc312ece8064117bf3417949ac394e2aa849f16579297a",
+      "dependencies": {
+        "SimdSkia.Compatibility": "0.1.0"
+      }
+    },
+    {
+      "id": "SimdSkia.Pdf",
+      "version": "0.1.0",
+      "bytes": 35539,
+      "sha256": "47f3fe282325bcafde2e9cb118dbb5de2d6c7d2dbd3738afeaa72a57da9e6058",
+      "dependencies": {
+        "SimdSkia.Compatibility": "0.1.0",
+        "PdfPig": "[0.1.16]"
+      }
+    }
+  ],
+  "ciRuns": [
+    {
+      "id": 41813143974,
+      "name": "Managed engine verification",
+      "html_url": "https://github.com/donet-org-cn/SimdSkia/actions/runs/41813143974",
+      "head_sha": "32988cf63c5f88c28f8622faf2b056788cf94ea9",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 41813144001,
+      "name": "Cross-platform desktop",
+      "html_url": "https://github.com/donet-org-cn/SimdSkia/actions/runs/41813144001",
+      "head_sha": "32988cf63c5f88c28f8622faf2b056788cf94ea9",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 41813140168,
+      "name": "Windows Native AOT smoke",
+      "html_url": "https://github.com/donet-org-cn/SimdSkia/actions/runs/41813140168",
+      "head_sha": "32988cf63c5f88c28f8622faf2b056788cf94ea9",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 41813144199,
+      "name": "NuGet release",
+      "html_url": "https://github.com/donet-org-cn/SimdSkia/actions/runs/41813144199",
+      "head_sha": "32988cf63c5f88c28f8622faf2b056788cf94ea9",
+      "conclusion": "success",
+      "run_attempt": 1
+    }
+  ],
+  "githubRelease": {
+    "id": 433783169,
+    "tag_name": "v0.1.0",
+    "html_url": "https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.0",
+    "prerelease": false,
+    "published_at": "2026-11-04T10:28:54Z"
+  },
+  "supportedSubsetOnly": true,
+  "nativeParityPassed": false,
+  "performanceEvidence": "docs/evidence/stable-2026-11-04/results.json",
+  "implementationCiValidation": {
+    "sourceCommit": "a7aebcb1c098e91763eef9315303b5e0d5b92bc8",
+    "ciRuns": [
+      41811076454,
+      41811076236,
+      41811076297
+    ],
+    "ciDesktopRecords": [
+      {
+        "path": "desktop-ci\\desktop-Linux-X64\\cross-platform\\result.txt",
+        "architecture": "X64",
+        "frames": 4,
+        "runtime": "NativeAot=False"
+      },
+      {
+        "path": "desktop-ci\\desktop-Linux-X64\\desktop-package-consumer\\results\\result.txt",
+        "architecture": "X64",
+        "frames": 4,
+        "runtime": "NativeAot=False"
+      },
+      {
+        "path": "desktop-ci\\desktop-Linux-X64\\cross-platform\\aot\\result.txt",
+        "architecture": "X64",
+        "frames": 3,
+        "runtime": "NativeAot=True"
+      },
+      {
+        "path": "desktop-ci\\desktop-macOS-ARM64\\cross-platform\\result.txt",
+        "architecture": "Arm64",
+        "frames": 3,
+        "runtime": "NativeAot=False"
+      },
+      {
+        "path": "desktop-ci\\desktop-macOS-ARM64\\desktop-package-consumer\\results\\result.txt",
+        "architecture": "Arm64",
+        "frames": 2,
+        "runtime": "NativeAot=False"
+      },
+      {
+        "path": "desktop-ci\\desktop-macOS-ARM64\\cross-platform\\aot\\result.txt",
+        "architecture": "Arm64",
+        "frames": 2,
+        "runtime": "NativeAot=True"
+      },
+      {
+        "path": "desktop-ci\\desktop-Windows-X64\\cross-platform\\result.txt",
+        "architecture": "X64",
+        "frames": 2,
+        "runtime": "NativeAot=False"
+      },
+      {
+        "path": "desktop-ci\\desktop-Windows-X64\\desktop-package-consumer\\results\\result.txt",
+        "architecture": "X64",
+        "frames": 2,
+        "runtime": "NativeAot=False"
+      },
+      {
+        "path": "desktop-ci\\desktop-Windows-X64\\cross-platform\\aot\\result.txt",
+        "architecture": "X64",
+        "frames": 2,
+        "runtime": "NativeAot=True"
+      }
+    ],
+    "ciAotCodec": {
+      "checks": 1418,
+      "nativeAot": true,
+      "codec": "Sdcb.SimdCodecs 1.4.0"
+    },
+    "localPackageAssertions": 1417,
+    "nativeParityPassed": false,
+    "stableContract": "Documented implemented subset; no full native-equivalence guarantee",
+    "publicationState": "not yet published"
+  }
+}

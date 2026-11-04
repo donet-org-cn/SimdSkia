@@ -2,6 +2,8 @@
 
 ## 0.1.0 正式版：依赖升级与无损 PNG 优化
 
+**已公开发布，12 个包均已下载核验通过。** [NuGet](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.0) · [GitHub 正式发行](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.0)。
+
 本轮发行版本为 **0.1.0**，公开下载状态见[发布记录](docs/NUGET-PREVIEW.md)。需要 .NET 10 / C# 14，适配器固定 **Avalonia 12.1.5**，完整图片依赖升级为 **Sdcb.SimdCodecs 1.4.0**。Clipper2 2.0.0、PdfPig 0.1.16 已是核验时的最新稳定版；原版对照仍用 Avalonia.Skia 实际依赖的 SkiaSharp 3.119.4。
 
 **本正式版本稳定范围是文档列出的已实现功能。** SkiaSharp 命名空间仍是源码兼容子集，不承诺完整 API、原版逐像素等价或强名称二进制替换。原版 JPEG 严格对照及整页画质尚有失败，字体/复杂文字、部分 PDF/GPU 功能有明确边界；0.1.0 不把这些缺口改判为完成。
