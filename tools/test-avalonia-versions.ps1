@@ -15,7 +15,7 @@ try{
  $config=Join-Path $outPath 'NuGet.Config'
  [IO.File]::WriteAllText($config,"<configuration><packageSources><clear/><add key=`"packed`" value=`"$([Security.SecurityElement]::Escape($feed))`"/><add key=`"nuget.org`" value=`"https://api.nuget.org/v3/index.json`"/></packageSources></configuration>")
  $manifestHash=(Get-FileHash "$feed/manifest.json" -Algorithm SHA256).Hash
- $cache=Join-Path $outPath "packages-$manifestHash"
+ $cache=Join-Path $workspacePath ('artifacts/nuget-cache/av-'+$manifestHash.Substring(0,16))
  Add-Type -AssemblyName System.IO.Compression.FileSystem
  $zip=[IO.Compression.ZipFile]::OpenRead("$feed/SimdSkia.Avalonia.$Version.nupkg")
  try{$stream=$zip.GetEntry('lib/net10.0/SimdSkia.Avalonia.dll').Open();try{$sha=[Security.Cryptography.SHA256]::Create();$expected=[Convert]::ToHexString($sha.ComputeHash($stream))}finally{$stream.Dispose();$sha.Dispose()}}finally{$zip.Dispose()}

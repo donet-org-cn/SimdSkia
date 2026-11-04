@@ -18,7 +18,8 @@ try{
  # Repacking a preview version must not reuse an older binary from NuGet's cache.
  $manifest=Join-Path ([IO.Path]::GetFullPath($Packages)) 'manifest.json'
  $contentHash=(Get-FileHash -LiteralPath $manifest -Algorithm SHA256).Hash.ToLowerInvariant()
- $cache=Join-Path $outPath "packages-$contentHash"
+ # Keep the Native AOT library paths below the Windows linker MAX_PATH limit.
+ $cache=Join-Path $workspacePath ('artifacts/nuget-cache/av-'+$contentHash.Substring(0,16))
  dotnet restore examples/CrossPlatform/CrossPlatform.csproj -p:UsePackedSimdSkia=true -p:SimdSkiaPackageVersion=$Version -p:AvaloniaVersion=$AvaloniaVersion -p:NuGetLockFilePath=$outPath/packages.lock.json --configfile $config --packages $cache --force-evaluate
  if($LASTEXITCODE -ne 0){throw 'Packed desktop restore failed.'}
  $assets=Get-Content examples/CrossPlatform/obj/project.assets.json -Raw|ConvertFrom-Json
