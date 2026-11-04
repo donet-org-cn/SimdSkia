@@ -1,6 +1,9 @@
 # 验证：2026-11-04
 
-0.1.1 候选：适配范围改为 Avalonia >=12.1.0 且 <13.0.0，新增同一实际 NuGet 适配器的六版本控件/桌面/AOT 矩阵。已发现并修复 12.1.2 窗口宿主新增接口导致的 TypeLoadException，改为按实际版本选择宿主。跨平台验证及发布尚在执行，最终结果见[版本兼容报告](AVALONIA-VERSION-COMPATIBILITY.md)。
+## 0.1.1 正式版已公开发布
+
+Avalonia 12.1.0–12.1.5：同一冻结包的三平台 18 组控件/真实窗口、两端 6 组 AOT、Windows 四组 Direct2D/Vulkan 冒烟全部通过；全部十二包在 NuGet.org 公开下载并与 CI 内容双重核对，纯公开源空缓存安装运行通过。修复窗口宿主 ABI、Linux/macOS 配套版本、自定义 NuGet 路径及 AOT 长路径。源码 SDK 10.0.403+；未新增性能跑分，既有 JPEG/原版整页画质失败保留。详见[兼容报告](AVALONIA-VERSION-COMPATIBILITY.md)、[证据](evidence/avalonia-0.1.1-2026-11-04/results.json)。
+
 
 0.1.0 正式版：编解码/标量各1,417、真实编解码AOT1,418、精确像素471,569、控件9,750项通过。三平台托管、JIT/AOT桌面、实际nupkg/PDF消费和Windows AOT专项通过，十二包已公开下载并核对CI内容。原版JPEG严格21/24及CPU/GPU整页0/3、0/12仍为失败。正式范围为已实现子集，未宣称完整API/原版等价。[发行证据](evidence/nuget-stable-0.1.0-2026-11-04.json)、[性能报告](STABLE-0.1.0-2026-11-04.md)。下文保留历史验证快照。
 

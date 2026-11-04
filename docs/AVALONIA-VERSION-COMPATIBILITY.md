@@ -16,7 +16,25 @@ macOS 同样选择匹配的官方 Avalonia.Native 托管宿主和 libAvaloniaNat
 
 同一份实际打包的适配器在六版中复用，不逐版本重编；每次检查包内/运行目录 SHA256、实际 Avalonia 程序集版本，以及六个配套宿主的版本。每版执行 9,750 项控件、像素、几何、文字、SIMD、生命周期断言，另启动真实窗口验证帧提交、非空像素、resize 与按钮事件。最低/最新版额外发布并运行 Native AOT，检查没有 CLR/JIT，也未加载 Skia/HarfBuzz。
 
-Windows 本地与 Windows/Linux/macOS CI 结果待本次矩阵结束后补记。发布工作流要求三平台六版本矩阵及最低/最新版 AOT 成功，才允许 NuGet 可信发布。包中 README/CHANGELOG 会随发布冻结，公开包发布后再逐一下载核对。
+正式标签 `v0.1.1` 固定于 `b45f5cb09664c55ee421f9617c9fc57fab56f6b7`。[正式流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/41831366323)的完整构建、编解码/标量/控件/兼容/PDF 回归、实际 NuGet 消费及下列矩阵全部通过，之后才启动可信发布。**十二个正式包均已公开下载核验通过**；本地与 GitHub CI 两次检查全部 DLL、宿主/桥接库、构建目标、发行文档和 nuspec，与冻结产物一致。另从唯一 NuGet.org 源和空缓存安装、构建并运行真实窗口通过，0 警告/错误。[NuGet](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.1) · [GitHub 正式发行](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.1)。
+
+| 冻结包运行平台 | 12.1.0 | 12.1.1 | 12.1.2 | 12.1.3 | 12.1.4 | 12.1.5 | Native AOT |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Windows x64 | 通过 | 通过 | 通过 | 通过 | 通过 | 通过 | 12.1.0、12.1.5 通过 |
+| Linux X11 x64 | 通过 | 通过 | 通过 | 通过 | 通过 | 通过 | 12.1.0、12.1.5 通过 |
+| macOS ARM64 | 通过 | 通过 | 通过 | 通过 | 通过 | 通过 | 12.1.0、12.1.5 通过 |
+
+合计 **18 组控件及真实窗口、6 组 AOT**。三个平台全部使用 Windows 构建作业冻结的同一份适配器（SHA256 `B55573493E4D16540B861A017A2310E4DA3469B39C3DB3136BC184D1D81E33B2`），不是为不同 Avalonia 版本/OS 重编底层后自称二进制兼容。这里指 SimdSkia 适配器跨 Avalonia 版本加载，不是 SkiaSharp 强名称 DLL 的二进制替代承诺。
+
+另在 Windows i7-8700K / GTX 1050 Ti 上，对正式冻结包复测 **12.1.0、12.1.5 × Direct2D、Vulkan** 四组实际 GPU 窗口，均有 132 条 GPU 命令、2 个完成批次；Direct2D 有原生交换链呈现。各例有 6 条显式 CPU 图层命令，动态 CPU 回退命令为 0；不能因此宣称所有效果都在 GPU。普通 Avalonia PackageReference（不手工引用 runtime DLL）的两端真实窗口也通过。
+
+这四项 GPU 仅是兼容/提交完成/呈现冒烟测试，**不是性能跑分**；Linux GPU、macOS GPU/Metal 不在本次新增测试范围。
+
+发布作业实际编解码包 1,417 项、PDF 包 18 项、实际包 AOT 窗口通过；JPEG 仍 `qualityPassed=false` / 21/24，仅接受此前公开的三个精确差异，新差异会阻止发布。原版 CPU/GPU 整页画质没有在本补丁重测，不把旧失败更改为通过。
+
+冻结 CI 的桌面 nupkg 约 **7.69 MiB**（8,065,408 字节），因为保存六套官方宿主；每次构建仅选择一套，Windows 输出没有其他宿主版本目录及 macOS dylib。它是下载/缓存大小，不是 AOT 应用增大到六倍。Windows CI 缓存改用较短且按包清单哈希隔离的目录，避免 Native AOT 链接器的 MAX_PATH 限制；自定义 NuGet 根目录不带尾部分隔符也能正确构建。
+
+[完整证据](evidence/avalonia-0.1.1-2026-11-04/results.json)包含每个平台的版本表、实际窗口/AOT 运行记录、冻结包清单、四组 GPU 与普通引用结果；30 个宿主包的 MIT 许可与额外依赖已逐一核查。
 
 ```powershell
 pwsh ./tools/pack-release.ps1 -Version 0.1.1 -Output artifacts/avalonia-matrix/packages

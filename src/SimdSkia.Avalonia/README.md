@@ -2,6 +2,8 @@
 
 ## 0.1.1：Avalonia 12.1.0 起的版本兼容
 
+**已正式发布，十二包公开下载与内容核验全部通过。** [NuGet 0.1.1](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.1) · [GitHub 发行](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.1)。同一冻结包通过 Windows x64 / Linux X11 x64 / macOS ARM64 的 18 组控件及真实窗口、两端 6 组 AOT；最低/最新版的 Windows Direct2D/Vulkan 四组窗口和纯 NuGet.org 安装运行也通过。仓库源码构建使用 **SDK 10.0.403+**。
+
 渲染适配器以 **12.1.0** 编译，桌面包自动选择与应用核心匹配的 Win32/X11/macOS 配套宿主，NuGet 接受 **[12.1.0,13.0.0)**。同一套包测试目前发布的 **12.1.0、12.1.1、12.1.2、12.1.3、12.1.4、12.1.5**，不会在测试时重编底层来掩盖二进制差异。应用中的 Avalonia、主题及其他 Avalonia 包须保持相同版本；下方 12.1.5 是示例，也可选择 12.1.0–12.1.4。
 
 本版只改变版本接入与验证，不把 0.1.0 性能数字当作新的性能实测；Sdcb.SimdCodecs 1.4.0、SkiaSharp API 子集及原版画质差异保持披露。兼容性结果见 [版本矩阵报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/AVALONIA-VERSION-COMPATIBILITY.md)，更新内容见 [CHANGELOG](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-NOTES.md)。
@@ -38,7 +40,7 @@ Vulkan / Direct2D 相对各例较快原版GPU的综合耗时比为 **0.691 / 0.6
 
 独立 C# 2D 引擎，内部使用 `SimdSkia`，源码兼容层保留 `SkiaSharp.SK*`。不使用 Google Skia 绘图；字体、基础排版及图片编解码均由 C# 实现。通过 `SimdSkia.Avalonia` 可以接入 Avalonia，无需重新编译 Avalonia。
 
-当前版本 **`0.1.1`** 支持 **Avalonia >=12.1.0 且 <13.0.0**，当前已发布的 12.1.0–12.1.5 进入同包二进制兼容测试。未来大版本需要另行适配；未来 12.x 要回归并补充对应宿主，不能保证未知版本的窗口 ABI。Windows、Linux X11/XWayland、macOS 已通过真实窗口验证；macOS 使用经用户确认允许的官方原生窗口宿主，绘图、字体、排版和编解码仍是 C#。默认使用 CPU，可选 Windows Direct2D 原生交换链或 Windows/Linux Vulkan 绘图。**macOS GPU/Metal 尚未实现，完整兼容性和画质验收仍未全部通过。**
+当前版本 **`0.1.1`** 支持 **Avalonia >=12.1.0 且 <13.0.0**，当前已发布的 12.1.0–12.1.5 已通过同一适配器二进制兼容测试。未来大版本需要另行适配；未来 12.x 要回归并补充对应宿主，不能保证未知版本的窗口 ABI。Windows、Linux X11/XWayland、macOS 已通过真实窗口验证；macOS 使用经用户确认允许的官方原生窗口宿主，绘图、字体、排版和编解码仍是 C#。默认使用 CPU，可选 Windows Direct2D 原生交换链或 Windows/Linux Vulkan 绘图。**macOS GPU/Metal 尚未实现，完整兼容性和画质验收仍未全部通过。**
 
 ## 0.1.0 更新了什么
 

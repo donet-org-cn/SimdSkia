@@ -1,0 +1,98 @@
+{
+  "version": "0.1.1",
+  "sourceCommit": "b45f5cb09664c55ee421f9617c9fc57fab56f6b7",
+  "tag": "v0.1.1",
+  "workflow": "https://github.com/donet-org-cn/SimdSkia/actions/runs/41831366323",
+  "artifactId": 13323063933,
+  "framework": ".NET 10",
+  "sdk": "10.0.403",
+  "runtime": "10.0.14",
+  "frozenAdapterSha256": "B55573493E4D16540B861A017A2310E4DA3469B39C3DB3136BC184D1D81E33B2",
+  "platforms": [
+    {
+      "platform": "Linux-X64",
+      "versions": 6,
+      "controlsAssertionsPerVersion": 9750,
+      "desktopWindows": 6,
+      "nativeAotWindows": 2
+    },
+    {
+      "platform": "macOS-ARM64",
+      "versions": 6,
+      "controlsAssertionsPerVersion": 9750,
+      "desktopWindows": 6,
+      "nativeAotWindows": 2
+    },
+    {
+      "platform": "Windows-X64",
+      "versions": 6,
+      "controlsAssertionsPerVersion": 9750,
+      "desktopWindows": 6,
+      "nativeAotWindows": 2
+    }
+  ],
+  "desktopCases": 18,
+  "nativeAotCases": 6,
+  "gpuSmokeCases": [
+    {
+      "case": "12.1.0-direct2d",
+      "device": "Direct2D: NVIDIA GeForce GTX 1050 Ti",
+      "commands": 132,
+      "completedBatches": 2,
+      "cpuLayerCommands": 6,
+      "cpuFallbackCommands": 0,
+      "benchmark": false
+    },
+    {
+      "case": "12.1.0-vulkan",
+      "device": "Vulkan: NVIDIA GeForce GTX 1050 Ti",
+      "commands": 132,
+      "completedBatches": 2,
+      "cpuLayerCommands": 6,
+      "cpuFallbackCommands": 0,
+      "benchmark": false
+    },
+    {
+      "case": "12.1.5-direct2d",
+      "device": "Direct2D: NVIDIA GeForce GTX 1050 Ti",
+      "commands": 132,
+      "completedBatches": 2,
+      "cpuLayerCommands": 6,
+      "cpuFallbackCommands": 0,
+      "benchmark": false
+    },
+    {
+      "case": "12.1.5-vulkan",
+      "device": "Vulkan: NVIDIA GeForce GTX 1050 Ti",
+      "commands": 132,
+      "completedBatches": 2,
+      "cpuLayerCommands": 6,
+      "cpuFallbackCommands": 0,
+      "benchmark": false
+    }
+  ],
+  "standardReferenceVersions": [
+    "12.1.0",
+    "12.1.5"
+  ],
+  "nugetPublicVerified": true,
+  "newPerformanceBenchmark": false,
+  "knownQualityDifferencesRetained": true,
+  "publicPackageCount": 12,
+  "independentPublicContentChecks": 2,
+  "publicSourceOnlyConsumer": {
+    "passed": true,
+    "source": "https://api.nuget.org/v3/index.json",
+    "avalonia": "12.1.5",
+    "adapterSha256": "B55573493E4D16540B861A017A2310E4DA3469B39C3DB3136BC184D1D81E33B2",
+    "emptyCache": true
+  },
+  "supportingWorkflows": {
+    "managed": "https://github.com/donet-org-cn/SimdSkia/actions/runs/41831366478",
+    "desktop": "https://github.com/donet-org-cn/SimdSkia/actions/runs/41831366270",
+    "nativeAot": "https://github.com/donet-org-cn/SimdSkia/actions/runs/41831083693"
+  },
+  "githubRelease": "https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.1",
+  "publishedAt": "2026-11-04T13:04:39Z",
+  "releaseWorkflowConclusion": "success"
+}

@@ -1,5 +1,18 @@
 # NuGet 发布记录
 
+## 正式补丁版 0.1.1 — 已完成公开验证
+
+十二包已公开，全部 DLL、六套官方宿主/桥接库、buildTransitive 目标、README/CHANGELOG/LICENSE 和 nuspec 与冻结 CI 产物一致，本地及 GitHub CI 两次独立下载结果一致。纯 NuGet.org 源与空缓存安装、构建和实际窗口运行通过。[正式发行工作流](https://github.com/donet-org-cn/SimdSkia/actions/runs/41831366323)全部成功；标签 `v0.1.1` 固定在 `b45f5cb09664c55ee421f9617c9fc57fab56f6b7`，[GitHub 正式发行](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.1)。
+
+同一份适配器二进制覆盖 Windows x64 / Linux X11 x64 / macOS ARM64 的 12.1.0–12.1.5，18 组控件/真实窗口及最低/最新版 6 组 Native AOT 通过。Windows 最低/最新 Direct2D、Vulkan 四组窗口冒烟通过；这不是新性能跑分。十二包统一 0.1.1 / net10.0，仓库 SDK 10.0.403+，编解码依赖保持 Sdcb.SimdCodecs 1.4.0。新窗口宿主按实际 Avalonia 版本选择，仅一套进入应用；未知未来 12.x 要补充回归与宿主，13.x 不在本版范围。完整 API/原版画质尚不等价，严格 JPEG 仍 21/24、qualityPassed=false。[报告](AVALONIA-VERSION-COMPATIBILITY.md)与[证据](evidence/avalonia-0.1.1-2026-11-04/results.json)保留结果和公开下载地址。
+
+```sh
+dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.1
+dotnet add package SimdSkia.Avalonia.Gpu --version 0.1.1
+```
+
+以下为此前版本的历史记录。
+
 ## 正式版 0.1.0 — 2026-11-04
 
 **已正式上架：12 包均已公开下载，并与冻结的 CI DLL、nuspec、README、CHANGELOG 和 LICENSE 核对一致。** [发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/41813144199)成功，标签 `v0.1.0` 固定在 `32988cf63c5f88c28f8622faf2b056788cf94ea9`；[正式发行](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.0)和[完整证据](evidence/nuget-stable-0.1.0-2026-11-04.json)保留数据。十二包统一 0.1.0，.NET 10，Avalonia 12.1.5 / Sdcb.SimdCodecs 1.4.0。稳定范围限于文档列出的已实现功能；严格 JPEG 和原版整页画质仍有差距，原门槛不变。代码、测试与限制见[报告](STABLE-0.1.0-2026-11-04.md)。下面为历史预览发布记录。

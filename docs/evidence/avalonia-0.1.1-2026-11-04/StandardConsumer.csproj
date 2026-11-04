@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+<PropertyGroup><TargetFramework>net10.0</TargetFramework><OutputType>Exe</OutputType><AssemblyName>CrossPlatform</AssemblyName><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable><AvaloniaVersion Condition="'$(AvaloniaVersion)' == ''">12.1.5</AvaloniaVersion></PropertyGroup>
+<ItemGroup><PackageReference Include="Avalonia" Version="[$(AvaloniaVersion)]"/><PackageReference Include="Avalonia.Themes.Fluent" Version="[$(AvaloniaVersion)]"/><PackageReference Include="SimdSkia.Avalonia.Desktop" Version="[0.1.1]"/><PackageReference Include="SimdSkia.Avalonia.Gpu" Version="[0.1.1]"/></ItemGroup>
+<ItemGroup><Compile Include="../../../examples/CrossPlatform/*.cs"/><Compile Include="../../../tests/AvaloniaControls/ControlScene.cs"/></ItemGroup></Project>
