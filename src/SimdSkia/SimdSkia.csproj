@@ -2,7 +2,7 @@
   <PropertyGroup>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <IncludeSymbols>false</IncludeSymbols>
-    <Description>SimdSkia preview convenience package for the SkiaSharp namespace source compatibility layer. Different assembly identity; incomplete APIs; no binary replacement guarantee. For Avalonia use SimdSkia.Avalonia.</Description>
+    <Description>SimdSkia convenience package for the documented SkiaSharp namespace source compatibility subset. Different assembly identity; incomplete APIs; no binary replacement guarantee. For Avalonia use SimdSkia.Avalonia.</Description>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../SimdSkia.Compatibility/SimdSkia.Compatibility.csproj" />
