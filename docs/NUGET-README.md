@@ -1,3 +1,7 @@
+# 0.1.1 更新
+
+Avalonia 适配器接受 >=12.1.0 且 <13.0.0，同一 NuGet 二进制验证 12.1.0–12.1.5；核心仍使用 Sdcb.SimdCodecs 1.4.0。此版本不改写原版画质及性能差距。详情见包内 CHANGELOG.md。
+
 # SimdSkia 0.1.0
 
 .NET 10 / C# 14；Avalonia **12.1.5**、Sdcb.SimdCodecs **1.4.0**。正式版本支持文档列出的已实现功能子集，SkiaSharp 源码基线 3.119.4；不代表完整 API、原版像素画质或强名称二进制替换。性能、CPU/内存和画质见包内 CHANGELOG 及[0.1.0 报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/STABLE-0.1.0-2026-11-04.md)。
@@ -17,14 +21,14 @@ Packages target .NET 10 or later:
 | SimdSkia.Imaging | Managed Sdcb codecs with validated input, supported colour conversion and permitted BCL compression |
 | SimdSkia.Gpu | Vulkan offscreen rendering; requires the system Vulkan loader/driver |
 | SimdSkia.Compatibility | Implemented SkiaSharp namespace / SK* facade |
-| SimdSkia.Avalonia | Rendering/font adapter pinned to Avalonia **12.1.5** |
+| SimdSkia.Avalonia | Rendering/font adapter for Avalonia **>=12.1.0 and <13.0.0** |
 | SimdSkia.Avalonia.Desktop | Windows/Linux X11/macOS OS hosts plus the managed renderer |
 | SimdSkia.Avalonia.Gpu | Optional Direct2D native presentation / Vulkan framebuffer drawing |
 | SimdSkia.Gpu.Direct2D | Windows hardware Direct2D/D3D11 canvas, C# system API bindings |
 | SimdSkia.Pdf | Optional managed PDF parsing/rendering; subset only, pinned PdfPig 0.1.16 |
 
 ```shell
-dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.0
+dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.1
 ```
 
 An existing Avalonia 12.1.5 application selects the adapter explicitly:

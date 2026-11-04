@@ -5,4 +5,6 @@
     <ProjectReference Include="../../../src/SimdSkia.Avalonia.Desktop/SimdSkia.Avalonia.Desktop.csproj" />
     <ProjectReference Include="../../../src/SimdSkia.Avalonia.Gpu/SimdSkia.Avalonia.Gpu.csproj" />
   </ItemGroup>
+  <PropertyGroup Condition="'$(UsePackedSimdSkia)' != 'true'"><SimdSkiaSourceHosts>true</SimdSkiaSourceHosts></PropertyGroup>
+  <Import Project="../../../src/SimdSkia.Avalonia.Desktop/buildTransitive/SimdSkia.Avalonia.Desktop.targets" Condition="'$(UsePackedSimdSkia)' != 'true'" />
 </Project>

@@ -1,0 +1,30 @@
+<Project>
+  <!-- Patch releases can add host interface members. Select the host matching the
+       resolved core assembly, not the text of a user's PackageReference range. -->
+  <Target Name="SelectSimdSkiaAvaloniaHost" BeforeTargets="ResolveAssemblyReferences" DependsOnTargets="ResolvePackageAssets;ResolveLockFileReferences">
+    <ItemGroup>
+      <_SimdSkiaAvaloniaContract Include="@(Reference)" Condition="'%(Reference.Filename)' == 'Avalonia.Base' And Exists('%(Reference.Identity)')" />
+      <_SimdSkiaAvaloniaContract Include="@(ResolvedCompileFileDefinitions)" Condition="'%(ResolvedCompileFileDefinitions.Filename)' == 'Avalonia.Base'" />
+    </ItemGroup>
+    <Error Condition="'@(_SimdSkiaAvaloniaContract)' == ''" Text="SimdSkia cannot locate the resolved Avalonia.Base assembly to select its matching window host." />
+    <GetAssemblyIdentity AssemblyFiles="@(_SimdSkiaAvaloniaContract)">
+      <Output TaskParameter="Assemblies" ItemName="_SimdSkiaAvaloniaIdentity" />
+    </GetAssemblyIdentity>
+    <PropertyGroup>
+      <_SimdSkiaHostVersion>@(_SimdSkiaAvaloniaIdentity->'%(Version)'->Distinct())</_SimdSkiaHostVersion>
+      <_SimdSkiaHostFolder>$(MSBuildThisFileDirectory)../hosts/$(_SimdSkiaHostVersion)/</_SimdSkiaHostFolder>
+      <_SimdSkiaHostPackageVersion>$([System.Version]::Parse('$(_SimdSkiaHostVersion)').ToString(3))</_SimdSkiaHostPackageVersion>
+    </PropertyGroup>
+    <ItemGroup Condition="'$(SimdSkiaSourceHosts)' != 'true'">
+      <_SimdSkiaHost Include="$(_SimdSkiaHostFolder)*.dll" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(SimdSkiaSourceHosts)' == 'true'">
+      <_SimdSkiaHost Include="$(NuGetPackageRoot)avalonia.win32/$(_SimdSkiaHostPackageVersion)/lib/net8.0/*.dll;$(NuGetPackageRoot)avalonia.x11/$(_SimdSkiaHostPackageVersion)/lib/net8.0/Avalonia.X11.dll" />
+    </ItemGroup>
+    <Error Condition="'@(_SimdSkiaHost)' == ''" Text="SimdSkia has no matching desktop host for Avalonia $(_SimdSkiaHostVersion). This release supplies 12.1.0–12.1.5; update SimdSkia for newer Avalonia versions." />
+    <ItemGroup>
+      <Reference Include="@(_SimdSkiaHost)" Private="true" />
+    </ItemGroup>
+    <Message Importance="High" Text="SimdSkia: selecting Avalonia $(_SimdSkiaHostVersion) Win32/X11 hosts." />
+  </Target>
+</Project>

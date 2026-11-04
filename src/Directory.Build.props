@@ -1,7 +1,7 @@
 <Project>
   <Import Project="../Directory.Build.props" />
   <PropertyGroup>
-    <Version Condition="'$(Version)' == ''">0.1.0</Version>
+    <Version Condition="'$(Version)' == ''">0.1.1</Version>
     <Authors>hnlyf168</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/donet-org-cn/SimdSkia</PackageProjectUrl>
@@ -11,7 +11,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Description>Managed C# 2D rendering components. Version 0.1 supports the documented subset; SkiaSharp source and rendering equivalence remain incomplete. No Google Skia rendering dependency.</Description>
     <PackageTags>SimdSkia;graphics;rendering;managed;2d</PackageTags>
-    <PackageReleaseNotes>0.1.0 正式版，支持已实现功能子集。.NET 10 / C# 14，Avalonia 12.1.5，Sdcb.SimdCodecs 1.4.0。新增 PNG 无损缩减和有界 IDAT 校验流，保留颜色、透明度、损坏输入及生命周期验证，新增分片/并发 GC 回归。性能、CPU/内存及画质重新对照；严格 JPEG 和整页画质差异保留，完整 API/二进制等价及通用字体/PDF/GPU 能力不在本版承诺范围。PNG/TIFF 允许 .NET 系统原生压缩，不依赖 Google Skia 绘图。完整数据和使用说明见 README.md、CHANGELOG.md 及 https://github.com/donet-org-cn/SimdSkia/blob/main/docs/STABLE-0.1.0-2026-11-04.md</PackageReleaseNotes>
+    <PackageReleaseNotes>0.1.1：Avalonia 兼容范围调整为 >=12.1.0 且 &lt;13.0.0。适配器以 12.1.0 为最低编译基线，桌面宿主按应用 Avalonia 版本选择，同一 NuGet 二进制验证 12.1.0–12.1.5 的实际控件、桌面窗口与 Native AOT。Sdcb.SimdCodecs 1.4.0 与 0.1.0 的性能、画质边界保持，未宣称完整 SkiaSharp API 或原版画质等价。详情见包内 CHANGELOG.md 和 README.md。</PackageReleaseNotes>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>

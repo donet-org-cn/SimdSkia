@@ -1,3 +1,7 @@
+# 0.1.1 更新
+
+Avalonia 适配器接受 >=12.1.0 且 <13.0.0，同一 NuGet 二进制验证 12.1.0–12.1.5；核心仍使用 Sdcb.SimdCodecs 1.4.0。此版本不改写原版画质及性能差距。详情见包内 CHANGELOG.md。
+
 # SimdSkia.Pdf 0.1.0
 
 Requires .NET 10. The inherited image provider is Sdcb.SimdCodecs 1.4.0. This stable release supports the documented PDF subset; native-equivalent 画质 and full compatibility are not claimed. PNG lossless reduction and IDAT buffer optimization are included. 性能/CPU/memory results and original quality failures are recorded in CHANGELOG and the [0.1.0 report](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/STABLE-0.1.0-2026-11-04.md).
@@ -14,7 +18,7 @@ writer in the compatibility module. Ordinary `SimdSkia.Compatibility` and
 direct SimdSkia package references on the same preview version.
 
 ```shell
-dotnet add package SimdSkia.Pdf --version 0.1.0
+dotnet add package SimdSkia.Pdf --version 0.1.1
 ```
 
 Every package includes `CHANGELOG.md` and NuGet release notes. This release is a

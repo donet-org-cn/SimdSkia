@@ -11,4 +11,6 @@
     <Reference Include="$(PkgAvalonia)/lib/net10.0/*.dll" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.5]" />
   </ItemGroup>
+  <PropertyGroup Condition="'$(UsePackedSimdSkia)' != 'true'"><SimdSkiaSourceHosts>true</SimdSkiaSourceHosts></PropertyGroup>
+  <Import Project="../../src/SimdSkia.Avalonia.Desktop/buildTransitive/SimdSkia.Avalonia.Desktop.targets" Condition="'$(UsePackedSimdSkia)' != 'true'" />
 </Project>

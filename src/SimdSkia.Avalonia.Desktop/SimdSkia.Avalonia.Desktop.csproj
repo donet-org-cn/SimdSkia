@@ -1,24 +1,32 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-    <Description>Preview Windows, Linux X11 and macOS software window hosts for SimdSkia. macOS uses the official MIT Avalonia native window bridge; drawing and fonts remain managed.</Description>
+    <!-- Versioned host DLLs are deliberately selected by buildTransitive, rather
+         than all being unconditional lib/ references (which causes ABI failures). -->
+    <NoWarn>$(NoWarn);NU5100</NoWarn>
+    <Description>Windows, Linux X11 and macOS software window hosts for SimdSkia. macOS uses the official MIT Avalonia native window bridge; drawing and fonts remain managed.</Description>
   </PropertyGroup>
   <ItemGroup>
     <None Include="../SimdSkia.Avalonia/README.md" Pack="true" PackagePath="/README.md" />
     <ProjectReference Include="../SimdSkia.Avalonia/SimdSkia.Avalonia.csproj" />
-    <PackageReference Include="Avalonia" Version="[12.1.5]" GeneratePathProperty="true" ExcludeAssets="compile" />
+    <PackageReference Include="Avalonia" Version="[12.1.0,13.0.0)" GeneratePathProperty="true" ExcludeAssets="compile" />
     <Reference Include="$(PkgAvalonia)/lib/net8.0/*.dll" />
-    <PackageReference Include="Avalonia.FreeDesktop" Version="[12.1.5]" />
-    <PackageReference Include="Avalonia.FreeDesktop.AtSpi" Version="[12.1.5]" />
-    <PackageReference Include="Avalonia.Native" Version="[12.1.5]" />
+    <PackageReference Include="Avalonia.FreeDesktop" Version="[12.1.0,13.0.0)" />
+    <PackageReference Include="Avalonia.FreeDesktop.AtSpi" Version="[12.1.0,13.0.0)" />
+    <PackageReference Include="Avalonia.Native" Version="[12.1.0,13.0.0)" />
+    <PackageDownload Include="Avalonia.X11" Version="[12.1.0];[12.1.1];[12.1.2];[12.1.3];[12.1.4];[12.1.5]" />
+    <PackageDownload Include="Avalonia.Win32" Version="[12.1.0];[12.1.1];[12.1.2];[12.1.3];[12.1.4];[12.1.5]" />
     <!-- The X11 package declares an unused Skia dependency. Consume its managed
          assembly directly; do not bring the original rendering implementation. -->
-    <PackageDownload Include="Avalonia.X11" Version="[12.1.5]" />
-    <PackageDownload Include="Avalonia.Win32" Version="[12.1.5]" />
-    <Reference Include="$(NuGetPackageRoot)/avalonia.x11/12.1.5/lib/net8.0/Avalonia.X11.dll" />
-    <Reference Include="$(NuGetPackageRoot)/avalonia.win32/12.1.5/lib/net8.0/*.dll" />
-    <None Include="$(NuGetPackageRoot)/avalonia.x11/12.1.5/lib/net8.0/Avalonia.X11.dll" Pack="true" PackagePath="lib/$(TargetFramework)/" />
-    <None Include="$(NuGetPackageRoot)/avalonia.win32/12.1.5/lib/net8.0/*.dll" Pack="true" PackagePath="lib/$(TargetFramework)/" />
+    <Reference Include="$(NuGetPackageRoot)/avalonia.x11/12.1.0/lib/net8.0/Avalonia.X11.dll" />
+    <Reference Include="$(NuGetPackageRoot)/avalonia.win32/12.1.0/lib/net8.0/*.dll" />
+    <None Include="buildTransitive/SimdSkia.Avalonia.Desktop.targets" Pack="true" PackagePath="buildTransitive/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.x11/12.1.0/lib/net8.0/Avalonia.X11.dll;$(NuGetPackageRoot)/avalonia.win32/12.1.0/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.0.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.x11/12.1.1/lib/net8.0/Avalonia.X11.dll;$(NuGetPackageRoot)/avalonia.win32/12.1.1/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.1.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.x11/12.1.2/lib/net8.0/Avalonia.X11.dll;$(NuGetPackageRoot)/avalonia.win32/12.1.2/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.2.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.x11/12.1.3/lib/net8.0/Avalonia.X11.dll;$(NuGetPackageRoot)/avalonia.win32/12.1.3/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.3.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.x11/12.1.4/lib/net8.0/Avalonia.X11.dll;$(NuGetPackageRoot)/avalonia.win32/12.1.4/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.4.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.x11/12.1.5/lib/net8.0/Avalonia.X11.dll;$(NuGetPackageRoot)/avalonia.win32/12.1.5/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.5.0/" />
     <None Include="../../docs/licenses/Avalonia-MIT.txt" Pack="true" PackagePath="licenses/" />
   </ItemGroup>
 </Project>

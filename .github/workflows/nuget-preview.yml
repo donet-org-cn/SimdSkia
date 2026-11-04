@@ -2,13 +2,13 @@ name: NuGet release
 
 on:
   push:
-    tags: ['v*-preview.*', 'v0.1.0']
+    tags: ['v*-preview.*', 'v0.1.0', 'v0.1.1']
   workflow_dispatch:
     inputs:
       version:
-        description: 'Release version (0.1.0, or an approved preview)'
+        description: 'Release version (0.1.1, or an approved preview)'
         required: true
-        default: '0.1.0'
+        default: '0.1.1'
       publish:
         description: 'Publish verified packages to NuGet.org using trusted publishing'
         type: boolean
@@ -140,8 +140,64 @@ jobs:
             artifacts/pdf-package-consumer/*.log
           if-no-files-found: ignore
 
-  publish:
+  avalonia-versions:
     needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - uses: actions/download-artifact@v4
+        with:
+          name: nuget-preview-${{ needs.build.outputs.version }}
+          path: artifacts/frozen-packages
+      - name: Fetch licensed CJK fixture
+        shell: pwsh
+        run: ./tools/fetch-avalonia-font.ps1
+      - name: Install Linux display
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y xvfb libx11-6 libice6 libsm6 libxrandr2 libxi6 libxcursor1 libxinerama1 libxext6 libxrender1 libglib2.0-0
+      - name: Locate frozen NuGet feed
+        id: feed
+        shell: pwsh
+        run: |
+          $feed=(Get-ChildItem artifacts/frozen-packages -Filter manifest.json -Recurse|Select-Object -First 1).Directory.FullName
+          if(!$feed){throw 'Missing frozen package manifest.'}
+          "path=$feed" >> $env:GITHUB_OUTPUT
+      - name: Six-version real package matrix and minimum/latest Native AOT
+        if: runner.os != 'Linux'
+        shell: pwsh
+        env:
+          RELEASE_VERSION: ${{ needs.build.outputs.version }}
+          FROZEN_FEED: ${{ steps.feed.outputs.path }}
+        run: ./tools/test-avalonia-versions.ps1 -Version $env:RELEASE_VERSION -Packages $env:FROZEN_FEED -NativeAot
+      - name: Linux six-version X11 and minimum/latest Native AOT
+        if: runner.os == 'Linux'
+        env:
+          RELEASE_VERSION: ${{ needs.build.outputs.version }}
+          FROZEN_FEED: ${{ steps.feed.outputs.path }}
+        run: xvfb-run -a -s '-screen 0 1280x900x24' pwsh -NoProfile -File tools/test-avalonia-versions.ps1 -Version "$RELEASE_VERSION" -Packages "$FROZEN_FEED" -NativeAot
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: avalonia-versions-${{ runner.os }}-${{ runner.arch }}
+          path: |
+            artifacts/avalonia-matrix/results/results.json
+            artifacts/avalonia-matrix/results/*/*.log
+            artifacts/avalonia-matrix/results/*/controls/*.json
+            artifacts/avalonia-matrix/results/*/desktop/results/
+            artifacts/avalonia-matrix/results/*/desktop/aot-results/
+            artifacts/avalonia-matrix/results/*/desktop/*build.log
+          if-no-files-found: warn
+
+  publish:
+    needs: [build, avalonia-versions]
     if: github.event_name == 'push' || inputs.publish
     runs-on: ubuntu-latest
     timeout-minutes: 30

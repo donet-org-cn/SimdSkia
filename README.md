@@ -1,10 +1,16 @@
 # SimdSkia
 
-## 0.1.0 正式版：依赖升级与无损 PNG 优化
+## 0.1.1：Avalonia 12.1.0 起的版本兼容
+
+渲染适配器以 **12.1.0** 编译，桌面包自动选择与应用核心匹配的 Win32/X11 宿主，NuGet 接受 **[12.1.0,13.0.0)**。同一套包测试目前发布的 **12.1.0、12.1.1、12.1.2、12.1.3、12.1.4、12.1.5**，不会在测试时重编底层来掩盖二进制差异。应用中的 Avalonia、主题及其他 Avalonia 包须保持相同版本；下方 12.1.5 是示例，也可选择 12.1.0–12.1.4。
+
+本版只改变版本接入与验证，不把 0.1.0 性能数字当作新的性能实测；Sdcb.SimdCodecs 1.4.0、SkiaSharp API 子集及原版画质差异保持披露。兼容性结果见 [版本矩阵报告](docs/AVALONIA-VERSION-COMPATIBILITY.md)，更新内容见 [CHANGELOG](docs/RELEASE-NOTES.md)。
+
+## 0.1.0 历史性能与依赖记录
 
 **已公开发布，12 个包均已下载核验通过。** [NuGet](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.0) · [GitHub 正式发行](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.0)。
 
-本轮发行版本为 **0.1.0**，公开下载状态见[发布记录](docs/NUGET-PREVIEW.md)。需要 .NET 10 / C# 14，适配器固定 **Avalonia 12.1.5**，完整图片依赖升级为 **Sdcb.SimdCodecs 1.4.0**。Clipper2 2.0.0、PdfPig 0.1.16 已是核验时的最新稳定版；原版对照仍用 Avalonia.Skia 实际依赖的 SkiaSharp 3.119.4。
+上一发行版本为 **0.1.0**，公开下载状态见[发布记录](docs/NUGET-PREVIEW.md)。需要 .NET 10 / C# 14，适配器固定 **Avalonia 12.1.5**，完整图片依赖升级为 **Sdcb.SimdCodecs 1.4.0**。Clipper2 2.0.0、PdfPig 0.1.16 已是核验时的最新稳定版；原版对照仍用 Avalonia.Skia 实际依赖的 SkiaSharp 3.119.4。
 
 **本正式版本稳定范围是文档列出的已实现功能。** SkiaSharp 命名空间仍是源码兼容子集，不承诺完整 API、原版逐像素等价或强名称二进制替换。原版 JPEG 严格对照及整页画质尚有失败，字体/复杂文字、部分 PDF/GPU 功能有明确边界；0.1.0 不把这些缺口改判为完成。
 
@@ -32,7 +38,7 @@ Vulkan / Direct2D 相对各例较快原版GPU的综合耗时比为 **0.691 / 0.6
 
 独立 C# 2D 引擎，内部使用 `SimdSkia`，源码兼容层保留 `SkiaSharp.SK*`。不使用 Google Skia 绘图；字体、基础排版及图片编解码均由 C# 实现。通过 `SimdSkia.Avalonia` 可以接入 Avalonia，无需重新编译 Avalonia。
 
-本轮版本为 **`0.1.0`**，固定支持 **Avalonia 12.1.5**。Windows、Linux X11/XWayland、macOS 已通过真实窗口验证；macOS 使用经用户确认允许的官方原生窗口宿主，绘图、字体、排版和编解码仍是 C#。默认使用 CPU，可选 Windows Direct2D 原生交换链或 Windows/Linux Vulkan 绘图。**macOS GPU/Metal 尚未实现，完整兼容性和画质验收仍未全部通过。**
+当前版本 **`0.1.1`** 支持 **Avalonia >=12.1.0 且 <13.0.0**，当前已发布的 12.1.0–12.1.5 进入同包二进制兼容测试。未来大版本需要另行适配；未来 12.x 要回归并补充对应宿主，不能保证未知版本的窗口 ABI。Windows、Linux X11/XWayland、macOS 已通过真实窗口验证；macOS 使用经用户确认允许的官方原生窗口宿主，绘图、字体、排版和编解码仍是 C#。默认使用 CPU，可选 Windows Direct2D 原生交换链或 Windows/Linux Vulkan 绘图。**macOS GPU/Metal 尚未实现，完整兼容性和画质验收仍未全部通过。**
 
 ## 0.1.0 更新了什么
 
@@ -40,32 +46,32 @@ Vulkan / Direct2D 相对各例较快原版GPU的综合耗时比为 **0.691 / 0.6
 
 ## NuGet 包怎么选
 
-本轮包含下列十二个包，统一版本 `0.1.0`；发布状态见 [预览发布](docs/NUGET-PREVIEW.md)。在 Visual Studio 的 NuGet 搜索中勾选“包括预发行版”。
+本轮包含下列十二个包，统一版本 `0.1.1`；发布状态见 [预览发布](docs/NUGET-PREVIEW.md)。0.1.1 为正式补丁版本，无需勾选预发行版。
 
 | 包名 | 用途 |
 | --- | --- |
-| [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.0) | **桌面应用优先选这个**：自动选择 Windows/Linux/macOS 宿主，传递引入渲染适配器 |
-| [SimdSkia.Avalonia](https://www.nuget.org/packages/SimdSkia.Avalonia/0.1.0) | 绘图、字体和基础文字排版服务，也可配合自行配置的宿主 |
-| [SimdSkia.Avalonia.Gpu](https://www.nuget.org/packages/SimdSkia.Avalonia.Gpu/0.1.0) | 可选 Avalonia GPU 绘图、Direct2D 直接呈现和回退/缓存诊断 |
-| [SimdSkia.Gpu.Direct2D](https://www.nuget.org/packages/SimdSkia.Gpu.Direct2D/0.1.0) | Windows Direct2D/D3D11，纯 C# 系统 API 互操作，无第三方绑定包 |
-| [SimdSkia](https://www.nuget.org/packages/SimdSkia/0.1.0) | 需要 `SkiaSharp.SK*` 源码兼容 API 时使用的依赖汇总包 |
-| [SimdSkia.Compatibility](https://www.nuget.org/packages/SimdSkia.Compatibility/0.1.0) | `SKBitmap`、`SKCanvas` 等兼容层，也由 `SimdSkia` 汇总包引入 |
-| [SimdSkia.Core](https://www.nuget.org/packages/SimdSkia.Core/0.1.0) | 几何、路径和绘图状态 |
-| [SimdSkia.Cpu](https://www.nuget.org/packages/SimdSkia.Cpu/0.1.0) | CPU 光栅化、像素合成及 SIMD |
-| [SimdSkia.Text](https://www.nuget.org/packages/SimdSkia.Text/0.1.0) | TrueType 字体解析和基础排版 |
-| [SimdSkia.Imaging](https://www.nuget.org/packages/SimdSkia.Imaging/0.1.0) | 图片编解码和颜色处理 |
-| [SimdSkia.Gpu](https://www.nuget.org/packages/SimdSkia.Gpu/0.1.0) | Vulkan 离屏后端，需要系统 Vulkan loader/驱动 |
-| [SimdSkia.Pdf](https://www.nuget.org/packages/SimdSkia.Pdf/0.1.0) | 可选纯托管 PDF 阅读/页面绘制；导出 PDF 无需安装此包 |
+| [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.1) | **桌面应用优先选这个**：自动选择 Windows/Linux/macOS 宿主，传递引入渲染适配器 |
+| [SimdSkia.Avalonia](https://www.nuget.org/packages/SimdSkia.Avalonia/0.1.1) | 绘图、字体和基础文字排版服务，也可配合自行配置的宿主 |
+| [SimdSkia.Avalonia.Gpu](https://www.nuget.org/packages/SimdSkia.Avalonia.Gpu/0.1.1) | 可选 Avalonia GPU 绘图、Direct2D 直接呈现和回退/缓存诊断 |
+| [SimdSkia.Gpu.Direct2D](https://www.nuget.org/packages/SimdSkia.Gpu.Direct2D/0.1.1) | Windows Direct2D/D3D11，纯 C# 系统 API 互操作，无第三方绑定包 |
+| [SimdSkia](https://www.nuget.org/packages/SimdSkia/0.1.1) | 需要 `SkiaSharp.SK*` 源码兼容 API 时使用的依赖汇总包 |
+| [SimdSkia.Compatibility](https://www.nuget.org/packages/SimdSkia.Compatibility/0.1.1) | `SKBitmap`、`SKCanvas` 等兼容层，也由 `SimdSkia` 汇总包引入 |
+| [SimdSkia.Core](https://www.nuget.org/packages/SimdSkia.Core/0.1.1) | 几何、路径和绘图状态 |
+| [SimdSkia.Cpu](https://www.nuget.org/packages/SimdSkia.Cpu/0.1.1) | CPU 光栅化、像素合成及 SIMD |
+| [SimdSkia.Text](https://www.nuget.org/packages/SimdSkia.Text/0.1.1) | TrueType 字体解析和基础排版 |
+| [SimdSkia.Imaging](https://www.nuget.org/packages/SimdSkia.Imaging/0.1.1) | 图片编解码和颜色处理 |
+| [SimdSkia.Gpu](https://www.nuget.org/packages/SimdSkia.Gpu/0.1.1) | Vulkan 离屏后端，需要系统 Vulkan loader/驱动 |
+| [SimdSkia.Pdf](https://www.nuget.org/packages/SimdSkia.Pdf/0.1.1) | 可选纯托管 PDF 阅读/页面绘制；导出 PDF 无需安装此包 |
 
 新桌面应用添加 `SimdSkia.Avalonia.Desktop`，其渲染服务和引擎依赖会自动还原，无需额外安装 `SimdSkia` 或手动复制底层 DLL：
 
 ```powershell
-dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.0
+dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.1
 ```
 
 **安装包后还必须配置启动代码。** 以下是完整的新程序示例；现有项目按后面的迁移步骤调整。
 
-从旧预览版升级时，将直接引用的所有 `SimdSkia.*` 包统一到 `0.1.0`，Avalonia 包继续统一为 `12.1.5`。本次要求 .NET 10，并更新编解码依赖、格式支持及测试报告；继承此前独立 SK* API、PDF、SIMD 和启动准备，无需重新编译 Avalonia。具体性能、画质限制与发布验收见 [发布记录](docs/NUGET-PREVIEW.md)。
+从旧预览版升级时，将直接引用的所有 `SimdSkia.*` 包统一到 `0.1.1`，Avalonia 家族包统一选择 >=12.1.0 且 <13.0.0 中的同一版本。本次要求 .NET 10，并更新编解码依赖、格式支持及测试报告；继承此前独立 SK* API、PDF、SIMD 和启动准备，无需重新编译 Avalonia。具体性能、画质限制与发布验收见 [发布记录](docs/NUGET-PREVIEW.md)。
 
 ## Avalonia 快速开始（Windows / Linux / macOS）
 
@@ -82,7 +88,7 @@ dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.0
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SimdSkia.Avalonia.Desktop" Version="0.1.0" />
+    <PackageReference Include="SimdSkia.Avalonia.Desktop" Version="0.1.1" />
     <PackageReference Include="Avalonia" Version="[12.1.5]" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.5]" />
   </ItemGroup>
@@ -151,7 +157,7 @@ Windows 的 `WinExe` 避免额外控制台窗口。三平台自动发现受支�
 在上面的桌面程序中增加可选包：
 
 ```powershell
-dotnet add package SimdSkia.Avalonia.Gpu --version 0.1.0
+dotnet add package SimdSkia.Avalonia.Gpu --version 0.1.1
 ```
 
 Windows 将 `.UseSimdSkiaDesktop()` 改为：
@@ -166,7 +172,7 @@ Linux/Windows 可改用 `SimdSkiaGpuBackend.Vulkan`，需硬件 Vulkan 设备；
 
 ## 现有 Avalonia 项目如何切换
 
-1. 将 Avalonia 系列包统一为 **12.1.5**，添加 `SimdSkia.Avalonia.Desktop`；需要 GPU 时再添加 `SimdSkia.Avalonia.Gpu`。
+1. 将 Avalonia 系列包统一为 **>=12.1.0 且 <13.0.0 的同一版本**，添加 `SimdSkia.Avalonia.Desktop`；需要 GPU 时再添加 `SimdSkia.Avalonia.Gpu`。
 2. 移除 `Avalonia.Desktop`、`Avalonia.Skia`、`Avalonia.Fonts.Inter` 等原版后端/字体引用及 `.WithInterFont()`，使用上述包配置；检查第三方控件是否仍间接引用 Skia/HarfBuzz/ANGLE。
 3. 添加 `using SimdSkia.Avalonia;`，将 `.UsePlatformDetect()` 或固定 `.UseWin32()` 链替换为 `.UseSimdSkiaDesktop()`。保留自己的 `App`、XAML、MVVM 和窗口创建代码。
 
