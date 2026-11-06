@@ -14,11 +14,12 @@ args=parser.parse_args()
 if not re.fullmatch(r'\d+\.\d+\.\d+(?:-preview\.\d+)?',args.version):
     raise SystemExit('Expected a stable or preview SemVer.')
 ids=['SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Text','SimdSkia.Imaging','SimdSkia.Gpu','SimdSkia.Gpu.Direct2D','SimdSkia.Compatibility','SimdSkia.Avalonia','SimdSkia.Avalonia.Desktop','SimdSkia.Avalonia.Gpu','SimdSkia']
-modern=args.version in ('0.1.0-preview.10','0.1.0','0.1.1','0.1.2-preview.1','0.1.2-preview.2')
-matrix=args.version in ('0.1.1','0.1.2-preview.1','0.1.2-preview.2')
+modern=args.version in ('0.1.0-preview.10','0.1.0','0.1.1','0.1.2-preview.1','0.1.2-preview.2','0.1.2-preview.3')
+matrix=args.version in ('0.1.1','0.1.2-preview.1','0.1.2-preview.2','0.1.2-preview.3')
 if args.version=='0.1.0-preview.9' or modern:
     ids.append('SimdSkia.Pdf')
 release_topics={
+    '0.1.2-preview.3':(('3230','Vulkan','Metal','12.1.0','画质','SaveLayer'),'3230'),
     '0.1.2-preview.2':(('3230','Vulkan','Metal','12.1.0','画质','SaveLayer'),'3230'),
     '0.1.2-preview.1':(('3230','Vulkan','Metal','12.1.0','画质'),'3230'),
     '0.1.1':(('12.1.0','12.1.5','Sdcb.SimdCodecs','画质'),'12.1.0'),
@@ -65,6 +66,9 @@ for package_id in ids:
             if package_id=='SimdSkia.Imaging':
                 assert dependencies.get('Sdcb.SimdCodecs')=='[1.4.0]',dependencies
                 assert 'licenses/Sdcb.SimdCodecs-MIT.txt' in names,path
+        if args.version=='0.1.2-preview.3':
+            pdf_readme_versions=re.findall(r'PdfPig\s+(?:\*\*)?([0-9A-Za-z.+-]+)',readme)
+            assert pdf_readme_versions and set(pdf_readme_versions)=={'0.1.16'},(path,'Incorrect PDF dependency version in README',pdf_readme_versions)
         if package_id=='SimdSkia.Pdf':
             assert dependencies.get('PdfPig')=='[0.1.16]',dependencies
             for notice in ('Apache-2.0.txt','PdfPig-NOTICE.txt','PdfPig-UPSTREAM-NOTICES.txt'):
@@ -103,7 +107,7 @@ for package_id in ids:
                 else:
                     assert f'lib/{framework}/{host}' in names,(path,host)
         if package_id=='SimdSkia.Gpu.Direct2D':
-            assert set(dependencies)==({'SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Gpu'} if args.version in ('0.1.2-preview.1','0.1.2-preview.2') else {'SimdSkia.Core'}),dependencies
+            assert set(dependencies)==({'SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Gpu'} if args.version in ('0.1.2-preview.1','0.1.2-preview.2','0.1.2-preview.3') else {'SimdSkia.Core'}),dependencies
         rows.append({'id':package_id,'version':args.version,'bytes':path.stat().st_size,'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'dependencies':dependencies})
 (args.directory/'manifest.json').write_text(json.dumps(rows,indent=2)+'\n',encoding='utf-8')
 print(f'PASS {len(rows)} {args.version} packages: dependency versions, managed assemblies, README, CHANGELOG, NuGet release notes, MIT, symbols and no font/native drawing binaries')

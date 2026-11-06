@@ -1,7 +1,7 @@
 """Update current documentation while retaining dated historical reports."""
 from pathlib import Path
 
-version='0.1.2-preview.2'
+version='0.1.2-preview.3'
 if f'## {version}：公共API与GPU优化预览' in Path('README.md').read_text(encoding='utf-8'):
     raise SystemExit('Current documentation update already applied; edit current sections directly to retain history once.')
 report='PUBLIC-API-FINAL-2026-11-07.md'
@@ -23,7 +23,7 @@ if first!=-1:body=body[:first]+body[body.index('## NuGet 包怎么选',first):]
 body=body.replace('0.1.1',version)
 body=body.replace('当前已发布的 12.1.0–12.1.5 已通过','已验证的 12.1.0–12.1.5 在此前版本已通过')
 body=body.replace('**macOS GPU/Metal 尚未实现，完整兼容性和画质验收仍未全部通过。**','**Metal核心已有实现但无Mac GPU实机验证，尚未接入Avalonia窗口呈现；完整兼容性和画质验收仍未全部通过。**')
-body=body.replace('0.1.2-preview.2 为正式补丁版本，无需勾选预发行版。','0.1.2-preview.2 是预览版，NuGet 界面需要勾选“包含预发行版”；公开下载状态以发布记录为准。')
+body=body.replace('0.1.2-preview.3 为正式补丁版本，无需勾选预发行版。','0.1.2-preview.3 是预览版，NuGet 界面需要勾选“包含预发行版”；公开下载状态以发布记录为准。')
 body=body.replace('Windows Direct2D/D3D11，纯 C# 系统 API 互操作，无第三方绑定包','Windows Direct2D/D3D11及D3D12互操作，C#系统API绑定')
 body=body.replace('Vulkan 离屏后端，需要系统 Vulkan loader/驱动','Vulkan、GL/GLES与Metal核心（Metal未实机验证），需系统API/驱动')
 body=body.replace('`preview.6` 默认','默认')

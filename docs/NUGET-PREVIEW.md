@@ -1,16 +1,18 @@
 # NuGet 发布记录
 
-## 0.1.2-preview.2 — 修复后候选，待CI及公开下载验证
+## 0.1.2-preview.3 — 修正候选，待CI与公开下载验证
 
-CI复核新增修正：连续MoveTo保留空轮廓/点；Src/Clear/SrcIn/DstIn/SrcOut/DstATop/Modulate的SaveLayer bounds按原版扩展到父裁剪。原版几何300组/4636值、464组图层组合（2,375,680字节精确比较）和兼容扩展均通过。preview.1标签的CI失败，未上传NuGet；本次使用preview.2保留追溯。
-
-[测试/性能/限制](PUBLIC-API-FINAL-2026-11-07.md)。待最终成功后补充真实CI和公开下载结果，本地打包不等于公开发布。
+继承94项API/GPU与行为修复；修正包内PdfPig依赖说明的版本替换问题，实际依赖保持0.1.16。preview.2发布作业在上传前取消，未上传NuGet；本次保留旧标签并使用preview.3。完整测试/性能/限制见[报告](PUBLIC-API-FINAL-2026-11-07.md)。待本版CI和全部十二包公开下载核对后补充真实发布状态。
 
 ```sh
-dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.2-preview.2
-dotnet add package SimdSkia.Avalonia.Gpu --version 0.1.2-preview.2
+dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.2-preview.3
+dotnet add package SimdSkia.Avalonia.Gpu --version 0.1.2-preview.3
 ```
 
+
+## 0.1.2-preview.2 — 上传前取消，未发布
+
+行为修复、三平台核心/桌面、几何和Windows AOT均已通过，但包内PdfPig依赖说明被旧更新脚本误替换，实际依赖始终正确。上传前取消[发布作业](https://github.com/donet-org-cn/SimdSkia/actions/runs/42307036472)，未上传NuGet；修正说明和校验后使用preview.3。旧候选证据和标签保留。
 
 ## 0.1.2-preview.1 — CI失败，未发布
 

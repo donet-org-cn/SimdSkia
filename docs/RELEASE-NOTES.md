@@ -1,6 +1,15 @@
 # SimdSkia 更新日志 / Release notes
 
-## 0.1.2-preview.2 — CI复核修正
+## 0.1.2-preview.3 — 公共API/GPU预览与发布说明修正
+
+- 汇集下方94项API补充、GPU互操作/Vulkan/SIMD优化以及连续MoveTo、特殊混合SaveLayer修复；固定SkiaSharp 3.119.4基线3230/3235，保留5项约定原生合同缺口。
+- 修正包内PDF依赖说明和版本更新脚本：仅更新SimdSkia版本，不再把PdfPig 0.1.16的子串误替换；实际第三方依赖始终为PdfPig 0.1.16 / Sdcb.SimdCodecs 1.4.0。本版新增README依赖版本与nuspec一致性校验。
+- preview.1因CI发现行为回归未上传NuGet；preview.2在上传前因说明错误被取消。保留两个候选标签，本版使用独立新标签；不能把候选本地包消费称为公开发布。
+- 300组/4636值几何、464组图层/2,375,680字节精确对照与真实AOT回归通过。CPU/Vulkan/Direct2D/GL、CPU时间与内存的完整实测见[报告](PUBLIC-API-FINAL-2026-11-07.md)。Metal没有Mac GPU未实机验证，JPEG、文字/曲线/整页画质、部分GPU性能与内存差距仍保留；不代表全面行为/二进制兼容或整体性能持平。
+- 十二包统一0.1.2-preview.3，Avalonia接受>=12.1.0且<13.0.0，已验证宿主范围12.1.0–12.1.5；未来补丁需宿主适配和回归。
+
+
+## 0.1.2-preview.2 — 上传前取消的候选
 
 - CI复核新增修正：连续MoveTo保留空轮廓/点；Src/Clear/SrcIn/DstIn/SrcOut/DstATop/Modulate的SaveLayer bounds按原版扩展到父裁剪。原版几何300组/4636值、464组图层组合（2,375,680字节精确比较）和兼容扩展均通过。preview.1标签的CI失败，未上传NuGet；本次使用preview.2保留追溯。
 - 包含下方preview.1候选的公共API、GPU互操作、SIMD/分配优化与全部已披露限制，固定基线仍3230/3235。Metal没有Mac GPU，未实机验证；JPEG和整页画质仍失败，性能/内存差距保留。

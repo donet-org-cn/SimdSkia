@@ -1,6 +1,8 @@
-# SimdSkia 0.1.2-preview.2：公共 API、测试与性能报告
+# SimdSkia 0.1.2-preview.3：公共 API、测试与性能报告
 
-CI复核新增修正：连续MoveTo保留空轮廓/点；Src/Clear/SrcIn/DstIn/SrcOut/DstATop/Modulate的SaveLayer bounds按原版扩展到父裁剪。原版几何300组/4636值、464组图层组合和兼容扩展均通过。preview.1标签的CI失败，未上传NuGet；本次使用preview.2保留追溯。
+发布说明复核：preview.2在上传前因PDF依赖说明的版本替换错误取消；实际依赖始终为PdfPig 0.1.16，已修正脚本并增加包校验。本次使用preview.3，旧候选与原始测量证据保留。
+
+CI复核新增修正：连续MoveTo保留空轮廓/点；Src/Clear/SrcIn/DstIn/SrcOut/DstATop/Modulate的SaveLayer bounds按原版扩展到父裁剪。原版几何300组/4636值、464组图层组合和兼容扩展均通过。preview.1标签的CI失败，未上传NuGet；修复先进入preview.2候选；当前发布状态见发布记录。
 
 修复后再次完整构建零警告/错误，36项基础、474413项精确优化和十二组核心回归通过；真实Native AOT兼容扩展38检查通过，PE无CLR头。图层覆盖29混合模式×2像素格式×2颜色空间标记×4种场景，2,375,680字节全部一致。九幅CPU/Vulkan/Direct2D控件页与正式性能采集输出逐字节相同；此次短采集仅验证输出，没有冒充新的性能结果。Picture/WebP仍28/28、浮点仍25/29、SKP仍14/35，比较JSON完全不变，JPEG非零失败也保留。[修复后的独立证据](evidence/api-final-ci-recheck-2026-11-07/)与[汇总](evidence/api-final-ci-recheck-2026-11-07/summary.json)单独冻结，未覆盖旧证据。
 

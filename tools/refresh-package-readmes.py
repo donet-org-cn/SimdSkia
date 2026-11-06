@@ -1,40 +1,28 @@
-"""Keep usage in current package readmes on the current preview version."""
+"""Update SimdSkia usage versions without rewriting third-party dependencies."""
 from pathlib import Path
-version='0.1.2-preview.2'
-p=Path('docs/NUGET-README.md');s=p.read_text(encoding='utf-8');prefix='\n'.join(s.splitlines()[:4])+'\n\n'
-body=s[s.index('Packages target .NET 10 or later:'):].split('## Standalone SkiaSharp namespace usage')[0]
-body=body.replace('0.1.1',version).replace('version `0.1.0`','version `'+version+'`')
-body=body.replace('Vulkan offscreen rendering; requires the system Vulkan loader/driver','Vulkan and GL/GLES; experimental Metal core without hardware validation; requires system APIs/drivers')
-body=body.replace('macOS GPU/Metal is not implemented.','The Metal core is unverified and is not wired into Avalonia presentation.')
-sample='''## Standalone SkiaSharp namespace usage
+import re
+import xml.etree.ElementTree as ET
 
-```shell
-dotnet add package SimdSkia --version 0.1.2-preview.2
-```
-
-```csharp
-using SkiaSharp;
-using var bitmap = new SKBitmap(160, 100);
-using var canvas = new SKCanvas(bitmap);
-canvas.Clear(SKColors.White);
-using var paint = new SKPaint { Color = SKColors.Blue };
-canvas.DrawRect(10, 10, 80, 50, paint);
-if (bitmap.GetPixel(20, 20) != SKColors.Blue)
-    throw new Exception("Pixel validation failed.");
-using var png = bitmap.Encode(SKEncodedImageFormat.Png, 100);
-using var file = File.Create("rectangle.png");
-png.SaveTo(file);
-```
-
-The facade targets the documented SkiaSharp 3.119.4 subset. The five native contracts remain missing, and rendering/behavior parity is incomplete. Dispose GPU resources explicitly on their creating thread; GC finalization equivalence is not established.
-'''
-p.write_text(prefix+body+sample,encoding='utf-8')
-p=Path('src/SimdSkia.Pdf/README.md');s=p.read_text(encoding='utf-8');prefix='\n'.join(s.splitlines()[:4])+'\n\n'
-body=s[s.index('Optional C# PDF parsing and page rendering'):]
-start=body.find('**New in 0.1.0-preview.9:**')
-if start!=-1:
-    end=body.index('```shell',start)
-    body=body[:start]+'The optional parser is not pulled in by ordinary Avalonia or compatibility users. Keep all direct SimdSkia package versions aligned.\n\n'+body[end:]
-body=body.replace('0.1.1',version)
-p.write_text(prefix+'# SimdSkia.Pdf '+version+'\n\nRequires .NET 10.\n\n'+body,encoding='utf-8')
-print('Current standalone/PDF usage versions and backend limits synchronized.')
+root=Path(__file__).resolve().parents[1]
+props=ET.parse(root/'src/Directory.Build.props')
+version=props.findtext('.//Version')
+assert version and re.fullmatch(r'\d+\.\d+\.\d+(?:-preview\.\d+)?',version)
+pdf=ET.parse(root/'src/SimdSkia.Pdf/SimdSkia.Pdf.csproj')
+pdf_version=next(p.attrib['Version'].strip('[]') for p in pdf.iter('PackageReference') if p.attrib.get('Include')=='PdfPig')
+pattern=r'\d+\.\d+\.\d+(?:-preview\.\d+)?'
+for name in ['docs/NUGET-README.md','src/SimdSkia.Pdf/README.md']:
+    path=root/name
+    content=path.read_text(encoding='utf-8')
+    # Only SimdSkia command lines, current headings and aligned-package prose.
+    # A substring replacement of 0.1.1 also changes PdfPig 0.1.16.
+    content=re.sub(r'(dotnet add package SimdSkia(?:\.[\w.]+)? --version )'+pattern,
+                   lambda m:m[1]+version,content)
+    content=re.sub(r'(?m)^(# (?:SimdSkia\.Pdf )?)'+pattern+r'(?= 更新|$)',
+                   lambda m:m[1]+version,content)
+    content=re.sub(r'(SimdSkia packages on version `)'+pattern+r'`',
+                   lambda m:m[1]+version+'`',content)
+    content=re.sub(r'(pinned PdfPig )'+pattern,lambda m:m[1]+pdf_version,content)
+    content=re.sub(r'(using PdfPig \*\*)'+pattern+r'\*\*',
+                   lambda m:m[1]+pdf_version+'**',content)
+    path.write_text(content,encoding='utf-8')
+print(f'Updated SimdSkia {version} usage; PdfPig stays pinned to {pdf_version}.')
