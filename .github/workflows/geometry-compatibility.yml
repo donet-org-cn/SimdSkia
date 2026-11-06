@@ -1,0 +1,49 @@
+name: Geometry and shader API compatibility
+on:
+  push:
+    paths: ['src/SimdSkia.Compatibility/**', 'src/SimdSkia.Cpu/**', 'src/SimdSkia.Core/**', 'tests/PixelCompatibility/**', 'tests/StrokeCompatibility/**', 'tests/ConicCompatibility/**', 'tests/GeometryCompatibility/**', 'tests/ShaderCompatibility/**', 'tools/check-pixel-compatibility.py', 'tools/check-geometry-compatibility.py', 'tools/check-shader-compatibility.py', '.github/workflows/geometry-compatibility.yml']
+  pull_request:
+    paths: ['src/SimdSkia.Compatibility/**', 'src/SimdSkia.Cpu/**', 'src/SimdSkia.Core/**', 'tests/PixelCompatibility/**', 'tests/StrokeCompatibility/**', 'tests/ConicCompatibility/**', 'tests/GeometryCompatibility/**', 'tests/ShaderCompatibility/**', 'tools/check-pixel-compatibility.py', 'tools/check-geometry-compatibility.py', 'tools/check-shader-compatibility.py', '.github/workflows/geometry-compatibility.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  geometry:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - shell: pwsh
+        run: |
+          ./tools/fetch-test-font.ps1
+          ./tools/fetch-avalonia-font.ps1
+      - run: python tools/check-geometry-compatibility.py
+      - run: dotnet publish tests/GeometryCompatibility/NativeAot -c Release -r win-x64 -o artifacts/geometry-aot
+      - run: artifacts/geometry-aot/NativeAot.exe
+      - run: python tools/check-shader-compatibility.py --output artifacts/shader-compatibility
+      - run: dotnet publish tests/ShaderCompatibility/NativeAot -c Release -r win-x64 -o artifacts/shader-aot
+      - run: artifacts/shader-aot/NativeAot.exe
+      - run: dotnet publish tests/ConicCompatibility/NativeAot -c Release -r win-x64 -o artifacts/conic-aot
+      - run: artifacts/conic-aot/NativeAot.exe
+      - run: dotnet publish tests/StrokeCompatibility/NativeAot -c Release -r win-x64 -o artifacts/stroke-aot
+      - run: artifacts/stroke-aot/NativeAot.exe
+      - run: dotnet run --project tests/PixelCompatibility/Managed -c Release -- artifacts/pixel-compatibility/managed
+      - run: dotnet publish tests/PixelCompatibility/NativeAot -c Release -r win-x64 -o artifacts/pixel-aot
+      - run: artifacts/pixel-aot/NativeAot.exe
+      - name: Verify scalar fallback
+        env:
+          DOTNET_EnableHWIntrinsic: '0'
+        run: dotnet run --project tests/Optimization -c Release -- baseline/fonts/ZenOldMincho-Regular.ttf
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: geometry-compatibility
+          path: |
+            artifacts/geometry-compatibility/
+            artifacts/shader-compatibility/
+            artifacts/pixel-compatibility/

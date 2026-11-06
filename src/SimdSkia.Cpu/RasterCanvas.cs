@@ -8,10 +8,13 @@ public sealed partial class RasterCanvas : ICanvasBackend
 {
     private readonly PixelBuffer target;
     private bool disposed;
-    private readonly record struct MaskKey(PathGeometry Geometry,Matrix3 Transform,bool Antialias,RectF? Clip,bool CompactRuns,float Tolerance);
+    private readonly record struct MaskKey(PathGeometry Geometry,Matrix3 Transform,bool Antialias,RectF? Clip,bool CompactRuns,float Tolerance,bool HalfUp,bool FixedTriangle);
     private Dictionary<MaskKey,LinkedListNode<(MaskKey Key,CoverageMask Mask)>>? masks;
     private LinkedList<(MaskKey Key,CoverageMask Mask)>? maskOrder;
     private long maskBytes;
+    private Dictionary<MaskKey,CoverageMask>? triangleMasks;
+    private Queue<(MaskKey Key,long Bytes)>? triangleOrder;
+    private long triangleBytes;
     private Dictionary<RectF,PathGeometry>? rectangles;
     private int[] imageX=[];
     private long gradientBytes;
@@ -35,6 +38,11 @@ public sealed partial class RasterCanvas : ICanvasBackend
         if(command.Clip is {} clip&&!clip.IsFinite)throw new ArgumentException("Clip coordinates must be finite.");
         if(!float.IsFinite(command.CurveTolerance)||command.CurveTolerance<=0)throw new ArgumentOutOfRangeException(nameof(command.CurveTolerance));
         if(!Enum.IsDefined(command.Sampling))throw new ArgumentOutOfRangeException(nameof(command.Sampling));
+        if(target.Format==PixelFormat.Alpha8){ExecuteAlphaTarget(command);return;}
+        if(command.Paint.ImageFilter is not null&&command.Kind!=CommandKind.Clear){DrawFiltered(command);return;}
+        if(command.Paint.ImageFilter is not null)throw new NotSupportedException("Clear does not accept an image filter.");
+        if(command.Paint.MaskFilter is not null){DrawMaskFiltered(command);return;}
+        if(command.Kind==CommandKind.Clear&&command.Paint.ColorFilter is not null)throw new NotSupportedException("Clear does not accept a color filter; use a Source rectangle.");
         if(command.CoverageClip is not null&&command.Kind==CommandKind.Clear)throw new NotSupportedException("Clear with a coverage clip is undefined; use a Source rectangle.");
         switch(command.Kind)
         {
@@ -48,6 +56,7 @@ public sealed partial class RasterCanvas : ICanvasBackend
     }
     private void FillRectangle(in DrawingCommand command)
     {
+        if(PrepareShader(command,out var prepared)){FillRectangle(prepared);return;}
         if(command.CoverageClip is not null){FillPath(command with {Kind=CommandKind.FillPath,Path=RectangleGeometry(command.Rectangle)});return;}
         var rect=command.Rectangle;var matrix=command.Transform;
         if(!rect.IsFinite)throw new ArgumentException("Rectangle coordinates must be finite.");
@@ -61,6 +70,7 @@ public sealed partial class RasterCanvas : ICanvasBackend
         float left=MathF.Min(MathF.Min(p0.X,p1.X),MathF.Min(p2.X,p3.X)),top=MathF.Min(MathF.Min(p0.Y,p1.Y),MathF.Min(p2.Y,p3.Y));
         float right=MathF.Max(MathF.Max(p0.X,p1.X),MathF.Max(p2.X,p3.X)),bottom=MathF.Max(MathF.Max(p0.Y,p1.Y),MathF.Max(p2.Y,p3.Y));
         if(!float.IsFinite(left)||!float.IsFinite(top)||!float.IsFinite(right)||!float.IsFinite(bottom))throw new ArgumentException("Transformed rectangle exceeds finite coordinate range.");
+        if(command.Paint.Shader is not null&&command.ShaderTransform is {} shaderMatrix&&shaderMatrix!=matrix&&!shaderMatrix.TryInvert(out inverse))return;
         if(matrix.M01==0&&matrix.M10==0)
         {
             if(command.Paint.Antialias&&command.Paint.Shader is null&&target.Height<=262144)
@@ -71,10 +81,11 @@ public sealed partial class RasterCanvas : ICanvasBackend
                 if(command.Clip is {} clip)
                 {x0=Math.Max(x0,SampleEdge(clip.Left,target.Width));y0=Math.Max(y0,SampleEdge(clip.Top,target.Height));x1=Math.Min(x1,SampleEdge(clip.Right,target.Width));y1=Math.Min(y1,SampleEdge(clip.Bottom,target.Height));}
                 if(x0>=x1||y0>=y1)return;
+                if(TryCopyRasterShader(command,inverse,x0,y0,x1,y1))return;
                 var paint=command.Paint;
                 if(paint.Shader is null)
                 {for(int y=y0;y<y1;y++)SpanCompositor.Apply(target.GetRowSpan(y).Slice(x0*4,(x1-x0)*4),target.Format,target.Alpha,paint);return;}
-                if(paint.Shader is {} gradient&&gradient.IsHorizontal&&inverse.M01==0&&paint.Color.A==255&&gradient.IsOpaque&&(paint.Composite is CompositeMode.Source or CompositeMode.SourceOver)&&Finite(inverse.Map(x0+.5f,y0+.5f))&&Finite(inverse.Map(x1-.5f,y1-.5f)))
+                if(paint.Blender is null&&!paint.Dither&&paint.ColorFilter is null&&paint.Shader is {} gradient&&gradient.IsHorizontal&&inverse.M01==0&&paint.Color.A==255&&gradient.IsOpaque&&(paint.Composite is CompositeMode.Source or CompositeMode.SourceOver)&&Finite(inverse.Map(x0+.5f,y0+.5f))&&Finite(inverse.Map(x1-.5f,y1-.5f)))
                 {
                     var key=(gradient,inverse,x0,x1);
                     gradientRows??=[];
@@ -88,26 +99,14 @@ public sealed partial class RasterCanvas : ICanvasBackend
                     for(int y=y0;y<y1;y++)colors.AsSpan().CopyTo(target.GetRowSpan(y).Slice(x0*4));
                     return;
                 }
+                if(paint.Blender is null&&!paint.Dither&&paint.ColorFilter is null&&paint.Shader is LinearGradient linear&&linear.IsOpaque&&paint.Color.A==255&&(paint.Composite is CompositeMode.Source or CompositeMode.SourceOver)&&Finite(inverse.Map(x0+.5f,y0+.5f))&&Finite(inverse.Map(x1-.5f,y1-.5f)))
+                {LinearGradientKernel.Fill(target,linear,inverse,x0,y0,x1,y1);return;}
                 for(int y=y0;y<y1;y++)for(int x=x0;x<x1;x++)
-                {var local=inverse.Map(x+.5f,y+.5f);var color=paint.Shader.Sample(local.X,local.Y);Composite(target.GetRowSpan(y).Slice(x*4,4),paint with {Color=color with {A=PixelBuffer.Multiply(color.A,paint.Color.A)}});}
+                {var local=inverse.Map(x+.5f,y+.5f);CompositeShader(target.GetRowSpan(y).Slice(x*4,4),paint,local.X,local.Y,255,x,y);}
                 return;
             }
         }
-        if(command.Paint.Antialias){FillPath(command with {Kind=CommandKind.FillPath,Path=RectangleGeometry(command.Rectangle)});return;}
-        int startX=(int)Math.Clamp(MathF.Floor(left),0,target.Width),startY=(int)Math.Clamp(MathF.Floor(top),0,target.Height);
-        int endX=(int)Math.Clamp(MathF.Ceiling(right),0,target.Width),endY=(int)Math.Clamp(MathF.Ceiling(bottom),0,target.Height);
-        for(int y=startY;y<endY;y++)
-        {
-            var row=target.GetRowSpan(y);
-            for(int x=startX;x<endX;x++)
-            {
-                var local=inverse.Map(x+.5f,y+.5f);
-                if(!rect.Contains(local.X,local.Y)||(command.Clip is {} clip&&!clip.Contains(x+.5f,y+.5f)))continue;
-                var paint=command.Paint;
-                if(paint.Shader is {} shader){var color=shader.Sample(local.X,local.Y);paint=paint with {Color=color with {A=PixelBuffer.Multiply(color.A,paint.Color.A)}};}
-                Composite(row.Slice(x*4,4),paint);
-            }
-        }
+        FillPath(command with {Kind=CommandKind.FillPath,Path=RectangleGeometry(command.Rectangle)});
     }
     private static bool Finite((float X,float Y) point)=>float.IsFinite(point.X)&&float.IsFinite(point.Y);
     private static int RoundEdge(float value,int limit)
@@ -145,19 +144,40 @@ public sealed partial class RasterCanvas : ICanvasBackend
     }
     private CoverageMask GetMask(PathGeometry geometry,in DrawingCommand command)
     {
+        if(command.FixedTriangleEdges)return GetTriangleMask(geometry,command);
         // Bitmap contexts are short lived. Rectangles and globally cached text
         // do not need any of these per-canvas containers.
         masks??=[];maskOrder??=[];
         bool compact=command.Kind==CommandKind.FillPath;
-        var key=new MaskKey(geometry,command.Transform,command.Paint.Antialias,command.Clip,compact,command.CurveTolerance);
+        bool halfUp=command.Kind!=CommandKind.DrawImage||command.LatticeRectangleEdges||command.AliasedRectangleEdges;
+        var key=new MaskKey(geometry,command.Transform,command.Paint.Antialias,command.Clip,compact,command.CurveTolerance,halfUp,command.FixedTriangleEdges);
         if(masks.TryGetValue(key,out var node)){maskOrder.Remove(node);maskOrder.AddLast(node);return node.Value.Mask;}
-        var mask=PathRasterizer.Rasterize(geometry.Flatten(command.Transform,command.CurveTolerance),geometry.FillRule,target.Width,target.Height,command.Paint.Antialias,command.Clip,compact);
+        var contours=geometry.Flatten(command.Transform,command.CurveTolerance);
+        var mask=command.FixedTriangleEdges?TriangleCoverage.Rasterize(contours,target.Width,target.Height,command.Clip):PathRasterizer.Rasterize(contours,geometry.FillRule,target.Width,target.Height,command.Paint.Antialias,command.Clip,compact,halfUp);
         long bytes=MaskBytes(mask,geometry);
         if(bytes<=16*1024*1024)
         {
             while(masks.Count>=64||maskBytes+bytes>16*1024*1024)
             {var old=maskOrder.First!;maskBytes-=MaskBytes(old.Value.Mask,old.Value.Key.Geometry);masks.Remove(old.Value.Key);maskOrder.RemoveFirst();}
             masks.Add(key,maskOrder.AddLast((key,mask)));maskBytes+=bytes;
+        }
+        return mask;
+    }
+    private CoverageMask GetTriangleMask(PathGeometry geometry,in DrawingCommand command)
+    {
+        triangleMasks??=[];triangleOrder??=[];
+        var key=new MaskKey(geometry,command.Transform,false,command.Clip,true,command.CurveTolerance,true,true);
+        if(triangleMasks.TryGetValue(key,out var known))return known;
+        var mask=TriangleCoverage.Rasterize(geometry.Flatten(command.Transform,command.CurveTolerance),target.Width,target.Height,command.Clip);
+        long bytes=MaskBytes(mask,geometry)+256;
+        // A patch can contain thousands of tiny triangles. Sharing the 64-entry
+        // general path LRU rebuilds every mask every frame. This separate cache
+        // is lazy and bounded by both payload/entry overhead and count.
+        if(bytes<=2*1024*1024)
+        {
+            while(triangleMasks.Count>=4096||triangleBytes+bytes>2*1024*1024)
+            {var old=triangleOrder.Dequeue();triangleMasks.Remove(old.Key);triangleBytes-=old.Bytes;}
+            triangleMasks.Add(key,mask);triangleOrder.Enqueue((key,bytes));triangleBytes+=bytes;
         }
         return mask;
     }
@@ -172,6 +192,7 @@ public sealed partial class RasterCanvas : ICanvasBackend
     }
     private void FillMask(CoverageMask mask,in DrawingCommand command,int dx,int dy,bool independentClip)
     {
+        if(PrepareShader(command,out var prepared)){FillMask(mask,prepared,dx,dy,independentClip);return;}
         int left=0,top=0,right=target.Width,bottom=target.Height;
         if(independentClip&&command.Clip is {} clip){left=SampleEdge(clip.Left,target.Width);top=SampleEdge(clip.Top,target.Height);right=SampleEdge(clip.Right,target.Width);bottom=SampleEdge(clip.Bottom,target.Height);}
         Matrix3 inverse=default;
@@ -185,7 +206,7 @@ public sealed partial class RasterCanvas : ICanvasBackend
             if(start>=end||firstY>=lastY)return;
             int width=end-start,coverageOffset=(firstY-originY)*mask.Width+start-originX;
             if(CpuOptions.EnableSimd&&Sse2.IsSupported&&!Avx2.IsSupported&&target.Alpha!=AlphaFormat.Straight&&
-                command.Paint.Shader is null&&command.CoverageClip is null&&
+                command.Paint.Blender is null&&command.Paint.FloatingColor is null&&command.Paint.ColorFilter is null&&command.Paint.Shader is null&&command.CoverageClip is null&&
                 command.Paint.Composite==CompositeMode.SourceOver&&command.Paint.Color==new Rgba32(0,0,0,255))
             {
                 // Mask-wide invariants must not be re-evaluated for every short
@@ -202,8 +223,8 @@ public sealed partial class RasterCanvas : ICanvasBackend
                 else for(int x=0;x<coverage.Length;x++)
                 {
                     if(coverage[x]==0)continue;
-                    var p=inverse.Map(start+x+.5f,deviceY+.5f);var color=command.Paint.Shader.Sample(p.X,p.Y);
-                    Composite(row.Slice(x*4,4),command.Paint with {Color=color with {A=PixelBuffer.Multiply(color.A,command.Paint.Color.A)}},ClipCoverage(coverage[x],start+x,deviceY,command.CoverageClip));
+                    var p=inverse.Map(start+x+.5f,deviceY+.5f);
+                    CompositeShader(row.Slice(x*4,4),command.Paint,p.X,p.Y,ClipCoverage(coverage[x],start+x,deviceY,command.CoverageClip),start+x,deviceY);
                 }
             }
             return;
@@ -215,19 +236,20 @@ public sealed partial class RasterCanvas : ICanvasBackend
             var row=target.GetRowSpan(y);
             if(command.Paint.Shader is null)
                 ApplyMasked(row.Slice(start*4,(end-start)*4),start,y,command.Paint,run.Coverage,command.CoverageClip);
-            else if(run.Coverage==255&&command.CoverageClip is null&&command.Paint.Color.A==255&&
+            else if(command.Paint.ColorFilter is null&&run.Coverage==255&&command.CoverageClip is null&&command.Paint.Color.A==255&&
                 command.Paint.Composite is CompositeMode.Source or CompositeMode.SourceOver&&
                 command.Paint.Shader is IOpaqueRowShader opaque&&opaque.TryCopyOpaqueRow(row.Slice(start*4,(end-start)*4),target.Format,inverse,start,y))continue;
             else for(int x=start;x<end;x++)
             {
-                var p=inverse.Map(x+.5f,y+.5f);var color=command.Paint.Shader.Sample(p.X,p.Y);
-                Composite(row.Slice(x*4,4),command.Paint with {Color=color with {A=PixelBuffer.Multiply(color.A,command.Paint.Color.A)}},ClipCoverage(run.Coverage,x,y,command.CoverageClip));
+                var p=inverse.Map(x+.5f,y+.5f);
+                CompositeShader(row.Slice(x*4,4),command.Paint,p.X,p.Y,ClipCoverage(run.Coverage,x,y,command.CoverageClip),x,y);
             }
         }
     }
     private void DrawImage(in DrawingCommand command)
     {
-        if(command.ImageSource is not null||command.Sampling!=ImageSampling.Nearest||command.CoverageClip is not null||command.NearestLowerBoundary){DrawSampledImage(command);return;}
+        if(command.Image?.Format==PixelFormat.Alpha8){DrawAlphaImage(command);return;}
+        if(command.Paint.Blender is not null||command.Paint.FloatingColor is not null||command.Paint.ColorFilter is not null||command.ImageSource is not null||command.Sampling!=ImageSampling.Nearest||command.CoverageClip is not null||command.NearestLowerBoundary){DrawSampledImage(command);return;}
         var image=command.Image??throw new ArgumentException("Image command requires pixels.");image.ThrowIfDisposed();
         if(!command.Transform.TryInvert(out var inverse))return;var rect=command.Rectangle;if(rect.IsEmpty)return;
         if(command.Transform.IsAffine&&command.Transform.M01==0&&command.Transform.M10==0&&!command.Paint.Antialias&&!image.GetPixelSpan().Overlaps(target.GetPixelSpan()))
@@ -304,6 +326,7 @@ public sealed partial class RasterCanvas : ICanvasBackend
         }
     }
     private void Composite(Span<byte> pixel,Paint paint,byte coverage=255)=>SpanCompositor.Apply(pixel,target.Format,target.Alpha,paint,coverage);
-    public void Dispose(){disposed=true;masks=null;maskOrder=null;maskBytes=0;gradientRows=null;gradientBytes=0;rectangles=null;imageX=[];}
+    public void Dispose(){disposed=true;shaderTransforms=null;lcdRuns=null;DisposeAlphaWork();filteredMasks?.Clear();filteredMaskBytes=filteredMaskClock=0;masks=null;maskOrder=null;maskBytes=0;triangleMasks=null;triangleOrder=null;triangleBytes=0;gradientRows=null;gradientBytes=0;rasterRows=null;rasterRowBytes=0;rectangles=null;imageX=[];}
+    internal void DropCaches(){shaderTransforms=null;lcdRuns=null;DisposeAlphaWork();filteredMasks?.Clear();filteredMaskBytes=filteredMaskClock=0;masks=null;maskOrder=null;maskBytes=0;triangleMasks=null;triangleOrder=null;triangleBytes=0;gradientRows=null;gradientBytes=0;rasterRows=null;rasterRowBytes=0;rectangles=null;imageX=[];}
     public void Flush(){ObjectDisposedException.ThrowIf(disposed,this);target.ThrowIfDisposed();}
 }

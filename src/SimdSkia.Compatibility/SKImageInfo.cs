@@ -19,15 +19,11 @@ public struct SKImageInfo : IEquatable<SKImageInfo>
     public SKImageInfo(int width,int height,SKColorType colorType,SKAlphaType alphaType) : this(width,height,colorType,alphaType,null) { }
     public SKImageInfo(int width,int height,SKColorType colorType,SKAlphaType alphaType,SKColorSpace? colorspace)
     { Width=width; Height=height; ColorType=colorType; AlphaType=alphaType; ColorSpace=colorspace; }
-    public readonly int BytesPerPixel => ColorType switch
-    {
-        SKColorType.Unknown => 0,
-        SKColorType.Rgba8888 or SKColorType.Bgra8888 => 4,
-        _ => throw new NotSupportedException($"Pixel format {ColorType} is not implemented.")
-    };
+    // Metadata covers all baseline formats; allocation/drawing separately validates
+    // its supported pixel storage rather than pretending every format is renderable.
+    public readonly int BytesPerPixel => ColorType.GetBytesPerPixel();
     public readonly int BitsPerPixel => BytesPerPixel*8;
-    public readonly int BitShiftPerPixel => ColorType switch
-    { SKColorType.Unknown => 0, SKColorType.Rgba8888 or SKColorType.Bgra8888 => 2, _ => throw new NotSupportedException($"Pixel format {ColorType} is not implemented.") };
+    public readonly int BitShiftPerPixel => ColorType.GetBitShiftPerPixel();
     public readonly int RowBytes => checked(Width*BytesPerPixel);
     public readonly long RowBytes64 => (long)Width*BytesPerPixel;
     public readonly int BytesSize => checked(RowBytes*Height);
@@ -35,6 +31,9 @@ public struct SKImageInfo : IEquatable<SKImageInfo>
     public readonly bool IsEmpty => Width<=0 || Height<=0;
     public readonly bool IsOpaque => AlphaType==SKAlphaType.Opaque;
     public readonly SKImageInfo WithSize(int width,int height) => new(width,height,ColorType,AlphaType,ColorSpace);
+    public readonly SKImageInfo WithSize(SKSizeI size) => WithSize(size.Width,size.Height);
+    public readonly SKSizeI Size => new(Width,Height);
+    public readonly SKRectI Rect => new(0,0,Width,Height);
     public readonly SKImageInfo WithColorType(SKColorType newColorType) => new(Width,Height,newColorType,AlphaType,ColorSpace);
     public readonly SKImageInfo WithAlphaType(SKAlphaType newAlphaType) => new(Width,Height,ColorType,newAlphaType,ColorSpace);
     public readonly SKImageInfo WithColorSpace(SKColorSpace? newColorSpace) => new(Width,Height,ColorType,AlphaType,newColorSpace);
@@ -43,13 +42,4 @@ public struct SKImageInfo : IEquatable<SKImageInfo>
     public override readonly int GetHashCode() => HashCode.Combine(Width,Height,ColorType,AlphaType,ColorSpace);
     public static bool operator ==(SKImageInfo left,SKImageInfo right) => left.Equals(right);
     public static bool operator !=(SKImageInfo left,SKImageInfo right) => !left.Equals(right);
-}
-
-/// <summary>Only the sRGB identity profile is supported in this milestone.</summary>
-public class SKColorSpace : SKObject
-{
-    private SKColorSpace() { }
-    public static SKColorSpace CreateSrgb() => new();
-    public static SKColorSpace CreateSrgbLinear() => throw new NotSupportedException("Linear-light color spaces require the phase 4 color pipeline.");
-    public bool IsSrgb { get { ThrowIfDisposed(); return true; } }
 }

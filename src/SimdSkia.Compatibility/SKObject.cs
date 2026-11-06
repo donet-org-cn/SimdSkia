@@ -11,10 +11,11 @@ public abstract class SKNativeObject : IDisposable
         protected set => throw new NotSupportedException("Native Skia handles cannot be installed in SimdSkia.");
     }
     protected bool IsDisposed => disposed;
+    protected virtual bool IgnoreDispose => false;
     internal void ThrowIfDisposed() => ObjectDisposedException.ThrowIf(disposed, this);
     public void Dispose()
     {
-        if (disposed) return;
+        if (disposed || IgnoreDispose) return;
         Dispose(true);
         disposed=true;
         GC.SuppressFinalize(this);

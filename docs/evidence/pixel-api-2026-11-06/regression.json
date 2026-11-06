@@ -1,0 +1,293 @@
+[
+  {
+    "name": "basic-old-stride-assertion",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/SimdSkia.Tests",
+      "-c",
+      "Release",
+      "--no-build"
+    ],
+    "exitCode": 1,
+    "log": "basic-old-stride-assertion.log"
+  },
+  {
+    "name": "pixel",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/PixelCompatibility/Managed",
+      "-c",
+      "Release",
+      "--",
+      "artifacts\\pixel-api-2026-11-06\\checks-regression\\managed"
+    ],
+    "exitCode": 0,
+    "log": "pixel.log"
+  },
+  {
+    "name": "optimization",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Optimization",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "baseline/fonts/ZenOldMincho-Regular.ttf"
+    ],
+    "exitCode": 0,
+    "log": "optimization.log"
+  },
+  {
+    "name": "codec",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/CodecIntegration",
+      "-c",
+      "Release",
+      "--no-build"
+    ],
+    "exitCode": 0,
+    "log": "codec.log"
+  },
+  {
+    "name": "pdf",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Pdf",
+      "-c",
+      "Release",
+      "--no-build"
+    ],
+    "exitCode": 0,
+    "log": "pdf.log"
+  },
+  {
+    "name": "features",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Features",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "baseline/fonts/ZenOldMincho-Regular.ttf"
+    ],
+    "exitCode": 0,
+    "log": "features.log"
+  },
+  {
+    "name": "controls",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/AvaloniaControls",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "--frames",
+      "5",
+      "--output",
+      "artifacts\\pixel-api-2026-11-06\\controls"
+    ],
+    "exitCode": 0,
+    "log": "controls.log"
+  },
+  {
+    "name": "gpu",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Gpu",
+      "-c",
+      "Release",
+      "--no-build"
+    ],
+    "exitCode": 0,
+    "log": "gpu.log"
+  },
+  {
+    "name": "direct2d",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Direct2D",
+      "-c",
+      "Release",
+      "--no-build"
+    ],
+    "exitCode": 0,
+    "log": "direct2d.log"
+  },
+  {
+    "name": "example",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "examples/Pixels",
+      "-c",
+      "Release",
+      "--no-build"
+    ],
+    "exitCode": 0,
+    "log": "example.log"
+  },
+  {
+    "name": "aot-build",
+    "command": [
+      "dotnet",
+      "publish",
+      "tests/PixelCompatibility/NativeAot",
+      "-c",
+      "Release",
+      "-r",
+      "win-x64",
+      "-o",
+      "artifacts\\pixel-api-2026-11-06\\aot"
+    ],
+    "exitCode": 0,
+    "log": "aot-build.log"
+  },
+  {
+    "name": "aot",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\pixel-api-2026-11-06\\aot\\NativeAot.exe"
+    ],
+    "exitCode": 0,
+    "log": "aot.log"
+  },
+  {
+    "name": "optimization-fallback",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Optimization",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "baseline/fonts/ZenOldMincho-Regular.ttf"
+    ],
+    "exitCode": 0,
+    "log": "optimization-fallback.log"
+  },
+  {
+    "name": "pixel-fallback",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/PixelCompatibility/Managed",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "artifacts/pixel-api-2026-11-06/checks-fallback-complete/managed"
+    ],
+    "exitCode": 0,
+    "log": "pixel-fallback.log"
+  },
+  {
+    "name": "basic",
+    "exitCode": 0,
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/SimdSkia.Tests",
+      "-c",
+      "Release"
+    ],
+    "log": "basic.log"
+  },
+  {
+    "name": "pixel-release",
+    "command": [
+      "python",
+      "tools/check-pixel-compatibility.py",
+      "--output",
+      "artifacts\\pixel-api-2026-11-06\\checks-complete"
+    ],
+    "exitCode": 2,
+    "log": "pixel-release.log"
+  },
+  {
+    "name": "geometry",
+    "command": [
+      "python",
+      "tools/check-geometry-compatibility.py",
+      "--output",
+      "artifacts\\pixel-api-2026-11-06\\geometry"
+    ],
+    "exitCode": 0,
+    "log": "geometry.log"
+  },
+  {
+    "name": "shader",
+    "command": [
+      "python",
+      "tools/check-shader-compatibility.py",
+      "--output",
+      "artifacts\\pixel-api-2026-11-06\\shader"
+    ],
+    "exitCode": 0,
+    "log": "shader.log"
+  },
+  {
+    "name": "stroke",
+    "command": [
+      "python",
+      "tools/check-stroke-compatibility.py",
+      "--output",
+      "artifacts\\pixel-api-2026-11-06\\stroke"
+    ],
+    "exitCode": 2,
+    "log": "stroke.log"
+  },
+  {
+    "name": "imaging",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Imaging",
+      "-c",
+      "Release",
+      "--no-build"
+    ],
+    "exitCode": 3762504530,
+    "log": "imaging.log"
+  },
+  {
+    "name": "example",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "examples/Pixels",
+      "-c",
+      "Release",
+      "--no-build"
+    ],
+    "exitCode": 0,
+    "log": "example.log"
+  }
+]

@@ -5,7 +5,7 @@ public sealed partial class RasterCanvas
     private bool TryFillHorizontalGradient(CoverageMask mask,in DrawingCommand command,Matrix3 inverse,int dx,int dy,int left,int top,int right,int bottom)
     {
         var shader=command.Paint.Shader;
-        if(shader is null||!shader.IsHorizontal||!shader.IsOpaque||inverse.M01!=0||command.Paint.Color.A!=255||target.Alpha==AlphaFormat.Straight||command.Paint.Composite is not (CompositeMode.Source or CompositeMode.SourceOver))return false;
+        if(command.Paint.Blender is not null||command.Paint.Dither||command.Paint.ColorFilter is not null||shader is null||!shader.IsHorizontal||!shader.IsOpaque||inverse.M01!=0||command.Paint.Color.A!=255||target.Alpha==AlphaFormat.Straight||command.Paint.Composite is not (CompositeMode.Source or CompositeMode.SourceOver))return false;
         int start=Math.Max(left,mask.Left+dx),end=Math.Min(right,mask.Left+dx+mask.Width);if(start>=end)return true;
         var key=(shader,inverse,start,end);
         gradientRows??=[];
@@ -42,6 +42,12 @@ public sealed partial class RasterCanvas
         if(mask.Dense)mask.Data.CopyTo(data,0);
         else foreach(var run in mask.Runs)data.AsSpan((run.Y-mask.Top)*mask.Width+run.X-mask.Left,run.Length).Fill(run.Coverage);
         return ClipCoverageCache.Add(key,new(mask.Left,mask.Top,mask.Width,mask.Height,data));
+    }
+    internal static CoverageClip CreateClipForBounds(PathGeometry geometry,Matrix3 transform,int width,int height,bool antialias)
+    {
+        if((long)width*height>16_777_216)throw new NotSupportedException("Pixel-accurate no-draw path clips are limited to 16 million pixels.");
+        var mask=PathRasterizer.Rasterize(geometry.Flatten(transform,.015625f),geometry.FillRule,width,height,antialias,compactRuns:true);
+        var data=new byte[checked(mask.Width*mask.Height)];foreach(var run in mask.Runs)data.AsSpan((run.Y-mask.Top)*mask.Width+run.X-mask.Left,run.Length).Fill(run.Coverage);return new(mask.Left,mask.Top,mask.Width,mask.Height,data);
     }
     private static byte ClipCoverage(byte coverage,int x,int y,CoverageClip? clip)=>clip is null?coverage:PixelBuffer.Multiply(coverage,clip.At(x,y));
     private static int ClipRun(CoverageClip clip,int x,int y,int maximum,out byte coverage)
@@ -90,8 +96,8 @@ public sealed partial class RasterCanvas
         if(!command.Transform.TryInvert(out var inverse))return;
         using var snapshot=image.GetPixelSpan().Overlaps(target.GetPixelSpan())?image.Clone():null;
         image=snapshot??image;
-        if(TryBlit(command,source,image))return;
-        if(TryDrawAxisSampled(command,source,image,inverse))return;
+        if(command.Paint.Blender is null&&command.Paint.FloatingColor is null&&command.Paint.ColorFilter is null&&TryBlit(command,source,image))return;
+        if(command.Paint.Blender is null&&command.Paint.FloatingColor is null&&command.Paint.ColorFilter is null&&TryDrawAxisSampled(command,source,image,inverse))return;
         var geometry=RectangleGeometry(command.Rectangle);
         var mask=GetMask(geometry,command);var rect=command.Rectangle;
         float sx=(source.Right-source.Left)/(rect.Right-rect.Left),sy=(source.Bottom-source.Top)/(rect.Bottom-rect.Top);
@@ -103,7 +109,7 @@ public sealed partial class RasterCanvas
                 byte coverage=ClipCoverage(run.Coverage,x,run.Y,command.CoverageClip);if(coverage==0)continue;
                 var p=inverse.Map(x+.5f,run.Y+.5f);
                 var sample=Sample(image,source.Left+(p.X-rect.Left)*sx-.5f,source.Top+(p.Y-rect.Top)*sy-.5f,command.Sampling,source,command.NearestLowerBoundary);
-                CompositePremultiplied(row.Slice(x*4,4),sample,command.Paint.Color.A,coverage,command.Paint.Composite,command.Sampling!=ImageSampling.Mitchell);
+                CompositePremultiplied(row.Slice(x*4,4),sample,command.Paint.Color.A,coverage,command.Paint.Composite,command.Sampling!=ImageSampling.Mitchell,command.Paint.ColorFilter,command.Paint);
             }
         }
     }
@@ -120,13 +126,14 @@ public sealed partial class RasterCanvas
         bool lowerBoundary=command.NearestLowerBoundary&&command.Sampling==ImageSampling.Nearest,analyticCoverage=lowerBoundary&&command.Paint.Antialias;
         int x0=n==16?SampleGrid(left,target.Width):SampleEdge(left,target.Width),x1=n==16?SampleGrid(right,target.Width):SampleEdge(right,target.Width);
         int y0=n==16?SampleGrid(top,target.Height):SampleEdge(top,target.Height),y1=n==16?SampleGrid(bottom,target.Height):SampleEdge(bottom,target.Height);
+        if((command.LatticeRectangleEdges||command.AliasedRectangleEdges)&&!command.Paint.Antialias){x0=RoundEdge(left,target.Width);x1=RoundEdge(right,target.Width);y0=RoundEdge(top,target.Height);y1=RoundEdge(bottom,target.Height);}
         if(analyticCoverage){x0=(int)Math.Clamp(MathF.Floor(left),0,target.Width)*n;x1=(int)Math.Clamp(MathF.Ceiling(right),0,target.Width)*n;y0=(int)Math.Clamp(MathF.Floor(top),0,target.Height)*n;y1=(int)Math.Clamp(MathF.Ceiling(bottom),0,target.Height)*n;}
         int start=x0/n,end=(x1+n-1)/n;if(start>=end||y0>=y1)return true;
         int minX=(int)MathF.Floor(source.Left),maxX=(int)MathF.Ceiling(source.Right)-1,minY=(int)MathF.Floor(source.Top),maxY=(int)MathF.Ceiling(source.Bottom)-1;
         var taps=System.Buffers.ArrayPool<ImageTap>.Shared.Rent(end-start);
         // Sample once into a reusable PMA scanline, then composite constant
         // coverage spans with the same integer kernel as unscaled images.
-        byte[]? sampled=command.Paint.Composite==CompositeMode.SourceOver&&target.Alpha!=AlphaFormat.Straight
+        byte[]? sampled=(command.Paint.Composite==CompositeMode.SourceOver||command.Paint.Composite==CompositeMode.Source&&command.Paint.Color.A==255)&&target.Alpha!=AlphaFormat.Straight
             ?System.Buffers.ArrayPool<byte>.Shared.Rent(checked((end-start)*4)):null;
         float sx=(source.Right-source.Left)/(rect.Right-rect.Left),sy=(source.Bottom-source.Top)/(rect.Bottom-rect.Top);
         bool nearest=command.Sampling==ImageSampling.Nearest;
@@ -135,8 +142,8 @@ public sealed partial class RasterCanvas
         {
             for(int x=start;x<end;x++)
             {
-                var p=inverse.Map(x+.5f,.5f);float u=source.Left+(p.X-rect.Left)*sx-.5f;int ix=(int)MathF.Floor(u);
-                taps[x-start]=nearest?new(Math.Clamp(lowerBoundary?LowerTexel(u):(int)MathF.Floor(u+.5f),minX,maxX),0,0):new(Math.Clamp(ix,minX,maxX),Math.Clamp(ix+1,minX,maxX),u-ix);
+                var p=inverse.Map(x+.5f,.5f);float u=(command.LatticeRectangleEdges?p.X*sx+(source.Left-rect.Left*sx):source.Left+(p.X-rect.Left)*sx)-.5f;int ix=(int)MathF.Floor(u);
+                taps[x-start]=nearest?new(Math.Clamp(lowerBoundary?(command.LatticeRectangleEdges?(int)MathF.Floor(MathF.BitDecrement(u+.5f)):LowerTexel(u)):(int)MathF.Floor(u+.5f),minX,maxX),0,0):new(Math.Clamp(ix,minX,maxX),Math.Clamp(ix+1,minX,maxX),u-ix);
             }
             int ri=image.Format==PixelFormat.Rgba8888?0:2;bool straight=image.Alpha==AlphaFormat.Straight,opaque=image.Alpha==AlphaFormat.Opaque;
             Rgba32 Read(ReadOnlySpan<byte> row,int x)
@@ -147,8 +154,8 @@ public sealed partial class RasterCanvas
             int lastRow0=-1,lastRow1=-1;float lastFraction=float.NaN;var coverageClip=command.CoverageClip;
             for(int y=y0/n;y<(y1+n-1)/n;y++)
             {
-                var p=inverse.Map(.5f,y+.5f);float v=source.Top+(p.Y-rect.Top)*sy-.5f;int iy=(int)MathF.Floor(v);float fy=v-iy;
-                int rowIndex0=nearest?Math.Clamp(lowerBoundary?LowerTexel(v):(int)MathF.Floor(v+.5f),minY,maxY):Math.Clamp(iy,minY,maxY),rowIndex1=Math.Clamp(iy+1,minY,maxY);
+                var p=inverse.Map(.5f,y+.5f);float v=(command.LatticeRectangleEdges?p.Y*sy+(source.Top-rect.Top*sy):source.Top+(p.Y-rect.Top)*sy)-.5f;int iy=(int)MathF.Floor(v);float fy=v-iy;
+                int rowIndex0=nearest?Math.Clamp(lowerBoundary?(command.LatticeRectangleEdges?(int)MathF.Floor(MathF.BitDecrement(v+.5f)):LowerTexel(v)):(int)MathF.Floor(v+.5f),minY,maxY):Math.Clamp(iy,minY,maxY),rowIndex1=Math.Clamp(iy+1,minY,maxY);
                 var row0=image.GetRowSpan(rowIndex0);
                 var row1=image.GetRowSpan(rowIndex1);var destination=target.GetRowSpan(y);
                 int cy=Math.Max(0,Math.Min(y1,(y+1)*n)-Math.Max(y0,y*n));
@@ -201,7 +208,16 @@ public sealed partial class RasterCanvas
                         byte coverage=Coverage(x);int next=x+1;
                         if(coverageClip is null){if(x>start&&x<end-1)next=end-1;}
                         else if(x>start&&x<end-1)next=x+ClipRun(coverageClip,x,y,end-1-x,out _);
-                        if(coverage!=0)ImageCompositor.SourceOver(sampled.AsSpan((x-start)*4,(next-x)*4),destination.Slice(x*4,(next-x)*4),PixelBuffer.Multiply(command.Paint.Color.A,coverage),opaque,true);
+                        if(coverage!=0)
+                        {
+                            var from=sampled.AsSpan((x-start)*4,(next-x)*4);var to=destination.Slice(x*4,(next-x)*4);
+                            if(command.Paint.Composite==CompositeMode.Source)
+                            {
+                                if(coverage==255)from.CopyTo(to);
+                                else for(int k=0;k<next-x;k++){int at=k*4,di=target.Format==PixelFormat.Rgba8888?0:2;CompositePremultiplied(to.Slice(at,4),new(from[at+di],from[at+1],from[at+2-di],from[at+3]),255,coverage,CompositeMode.Source);}
+                            }
+                            else ImageCompositor.SourceOver(from,to,PixelBuffer.Multiply(command.Paint.Color.A,coverage),opaque,true);
+                        }
                         x=next;
                     }
                 }
@@ -231,6 +247,7 @@ public sealed partial class RasterCanvas
         int left=(int)MathF.Floor(source.Left),top=(int)MathF.Floor(source.Top),right=(int)MathF.Ceiling(source.Right)-1,bottom=(int)MathF.Ceiling(source.Bottom)-1;
         Rgba32 Read(int ix,int iy)
         {
+            if(image.Format==PixelFormat.Alpha8)return new(0,0,0,image.Alpha==AlphaFormat.Opaque?(byte)255:image.GetRowSpan(Math.Clamp(iy,top,bottom))[Math.Clamp(ix,left,right)]);
             var p=image.GetRowSpan(Math.Clamp(iy,top,bottom)).Slice(Math.Clamp(ix,left,right)*4,4);
             int ri=image.Format==PixelFormat.Rgba8888?0:2;byte a=image.Alpha==AlphaFormat.Opaque?(byte)255:p[3],r=p[ri],g=p[1],b=p[2-ri];
             if(image.Alpha==AlphaFormat.Straight){r=PixelBuffer.Multiply(r,a);g=PixelBuffer.Multiply(g,a);b=PixelBuffer.Multiply(b,a);}
@@ -252,8 +269,27 @@ public sealed partial class RasterCanvas
         byte Clamp(float value)=>(byte)Math.Clamp((int)MathF.Round(value),0,alpha);
         return new(Clamp(r),Clamp(g),Clamp(b),alpha);
     }
-    private void CompositePremultiplied(Span<byte> pixel,Rgba32 source,byte opacity,byte coverage,CompositeMode mode,bool filtered=false)
+    private void CompositeShader(Span<byte> pixel,Paint paint,float x,float y,byte coverage,int deviceX,int deviceY)
     {
+        if(paint.FloatingColor is not null||paint.Blender is not null||paint.Dither)
+        {
+            System.Numerics.Vector4 source;
+            if(paint.Shader is IPremultipliedColorShader floating)source=floating.SamplePremultiplied(x,y);
+            else{var c=paint.Shader!.Sample(x,y);float a=c.A/255f;source=new(c.R/255f*a,c.G/255f*a,c.B/255f*a,a);}
+            source*=paint.FloatingColor?.W??paint.Color.A/255f;
+            if(paint.ColorFilter is {} cf)source=cf.FilterRaster(source);
+            if(paint.Dither){int ix=deviceX,iy=deviceY;iy^=ix;int m=((iy&1)<<5)|((ix&1)<<4)|((iy&2)<<2)|((ix&2)<<1)|((iy&4)>>1)|((ix&4)>>2);float noise=(m*(2f/128)-63f/128)/255;source.X=Math.Clamp(source.X+noise,0,source.W);source.Y=Math.Clamp(source.Y+noise,0,source.W);source.Z=Math.Clamp(source.Z+noise,0,source.W);}
+            BlendKernel.ApplyCustom(pixel,target.Format,target.Alpha,source,paint.Composite,coverage,paint.Blender);return;
+        }
+        if(paint.Shader is IPremultipliedColorShader pm){var source=pm.SamplePremultiplied(x,y)*(paint.Color.A/255f);if(paint.ColorFilter is {} filter)source=filter.FilterRaster(source);BlendKernel.ApplyPremultiplied(pixel,target.Format,target.Alpha,source,255,paint.Composite,coverage);return;}
+        var color=paint.Shader!.Sample(x,y);Composite(pixel,paint with {Color=color with {A=PixelBuffer.Multiply(color.A,paint.Color.A)}},coverage);
+    }
+    private void CompositePremultiplied(Span<byte> pixel,Rgba32 source,byte opacity,byte coverage,CompositeMode mode,bool filtered=false,IColorFilter? colorFilter=null,Paint? custom=null)
+    {
+        if(custom is {} p&&(p.Blender is not null||p.FloatingColor is not null))
+        {float multiplier=(p.FloatingColor?.W??opacity/255f)/255;var value=new System.Numerics.Vector4(source.R,source.G,source.B,source.A)*multiplier;if(colorFilter is not null)value=colorFilter.FilterRaster(value);BlendKernel.ApplyCustom(pixel,target.Format,target.Alpha,value,mode,coverage,p.Blender);return;}
+        if(colorFilter is not null){float Scale(byte c)=>colorFilter.UsesLowPrecision?((c*opacity+255)>>8)/255f:c*(opacity/(255f*255));var value=colorFilter.FilterRaster(new(Scale(source.R),Scale(source.G),Scale(source.B),Scale(source.A)));BlendKernel.ApplyPremultiplied(pixel,target.Format,target.Alpha,value,255,mode,coverage);return;}
+        if(mode is not (CompositeMode.SourceOver or CompositeMode.Source or CompositeMode.Clear)){BlendKernel.ApplyPremultiplied(pixel,target.Format,target.Alpha,source,opacity,mode,coverage);return;}
         if(filtered&&mode==CompositeMode.SourceOver&&target.Alpha!=AlphaFormat.Straight)
         {
             Span<byte> color=stackalloc byte[4];int channel=target.Format==PixelFormat.Rgba8888?0:2;

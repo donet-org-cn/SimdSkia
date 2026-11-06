@@ -7,6 +7,9 @@ public sealed record VulkanDispatchProfile(CommandKind Kind,bool Antialias,int W
     public Rgba32 Color {get;init;}
     public CompositeMode Composite {get;init;}
     public bool Shader {get;init;}
+    /// <summary>Multiple independent rectangles can share one actual dispatch.
+    /// Paint fields describe the first command when this count exceeds one.</summary>
+    public int CommandCount {get;init;}=1;
 }
 
 public sealed record VulkanProfile(ulong InitializationTicks,ulong DrawingTicks,ulong ReadbackTicks,

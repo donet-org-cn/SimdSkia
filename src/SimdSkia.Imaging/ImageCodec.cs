@@ -21,7 +21,7 @@ public static class ImageCodec
     public static byte[] Encode(PixelBuffer pixels,ImageFileFormat format,int quality=90)
     {
         ArgumentNullException.ThrowIfNull(pixels);if(quality is <0 or >100)throw new ArgumentOutOfRangeException(nameof(quality));
-        return format switch{ImageFileFormat.Png=>PngCodec.Encode(pixels),ImageFileFormat.Jpeg=>JpegCodec.Encode(pixels,quality),_=>CodecBackend.EncodeOther(pixels,format)};
+        return format switch{ImageFileFormat.Png=>PngCodec.Encode(pixels),ImageFileFormat.Jpeg=>JpegCodec.Encode(pixels,quality),ImageFileFormat.Webp=>WebpCodec.Encode(pixels,false,quality),_=>CodecBackend.EncodeOther(pixels,format)};
     }
     public static PixelBuffer Decode(ReadOnlySpan<byte> data)
     {

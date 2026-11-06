@@ -1,5 +1,34 @@
 # 依赖与许可证
 
+## 0.1.2-preview.1 的依赖边界
+
+本轮未新增生产NuGet/原生绘图组件。路径使用纯托管Clipper2 2.0.0（BSL-1.0）；编解码固定Sdcb.SimdCodecs十五包1.4.0（MIT），可选PDF读取使用PdfPig0.1.16（Apache-2.0）。CPU几何/光栅/字体/基本排版为C#，PNG/TIFF允许.NET系统压缩的原生实现，macOS官方窗口宿主为经允许的另一例外。
+
+GL/GLES、Vulkan、D3D11/Direct2D、D3D12的D3D11On12以及Objective-C/Metal均通过C#互操作调用操作系统/驱动，不分发Google Skia或第三方GPU绑定库。Metal没有Mac GPU，仍未实机验证。原版SkiaSharp3.119.4和ANGLE原生宿主仅用于隔离测试；FontTools、Edge/WPF、Matplotlib及glslang仅用于开发/独立验证，不进入产品。系统宋体文件只从测试机读取，未复制进NuGet或仓库。源算法和API包装保留Skia BSD/SkiaSharp MIT归属，随对应包提供许可证。
+
+生产依赖检查包含Clipper2的传递引用以及新增Direct2D→Gpu边，不再错误地将历史“零NuGet包”描述当作本版事实。详见[本轮报告](PUBLIC-API-FINAL-2026-11-07.md)与锁文件；以下为历史记录。
+
+## 2026-11-07 公共 API 99项缺口源码批次
+
+Core新增对既已用于Avalonia层的 **Clipper2 [2.0.0]** 直接引用，用于C#路径布尔运算，BSL-1.0，纯托管、无原生组件；复用 `licenses/Clipper2-BSL-1.0.txt` 随Core包分发。RuntimeEffect、Perlin、Coons与固定边规则均由C#执行，移植算法保留固定基线Skia BSD许可；值合同/旧包装转发保留SkiaSharp MIT许可。不调用Google Skia原生绘图。ANGLE/原版native assets仍仅隔离测试；系统GPU驱动调用与此前允许的.NET压缩/macOS窗口宿主例外保持。当前版本和锁文件随完整Release构建验证，尚未发布。下面保留此前时点依赖记录。
+
+## 2026-11-06 公共 API 补全（未发布）
+
+没有新增生产 NuGet 或原生组件。矩阵、流、格式和值合同及旧 Paint 转发采用固定 SkiaSharp 3.119.4 的 MIT C# 源码并保留归属；skcms 转移函数、路径测量/椭圆弧及 CSS 字体评分根据 Google Skia chrome/m119 的 BSD-3 算法改写为 C#。许可证已分别随 Compatibility 包分发 `SkiaSharp-MIT.txt` 和 `Skia-BSD.txt`；这是算法的托管实现，不加载或调用 Google Skia 原生库。Core 增加必要的外部内存 Span 边界，字体文件页使用 .NET 文件 API；编解码继续保留此前允许的 .NET 系统压缩例外。原版包及 native assets 只在新增的 Original 对照项目内。
+
+
+2026-11-06 像素API一轮未新增生产包或原生分发组件。HSL/HSV浮点颜色算法采用SkiaSharp3.119.4的MIT实现，保留头部与既有SkiaSharp-MIT许可证；没有调用其原生颜色函数。像素视图/转换、Vector<uint>交换和采样调度为C#实现，双线性复用本库既有CPU内核。unsafe仅用于调用方指针到有界Span的互操作边界和泛型sizeof，原版3.119.4仅为隔离oracle。图表仍仅使用artifacts开发依赖，不进入NuGet。
+
+2026-11-06 描边/查询扩展没有新增生产依赖、unsafe或原生组件。高级描边、几何查询和有界缓存由C#实现；冻结旧算法仅在测试项目中。SkiaSharp3.119.4仍只用于隔离对照，Matplotlib图表只用于开发报告，不进入产品。
+
+2026-11-06 圆锥API/GPU缓存一轮未新增NuGet或原生分发依赖；有理曲线和缓存逻辑为本仓库C#实现，Direct2D通过已有系统COM绑定。原版3.119.4和ANGLE仍只用于隔离对照；Matplotlib/NumPy仅在artifacts开发目录生成性能图，不进入产品。字体沿用OFL夹具。新测试只在Windows x64实机执行。
+
+
+2026-11-06 渐变扩展未新增NuGet或原生运行组件。扫描渐变采用Skia m119中xy_to_unit_angle多项式的标量C#翻译，以匹配基线接缝方向；不是链接或调用Skia。来源为src/opts/SkRasterPipeline_opts.h，Copyright 2018 Google Inc.，BSD-3-Clause，归属及条款随Compatibility输出/NuGet保留于licenses/Skia-BSD.txt。其他多色标/矩阵/擦除及Vector<T>内核为本仓库C#实现。原版3.119.4仅在隔离oracle/benchmark使用，图表工具仍仅为artifacts内开发依赖。
+
+
+2026-11-06 本轮生产依赖未增加。固定原版3.119.4仅在隔离测试/基准使用；命名颜色值由该基线核对，原MIT归属继续随兼容层保留。报告绘图开发依赖Matplotlib3.11.2（Matplotlib 1.3.0及以后版本许可协议，基于PSF/BSD条款）、NumPy2.5.4（BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0，含原生扩展）及其传递依赖仅安装于忽略的artifacts/report-python目录，不改系统Python、不进入C#产品、NuGet或AOT发布。字体仍用既有固定OFL夹具。
+
 ## 0.1.1 版本兼容
 
 渲染适配器以 Avalonia 12.1.0 编译，允许 [12.1.0,13.0.0)。桌面包保存 Avalonia 12.1.0–12.1.5 的 Win32/X11/FreeDesktop/AtSpi/Native 托管宿主与对应官方 macOS 窗口桥接库，均为 Avalonia MIT（包内 licenses/Avalonia-MIT.txt）；构建按实际核心版本选择一套，其他版本不进入应用输出。libAvaloniaNative.dylib 是此前允许的 macOS 窗口系统原生例外，不负责 Google Skia 绘图。Linux 原有托管 DBus 依赖 Tmds.DBus.Protocol 0.94.1（MIT，net9 资产传递 System.IO.Pipelines 8.0.0，无 native 资产）由传递改为显式引用；用途和最终依赖没有扩张。SDK >=10.0.403，采用已修复安全问题的 .NET 10.0.14 AOT 工具链，保留 NuGet 审计。
@@ -75,3 +104,13 @@ Avalonia 专项额外读取固定 12.1.4 官方 MIT 源码及隔离 Avalonia.Ski
 
 
 OCR 专项基准额外只读链接 Qcxt.OCR（Apache-2.0 源码及其原有第三方/模型 notices）、Qcxt.OCR.SkiaSharp（MIT）和本机缓存 SkiaSharp/Win32 NativeAssets 4.153.1（MIT 包及随包 notices，原生组件，仅 Reference）。目标资源保持原项目的许可归属；这些项目不属于六个生产程序集的引用图。基准使用 .NET 10 执行实际目标 CPU 内核，不修改全局兼容基线，也不把旧版/本项目的 native handle 或二进制兼容结果推广到 4.x。
+
+2026-11-06 图像着色器/全混合/颜色滤镜增量没有引入生产包或原生库。ToShader/工厂转发按固定 SkiaSharp 3.119.4 MIT 源码核对；字节混合舍入、矩阵和高对比度工作色域参考 Google Skia m119 的 BSD-3-Clause 算法，以 C# 实现（不调用 Skia）。已有 Skia-BSD 与 SkiaSharp-MIT 条款继续随库输出保留。原版 DLL 仍仅进入 Original 测试/基准。
+
+2026-11-06 字体程序实现增量：使用 Michael Popoloski SharpFont 的 MIT C# TrueType 字节码算法，经 LayoutFarm/Typography 固定提交 5877180c7c5271091379a0eaf9f03ab6ebd256b3 核对。仅移植解释器/点结构，不引用 Typography 的窗口、SkiaSharp、原生字体或图像后端；没有新增生产 NuGet 包。SimdSkia 改为托管 IUP、显式失败与每次程序 100 万指令预算；许可证在 docs/licenses/SharpFont-MIT.txt 并随 Text 输出/包保留。仅 em 轮廓程序链路，扫描控制状态被记录；不据此声称完整字号 hinting、dropout 或复杂排版已实现。隔离 FontTools 与去指令 OFL 派生字体只用于 artifacts 下的归因实验，不进入产品或 NuGet。
+
+2026-11-07 余项开发：SVG/XPS/SKP/WebP/浮点/LCD/EBDT未新增生产NuGet或自带原生组件。SKP v103布局、画笔打包、8x8抖动参考固定Skia m119 BSD-3源码并用C#独立实现，继续保留Skia-BSD。EBDT/EBLC按Microsoft OpenType规范实现。独立测试使用Edge的SVG渲染、Windows WPF XPS阅读器、FontTools 4.68.0解析系统宋体；这些仅在隔离测试/工具中，未进入生产引用。系统字体文件不复制入产品或包；测试记录字体哈希及有限渲染输出。参考规范：[EBLC](https://learn.microsoft.com/en-us/typography/opentype/spec/eblc)、[EBDT](https://learn.microsoft.com/en-us/typography/opentype/spec/ebdt)。
+
+2026-11-07 GPU兼容入口增量：Compatibility 新增对本仓库纯C# `SimdSkia.Gpu.Direct2D` 项目的引用，用于通过系统 D3D11On12 将 C# Direct2D 驱动映射到调用方实际 D3D12 device/queue。调用Windows自带d3d11/d3d12/d2d1/dxgi、系统OpenGL，以及macOS自带Metal/Objective-C系统API；不复制或分发这些系统库，不携带新的渲染/字体/编解码原生组件。GPU着色器分别为GLSL与MSL。Metal部分没有Mac GPU实机结果，不能由Windows编译成功推断运行支持。
+
+隔离GL测试宿主固定引用 `Avalonia.Angle.Windows.Natives 2.1.27548.20260419`（随包上游许可证及notices，包含原生ANGLE）；仅进入Original/Managed测试，不进入产品包。另有WGL系统OpenGL测试与基准，不需要ANGLE。原版测试固定SkiaSharp/NativeAssets 3.119.4，macOS实机测试工程引用其macOS NativeAssets；后者在本机明确为未执行。D3D11On12系统接口参考[Microsoft官方文档](https://learn.microsoft.com/en-us/windows/win32/api/d3d11on12/nf-d3d11on12-d3d11on12createdevice)，Metal完成语义参考[Apple waitUntilCompleted](https://developer.apple.com/documentation/metal/mtlcommandbuffer/waituntilcompleted())；这不构成Metal实机通过记录。

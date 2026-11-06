@@ -5,7 +5,7 @@ using SimdSkia;
 namespace SkiaSharp;
 
 [StructLayout(LayoutKind.Sequential)]
-public readonly struct SKColor : IEquatable<SKColor>
+public readonly partial struct SKColor : IEquatable<SKColor>
 {
     public static readonly SKColor Empty;
     private readonly uint color;
@@ -32,7 +32,7 @@ public readonly struct SKColor : IEquatable<SKColor>
     internal static SKColor FromCore(Rgba32 color) => new(color.R,color.G,color.B,color.A);
 }
 
-public struct SKColors
+public partial struct SKColors
 {
     public static SKColor Empty => SKColor.Empty;
     public static SKColor Transparent=new(0x00ffffff);

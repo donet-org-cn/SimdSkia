@@ -1,8 +1,29 @@
 # 兼容报告：SkiaSharp 3.119.4
 
+固定 SkiaSharp **3.119.4 / 3235 项**，当前匹配 **3230 项、201 公开类型、5 缺口、0 额外签名**。从99项冻结快照补入94项；五项原生句柄/版本合同按用户要求保留，不伪造替代语义。新增真实Alpha8、浮点颜色/Blender/抖动、LCD/中文点阵、SVG/XPS、原生v103 SKP子集与GL/D3D12/Metal GPU资源链路。Vulkan增加非重叠矩形合批、设备内复制、直接完成读回与去分配；Metal没有Mac GPU实机验证。**JPEG、部分文字/曲线、整页画质及性能/内存差距仍存在，不代表全面行为或二进制兼容。**
+
+[本轮全部结果与限制](PUBLIC-API-FINAL-2026-11-07.md) · [逐项API](api/comparison.json)
+
+## 当前能力与边界
+
+| 模块 | 已实现 | 仍需区分的限制 |
+|---|---|---|
+| 像素/图像 | 真正Alpha8、RGBA/BGRA、Span/指针/stride、提取/复制/缩放、懒图、编解码/Codec | 非全部像素格式/ICC目标；部分Span合同不同；压缩输入仍可能预解码 |
+| 路径/画布 | 变换/描边/裁剪/路径效果/布尔、Picture、网格/Atlas/曲面、Lattice | 曲线布尔使用展平；部分AA/文字/整页严格画质失败 |
+| 着色器/滤镜 | float/渐变/Perlin、RuntimeEffect子语言、CPU滤镜/Blender/ColorF/dither | 不是完整SkSL；GPU对新增复杂阶段明确拒绝，需显式回退 |
+| 字体 | 系统发现、中文TrueType、基本中英文布局、LCD、单色嵌入点阵、TextBlob | 完整hinting/复杂脚本/全部彩色与可变格式未覆盖；字形像素不同 |
+| GPU | Vulkan/Direct2D、GL/GLES、D3D12与真实资源导入/接管/回调/方向/完成读回 | Metal无实机验证；MSAA/部分采样/非sRGB/高级状态/SaveLayer仍有限制；部分路径有CPU桥接 |
+| 文档 | 多页PDF生成及可选读取/显示；SVG/XPS向量；原生v103 SKP子集交叉读写 | PDF非完整规范且生成文字非搜索矢量；SKP不支持全部flattenable与操作码，明确报错 |
+
+源码默认兼容目标为SkiaSharp3.119.4。元数据、Dispose、参数/异常、释放回调与画质分开记录；同名类型默认不能与原版无别名混编。程序集名称/强名称/公钥不同，没有二进制替换承诺。原版只在隔离对照项目使用。
+
+## 下方为早期应用验收与实现历史
+
+下列旧表、旧缓存预算和“仍缺”描述保留其原时点；当前能力以上表及2026-11-07报告为准。
+
 最新真实应用验收：[VelaShell 整体兼容](VELASHELL-COMPATIBILITY-2026-10-27.md)。常规页面可以通过独立 Avalonia 适配器绘制；实际发现并修正字体 Try 失败语义和图片舍入边界。字体合成仍未实现，Try 返回 false 后由 Avalonia 保留真实近邻字面，不会伪造 Bold/Oblique 元数据。完整应用、原生 Skia 移除和默认整页一致性仍未通过，不能仅以 23 个页面有像素判定全部兼容。
 
-**当前源码包含未发布扩展**：[独立兼容层与 PDF 实测](STANDALONE-COMPATIBILITY-2026-10-27.md)。下表 API 清单已更新至当前源码；NuGet preview.8 的历史数据仍为 37 类型、425/3235 项。新增 PDF 阅读是品牌扩展，不能算作 SkiaSharp 兼容项。
+**2026-10-27 独立扩展调查（历史）**：[独立兼容层与 PDF 实测](STANDALONE-COMPATIBILITY-2026-10-27.md)。下表 API 清单已更新至当前源码；NuGet preview.8 的历史数据仍为 37 类型、425/3235 项。新增 PDF 阅读是品牌扩展，不能算作 SkiaSharp 兼容项。
 
 2026-10-22 第二轮核验：[原版对照与性能](PERFORMANCE-COMPATIBILITY-2026-10-22.md)。ImageBrush 38/40、VisualBrush 5/10，新功能总计 82/114；旧图像 108/120、完整 UI 0/3、GPU 12/24，完整行为兼容仍未成立。下表区分 SK* 外观与独立 Avalonia 平台适配器，后者通过服务接口接入，并不要求完整 SK* 表面。
 
@@ -16,13 +37,13 @@
 
 | 维度 | 当前结果 |
 | --- | --- |
-| 源码 | 已实现子集可重编译；同一绘图/行为调用分别编译至原版与替代。63 类型/892 公共项与基线匹配，2343 缺口；完整 SkiaSharp 与任意 Avalonia 应用替换尚未验收。 |
-| 二进制 | 未成立。原版 SkiaSharp, Version=3.119.0.0, PublicKeyToken=0738eb9f132ed756；本轮实际构建的替代为 SimdSkia.Compatibility, Version=0.1.0.0, PublicKeyToken=null。未伪造强名称、公钥或承诺已编译依赖直接替换。 |
-| 行为 | 本轮独立调用链原版 26、替代 37 项检查通过；新增像素对照 11/14 达标，圆角/文字 3 项未通过。历史整页画质缺口仍在，完整行为兼容未成立。 |
+| 源码 | 已实现子集可重编译；同一绘图/行为调用分别编译至原版与替代。146 类型/2384 公共项与基线匹配，851 缺口；完整 SkiaSharp 与任意 Avalonia 应用替换尚未验收。 |
+| 二进制 | 未成立。原版 SkiaSharp, Version=3.119.0.0, PublicKeyToken=0738eb9f132ed756；本轮实际构建的替代为 SimdSkia.Compatibility, Version=0.1.1.0, PublicKeyToken=null。未伪造强名称、公钥或承诺已编译依赖直接替换。 |
+| 行为 | 新像素431组10875值除Span19字段差异外通过，462组像素过预设门槛；原描边53组605值通过，像素27/48。曲线、硬边、文字、JPEG及整页仍有差异，fullBehavioralCompatibility=false；不能将局部通过累加为完整兼容。 |
 
 ## 清单
 
-[基线](api/baseline-3.119.4.json) 包含 202 类型/3235 项；[替代](api/implemented.json) 63 类型/892 项；[逐项差异](api/comparison.json) 2343 项缺失，0 项额外或不同。892 包含类型、枚举字段、值类型重载和明确拒绝的 API，不等于 892 个绘图功能已完全验收。提取时程序集 InformationalVersion 仍含 preview.8 和当前 HEAD；**文件 SHA 标识此次未提交构建，不能当成公开 preview.8 包的 SHA**。
+[基线](api/baseline-3.119.4.json) 包含202类型/3235项；[当前源码](api/implemented.json)146类型/2384项；[逐项差异](api/comparison.json)851项缺失、0项额外或不同。包括类型、枚举字段、重载和明确拒绝的API，不等于2384个完整功能。文件SHA对应本轮未发布源码构建，不能用作已发布0.1.1包的SHA；历史892项清单在旧调查报告中保留。
 
 清单覆盖公开类型/基类/可见接口/struct layout、构造/方法/重载/返回、字段与枚举值、属性访问器/事件、泛型约束、参数名/in/out/ref/pointer/默认值/optional/required modifiers，以及 Obsolete/Flags/ParamArray/MarshalAs。尚缺 protected 扩展面、全部 custom attributes/nullable/ABI 调用细节；metadata 不代替行为或二进制验收。
 
@@ -30,16 +51,17 @@
 
 | 类型/领域 | 已实现 | 明确缺口/限制 |
 | --- | --- | --- |
-| SKColor/SKColors、几何/矩阵/ImageInfo | 基础子集、RGBA/BGRA/三 Alpha/stride/仿射；补 Point/PointI/Point3、Size/SizeI、Rect/RectI 值操作及 Inflate | 全部颜色/矩阵 API 仍未覆盖，checked 溢出可能不同 |
-| SKBitmap/SKSurface/SKImage | 托管分配、Span/Bytes/GetPixel/SetPixel、Clear/Copy/Snapshot、PNG/JPEG/GIF 首帧；真实 GetPixels 指针 | 外部 InstallPixels/SetPixels、GR surface、native Handle 等拒绝或缺失；部分分配/解码异常与原版不同 |
-| SKPath | Move/Line/Quad/Cubic/Close、AddRect/AddCircle、四种 fill rule、Bounds、快照 | conic/arc/path ops/多数 API 缺失 |
-| SKPaint/SKCanvas/SKRoundRect | AA 填充、butt/miter stroke、线/圆/圆角、路径/AA/差集 clip、状态、整组透明度 SaveLayer、两色 Clamp gradient、最近邻/双线性/Mitchell 图片 | StrokeAndFill、其他 caps/joins、其他 blend 与 shader/filter、mipmap/各向异性采样仍拒绝；SaveLayer 使用 CPU 临时层；圆角像素边缘与原版有差异 |
-| SKTypeface/SKFont/SKFontStyle | glyf TTF/TTC、face/cmap/metrics/XY composite/轮廓、基本中英文；独立 FromFamilyName 及字体样式/本地化名称匹配 | 独立字体引擎的 CFF/可变/彩色/组件点附着/hint VM/复杂 shaping/逐字符 fallback 未支持；新字体发现本轮只在 Windows 实测 |
+| SKColor/SKColorF/SKColors、几何/矩阵/ImageInfo | 基础值类型、浮点RGBA/HSL/HSV/转换、RGBA/BGRA/三Alpha/stride、Size/Rect属性、仿射、Point/Size/Rect值操作及Inflate | 浮点颜色值不等于支持F16/HDR；命名颜色141项及矩阵批量映射等已补，其他颜色/矩阵API仍缺，checked溢出可能不同 |
+| SKBitmap/SKSurface/SKImage/SKPixmap | 分配/读取/指针/Span、独立Copy/CopyTo、Pixels、PeekPixels保留视图、重置/immutable标记、别名子集、擦除、最近邻/双线性/三次缩放、图像/Surface读像素、已有编码与通用Stream编码 | SKPixmap可描述调用方拥有的外部像素；InstallPixels/SetPixels、GR/native Handle仍拒绝。仅RGBA/BGRA8888；Span按物理stride与原版紧凑计算有已记差异；mipmap/各向异性/旧Medium明确拒绝，编码选项仍缺 |
+| SKPath | Move/Line/Quad/Conic/Cubic/Close、相对命令、椭圆/AddArc/矩形及切线ArcTo、多边形、路径Append/Extend/自身追加、仿射Transform/Offset、点/动词及缓存边界、IsLine/IsRect/IsOval与GetLine/GetRect/GetOvalBounds、SegmentMasks | 新增 SVG/端点椭圆弧、iterator、圆角起点/方向、测量；RoundRect 已使用原版 conic。path ops、convexity 等仍缺；原版画质差异仍保留 |
+| SKPaint/SKCanvas/SKRoundRect | DrawColor/DrawPaint、DrawOval/DrawArc、Clone/Reset/IsStroke、GetFillPath十二重载、枢轴变换/Skew、AA填充、三种cap及三种join描边、缓存线/圆/圆角、路径/AA/差集clip、状态、整组透明度SaveLayer、最近邻/双线性/Mitchell图片 | DrawLine按原版忽略Style；其他形状StrokeAndFill、描边文字、其他blend/shader/filter、mipmap/各向异性仍拒绝；GetFillPath轮廓拓扑不保证和原版相同，投影分辨率矩阵拒绝；SaveLayer用CPU临时层，像素边缘仍有差异 |
+| SKShader | SKColor多色标线性/径向/扫描渐变，Clamp/Repeat/Mirror/Decal、硬色标、可逆局部矩阵嵌套、CreateColor/CreateEmpty；快照与释放后保留，零长度/零半径/相同扫描角退化；50场景原版像素验证 | SKColorF/颜色空间插值、噪声/混合/图像shader等仍缺；非有限多色标及投影地平线采样明确拒绝。Vulkan仅支持已测线性Clamp/Repeat/Mirror，径向/扫描/Decal明确拒绝；Direct2D不接受独立局部矩阵，原有显式CPU回退仍可用 |
+| SKTypeface/SKFont/SKFontStyle | glyf TTF/TTC、face/cmap/metrics/XY composite/轮廓、基本中英文；独立 FromFamilyName、Typeface切换/默认值/保留视图及字体样式/本地化名称匹配 | 独立字体引擎的 CFF/可变/彩色/组件点附着/hint VM/复杂 shaping/逐字符 fallback 未支持；新字体发现本轮只在 Windows 实测 |
 | SKTextBlob/Builder/RunBuffer | 定位字形 run 构建、glyph/position Span、Build 后独立快照、跨画布覆盖率缓存与真实绘制；SKFont 的 codepoint→glyph 和 Span 度量 | 仅定位 run 子集；字体灰度、默认选项、glyph bounds 仍有差异；重叠字形透明合成不完整；无 native text blob handle |
 | 文本布局 | 同位置 DrawText、度量/对齐；SimdSkia.TextRendering 支持基本换行与 Latin word/CJK 边界折行并返回布局 | 不是完整 Unicode line-break/shaping；不支持 Bidi/mark，段落 API 是品牌 API，不伪造基线重载 |
-| PNG/JPEG/GIF/SKCodec/SKData | C# PNG/Adam7/16 位、JPEG、部分 ICC 转 sRGB；GIF LZW/交错/处置/随机帧、SKCodec 三格式解码 | WebP/BMP/APNG、四分量渐进 JPEG、全部 ICC、增量/扫描线 Codec 仍未完成；GIF Plain Text 明确拒绝；PNG quality 不改变无损像素 |
+| PNG/JPEG/GIF/SKCodec/SKData | C# PNG/Adam7/16 位、JPEG、部分 ICC 转 sRGB；GIF LZW/交错/处置/随机帧、SKCodec 三格式解码 | 当前已切换Sdcb.SimdCodecs1.4.0，格式范围以编解码报告为准；全部ICC、增量/扫描线Codec及native互操作仍有缺口；GIF Plain Text 明确拒绝；PNG quality 不改变无损像素 |
 | SKDocument/PDF | 多页栅格 PDF 导出、DPI/元数据/调用者流生命周期；可选 SimdSkia.Pdf 解析并渲染已有 PDF 页面 | 无矢量/可搜索文字输出、PDF/A；阅读仅支持已列明的路径、字体、图像和颜色子集，详见专项报告 |
-| SIMD | Vector<T> 清屏/Alpha/不透明图片行，AVX2 覆盖率合成/Adler，SSE2/SSSE3 PNG 过滤/转换；真实标量 fallback | 各路径依硬件选择；未宣称所有功能都已优化或 ARM 实机验证 |
+| SIMD | Vector<T> 清屏/区域擦除/Alpha/不透明图片行/不透明两色线性渐变行，AVX2 覆盖率合成/Adler，SSE2/SSSE3 PNG 过滤/转换；真实标量 fallback | 各路径依硬件选择；未宣称所有功能都已优化或 ARM 实机验证 |
 | GPU | VulkanSurface 离屏；独立 Avalonia.Gpu 可选 Windows Direct2D 原生交换链、Windows/Linux Vulkan 完成后回读；有界纹理内容缓存 | 无 GR/native handle 替代/完整 GPU API/二进制接入；Vulkan 直接窗口交换链、macOS GPU、Linux 物理 GPU 验收仍缺失 |
 
 ## 默认值和生命周期
@@ -65,3 +87,5 @@ Dispose 后包装对象访问采取显式异常保护；只宣称探针对照点
 2026-10-21 已对真实 Avalonia.Skia.dll 做 [逐成员与调用者扫描](avalonia-api-12.1.4.json)：92 个 Skia 类型中本实现有 33 个；346 个成员引用中 120 个存在签名，226 个缺失。原始源码、MIT 许可与 SHA 固定在 [源码基线](avalonia-source-baseline.json)，可用 tools/fetch-avalonia-source.ps1 重取。属性访问器按成员计数，内联常量不在计数内；存在不等于行为验证通过。
 
 原 GlyphRunImpl 的构造期固定请求 Full hinting/LCD 来度量 bounds，目前会明确报错。DrawImage/SKSamplingOptions、round-rect/AA/path clip、SaveLayer/opacity mask/shadow、几何/regions、字体匹配以及宿主 GPU device/image/present 等仍有接入缺口。本轮只完成实际定位文字调用链的独立回放与优化，没有宣称整个 Avalonia 已能重编译或替换运行。
+
+文字批次冻结清单已到 **2455/3235、153 类型、780 缺口、0 额外**，仍未达到最多 99 项。实际 AOT 56 项、Direct2D 246418 项通过；严格文字图像只通过 15/392、字体仍 122 字段差异，不宣称画质或全应用性能持平。报告见 [文字 API 与 GPU 遮罩修复](TEXT-API-2026-11-06.md)；既有失败保留，公开 0.1.1 不变，后续 API 继续实现。

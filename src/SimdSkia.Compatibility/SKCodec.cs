@@ -3,7 +3,7 @@ using SimdSkia.Imaging;
 
 namespace SkiaSharp;
 
-public class SKCodec : SKObject
+public partial class SKCodec : SKObject
 {
     private GifImage? gif;
     private PixelBuffer? still;
@@ -14,6 +14,10 @@ public class SKCodec : SKObject
     private readonly SKCodecFrameInfo[] frames;
     private SKCodec(ReadOnlySpan<byte> bytes)
     {
+        // This baseline's PNG codec reports TopLeft even with an eXIf chunk.
+        // The imaging metadata reader still exposes the real container tag.
+        encodedOrigin=bytes.Length>=8&&System.Buffers.Binary.BinaryPrimitives.ReadUInt64BigEndian(bytes)==0x89504e470d0a1a0aul?SKEncodedOrigin.TopLeft:(SKEncodedOrigin)SimdSkia.Imaging.EncodedMetadata.ReadOrientation(bytes);
+        if(bytes.Length>=26&&bytes[..2].SequenceEqual("BM"u8))scanlineOrder=System.Buffers.Binary.BinaryPrimitives.ReadUInt32LittleEndian(bytes[14..])==12||System.Buffers.Binary.BinaryPrimitives.ReadInt32LittleEndian(bytes[22..])>0?SKCodecScanlineOrder.BottomUp:SKCodecScanlineOrder.TopDown;
         if(bytes.StartsWith("GIF87a"u8)||bytes.StartsWith("GIF89a"u8))
         {
             gif=new(bytes);format=SKEncodedImageFormat.Gif;var first=gif.Frames[0];
@@ -109,6 +113,8 @@ public class SKCodec : SKObject
     public SKCodecResult GetPixels(SKImageInfo info,IntPtr pixels)=>GetPixels(info,pixels,info.RowBytes,SKCodecOptions.Default);
     public SKCodecResult GetPixels(SKImageInfo info,IntPtr pixels,SKCodecOptions options)=>GetPixels(info,pixels,info.RowBytes,options);
     public unsafe SKCodecResult GetPixels(SKImageInfo info,IntPtr pixels,int rowBytes,SKCodecOptions options)
+    {ThrowIfDisposed();CancelDecode();return GetPixelsCore(info,pixels,rowBytes,options);}
+    private unsafe SKCodecResult GetPixelsCore(SKImageInfo info,IntPtr pixels,int rowBytes,SKCodecOptions options)
     {
         ThrowIfDisposed();if(pixels==IntPtr.Zero)throw new ArgumentNullException(nameof(pixels));
         if(info.ColorType is not (SKColorType.Bgra8888 or SKColorType.Rgba8888)||info.AlphaType is not (SKAlphaType.Opaque or SKAlphaType.Premul or SKAlphaType.Unpremul))return SKCodecResult.InvalidConversion;
@@ -138,5 +144,5 @@ public class SKCodec : SKObject
         }
         catch(InvalidDataException){return SKCodecResult.ErrorInInput;}
     }
-    protected override void Dispose(bool disposing){gif?.Dispose();gif=null;sequence?.Dispose();sequence=null;still?.Dispose();still=null;ownedStream?.Dispose();ownedStream=null;}
+    protected override void Dispose(bool disposing){CancelDecode();gif?.Dispose();gif=null;sequence?.Dispose();sequence=null;still?.Dispose();still=null;ownedStream?.Dispose();ownedStream=null;ownedSkStream?.Dispose();ownedSkStream=null;}
 }

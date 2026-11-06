@@ -5,7 +5,7 @@ using Sdcb.SimdCodecs.Png;
 namespace SimdSkia.Imaging;
 
 /// <summary>Sdcb PNG codec with SimdSkia validation and explicit sRGB conversion.</summary>
-public static class PngCodec
+public static partial class PngCodec
 {
     private static ReadOnlySpan<byte> Signature=>[137,80,78,71,13,10,26,10];
     public static byte[] Encode(PixelBuffer pixels)=>Encode(pixels,System.IO.Compression.CompressionLevel.Optimal);

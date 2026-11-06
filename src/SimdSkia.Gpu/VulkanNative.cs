@@ -116,4 +116,5 @@ internal static unsafe class Vk
     [DllImport(Library)]public static extern int vkCreateSampler(IntPtr device,SamplerInfo* info,void* allocator,ulong* sampler);
     [DllImport(Library)]public static extern void vkDestroySampler(IntPtr device,ulong sampler,void* allocator);
     [DllImport(Library)]public static extern void vkCmdCopyBufferToImage(IntPtr command,ulong buffer,ulong image,uint layout,uint count,BufferImageCopy* regions);
+    [DllImport(Library)]public static extern void vkCmdCopyImageToBuffer(IntPtr command,ulong image,uint layout,ulong buffer,uint count,BufferImageCopy* regions);
 }

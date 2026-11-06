@@ -1,0 +1,89 @@
+[
+  {
+    "scene": "pma-rgba-512",
+    "original": {
+      "msPerFrame": 0.3429031705227078,
+      "cpuMsPerFrame": 0.344425604069521,
+      "cpuPercentOfMachine": 8.461372382322148,
+      "allocatedBytesPerFrame": 0,
+      "workingSetMiB": 38.2734375,
+      "privateMiB": 15.97265625
+    },
+    "before": {
+      "msPerFrame": 1.402120490367776,
+      "cpuMsPerFrame": 1.3955779334500875,
+      "cpuPercentOfMachine": 8.294448438617115,
+      "allocatedBytesPerFrame": 1.5916230366492146,
+      "workingSetMiB": 38.1875,
+      "privateMiB": 17.24609375
+    },
+    "after": {
+      "msPerFrame": 0.2206504412575841,
+      "cpuMsPerFrame": 0.22252862328958392,
+      "cpuPercentOfMachine": 8.299966815756205,
+      "allocatedBytesPerFrame": 0.25151682294539435,
+      "workingSetMiB": 38.4765625,
+      "privateMiB": 17.16796875
+    },
+    "speedup": 6.3544875884973235,
+    "afterOverOriginal": 0.6434774018602203
+  },
+  {
+    "scene": "pma-swap-padded-512",
+    "original": {
+      "msPerFrame": 0.3660967063129003,
+      "cpuMsPerFrame": 0.364535681610247,
+      "cpuPercentOfMachine": 8.298028379085238,
+      "allocatedBytesPerFrame": 0.3047619047619048,
+      "workingSetMiB": 37.328125,
+      "privateMiB": 15.16015625
+    },
+    "before": {
+      "msPerFrame": 1.4549712727272728,
+      "cpuMsPerFrame": 1.4488636363636365,
+      "cpuPercentOfMachine": 8.296647445410326,
+      "allocatedBytesPerFrame": 1.6581818181818182,
+      "workingSetMiB": 38.16015625,
+      "privateMiB": 17.40625
+    },
+    "after": {
+      "msPerFrame": 0.2213907028223575,
+      "cpuMsPerFrame": 0.21886157648997528,
+      "cpuPercentOfMachine": 8.299249001153163,
+      "allocatedBytesPerFrame": 0.2523519645821804,
+      "workingSetMiB": 38.44140625,
+      "privateMiB": 17.41015625
+    },
+    "speedup": 6.5719619395884585,
+    "afterOverOriginal": 0.6047328451874583
+  },
+  {
+    "scene": "pma-rgba-720p",
+    "original": {
+      "msPerFrame": 2.4737697530864198,
+      "cpuMsPerFrame": 2.507716049382716,
+      "cpuPercentOfMachine": 8.44768746920883,
+      "allocatedBytesPerFrame": 2.074074074074074,
+      "workingSetMiB": 37.24609375,
+      "privateMiB": 14.65234375
+    },
+    "before": {
+      "msPerFrame": 9.930346913580248,
+      "cpuMsPerFrame": 9.837962962962964,
+      "cpuPercentOfMachine": 8.255806710966173,
+      "allocatedBytesPerFrame": 11.25925925925926,
+      "workingSetMiB": 37.35546875,
+      "privateMiB": 16.51953125
+    },
+    "after": {
+      "msPerFrame": 1.5604411306042885,
+      "cpuMsPerFrame": 1.5533625730994152,
+      "cpuPercentOfMachine": 8.291167641120122,
+      "allocatedBytesPerFrame": 1.7777777777777777,
+      "workingSetMiB": 37.546875,
+      "privateMiB": 16.3671875
+    },
+    "speedup": 6.363807463684755,
+    "afterOverOriginal": 0.6307948137280727
+  }
+]

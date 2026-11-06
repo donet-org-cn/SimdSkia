@@ -1,0 +1,283 @@
+{
+  "float": {
+    "Size": 4,
+    "IsEmpty": false,
+    "bytes": 4,
+    "failure": null,
+    "data": "A7A7A7A70000003EA7A7A7A7"
+  },
+  "float-zero": {
+    "Size": 4,
+    "IsEmpty": false,
+    "bytes": 4,
+    "failure": null,
+    "data": "A7A7A7A700000000A7A7A7A7"
+  },
+  "float-nan": {
+    "Size": 4,
+    "IsEmpty": false,
+    "bytes": 4,
+    "failure": null,
+    "data": "A7A7A7A70000C0FFA7A7A7A7"
+  },
+  "float-positive-infinity": {
+    "Size": 4,
+    "IsEmpty": false,
+    "bytes": 4,
+    "failure": null,
+    "data": "A7A7A7A70000807FA7A7A7A7"
+  },
+  "float-mismatch": {
+    "Size": 4,
+    "IsEmpty": false,
+    "bytes": 8,
+    "failure": "System.ArgumentOutOfRangeException:Type",
+    "data": "A7A7A7A7A7A7A7A7A7A7A7A7A7A7A7A7"
+  },
+  "float-short": {
+    "Size": 4,
+    "IsEmpty": false,
+    "bytes": 3,
+    "failure": "System.ArgumentOutOfRangeException:Type",
+    "data": "A7A7A7A7A7A7A7A7A7A7A7"
+  },
+  "int": {
+    "Size": 4,
+    "IsEmpty": false,
+    "bytes": 4,
+    "failure": null,
+    "data": "A7A7A7A72A000000A7A7A7A7"
+  },
+  "int-negative": {
+    "Size": 4,
+    "IsEmpty": false,
+    "bytes": 4,
+    "failure": null,
+    "data": "A7A7A7A700000080A7A7A7A7"
+  },
+  "int-mismatch": {
+    "Size": 4,
+    "IsEmpty": false,
+    "bytes": 8,
+    "failure": "System.ArgumentOutOfRangeException:Type",
+    "data": "A7A7A7A7A7A7A7A7A7A7A7A7A7A7A7A7"
+  },
+  "float-array": {
+    "Size": 12,
+    "IsEmpty": false,
+    "bytes": 12,
+    "failure": null,
+    "data": "A7A7A7A70000803F00002040000050C0A7A7A7A7"
+  },
+  "float-array-empty": {
+    "Size": 0,
+    "IsEmpty": false,
+    "bytes": 0,
+    "failure": null,
+    "data": "A7A7A7A7A7A7A7A7"
+  },
+  "float-array-null": {
+    "Size": 0,
+    "IsEmpty": false,
+    "bytes": 0,
+    "failure": null,
+    "data": "A7A7A7A7A7A7A7A7"
+  },
+  "float-array-mismatch": {
+    "Size": 8,
+    "IsEmpty": false,
+    "bytes": 4,
+    "failure": "System.ArgumentOutOfRangeException:Type",
+    "data": "A7A7A7A7A7A7A7A7A7A7A7A7"
+  },
+  "float-span": {
+    "Size": 16,
+    "IsEmpty": false,
+    "bytes": 16,
+    "failure": null,
+    "data": "A7A7A7A7000040400000A0400000E04000003041A7A7A7A7"
+  },
+  "float-readonly-span": {
+    "Size": 16,
+    "IsEmpty": false,
+    "bytes": 16,
+    "failure": null,
+    "data": "A7A7A7A7000040400000A0400000E04000003041A7A7A7A7"
+  },
+  "float-span-live": {
+    "Size": 16,
+    "IsEmpty": false,
+    "bytes": 16,
+    "failure": null,
+    "data": "A7A7A7A700004040000088410000E04000003041A7A7A7A7"
+  },
+  "int-array": {
+    "Size": 16,
+    "IsEmpty": false,
+    "bytes": 16,
+    "failure": null,
+    "data": "A7A7A7A703000000FBFFFFFF11000000FFFFFF7FA7A7A7A7"
+  },
+  "int-array-null": {
+    "Size": 0,
+    "IsEmpty": false,
+    "bytes": 0,
+    "failure": null,
+    "data": "A7A7A7A7A7A7A7A7"
+  },
+  "int-span": {
+    "Size": 12,
+    "IsEmpty": false,
+    "bytes": 12,
+    "failure": null,
+    "data": "A7A7A7A704000000070000000D000000A7A7A7A7"
+  },
+  "int-readonly-span": {
+    "Size": 12,
+    "IsEmpty": false,
+    "bytes": 12,
+    "failure": null,
+    "data": "A7A7A7A704000000070000000D000000A7A7A7A7"
+  },
+  "point": {
+    "Size": 8,
+    "IsEmpty": false,
+    "bytes": 8,
+    "failure": null,
+    "data": "A7A7A7A70000A03F000010C1A7A7A7A7"
+  },
+  "size": {
+    "Size": 8,
+    "IsEmpty": false,
+    "bytes": 8,
+    "failure": null,
+    "data": "A7A7A7A7000070410000D841A7A7A7A7"
+  },
+  "point3": {
+    "Size": 12,
+    "IsEmpty": false,
+    "bytes": 12,
+    "failure": null,
+    "data": "A7A7A7A70000803F0000004000004040A7A7A7A7"
+  },
+  "point-i": {
+    "Size": 8,
+    "IsEmpty": false,
+    "bytes": 8,
+    "failure": null,
+    "data": "A7A7A7A704000000FDFFFFFFA7A7A7A7"
+  },
+  "size-i": {
+    "Size": 8,
+    "IsEmpty": false,
+    "bytes": 8,
+    "failure": null,
+    "data": "A7A7A7A7280000003C000000A7A7A7A7"
+  },
+  "color": {
+    "Size": 16,
+    "IsEmpty": false,
+    "bytes": 16,
+    "failure": null,
+    "data": "A7A7A7A7F2F0F03DA1A0A03EABAA2A3FF8F6F63EA7A7A7A7"
+  },
+  "color-f": {
+    "Size": 16,
+    "IsEmpty": false,
+    "bytes": 16,
+    "failure": null,
+    "data": "A7A7A7A70000003E0000803E0000403F0000003FA7A7A7A7"
+  },
+  "color-three": {
+    "Size": 16,
+    "IsEmpty": false,
+    "bytes": 12,
+    "failure": null,
+    "data": "A7A7A7A70000003E0000803E0000403FA7A7A7A7"
+  },
+  "color-invalid": {
+    "Size": 16,
+    "IsEmpty": false,
+    "bytes": 8,
+    "failure": "System.ArgumentOutOfRangeException:Type",
+    "data": "A7A7A7A7A7A7A7A7A7A7A7A7A7A7A7A7"
+  },
+  "matrix": {
+    "Size": 36,
+    "IsEmpty": false,
+    "bytes": 36,
+    "failure": null,
+    "data": "A7A7A7A70000803F0000004000004040000080400000A0400000C0400000E0400000004100001041A7A7A7A7"
+  },
+  "matrix-array": {
+    "Size": 36,
+    "IsEmpty": false,
+    "bytes": 36,
+    "failure": null,
+    "data": "A7A7A7A70000803F0000004000004040000080400000A0400000C0400000E0400000004100001041A7A7A7A7"
+  },
+  "empty-default": {
+    "Size": 0,
+    "IsEmpty": true,
+    "bytes": 20,
+    "failure": null,
+    "data": "A7A7A7A70000000000000000000000000000000000000000A7A7A7A7"
+  },
+  "empty-named": {
+    "Size": 0,
+    "IsEmpty": true,
+    "bytes": 0,
+    "failure": null,
+    "data": "A7A7A7A7A7A7A7A7"
+  },
+  "children": [
+    {
+      "type": "SKShader",
+      "shader": true,
+      "filter": false,
+      "blender": false
+    },
+    {
+      "type": "SKColorFilter",
+      "shader": false,
+      "filter": true,
+      "blender": false
+    },
+    {
+      "type": "SKBlender",
+      "shader": false,
+      "filter": false,
+      "blender": true
+    },
+    {
+      "type": "SKShader",
+      "shader": true,
+      "filter": false,
+      "blender": false
+    },
+    {
+      "type": "SKColorFilter",
+      "shader": false,
+      "filter": true,
+      "blender": false
+    },
+    {
+      "type": "SKBlender",
+      "shader": false,
+      "filter": false,
+      "blender": true
+    },
+    {
+      "type": null,
+      "shader": false,
+      "filter": false,
+      "blender": false
+    },
+    {
+      "type": null,
+      "shader": false,
+      "filter": false,
+      "blender": false
+    }
+  ]
+}

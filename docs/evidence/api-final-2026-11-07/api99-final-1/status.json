@@ -1,0 +1,148 @@
+[
+  {
+    "suite": "runtime-values",
+    "command": [
+      "python",
+      "tools/check-runtime-values.py",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\api99-final-1\\runtime-values"
+    ],
+    "exitCode": 0
+  },
+  {
+    "suite": "runtime-effects",
+    "command": [
+      "python",
+      "tools/check-runtime-effects.py",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\api99-final-1\\runtime-effects"
+    ],
+    "exitCode": 0
+  },
+  {
+    "suite": "lattice-resources",
+    "command": [
+      "python",
+      "tools/check-lattice-resources.py",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\api99-final-1\\lattice-resources"
+    ],
+    "exitCode": 0
+  },
+  {
+    "suite": "pictures",
+    "command": [
+      "python",
+      "tools/check-pictures.py",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\api99-final-1\\pictures"
+    ],
+    "exitCode": 2
+  },
+  {
+    "suite": "gpu-context",
+    "command": [
+      "python",
+      "tools/check-gpu-context.py",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\api99-final-1\\gpu-context"
+    ],
+    "exitCode": 0
+  },
+  {
+    "suite": "float-shaders",
+    "command": [
+      "python",
+      "tools/check-float-shaders.py",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\api99-final-1\\float-shaders"
+    ],
+    "exitCode": 0
+  },
+  {
+    "suite": "image-operations",
+    "command": [
+      "python",
+      "tools/check-image-operations.py",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\api99-final-1\\image-operations"
+    ],
+    "exitCode": 2
+  },
+  {
+    "suite": "path-boolean",
+    "command": [
+      "python",
+      "tools/check-path-boolean.py",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\api99-final-1\\path-boolean"
+    ],
+    "exitCode": 2
+  },
+  {
+    "suite": "canvas-views",
+    "command": [
+      "python",
+      "tools/check-canvas-views.py",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\api99-final-1\\canvas-views"
+    ],
+    "exitCode": 0
+  },
+  {
+    "suite": "perlin",
+    "command": [
+      "python",
+      "tools/check-perlin.py",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\api99-final-1\\perlin"
+    ],
+    "exitCode": 0
+  },
+  {
+    "suite": "mesh-atlas",
+    "command": [
+      "python",
+      "tools/check-mesh-atlas.py",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\api99-final-1\\mesh-atlas"
+    ],
+    "exitCode": 0
+  },
+  {
+    "suite": "drawing-additions",
+    "command": [
+      "python",
+      "tools/check-drawing-additions.py",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\api99-final-1\\drawing-additions"
+    ],
+    "exitCode": 0
+  },
+  {
+    "suite": "cache-Original",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/CacheControls/Original",
+      "-c",
+      "Release",
+      "--no-build"
+    ],
+    "exitCode": 0
+  },
+  {
+    "suite": "cache-Managed",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/CacheControls/Managed",
+      "-c",
+      "Release",
+      "--no-build"
+    ],
+    "exitCode": 0
+  }
+]

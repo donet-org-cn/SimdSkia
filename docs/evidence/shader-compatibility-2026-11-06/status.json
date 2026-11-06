@@ -1,0 +1,17 @@
+{
+  "published": false,
+  "baseline": "SkiaSharp 3.119.4",
+  "apiMatches": 1105,
+  "baselineEntries": 3235,
+  "missing": 2130,
+  "extraSignatures": 0,
+  "newMatchesThisBatch": 15,
+  "fullCompatibility": false,
+  "newGpuTiming": false,
+  "newWholeAvaloniaMemoryTiming": false,
+  "knownFailures": [
+    "Default Imaging strict JPEG gate remains failing (previously recorded 21/24).",
+    "Prior real whole-page original CPU/GPU pixel gates remain failing; not replaced by the scoped shader gate."
+  ],
+  "scope": "50 gradient scenes; 30 exact erase fixtures; 480 erase scalar checks; 472085 exact optimization checks with SIMD enabled and hardware intrinsics disabled; actual Native AOT 14 checks; Windows Vulkan/Direct2D regressions"
+}

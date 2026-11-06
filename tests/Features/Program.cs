@@ -62,8 +62,14 @@ Test("PNG roundtrip and lifecycle",()=>
     using var b=new SKBitmap(new SKImageInfo(9,7,SKColorType.Rgba8888,SKAlphaType.Unpremul),44);
     for(int y=0;y<7;y++)for(int x=0;x<9;x++)b.SetPixel(x,y,new SKColor((byte)(x*20),(byte)(y*30),(byte)(x+y),(byte)(x*20+y)));
     using var data=b.Encode(SKEncodedImageFormat.Png,100);using var decoded=SKBitmap.Decode(data.ToArray());
-    for(int y=0;y<7;y++)for(int x=0;x<9;x++)Equal(b.GetPixel(x,y),decoded.GetPixel(x,y));
-    var corrupt=data.ToArray();corrupt[20]^=1;Throws<InvalidDataException>(()=>SKBitmap.Decode(corrupt));Throws<NotSupportedException>(()=>b.Encode(SKEncodedImageFormat.Webp,100));
+    for(int y=0;y<7;y++)for(int x=0;x<9;x++)
+    {
+        // Native Decode returns N32/PMA. Lossless PNG is verified on physical
+        // premultiplied bytes, since unpremultiply at low alpha loses precision.
+        var pm=SKPMColor.PreMultiply(b.GetPixel(x,y));int ri=decoded.ColorType==SKColorType.Rgba8888?0:2;var px=decoded.GetPixelSpan().Slice(y*decoded.RowBytes+x*4,4);
+        Equal(pm.Red,px[ri]);Equal(pm.Green,px[1]);Equal(pm.Blue,px[2-ri]);Equal(pm.Alpha,px[3]);
+    }
+    var corrupt=data.ToArray();corrupt[20]^=1;Throws<InvalidDataException>(()=>SKBitmap.Decode(corrupt));using var webp=b.Encode(SKEncodedImageFormat.Webp,100);using var webpDecoded=SKBitmap.Decode(webp.AsSpan());Equal(webpDecoded.Width,b.Width);Equal(webpDecoded.Height,b.Height);
     using var jpeg=b.Encode(SKEncodedImageFormat.Jpeg,95);using var jpegDecoded=SKBitmap.Decode(jpeg.ToArray());Equal(jpegDecoded.Width,b.Width);Equal(jpegDecoded.Height,b.Height);
     using var image=SKImage.FromBitmap(b);using var imageData=image.Encode(SKEncodedImageFormat.Png,100);True(imageData.Size>0);
 });
@@ -102,7 +108,9 @@ if(fontPath is not null&&File.Exists(fontPath))
         foreach(var line in layout.Lines)True(line.Width<=120);
         Equal(1,c.SaveCount);
         face.Dispose();True(font.MeasureText("中文")>0);
-        Throws<NotSupportedException>(()=>font.MeasureText("العربية"));Throws<NotSupportedException>(()=>font.Hinting=SKFontHinting.Normal);
+        // SKFont measures unshaped glyph advances like the baseline; layout remains explicit.
+        Equal(font.MeasureText(font.GetGlyphs("العربية")),font.MeasureText("العربية"));
+        Throws<NotSupportedException>(()=>c.DrawText("العربية",8,48,font,p));Throws<NotSupportedException>(()=>font.Hinting=SKFontHinting.Normal);
     });
 }
 else Console.WriteLine("NOT RUN: Chinese font test requires a real glyf CJK font path or SIMDSKIA_CJK_FONT; no font is fabricated.");

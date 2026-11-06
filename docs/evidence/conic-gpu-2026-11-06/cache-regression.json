@@ -1,0 +1,62 @@
+[
+  {
+    "command": "dotnet build SimdSkia.sln -c Release --nologo",
+    "exitCode": 0,
+    "name": "build-cache",
+    "log": "artifacts/conic-2026-11-06/build-cache.log"
+  },
+  {
+    "command": "dotnet run --project tests/Optimization -c Release --no-build -- baseline/fonts/ZenOldMincho-Regular.ttf",
+    "exitCode": 0,
+    "name": "optimization-cache",
+    "log": "artifacts/conic-2026-11-06/optimization-cache.log"
+  },
+  {
+    "command": "dotnet run --project tests/Gpu -c Release --no-build",
+    "exitCode": 0,
+    "name": "gpu-cache-regression",
+    "log": "artifacts/conic-2026-11-06/gpu-cache-regression.log"
+  },
+  {
+    "command": "dotnet run --project tests/GpuSampling -c Release --no-build",
+    "exitCode": 0,
+    "name": "gpu-cache-sampling",
+    "log": "artifacts/conic-2026-11-06/gpu-cache-sampling.log"
+  },
+  {
+    "command": "dotnet run --project tests/GpuOptimization -c Release --no-build -- baseline/fonts/ZenOldMincho-Regular.ttf",
+    "exitCode": 0,
+    "name": "gpu-cache-kernels",
+    "log": "artifacts/conic-2026-11-06/gpu-cache-kernels.log"
+  },
+  {
+    "command": "dotnet run --project tests/AvaloniaControls -c Release --no-build -- --frames 5 --output artifacts/conic-2026-11-06/controls-cache",
+    "exitCode": 0,
+    "name": "avalonia-cache",
+    "log": "artifacts/conic-2026-11-06/avalonia-cache.log"
+  },
+  {
+    "command": "dotnet publish tests/ConicCompatibility/NativeAot -c Release -r win-x64 -o artifacts/conic-2026-11-06/aot-cache --nologo",
+    "exitCode": 0,
+    "name": "aot-cache-build",
+    "log": "artifacts/conic-2026-11-06/aot-cache-build.log"
+  },
+  {
+    "command": "./artifacts/conic-2026-11-06/aot-cache/NativeAot.exe",
+    "exitCode": 0,
+    "name": "aot-cache",
+    "log": "artifacts/conic-2026-11-06/aot-cache.log"
+  },
+  {
+    "command": "dotnet build benchmarks/AvaloniaGpuParity/Managed -c Release --nologo",
+    "exitCode": 0,
+    "name": "gpu-cache-build",
+    "log": "artifacts/conic-2026-11-06/gpu-cache-build.log"
+  },
+  {
+    "command": "dotnet build examples/CrossPlatform -c Release --nologo",
+    "exitCode": 0,
+    "name": "desktop-cache-build",
+    "log": "artifacts/conic-2026-11-06/desktop-cache-build.log"
+  }
+]

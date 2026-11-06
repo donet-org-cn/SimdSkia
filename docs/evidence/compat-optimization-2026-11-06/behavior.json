@@ -1,0 +1,55 @@
+{
+  "cases": 299,
+  "valueChecks": 4612,
+  "numericTolerance": {
+    "absolute": 0.0001,
+    "relative": 2e-06
+  },
+  "pixelThreshold": {
+    "maximum": 32,
+    "rmse": 2
+  },
+  "images": [
+    {
+      "scene": "clone-gradient",
+      "maxError": 1,
+      "rmse": 0.31868871959954903,
+      "passed": true
+    },
+    {
+      "scene": "layer-bounds-hint",
+      "maxError": 1,
+      "rmse": 0.02209708691207961,
+      "passed": true
+    },
+    {
+      "scene": "path-fill",
+      "maxError": 1,
+      "rmse": 0.33829117335329634,
+      "passed": true
+    },
+    {
+      "scene": "transformed-fill",
+      "maxError": 1,
+      "rmse": 0.29646353064078557,
+      "passed": true
+    }
+  ],
+  "failures": [],
+  "knownBehavioralDifferences": [
+    {
+      "feature": "AddCircle point representation",
+      "baseline": {
+        "points": 9,
+        "verbs": 6
+      },
+      "replacement": {
+        "points": 13,
+        "verbs": 6
+      },
+      "reason": "Native conic segments versus the existing managed cubic circle approximation. Not declared behaviorally equivalent."
+    }
+  ],
+  "fullBehavioralCompatibility": false,
+  "passed": true
+}

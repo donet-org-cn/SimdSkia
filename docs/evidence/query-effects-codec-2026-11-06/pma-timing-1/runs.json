@@ -1,0 +1,353 @@
+[
+  {
+    "variant": "original",
+    "fork": 0,
+    "rows": [
+      {
+        "scene": "pma-rgba-512",
+        "msPerFrame": 0.3429031705227078,
+        "cpuMsPerFrame": 0.34142030848329047,
+        "cpuPercentOfMachine": 8.297296385518083,
+        "allocatedBytesPerFrame": 0.2879177377892031,
+        "workingSetMiB": 38.3671875,
+        "privateMiB": 15.97265625,
+        "gcHeapMiB": 0.342681884765625,
+        "frames": 2334
+      },
+      {
+        "scene": "pma-swap-padded-512",
+        "msPerFrame": 0.3660967063129003,
+        "cpuMsPerFrame": 0.364535681610247,
+        "cpuPercentOfMachine": 8.297800265254708,
+        "allocatedBytesPerFrame": 0.1756633119853614,
+        "workingSetMiB": 37.4140625,
+        "privateMiB": 15.25390625,
+        "gcHeapMiB": 0.33870697021484375,
+        "frames": 2186
+      },
+      {
+        "scene": "pma-rgba-720p",
+        "msPerFrame": 2.417058006042296,
+        "cpuMsPerFrame": 2.407477341389728,
+        "cpuPercentOfMachine": 8.300301907564837,
+        "allocatedBytesPerFrame": 2.0302114803625377,
+        "workingSetMiB": 37.24609375,
+        "privateMiB": 14.62109375,
+        "gcHeapMiB": 0.338836669921875,
+        "frames": 331
+      }
+    ]
+  },
+  {
+    "variant": "before",
+    "fork": 0,
+    "rows": [
+      {
+        "scene": "pma-rgba-512",
+        "msPerFrame": 1.402120490367776,
+        "cpuMsPerFrame": 1.3955779334500875,
+        "cpuPercentOfMachine": 8.294448438617115,
+        "allocatedBytesPerFrame": 1.5971978984238178,
+        "workingSetMiB": 38.265625,
+        "privateMiB": 17.24609375,
+        "gcHeapMiB": 1.3405685424804688,
+        "frames": 571
+      },
+      {
+        "scene": "pma-swap-padded-512",
+        "msPerFrame": 1.4605813868613138,
+        "cpuMsPerFrame": 1.4541514598540146,
+        "cpuPercentOfMachine": 8.296647445410326,
+        "allocatedBytesPerFrame": 1.6642335766423357,
+        "workingSetMiB": 38.2421875,
+        "privateMiB": 17.48046875,
+        "gcHeapMiB": 2.352264404296875,
+        "frames": 548
+      },
+      {
+        "scene": "pma-rgba-720p",
+        "msPerFrame": 10.258292307692308,
+        "cpuMsPerFrame": 10.216346153846153,
+        "cpuPercentOfMachine": 8.299258336095326,
+        "allocatedBytesPerFrame": 11.692307692307692,
+        "workingSetMiB": 37.41796875,
+        "privateMiB": 16.6015625,
+        "gcHeapMiB": 8.375831604003906,
+        "frames": 78
+      }
+    ]
+  },
+  {
+    "variant": "after",
+    "fork": 0,
+    "rows": [
+      {
+        "scene": "pma-rgba-512",
+        "msPerFrame": 0.2206504412575841,
+        "cpuMsPerFrame": 0.2197669608383894,
+        "cpuPercentOfMachine": 8.299966815756205,
+        "allocatedBytesPerFrame": 0.25151682294539435,
+        "workingSetMiB": 38.6171875,
+        "privateMiB": 18.09375,
+        "gcHeapMiB": 1.3405227661132812,
+        "frames": 3626
+      },
+      {
+        "scene": "pma-swap-padded-512",
+        "msPerFrame": 0.21976042296072507,
+        "cpuMsPerFrame": 0.21886157648997528,
+        "cpuPercentOfMachine": 8.299249001153163,
+        "allocatedBytesPerFrame": 0.17138148860203242,
+        "workingSetMiB": 38.6015625,
+        "privateMiB": 17.546875,
+        "gcHeapMiB": 2.3522186279296875,
+        "frames": 3641
+      },
+      {
+        "scene": "pma-rgba-720p",
+        "msPerFrame": 1.5551992233009708,
+        "cpuMsPerFrame": 1.5473300970873787,
+        "cpuPercentOfMachine": 8.291167641120122,
+        "allocatedBytesPerFrame": 1.770873786407767,
+        "workingSetMiB": 37.8125,
+        "privateMiB": 16.52734375,
+        "gcHeapMiB": 8.375785827636719,
+        "frames": 515
+      }
+    ]
+  },
+  {
+    "variant": "before",
+    "fork": 1,
+    "rows": [
+      {
+        "scene": "pma-rgba-512",
+        "msPerFrame": 1.3963689354275743,
+        "cpuMsPerFrame": 1.3907068062827226,
+        "cpuPercentOfMachine": 8.299542543275416,
+        "allocatedBytesPerFrame": 1.5916230366492146,
+        "workingSetMiB": 38.17578125,
+        "privateMiB": 17.953125,
+        "gcHeapMiB": 1.3405685424804688,
+        "frames": 573
+      },
+      {
+        "scene": "pma-swap-padded-512",
+        "msPerFrame": 1.4549712727272728,
+        "cpuMsPerFrame": 1.4488636363636365,
+        "cpuPercentOfMachine": 8.298351907479086,
+        "allocatedBytesPerFrame": 1.6581818181818182,
+        "workingSetMiB": 38.14453125,
+        "privateMiB": 17.40625,
+        "gcHeapMiB": 2.352264404296875,
+        "frames": 550
+      },
+      {
+        "scene": "pma-rgba-720p",
+        "msPerFrame": 9.817371951219512,
+        "cpuMsPerFrame": 9.71798780487805,
+        "cpuPercentOfMachine": 8.248972546798266,
+        "allocatedBytesPerFrame": 11.121951219512194,
+        "workingSetMiB": 37.328125,
+        "privateMiB": 16.453125,
+        "gcHeapMiB": 8.375831604003906,
+        "frames": 82
+      }
+    ]
+  },
+  {
+    "variant": "after",
+    "fork": 1,
+    "rows": [
+      {
+        "scene": "pma-rgba-512",
+        "msPerFrame": 0.2234379502932142,
+        "cpuMsPerFrame": 0.22252862328958392,
+        "cpuPercentOfMachine": 8.299419107838926,
+        "allocatedBytesPerFrame": 0.25467746439542027,
+        "workingSetMiB": 38.4765625,
+        "privateMiB": 17.12890625,
+        "gcHeapMiB": 1.3405227661132812,
+        "frames": 3581
+      },
+      {
+        "scene": "pma-swap-padded-512",
+        "msPerFrame": 0.2213907028223575,
+        "cpuMsPerFrame": 0.2161732152739347,
+        "cpuPercentOfMachine": 8.136942688427116,
+        "allocatedBytesPerFrame": 0.2523519645821804,
+        "workingSetMiB": 38.44140625,
+        "privateMiB": 17.41015625,
+        "gcHeapMiB": 2.3522186279296875,
+        "frames": 3614
+      },
+      {
+        "scene": "pma-rgba-720p",
+        "msPerFrame": 1.5604411306042885,
+        "cpuMsPerFrame": 1.5533625730994152,
+        "cpuPercentOfMachine": 8.295531215681876,
+        "allocatedBytesPerFrame": 1.7777777777777777,
+        "workingSetMiB": 37.546875,
+        "privateMiB": 16.3671875,
+        "gcHeapMiB": 8.375785827636719,
+        "frames": 513
+      }
+    ]
+  },
+  {
+    "variant": "original",
+    "fork": 1,
+    "rows": [
+      {
+        "scene": "pma-rgba-512",
+        "msPerFrame": 0.3437225085910653,
+        "cpuMsPerFrame": 0.3490120274914089,
+        "cpuPercentOfMachine": 8.461574350630146,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 38.2734375,
+        "privateMiB": 15.87109375,
+        "gcHeapMiB": 0.342681884765625,
+        "frames": 2328
+      },
+      {
+        "scene": "pma-swap-padded-512",
+        "msPerFrame": 0.36293215419501135,
+        "cpuMsPerFrame": 0.36139455782312924,
+        "cpuPercentOfMachine": 8.298028379085238,
+        "allocatedBytesPerFrame": 0.3047619047619048,
+        "workingSetMiB": 37.328125,
+        "privateMiB": 15.16015625,
+        "gcHeapMiB": 0.33870697021484375,
+        "frames": 2205
+      },
+      {
+        "scene": "pma-rgba-720p",
+        "msPerFrame": 2.4737697530864198,
+        "cpuMsPerFrame": 2.507716049382716,
+        "cpuPercentOfMachine": 8.44768746920883,
+        "allocatedBytesPerFrame": 2.074074074074074,
+        "workingSetMiB": 37.3203125,
+        "privateMiB": 14.8203125,
+        "gcHeapMiB": 0.338836669921875,
+        "frames": 324
+      }
+    ]
+  },
+  {
+    "variant": "after",
+    "fork": 2,
+    "rows": [
+      {
+        "scene": "pma-rgba-512",
+        "msPerFrame": 0.22040046831955923,
+        "cpuMsPerFrame": 0.2238292011019284,
+        "cpuPercentOfMachine": 8.462973589564466,
+        "allocatedBytesPerFrame": 0.06611570247933884,
+        "workingSetMiB": 38.4453125,
+        "privateMiB": 17.16796875,
+        "gcHeapMiB": 1.3405227661132812,
+        "frames": 3630
+      },
+      {
+        "scene": "pma-swap-padded-512",
+        "msPerFrame": 0.22605843458604125,
+        "cpuMsPerFrame": 0.22516953941791468,
+        "cpuPercentOfMachine": 8.300565435298681,
+        "allocatedBytesPerFrame": 0.25769991523029107,
+        "workingSetMiB": 38.4296875,
+        "privateMiB": 17.3984375,
+        "gcHeapMiB": 2.3522186279296875,
+        "frames": 3539
+      },
+      {
+        "scene": "pma-rgba-720p",
+        "msPerFrame": 1.650980824742268,
+        "cpuMsPerFrame": 1.5786082474226804,
+        "cpuPercentOfMachine": 7.968032415261973,
+        "allocatedBytesPerFrame": 1.8804123711340206,
+        "workingSetMiB": 37.546875,
+        "privateMiB": 16.14453125,
+        "gcHeapMiB": 8.375785827636719,
+        "frames": 485
+      }
+    ]
+  },
+  {
+    "variant": "original",
+    "fork": 2,
+    "rows": [
+      {
+        "scene": "pma-rgba-512",
+        "msPerFrame": 0.3392136922424756,
+        "cpuMsPerFrame": 0.344425604069521,
+        "cpuPercentOfMachine": 8.461372382322148,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 38.17578125,
+        "privateMiB": 16.609375,
+        "gcHeapMiB": 0.342681884765625,
+        "frames": 2359
+      },
+      {
+        "scene": "pma-swap-padded-512",
+        "msPerFrame": 0.3751618846694796,
+        "cpuMsPerFrame": 0.37359353023909986,
+        "cpuPercentOfMachine": 8.298496051649778,
+        "allocatedBytesPerFrame": 0.3150492264416315,
+        "workingSetMiB": 37.3046875,
+        "privateMiB": 15.0703125,
+        "gcHeapMiB": 0.33870697021484375,
+        "frames": 2133
+      },
+      {
+        "scene": "pma-rgba-720p",
+        "msPerFrame": 2.716630847457627,
+        "cpuMsPerFrame": 2.7542372881355934,
+        "cpuPercentOfMachine": 8.448692034329829,
+        "allocatedBytesPerFrame": 2.2779661016949153,
+        "workingSetMiB": 37.20703125,
+        "privateMiB": 14.65234375,
+        "gcHeapMiB": 0.338836669921875,
+        "frames": 295
+      }
+    ]
+  },
+  {
+    "variant": "before",
+    "fork": 2,
+    "rows": [
+      {
+        "scene": "pma-rgba-512",
+        "msPerFrame": 1.4076165202108963,
+        "cpuMsPerFrame": 1.4004833040421794,
+        "cpuPercentOfMachine": 8.291103459486914,
+        "allocatedBytesPerFrame": 0.421792618629174,
+        "workingSetMiB": 38.1875,
+        "privateMiB": 17.1484375,
+        "gcHeapMiB": 1.3405685424804688,
+        "frames": 569
+      },
+      {
+        "scene": "pma-swap-padded-512",
+        "msPerFrame": 1.3090942810457518,
+        "cpuMsPerFrame": 1.2765522875816993,
+        "cpuPercentOfMachine": 8.12617997333968,
+        "allocatedBytesPerFrame": 1.4901960784313726,
+        "workingSetMiB": 38.16015625,
+        "privateMiB": 17.3828125,
+        "gcHeapMiB": 2.352264404296875,
+        "frames": 612
+      },
+      {
+        "scene": "pma-rgba-720p",
+        "msPerFrame": 9.930346913580248,
+        "cpuMsPerFrame": 9.837962962962964,
+        "cpuPercentOfMachine": 8.255806710966173,
+        "allocatedBytesPerFrame": 11.25925925925926,
+        "workingSetMiB": 37.35546875,
+        "privateMiB": 16.51953125,
+        "gcHeapMiB": 8.375831604003906,
+        "frames": 81
+      }
+    ]
+  }
+]

@@ -6,10 +6,10 @@ internal static class SamplingValidation
     internal static int Run()
     {
         var random=new Random(9326);int checks=0;
-        foreach(var sourceFormat in Enum.GetValues<PixelFormat>())
-        foreach(var destinationFormat in Enum.GetValues<PixelFormat>())
+        foreach(var sourceFormat in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})
+        foreach(var destinationFormat in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})
         foreach(var alpha in Enum.GetValues<AlphaFormat>())
-        foreach(var mode in Enum.GetValues<CompositeMode>())
+        foreach(var mode in new[]{CompositeMode.SourceOver,CompositeMode.Source,CompositeMode.Clear})
         foreach(bool aa in new[]{false,true})
         foreach(bool mirror in new[]{false,true})
         foreach(int width in new[]{1,7,8,9,15,16,17,33,129})

@@ -29,7 +29,7 @@ public static class PathRasterizer
         return output;
     }
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    internal static CoverageMask Rasterize(PointF[][] contours,FillRule rule,int width,int height,bool antialias,RectF? clip=null,bool compactRuns=false)
+    internal static CoverageMask Rasterize(PointF[][] contours,FillRule rule,int width,int height,bool antialias,RectF? clip=null,bool compactRuns=false,bool aliasedHalfUp=true)
     {
         bool inverse=rule is FillRule.InverseEvenOdd or FillRule.InverseWinding;
         bool odd=rule is FillRule.EvenOdd or FillRule.InverseEvenOdd;
@@ -82,10 +82,14 @@ public static class PathRasterizer
                 if(sparse)events[..eventCount].Clear();
                 for(int sy=0;sy<samples;sy++)
                 {
-                    float sampleY=y+(sy+0.5f)*sampleStep;
+                    // The aliased Skia edge walker rounds half coordinates up:
+                    // a boundary at n+0.5 belongs to the preceding sample. Keep
+                    // the AA grid unchanged; this is the single-sample tie rule.
+                    float sampleY=antialias||!aliasedHalfUp?y+(sy+0.5f)*sampleStep:MathF.BitDecrement(y+0.5f);
                     while(nextEdge<n&&edges[nextEdge].Minimum<=sampleY)active[activeCount++]=nextEdge++;
                     int retained=0;
-                    bool clipped=clip is {} bound&&(sampleY<bound.Top||sampleY>=bound.Bottom);
+                    float clipSampleY=y+(sy+0.5f)*sampleStep;
+                    bool clipped=clip is {} bound&&(clipSampleY<bound.Top||clipSampleY>=bound.Bottom);
                     for(int j=0;j<activeCount;j++)
                     {
                         int index=active[j];var e=edges[index];if(e.Maximum<=sampleY)continue;
@@ -104,8 +108,8 @@ public static class PathRasterizer
                         bool inside=(odd?(winding&1)!=0:winding!=0)^inverse;
                         if(inside)
                         {
-                            if(sparse)AddSparseSpan(delta,events,x0,w,previous,next,samples,sampleShift,clip);
-                            else AddSpan(row,delta,x0,w,previous,next,samples,sampleShift,clip);
+                            if(sparse)AddSparseSpan(delta,events,x0,w,previous,next,samples,sampleShift,clip,aliasedHalfUp);
+                            else AddSpan(row,delta,x0,w,previous,next,samples,sampleShift,clip,aliasedHalfUp);
                         }
                         if(j<count){winding+=crossings[j].Winding;previous=next;}
                     }
@@ -166,7 +170,9 @@ public static class PathRasterizer
             while(end<w&&output[y*w+end]==coverage)end++;
             if(coverage!=0)runs.Add(new(y+y0,x+x0,end-x,coverage));x=end;
         }
-        return new(x0,y0,w,h,output,runs.ToArray());
+        // Compact callers consume runs when Dense is false. Keep only one
+        // coverage representation; public Coverage() still requests the grid.
+        return new(x0,y0,w,h,compactRuns?[]:output,runs.ToArray());
     }
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private static void SortCoherent(Span<Crossing> values,int count)
@@ -186,13 +192,14 @@ public static class PathRasterizer
         }
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void AddSpan(Span<int> row,Span<int> delta,int origin,int width,float left,float right,int samples,int sampleShift,RectF? clip)
+    private static void AddSpan(Span<int> row,Span<int> delta,int origin,int width,float left,float right,int samples,int sampleShift,RectF? clip,bool aliasedHalfUp)
     {
         left=MathF.Max(left,origin);right=MathF.Min(right,origin+width);
-        if(clip is {} c){left=MathF.Max(left,c.Left);right=MathF.Min(right,c.Right);}
+        if(clip is {} c&&(samples!=1||!aliasedHalfUp)){left=MathF.Max(left,c.Left);right=MathF.Min(right,c.Right);}
         if(left>=right)return;
-        int first=(int)Math.Clamp(MathF.Ceiling(left*samples-0.5f),origin*samples,(origin+width)*samples)-origin*samples;
-        int end=(int)Math.Clamp(MathF.Ceiling(right*samples-0.5f),origin*samples,(origin+width)*samples)-origin*samples;
+        int first=(int)Math.Clamp(samples==1&&aliasedHalfUp?MathF.Floor(left+0.5f):MathF.Ceiling(left*samples-0.5f),origin*samples,(origin+width)*samples)-origin*samples;
+        int end=(int)Math.Clamp(samples==1&&aliasedHalfUp?MathF.Floor(right+0.5f):MathF.Ceiling(right*samples-0.5f),origin*samples,(origin+width)*samples)-origin*samples;
+        if(samples==1&&aliasedHalfUp&&clip is {} bound){first=Math.Max(first,(int)Math.Clamp(MathF.Ceiling(bound.Left-.5f),origin,origin+width)-origin);end=Math.Min(end,(int)Math.Clamp(MathF.Ceiling(bound.Right-.5f),origin,origin+width)-origin);}
         if(first>=end)return;
         int a=first>>sampleShift,b=(end-1)>>sampleShift;
         if(a==b){row[a]+=end-first;return;}
@@ -200,13 +207,14 @@ public static class PathRasterizer
         if(a+1<b){delta[a+1]+=samples;delta[b]-=samples;}
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void AddSparseSpan(Span<int> delta,Span<ulong> events,int origin,int width,float left,float right,int samples,int sampleShift,RectF? clip)
+    private static void AddSparseSpan(Span<int> delta,Span<ulong> events,int origin,int width,float left,float right,int samples,int sampleShift,RectF? clip,bool aliasedHalfUp)
     {
         left=MathF.Max(left,origin);right=MathF.Min(right,origin+width);
-        if(clip is {} c){left=MathF.Max(left,c.Left);right=MathF.Min(right,c.Right);}
+        if(clip is {} c&&(samples!=1||!aliasedHalfUp)){left=MathF.Max(left,c.Left);right=MathF.Min(right,c.Right);}
         if(left>=right)return;
-        int first=(int)Math.Clamp(MathF.Ceiling(left*samples-0.5f),origin*samples,(origin+width)*samples)-origin*samples;
-        int end=(int)Math.Clamp(MathF.Ceiling(right*samples-0.5f),origin*samples,(origin+width)*samples)-origin*samples;
+        int first=(int)Math.Clamp(samples==1&&aliasedHalfUp?MathF.Floor(left+0.5f):MathF.Ceiling(left*samples-0.5f),origin*samples,(origin+width)*samples)-origin*samples;
+        int end=(int)Math.Clamp(samples==1&&aliasedHalfUp?MathF.Floor(right+0.5f):MathF.Ceiling(right*samples-0.5f),origin*samples,(origin+width)*samples)-origin*samples;
+        if(samples==1&&aliasedHalfUp&&clip is {} bound){first=Math.Max(first,(int)Math.Clamp(MathF.Ceiling(bound.Left-.5f),origin,origin+width)-origin);end=Math.Min(end,(int)Math.Clamp(MathF.Ceiling(bound.Right-.5f),origin,origin+width)-origin);}
         if(first>=end)return;
         int a=first>>sampleShift,b=(end-1)>>sampleShift;
         if(a==b)

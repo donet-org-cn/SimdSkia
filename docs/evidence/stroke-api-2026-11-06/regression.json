@@ -1,0 +1,74 @@
+[
+  {
+    "command": "dotnet build SimdSkia.sln -c Release --nologo",
+    "exitCode": 0,
+    "name": "build",
+    "log": "artifacts/stroke-2026-11-06/build.log"
+  },
+  {
+    "command": "dotnet run --project tests/SimdSkia.Tests -c Release --no-build",
+    "exitCode": 0,
+    "name": "basic",
+    "log": "artifacts/stroke-2026-11-06/basic.log"
+  },
+  {
+    "command": "dotnet run --project tests/Optimization -c Release --no-build -- baseline/fonts/ZenOldMincho-Regular.ttf",
+    "exitCode": 0,
+    "name": "optimization",
+    "log": "artifacts/stroke-2026-11-06/optimization.log"
+  },
+  {
+    "command": "dotnet run --project tests/CodecIntegration -c Release --no-build",
+    "exitCode": 0,
+    "name": "codec",
+    "log": "artifacts/stroke-2026-11-06/codec.log"
+  },
+  {
+    "command": "dotnet run --project tests/Pdf -c Release --no-build",
+    "exitCode": 0,
+    "name": "pdf",
+    "log": "artifacts/stroke-2026-11-06/pdf.log"
+  },
+  {
+    "command": "dotnet run --project tests/Features -c Release --no-build -- baseline/fonts/ZenOldMincho-Regular.ttf",
+    "exitCode": 0,
+    "name": "features",
+    "log": "artifacts/stroke-2026-11-06/features.log"
+  },
+  {
+    "command": "dotnet run --project tests/AvaloniaControls -c Release --no-build -- --frames 5 --output artifacts/stroke-2026-11-06/controls",
+    "exitCode": 0,
+    "name": "controls",
+    "log": "artifacts/stroke-2026-11-06/controls.log"
+  },
+  {
+    "command": "python tools/check-geometry-compatibility.py --output artifacts/stroke-2026-11-06/geometry",
+    "exitCode": 0,
+    "name": "geometry",
+    "log": "artifacts/stroke-2026-11-06/geometry.log"
+  },
+  {
+    "command": "python tools/check-shader-compatibility.py --output artifacts/stroke-2026-11-06/shaders",
+    "exitCode": 0,
+    "name": "shaders",
+    "log": "artifacts/stroke-2026-11-06/shaders.log"
+  },
+  {
+    "command": "dotnet run --project tests/Gpu -c Release --no-build",
+    "exitCode": 0,
+    "name": "gpu-existing",
+    "log": "artifacts/stroke-2026-11-06/gpu-existing.log"
+  },
+  {
+    "command": "dotnet run --project tests/Direct2D -c Release --no-build",
+    "exitCode": 0,
+    "name": "d2d-existing",
+    "log": "artifacts/stroke-2026-11-06/d2d-existing.log"
+  },
+  {
+    "command": "dotnet run --project examples/Strokes -c Release --no-build",
+    "exitCode": 0,
+    "name": "example",
+    "log": "artifacts/stroke-2026-11-06/example.log"
+  }
+]

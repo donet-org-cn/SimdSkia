@@ -1,0 +1,42 @@
+{
+  "cases": 56,
+  "valueChecks": 1015,
+  "numericTolerance": {
+    "absolute": 0.0001,
+    "relative": 2e-06
+  },
+  "pixelThreshold": {
+    "maximum": 32,
+    "rmse": 2
+  },
+  "images": [
+    {
+      "scene": "clone-gradient",
+      "maxError": 1,
+      "rmse": 0.31868871959954903,
+      "passed": true
+    },
+    {
+      "scene": "oval",
+      "maxError": 47,
+      "rmse": 2.019780569716594,
+      "passed": false
+    },
+    {
+      "scene": "path-fill",
+      "maxError": 1,
+      "rmse": 0.33829117335329634,
+      "passed": true
+    },
+    {
+      "scene": "transformed-fill",
+      "maxError": 1,
+      "rmse": 0.29646353064078557,
+      "passed": true
+    }
+  ],
+  "failures": [
+    "oval: pixel gate failed"
+  ],
+  "passed": false
+}

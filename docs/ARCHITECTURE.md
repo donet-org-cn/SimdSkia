@@ -1,5 +1,11 @@
 # 架构
 
+0.1.2-preview.1继续分离兼容层、命令/几何、CPU、文字、编解码和GPU。`SkiaSharp.SK*`源码外观转为引擎命令；Avalonia通过平台渲染接口独立接入。GPU内部以`IGpuCanvas`和真实`IGpuImage`资源分开设备/纹理生命周期，后端为Vulkan、GL/GLES、Direct2D/D3D12，以及尚无实机验证的Metal。GPU接口不提供伪造native Skia句柄；不支持的状态明确报错，Avalonia只在显式允许时记录CPU回退。
+
+Vulkan外部表面在设备内复制，非重叠矩形最多16条单dispatch；同格式读回直接进入调用方缓冲。D3D12/Metal部分导入操作仍有CPU桥接。GL→GL纹理直接绑定；共享CPU像素视图继续持有实际纹理租约，shader/Picture最后消费者决定释放回调。Metal无Mac GPU，不把Windows编译当作硬件验证。[实现、测试及限制](PUBLIC-API-FINAL-2026-11-07.md)。
+
+以下为历史架构记录，其中“未实现”须按对应版本阅读。
+
 preview.3 当前桌面管线为 `Avalonia -> SimdSkia.Avalonia -> ICanvasBackend`，后端可为 CPU、Windows Direct2D 原生 DXGI 交换链或 Windows/Linux Vulkan 完成后回读呈现。`SimdSkia.Avalonia.Desktop` 负责 Win32/X11/官方 Cocoa 宿主；GPU 会话与窗口绑定并跨帧复用，错误上报 faulted/IsCorrupted，resize 重建。文字默认由 C# 生成有界图集，再由 GPU 合成，覆盖裁剪逐字形烘焙以保持重叠顺序；图层/滤镜可包含 CPU 工作。没有伪造 Skia GR 上下文，也未实现 macOS GPU/Metal。新模块、预算、线程和实际验证见[桌面/GPU 报告](DESKTOP-GPU-2026-10-22.md)。下面保留早期实现记录，GPU 支持范围以最新报告为准。
 
 新增另一入口：`Avalonia Controls/Layout -> SimdSkia.Avalonia -> Core/Cpu/Text/Imaging`。它实现 Avalonia 12.1.4 的平台渲染/字体/排版服务，调用自有 CPU 后端，不经过 Avalonia.Skia 或 SkiaSharp 兼容层。窗口由托管 Win32 宿主调用系统 API；适配层保存托管 framebuffer，绘制上下文释放时拷贝可见行并解锁。DPI、离屏层 Blit、窗口 resize 和资源持有有实际窗口/无头合成器断言。Avalonia GPU context 请求明确拒绝。

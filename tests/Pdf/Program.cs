@@ -46,6 +46,10 @@ using(var reader=PdfReader.Open(Minimal("1 0 0 rg 0 0 32 32 re f")))
     reader.Dispose();Check(first.Bitmap.GetPixel(5,5)==SKColors.Red,"Rendered page outlives document");
     bool disposed=false;try{reader.RenderPage(1);}catch(ObjectDisposedException){disposed=true;}Check(disposed,"Disposed reader rejected");
 }
+using(var reader=PdfReader.Open(Minimal("1 0 0 rg 0 0 32 32 re f","/Annots [<< /Subtype /Link /Rect [0 0 20 20] /Border [0 0 0] /A << /S /URI /URI (https://example.com) >> >>]")))
+{using var page=reader.RenderPage(1);Check(page.Bitmap.GetPixel(5,5)==SKColors.Red,"Borderless navigation links do not paint");}
+foreach(string annotation in new[]{"/Subtype /Link /Border [0 0 1]","/Subtype /Widget /Border [0 0 0]","/Subtype /Link /Border [0 0 0] /AP << >>"})
+{using var reader=PdfReader.Open(Minimal("1 0 0 rg 0 0 32 32 re f","/Annots [<< /Rect [0 0 20 20] "+annotation+" >>]"));bool failed=false;try{using var page=reader.RenderPage(1);}catch(NotSupportedException){failed=true;}Check(failed,"Painting annotations remain explicitly unsupported");}
 #if NATIVE_AOT
 Check(!System.Runtime.CompilerServices.RuntimeFeature.IsDynamicCodeSupported,"PDF Native AOT runtime");
 #endif

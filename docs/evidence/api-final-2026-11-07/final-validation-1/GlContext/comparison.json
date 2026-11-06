@@ -1,0 +1,129 @@
+{
+  "project": "GlContext",
+  "metadata": 3,
+  "differences": [],
+  "extraCases": [],
+  "cases": [
+    {
+      "kind": "gpu-context",
+      "scene": 0,
+      "transform": 0,
+      "offset": 0,
+      "length": 27648,
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "kind": "gpu-context",
+      "scene": 0,
+      "transform": 1,
+      "offset": 27648,
+      "length": 27648,
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "kind": "gpu-context",
+      "scene": 1,
+      "transform": 0,
+      "offset": 55296,
+      "length": 27648,
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "kind": "gpu-context",
+      "scene": 1,
+      "transform": 1,
+      "offset": 82944,
+      "length": 27648,
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "kind": "gpu-context",
+      "scene": 2,
+      "transform": 0,
+      "offset": 110592,
+      "length": 27648,
+      "maximum": 1,
+      "rmse": 0.061918592014329886,
+      "passed": true
+    },
+    {
+      "kind": "gpu-context",
+      "scene": 2,
+      "transform": 1,
+      "offset": 138240,
+      "length": 27648,
+      "maximum": 1,
+      "rmse": 0.061918592014329886,
+      "passed": true
+    },
+    {
+      "kind": "gpu-context",
+      "scene": 3,
+      "transform": 0,
+      "offset": 165888,
+      "length": 27648,
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "kind": "gpu-context",
+      "scene": 3,
+      "transform": 1,
+      "offset": 193536,
+      "length": 27648,
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "kind": "gpu-context",
+      "scene": 4,
+      "transform": 0,
+      "offset": 221184,
+      "length": 27648,
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "kind": "gpu-context",
+      "scene": 4,
+      "transform": 1,
+      "offset": 248832,
+      "length": 27648,
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    }
+  ],
+  "local": [
+    {
+      "checks": 67,
+      "deviceName": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1050 Ti (0x00001C82) Direct3D11 vs_5_0 ps_5_0, D3D11-32.0.15.6094)",
+      "resources": 5,
+      "before": 61648,
+      "after": 0
+    },
+    {
+      "checks": 67,
+      "deviceName": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1050 Ti (0x00001C82) Direct3D11 vs_5_0 ps_5_0, D3D11-32.0.15.6094)",
+      "resources": 3,
+      "before": 12,
+      "after": 12
+    }
+  ],
+  "gate": {
+    "maximum": 3,
+    "rmse": 0.75
+  },
+  "passed": true
+}

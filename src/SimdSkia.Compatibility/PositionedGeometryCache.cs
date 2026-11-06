@@ -1,65 +1,55 @@
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using SimdSkia;
 using SimdSkia.Text;
-
 namespace SkiaSharp;
 
-// A font owns this cache through an ephemeron: releasing the font also releases
-// the cache. Keys copy the caller's mutable run buffers. Hash collisions always
-// require full glyph/position comparison; colors and explicit bounds aren't keys.
+// One bounded ephemeron cache for all run kinds. Keys copy caller buffers and
+// compare their complete contents after hashing. Text annotations and bounds
+// hints do not affect glyph geometry, so they never invalidate this cache.
 internal sealed class PositionedGeometryCache
 {
-    private sealed record Entry(int Hash,Matrix3 Transform,ushort[] Glyphs,SKPoint[] Positions,PathGeometry Geometry,SKRect Bounds,long Bytes);
+    private sealed record Entry(int Hash,Matrix3 Transform,int Kind,bool EmbeddedBitmaps,SKPoint Origin,ushort[] Glyphs,byte[] Positions,PathGeometry Geometry,SKRect Bounds,GlyphRunGeometry GlyphRun,long Bytes);
     private static readonly ConditionalWeakTable<TrueTypeFont,PositionedGeometryCache> owners=new();
     private readonly Dictionary<int,List<LinkedListNode<Entry>>> buckets=[];
     private readonly LinkedList<Entry> order=[];
     private long bytes;
     private const int MaximumEntries=64;
     private const long MaximumBytes=4*1024*1024;
-    internal static (PathGeometry Geometry,SKRect Bounds) Get(SKPositionedRunBuffer run)
+    private static ReadOnlySpan<byte> PositionBytes(SKRunBuffer run)=>run.Kind switch
     {
-        var cache=owners.GetValue(run.Font.Font,static _=>new());
-        lock(cache)return cache.GetCore(run);
+        1=>MemoryMarshal.AsBytes(((float[])run.PositionArray).AsSpan()),
+        2=>MemoryMarshal.AsBytes(((SKPoint[])run.PositionArray).AsSpan()),
+        3=>MemoryMarshal.AsBytes(((SKRotationScaleMatrix[])run.PositionArray).AsSpan()),
+        _=>ReadOnlySpan<byte>.Empty
+    };
+    internal static (PathGeometry Geometry,SKRect Bounds,GlyphRunGeometry GlyphRun) Get(SKRunBuffer run)
+    {
+        var cache=owners.GetValue(run.Font.Font,static _=>new());lock(cache)return cache.GetCore(run);
     }
-    private (PathGeometry Geometry,SKRect Bounds) GetCore(SKPositionedRunBuffer run)
+    private (PathGeometry Geometry,SKRect Bounds,GlyphRunGeometry GlyphRun) GetCore(SKRunBuffer run)
     {
-        var ids=run.Glyphs;var positions=run.Positions;var font=run.Font;var hash=new HashCode();hash.Add(font.Transform);
-        for(int i=0;i<ids.Length;i++)
-        {
-            if(ids[i]>=font.Font.GlyphCount)throw new ArgumentOutOfRangeException("glyphs");
-            if(!float.IsFinite(positions[i].X)||!float.IsFinite(positions[i].Y))throw new ArgumentException("Glyph positions must be finite.");
-            hash.Add(ids[i]);hash.Add(positions[i]);
-        }
-        int key=hash.ToHashCode();
+        var ids=run.Glyphs;var positions=PositionBytes(run);var font=run.Font;var hash=new HashCode();hash.Add(font.Transform);hash.Add(font.EmbeddedBitmaps);hash.Add(run.Kind);hash.Add(run.Origin);
+        foreach(ushort id in ids)if(id>=font.Font.GlyphCount)throw new ArgumentOutOfRangeException("glyphs");
+        foreach(float f in MemoryMarshal.Cast<byte,float>(positions))if(!float.IsFinite(f))throw new ArgumentException("Glyph positions must be finite.");
+        hash.AddBytes(MemoryMarshal.AsBytes(ids));hash.AddBytes(positions);int key=hash.ToHashCode();
         if(buckets.TryGetValue(key,out var candidates))foreach(var candidate in candidates)
         {
             var e=candidate.Value;
-            if(e.Transform==font.Transform&&ids.SequenceEqual(e.Glyphs)&&positions.SequenceEqual(e.Positions))
-            {order.Remove(candidate);order.AddLast(candidate);return(e.Geometry,e.Bounds);}
+            if(e.Transform==font.Transform&&e.Kind==run.Kind&&e.EmbeddedBitmaps==font.EmbeddedBitmaps&&e.Origin==run.Origin&&ids.SequenceEqual(e.Glyphs)&&positions.SequenceEqual(e.Positions))
+            {order.Remove(candidate);order.AddLast(candidate);return(e.Geometry,e.Bounds,e.GlyphRun);}
         }
-        var segments=new List<PathSegment>();SKRect? bounds=null;var globalBounds=font.GlobalBounds();
-        for(int i=0;i<ids.Length;i++)
-        {
-            var position=positions[i];font.Font.Outline(ids[i]).AppendTransformedTo(segments,font.Transform with {M02=position.X,M12=position.Y});
-            var b=globalBounds;
-            if(!b.ToCore().IsEmpty)
-            {
-                b=new(b.Left+position.X,b.Top+position.Y,b.Right+position.X,b.Bottom+position.Y);
-                bounds=bounds is {} a?new(MathF.Min(a.Left,b.Left),MathF.Min(a.Top,b.Top),MathF.Max(a.Right,b.Right),MathF.Max(a.Bottom,b.Bottom)):b;
-            }
-        }
-        var geometry=new PathGeometry(segments);var runBounds=bounds??SKRect.Empty;
-        long size=(long)geometry.Segments.Length*32+(long)ids.Length*10;
+        var result=SKTextBlobBuilder.Geometry(run);long size=(long)result.Geometry.Segments.Length*32+(long)ids.Length*26+positions.Length;
+        foreach(var glyph in result.GlyphRun.Glyphs)size+=(long)glyph.Outline.Segments.Length*32;
         if(size<=MaximumBytes)
         {
             while(order.Count>=MaximumEntries||bytes+size>MaximumBytes)
             {
-                var node=order.First!;var e=node.Value;var oldBucket=buckets[e.Hash];oldBucket.Remove(node);if(oldBucket.Count==0)buckets.Remove(e.Hash);
-                bytes-=e.Bytes;order.RemoveFirst();
+                var node=order.First!;var e=node.Value;var old=buckets[e.Hash];old.Remove(node);if(old.Count==0)buckets.Remove(e.Hash);bytes-=e.Bytes;order.RemoveFirst();
             }
-            var entry=new Entry(key,font.Transform,ids.ToArray(),positions.ToArray(),geometry,runBounds,size);
+            var entry=new Entry(key,font.Transform,run.Kind,font.EmbeddedBitmaps,run.Origin,ids.ToArray(),positions.ToArray(),result.Geometry,result.Bounds,result.GlyphRun,size);
             var added=order.AddLast(entry);if(!buckets.TryGetValue(key,out var bucket))buckets.Add(key,bucket=[]);bucket.Add(added);bytes+=size;
         }
-        return(geometry,runBounds);
+        return result;
     }
 }

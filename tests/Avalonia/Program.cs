@@ -36,7 +36,8 @@ Draw();var snapshot=pixels.GetPixelSpan().ToArray();Check(snapshot.Any(b=>b!=0),
 retainedGlyphs.Fill(0);retainedPositions.Fill(new SKPoint(999,999));Draw();Check(snapshot.AsSpan().SequenceEqual(pixels.GetPixelSpan()),"Blob detached from caller buffers");
 Throws<ObjectDisposedException>(()=>{var _=run.Size;},"Run buffer invalidated after Build");
 Throws<NotSupportedException>(()=>font.Hinting=SKFontHinting.Full,"Hinting is explicit");
-Throws<NotSupportedException>(()=>font.Edging=SKFontEdging.SubpixelAntialias,"LCD is explicit");
+font.Edging=SKFontEdging.SubpixelAntialias;Check(font.Edging==SKFontEdging.SubpixelAntialias,"LCD edging is retained");
+using(var canvas=new SKCanvas(pixels)){canvas.Clear(SKColors.White);canvas.DrawText("LCD 中文",4,28,font,paint);Check(pixels.GetPixelSpan().ContainsAnyExcept((byte)255),"Unknown/RGBA pixel geometry draws grayscale fallback text");}font.Edging=SKFontEdging.Antialias;
 var temporaryFace=SKTypeface.FromFile(fontPath);var temporaryFont=new SKFont(temporaryFace,16);
 using(var delayed=new SKTextBlobBuilder())
 {
@@ -56,7 +57,7 @@ var shape=new PathGeometry([
     new(PathVerb.Cubic,new(29,11),new(2,14),new(-3,-8)),new(PathVerb.Close,default)]);
 var random=new Random(20261021);
 foreach(bool simd in new[]{false,true})
-foreach(var format in Enum.GetValues<PixelFormat>())
+foreach(var format in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})
 foreach(var alpha in Enum.GetValues<AlphaFormat>())
 {
     CpuOptions.EnableSimd=simd;TextCoverageCache.Clear();

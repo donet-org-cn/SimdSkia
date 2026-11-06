@@ -42,10 +42,17 @@ internal static class GlyphCoverageCache
     private static long glyphBytes,runBytes;
     internal const long MaximumGlyphBytes=8*1024*1024,MaximumRunBytes=4*1024*1024;
     internal const int MaximumGlyphs=4096,MaximumRuns=512;
+    // Packed runs avoid per-frame mask/gamma reconstruction and usually hold
+    // the useful hot set. Give them 3/4 of the shared 2 MiB font budget rather
+    // than starving them while outline and glyph partitions sit unused.
+    internal static long GlyphByteLimit=128*1024,RunByteLimit=1536*1024;
+    internal static int GlyphCountLimit=MaximumGlyphs,RunCountLimit=MaximumRuns;
     internal static bool Enabled=true;
     internal static (int Glyphs,int Runs,long GlyphBytes,long RunBytes) Statistics{get{lock(gate)return(glyphs.Count,runs.Count,glyphBytes,runBytes);}}
     internal static int RecentRunCount{get{lock(gate)return recentRuns.Count;}}
     internal static void Clear(){lock(gate){glyphs.Clear();glyphOrder.Clear();runs.Clear();recentRuns.Clear();runOrder.Clear();glyphBytes=runBytes=0;}}
+    internal static void Configure(long glyphBudget,long runBudget,int count)
+    {lock(gate){GlyphByteLimit=Math.Min(MaximumGlyphBytes,Math.Max(0,glyphBudget));RunByteLimit=Math.Min(MaximumRunBytes,Math.Max(0,runBudget));GlyphCountLimit=count<=0?0:MaximumGlyphs;RunCountLimit=Math.Min(MaximumRuns,Math.Max(0,count));Clear();}}
     internal static Batch Resolve(GlyphRunGeometry run,Matrix3 matrix,bool aa,float tolerance,bool snapBaseline,int luminance,out int x,out int y)
     {
         // Keep the normalized arithmetic bounded and deterministic under scrolling.
@@ -121,10 +128,11 @@ internal static class GlyphCoverageCache
             }
         }
         retained=batch.Bytes;
-        if(Enabled&&retained<=MaximumRunBytes)lock(gate)
+        if(Enabled&&RunCountLimit>0&&retained<=RunByteLimit)lock(gate)
         {
+            if(RunCountLimit<=0||retained>RunByteLimit)return batch;
             if(runs.TryGetValue(key,out var existing)){existing.Value.Referenced=true;return existing.Value.Batch;}
-            while(runs.Count>=MaximumRuns||runBytes+retained>MaximumRunBytes)
+            while(runs.Count>=RunCountLimit||runBytes+retained>RunByteLimit)
             {
                 var first=runOrder.First!;
                 if(first.Value.Referenced){first.Value.Referenced=false;runOrder.RemoveFirst();runOrder.AddLast(first);continue;}
@@ -212,10 +220,11 @@ internal static class GlyphCoverageCache
         if(Enabled)lock(gate)if(glyphs.TryGetValue(key,out var cached)){glyphOrder.Remove(cached);glyphOrder.AddLast(cached);return cached.Value.Mask;}
         var mask=PathRasterizer.Rasterize(outline.Flatten(local,tolerance),outline.FillRule,width,height,aa,compactRuns:true);
         long size=Size(mask,outline);
-        if(Enabled&&size<=MaximumGlyphBytes)lock(gate)
+        if(Enabled&&GlyphCountLimit>0&&size<=GlyphByteLimit)lock(gate)
         {
+            if(GlyphCountLimit<=0||size>GlyphByteLimit)return mask;
             if(glyphs.TryGetValue(key,out var existing))return existing.Value.Mask;
-            while(glyphs.Count>=MaximumGlyphs||glyphBytes+size>MaximumGlyphBytes)
+            while(glyphs.Count>=GlyphCountLimit||glyphBytes+size>GlyphByteLimit)
             {var first=glyphOrder.First!;glyphBytes-=first.Value.Bytes;glyphs.Remove(first.Value.Key);glyphOrder.RemoveFirst();}
             glyphs.Add(key,glyphOrder.AddLast(new GlyphEntry(key,mask,size)));glyphBytes+=size;
         }

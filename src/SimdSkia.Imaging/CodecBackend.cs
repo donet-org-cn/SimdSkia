@@ -103,6 +103,7 @@ internal readonly ref struct EncodingPixels
         bool convertAlpha=straightAlpha&&pixels.Alpha==AlphaFormat.Premultiplied;
         if(pixels.Format==PixelFormat.Rgba8888&&pixels.RowBytes==pixels.Width*4&&!convertAlpha){rented=null;Span=pixels.GetPixelSpan();return;}
         rented=ArrayPool<byte>.Shared.Rent(checked(pixels.Width*pixels.Height*4));var destination=rented.AsSpan(0,pixels.Width*pixels.Height*4);
+        if(pixels.Format==PixelFormat.Alpha8){for(int y=0;y<pixels.Height;y++)for(int x=0;x<pixels.Width;x++){int at=(y*pixels.Width+x)*4;destination[at]=destination[at+1]=destination[at+2]=0;destination[at+3]=pixels.GetRowSpan(y)[x];}Span=destination;return;}
         int ri=pixels.Format==PixelFormat.Rgba8888?0:2;
         for(int y=0;y<pixels.Height;y++)
         {

@@ -4,7 +4,7 @@ using System.Text;
 namespace SimdSkia.Text;
 
 /// <summary>Managed, unhinted TrueType glyf outlines; cmap 4/12, simple and XY composite glyphs.</summary>
-public sealed class TrueTypeFont
+public sealed partial class TrueTypeFont
 {
     private readonly FontSource bytes;
     private readonly Dictionary<string,ReadOnlyMemory<byte>> tableMemory=[];
@@ -12,7 +12,26 @@ public sealed class TrueTypeFont
     private readonly int collectionFace;
     private readonly bool isCollection;
     private readonly Dictionary<string,(int Offset,int Length)> tables=[];
-    private readonly Dictionary<ushort,PathGeometry> glyphs=[];
+    private sealed class RawGlyphEntry(PathGeometry geometry,long bytes)
+    {internal readonly PathGeometry Geometry=geometry;internal readonly long Bytes=bytes;internal bool Referenced=true;}
+    private readonly Dictionary<ushort,RawGlyphEntry> glyphs=[];
+    private readonly Queue<ushort> glyphClock=[];
+    private long rawGlyphBytes;
+    internal (int Count,long Bytes) RawCacheUsage {get{lock(glyphs)return(glyphs.Count,rawGlyphBytes);}}
+    internal void PurgeRawGlyphCache(){lock(glyphs){glyphs.Clear();glyphClock.Clear();rawGlyphBytes=0;}}
+    internal long TrimCachedGeometry(long bytesToPurge)
+    {
+        long freed=0;
+        lock(glyphs)while(glyphs.Count>0&&freed<bytesToPurge)
+        {
+            ushort key=glyphClock.Dequeue();var value=glyphs[key];
+            if(value.Referenced){value.Referenced=false;glyphClock.Enqueue(key);continue;}
+            glyphs.Remove(key);rawGlyphBytes-=value.Bytes;freed+=value.Bytes;
+        }
+        lock(canonicalGate)while(canonicalOrder.First is {} node&&freed<bytesToPurge)
+        {canonicalOrder.RemoveFirst();canonicalGlyphs.Remove(node.Value.Id);canonicalBytes-=node.Value.Data.Bytes;freed+=node.Value.Data.Bytes;}
+        return freed;
+    }
     private PairPositioning? positioning;
     public GlyphPairAdjustment GetDefaultHorizontalPairAdjustment(ushort first,ushort second)
     {
@@ -49,7 +68,13 @@ public sealed class TrueTypeFont
         }
         table=default;return false;
     }
+    internal uint[] GetTableTags()=>tables.Keys.Select(tag=>((uint)tag[0]<<24)|((uint)tag[1]<<16)|((uint)tag[2]<<8)|tag[3]).Order().ToArray();
     public Stream OpenStream()=>isCollection?new MemoryStream(FontCollection.Extract(bytes,collectionFace),false):new FontReadStream(bytes);
+    internal static TrueTypeFont FromFile(string path,int faceIndex)
+    {
+        var file=new FileInfo(path);
+        return new(FontSource.OpenInstalled(path,file.Length,file.LastWriteTimeUtc),faceIndex);
+    }
     public TrueTypeFont(ReadOnlySpan<byte> data):this(data,0) { }
     public TrueTypeFont(ReadOnlySpan<byte> data,int faceIndex):this(FontCollection.Extract(data,faceIndex),0,true) { }
     // The platform font manager owns one immutable file snapshot. TTC faces use
@@ -99,8 +124,23 @@ public sealed class TrueTypeFont
         if(selected<0)throw new NotSupportedException("Font has no supported Unicode cmap 4/12.");
         cmapOffset=selected;cmapLength=lengthSelected;cmapFormat=formatSelected;
         characterMap=bytes.Read(cmapOffset,cmapLength);
+        if(cmapFormat==4)
+        {
+            var map=characterMap.Span;int segments=BinaryPrimitives.ReadUInt16BigEndian(map[6..])/2;
+            if(segments==0||16+segments*8>map.Length)throw new InvalidDataException("Invalid cmap segment array.");
+            int previous=-1;for(int i=0;i<segments;i++){int end=BinaryPrimitives.ReadUInt16BigEndian(map[(14+i*2)..]),start=BinaryPrimitives.ReadUInt16BigEndian(map[(16+segments*2+i*2)..]);if(end<=previous||start>end||start<=previous)throw new InvalidDataException("cmap segments must be sorted and disjoint.");previous=end;}
+        }
+
     }
+    private readonly ulong[] glyphMapCache=new ulong[128];
     public ushort GetGlyph(int codepoint)
+    {
+        if(!Rune.IsValid(codepoint))throw new ArgumentOutOfRangeException(nameof(codepoint));
+        int slot=codepoint&127;ulong key=(ulong)((uint)codepoint+1)<<32,value=Volatile.Read(ref glyphMapCache[slot]);
+        if((value&0xffffffff00000000UL)==key)return (ushort)value;
+        ushort glyph=MapGlyph(codepoint);Volatile.Write(ref glyphMapCache[slot],key|glyph);return glyph;
+    }
+    private ushort MapGlyph(int codepoint)
     {
         void CheckMap(int p,int count){if(p<cmapOffset||p-cmapOffset>cmapLength-count)throw new InvalidDataException("Truncated cmap value.");}
         ushort U16(int p){CheckMap(p,2);return BinaryPrimitives.ReadUInt16BigEndian(characterMap.Span[(p-cmapOffset)..]);}
@@ -118,26 +158,47 @@ public sealed class TrueTypeFont
         {
             int count=U16(cmapOffset+6)/2;int endBase=cmapOffset+14,startBase=endBase+count*2+2,deltaBase=startBase+count*2,rangeBase=deltaBase+count*2;
             if(count==0||rangeBase+count*2>cmapOffset+cmapLength)throw new InvalidDataException("Invalid cmap segments.");
-            for(int i=0;i<count;i++)
+            // cmap format 4 endCode is sorted. A linear scan here made Chinese
+            // glyph lookup proportional to thousands of segments on every measure.
+            int lo=0,hi=count-1;while(lo<hi){int mid=(lo+hi)>>1;if(U16(endBase+mid*2)<codepoint)lo=mid+1;else hi=mid;}
+            int i=lo,end=U16(endBase+i*2),start=U16(startBase+i*2);
+            if(codepoint>=start&&codepoint<=end)
             {
-                int end=U16(endBase+i*2);if(codepoint>end)continue;
-                int start=U16(startBase+i*2);if(codepoint<start)break;
                 int delta=S16(deltaBase+i*2),range=U16(rangeBase+i*2);
                 if(range==0)glyph=(uint)((codepoint+delta)&65535);
-                else{int p=rangeBase+i*2+range+(codepoint-start)*2;if(p<cmapOffset||p+2>cmapOffset+cmapLength)throw new InvalidDataException("Invalid cmap glyph offset.");glyph=U16(p);if(glyph!=0)glyph=(uint)((glyph+delta)&65535);}break;
+                else{int p=rangeBase+i*2+range+(codepoint-start)*2;if(p<cmapOffset||p+2>cmapOffset+cmapLength)throw new InvalidDataException("Invalid cmap glyph offset.");glyph=U16(p);if(glyph!=0)glyph=(uint)((glyph+delta)&65535);}
             }
         }
         if(glyph>=GlyphCount)throw new InvalidDataException("cmap references invalid glyph.");return (ushort)glyph;
     }
     public int Advance(ushort glyph){if(glyph>=GlyphCount)throw new ArgumentOutOfRangeException(nameof(glyph));return BinaryPrimitives.ReadUInt16BigEndian(horizontalMetrics.Span[(Math.Min(glyph,metrics-1)*4)..]);}
+    public RectF GetGlyphBounds(ushort glyph)
+    {
+        if(glyph>=GlyphCount)throw new ArgumentOutOfRangeException(nameof(glyph));int length=offsets[glyph+1]-offsets[glyph];if(length==0)return default;if(length<10)throw new InvalidDataException("Truncated glyph header.");var header=bytes.Read(Table("glyf",0).Offset+offsets[glyph],10).Span;
+        return new(BinaryPrimitives.ReadInt16BigEndian(header[2..]),BinaryPrimitives.ReadInt16BigEndian(header[4..]),BinaryPrimitives.ReadInt16BigEndian(header[6..]),BinaryPrimitives.ReadInt16BigEndian(header[8..]));
+    }
     public PathGeometry Outline(ushort glyph)
     {
         if(glyph>=GlyphCount)throw new ArgumentOutOfRangeException(nameof(glyph));
+        PathGeometry result;
         lock(glyphs)
         {
-            if(glyphs.TryGetValue(glyph,out var cached))return cached;
-            var result=ReadGlyph(glyph,new HashSet<ushort>(),0);glyphs.Add(glyph,result);return result;
+            if(glyphs.TryGetValue(glyph,out var cached)){cached.Referenced=true;return cached.Geometry;}
+            result=ReadGlyph(glyph,new HashSet<ushort>(),0);long size=(long)result.Segments.Length*28+96;
+            // A long-lived Chinese font must not accumulate every outline it
+            // ever sees. Second chance avoids reference relinking on hot hits.
+            if(size<=4*1024*1024&&Volatile.Read(ref FontCacheRegistry.ByteLimit)>0&&Volatile.Read(ref FontCacheRegistry.CountLimit)>0)
+            {
+                while(glyphs.Count>=512||rawGlyphBytes+size>4*1024*1024)
+                {
+                    ushort candidate=glyphClock.Dequeue();var entry=glyphs[candidate];
+                    if(entry.Referenced){entry.Referenced=false;glyphClock.Enqueue(candidate);continue;}
+                    glyphs.Remove(candidate);rawGlyphBytes-=entry.Bytes;
+                }
+                glyphs.Add(glyph,new(result,size));glyphClock.Enqueue(glyph);rawGlyphBytes+=size;
+            }
         }
+        FontCacheRegistry.Notify(this);return result;
     }
     private PathGeometry ReadGlyph(ushort glyph,HashSet<ushort> active,int depth)
     {
@@ -217,6 +278,7 @@ public sealed class TrueTypeFont
         public sbyte SByte()=>unchecked((sbyte)Byte());
         public ushort UShort()=>(ushort)((Byte()<<8)|Byte());
         public short Short()=>unchecked((short)UShort());
+        public byte[] ReadBytes(int count){if(count<0||position>end-count)throw new InvalidDataException("Truncated glyph program.");var data=bytes.Slice(position,count).ToArray();position+=count;return data;}
         public void Skip(int count){if(count<0||position>end-count)throw new InvalidDataException("Truncated glyph instructions.");position+=count;}
     }
 }

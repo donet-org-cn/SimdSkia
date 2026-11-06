@@ -11,6 +11,18 @@ internal static class InstalledFonts
 {
     private static readonly Lazy<InstalledFace[]> faces=new(Discover);
     private static readonly Dictionary<(string,int),WeakReference<TrueTypeFont>> fonts=[];
+    internal static IReadOnlyList<InstalledFace> Faces=>faces.Value;
+    internal static TrueTypeFont Load(InstalledFace face)
+    {
+        lock(fonts)
+        {
+            var key=(face.Path,face.Index);
+            if(fonts.TryGetValue(key,out var held)&&held.TryGetTarget(out var cached))return cached;
+            var font=TrueTypeFont.FromInstalledSource(FontSource.OpenInstalled(face.Path,face.Length,face.WriteTime),face.Index);
+            if(fonts.Count>=128)foreach(var dead in fonts.Where(p=>!p.Value.TryGetTarget(out _)).Select(p=>p.Key).ToArray())fonts.Remove(dead);
+            fonts[key]=new(font);return font;
+        }
+    }
     internal static (TrueTypeFont Font,InstalledFace Face) Match(string? family,int weight,int width,int slant)
     {
         var available=faces.Value;if(available.Length==0)throw new FileNotFoundException("No supported installed static TrueType font was found.");
@@ -21,7 +33,7 @@ internal static class InstalledFonts
             var selected=preferred.Select(p=>available.FirstOrDefault(f=>f.Names.Contains(p,StringComparer.OrdinalIgnoreCase))).FirstOrDefault(f=>f is not null)??available[0];
             candidates=available.Where(f=>f.Family==selected.Family);
         }
-        var face=candidates.OrderBy(f=>Math.Abs(f.Width-width)*10000+(f.Slant==slant?0:1000)+Math.Abs(f.Weight-weight)).First();
+        var face=candidates.MinBy(f=>FontStyleMatcher.Score(f.Weight,f.Width,f.Slant,weight,width,slant))!;
         lock(fonts)
         {
             var key=(face.Path,face.Index);

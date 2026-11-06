@@ -1,0 +1,62 @@
+[
+  {
+    "name": "independent-imaging",
+    "log": "artifacts/shader-2026-11-06/independent-imaging.log",
+    "exitCode": 0,
+    "command": "dotnet run --project tests/Imaging -c Release --no-build -- --independent-only"
+  },
+  {
+    "name": "optimization",
+    "log": "artifacts/shader-2026-11-06/optimization.log",
+    "exitCode": 0,
+    "command": "dotnet run --project tests/Optimization -c Release --no-build -- baseline/fonts/ZenOldMincho-Regular.ttf"
+  },
+  {
+    "name": "avalonia-text",
+    "log": "artifacts/shader-2026-11-06/avalonia-text.log",
+    "exitCode": 0,
+    "command": "dotnet run --project tests/Avalonia -c Release --no-build -- baseline/fonts/ZenOldMincho-Regular.ttf artifacts/shader-2026-11-06/avalonia-text"
+  },
+  {
+    "name": "avalonia-controls",
+    "log": "artifacts/shader-2026-11-06/avalonia-controls.log",
+    "exitCode": 0,
+    "command": "dotnet run --project tests/AvaloniaControls -c Release --no-build -- --frames 5 --output artifacts/shader-2026-11-06/avalonia-controls"
+  },
+  {
+    "name": "glyph-batches",
+    "log": "artifacts/shader-2026-11-06/glyph-batches.log",
+    "exitCode": 0,
+    "command": "dotnet run --project tests/GlyphBatches -c Release --no-build"
+  },
+  {
+    "name": "direct2d",
+    "log": "artifacts/shader-2026-11-06/direct2d.log",
+    "exitCode": 0,
+    "command": "dotnet run --project tests/Direct2D -c Release --no-build"
+  },
+  {
+    "name": "gpu-sampling",
+    "log": "artifacts/shader-2026-11-06/gpu-sampling.log",
+    "exitCode": 0,
+    "command": "dotnet run --project tests/GpuSampling -c Release --no-build"
+  },
+  {
+    "name": "gpu-optimization",
+    "log": "artifacts/shader-2026-11-06/gpu-optimization.log",
+    "exitCode": 0,
+    "command": "dotnet run --project tests/GpuOptimization -c Release --no-build -- baseline/fonts/ZenOldMincho-Regular.ttf"
+  },
+  {
+    "name": "geometry",
+    "log": "artifacts/shader-2026-11-06/geometry.log",
+    "exitCode": 0,
+    "command": "python tools/check-geometry-compatibility.py --output artifacts/shader-2026-11-06/geometry-final"
+  },
+  {
+    "name": "shaders",
+    "log": "artifacts/shader-2026-11-06/shaders.log",
+    "exitCode": 0,
+    "command": "python tools/check-shader-compatibility.py --output artifacts/shader-2026-11-06/checks-final"
+  }
+]

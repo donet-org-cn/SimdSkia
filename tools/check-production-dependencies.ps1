@@ -4,7 +4,7 @@ $workspacePath = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 foreach ($name in @('SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Text','SimdSkia.Imaging','SimdSkia.Gpu','SimdSkia.Gpu.Direct2D','SimdSkia.Compatibility','SimdSkia.Pdf')) {
     $projectPath = Join-Path $workspacePath ('src/' + $name)
     $assets = Get-Content -LiteralPath (Join-Path $projectPath 'obj/project.assets.json') -Raw | ConvertFrom-Json
-    $allowedPackages = @()
+    $allowedPackages = @('Clipper2/2.0.0')
     if ($name -in @('SimdSkia.Imaging','SimdSkia.Compatibility','SimdSkia.Pdf')) { $allowedPackages += $codecPackages }
     if ($name -eq 'SimdSkia.Pdf') { $allowedPackages += 'PdfPig/0.1.16' }
     foreach ($library in $assets.libraries.PSObject.Properties) {
@@ -14,7 +14,7 @@ foreach ($name in @('SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Text','SimdSkia.Ima
     $forbidden = Get-ChildItem -LiteralPath (Join-Path $projectPath 'bin/Release/net10.0') -File | Where-Object { $_.Name -match '^(libSkiaSharp|SkiaSharp|HarfBuzzSharp)' }
     if ($forbidden) { throw ('Native/reference dependencies leaked into production output for ' + $name) }
 }
-Write-Output 'PASS: Core/Cpu/Text/Gpu/Gpu.Direct2D have zero NuGet packages; Imaging/Compatibility allow only the fifteen pinned Sdcb.SimdCodecs 1.4.0 packages. .NET system compression is explicitly permitted. GPU interop calls system Vulkan or Direct2D/D3D11; no native drawing component is bundled.'
+Write-Output 'PASS: production geometry allows the pinned managed Clipper2 2.0.0 graph; Imaging/Compatibility additionally allow the fifteen pinned Sdcb.SimdCodecs 1.4.0 packages. .NET system compression is explicitly permitted. GPU interop calls system Vulkan, GL/GLES, D3D11/12/Direct2D or Metal; no native drawing component is bundled. Metal hardware validation remains unavailable.'
 Write-Output 'PASS: optional PDF reader additionally permits only PdfPig 0.1.16, with no native assets.'
 $adapterPath=Join-Path $workspacePath 'src/SimdSkia.Avalonia/obj/project.assets.json'
 if(Test-Path -LiteralPath $adapterPath){

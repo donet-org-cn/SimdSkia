@@ -1,24 +1,20 @@
-# 0.1.1 更新
+# 0.1.2-preview.1 更新
 
-Avalonia 适配器接受 >=12.1.0 且 <13.0.0，同一 NuGet 二进制验证 12.1.0–12.1.5；核心仍使用 Sdcb.SimdCodecs 1.4.0。此版本不改写原版画质及性能差距。详情见包内 CHANGELOG.md。
-
-# SimdSkia.Pdf 0.1.0
-
-Requires .NET 10. The inherited image provider is Sdcb.SimdCodecs 1.4.0. This stable release supports the documented PDF subset; native-equivalent 画质 and full compatibility are not claimed. PNG lossless reduction and IDAT buffer optimization are included. 性能/CPU/memory results and original quality failures are recorded in CHANGELOG and the [0.1.0 report](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/STABLE-0.1.0-2026-11-04.md).
+3230/3235项固定基线，保留5项原生合同缺口；实际SVG/XPS/SKP、Alpha8、浮点颜色与GPU资源互操作。Vulkan合批/设备复制/完成读回优化；Metal无Mac GPU，尚未实机验证。Avalonia接受>=12.1.0且<13.0.0，已验证宿主12.1.0–12.1.5。JPEG、文字/曲线/整页画质及性能/内存仍有差距。Sdcb.SimdCodecs保持1.4.0；.NET系统压缩与macOS官方窗口宿主是已允许的原生例外。完整测试、CPU/GPU/内存性能及兼容限制见包内CHANGELOG.md和[本版报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PUBLIC-API-FINAL-2026-11-07.md)。
 
 
-Optional C# PDF parsing and page rendering, using PdfPig **0.1.16** (Apache-2.0)
+# SimdSkia.Pdf 0.1.2-preview.1
+
+Requires .NET 10.
+
+Optional C# PDF parsing and page rendering, using PdfPig **0.1.2-preview.16** (Apache-2.0)
 for PDF structure/fonts and SimdSkia for rasterization. No Skia, PDFium, MuPDF,
 native font library is used for PDF rendering. PDF Flate streams use the managed implementation; image codecs may use the explicitly permitted .NET native compression.
 
-**New in 0.1.0-preview.9:** optional PDF reading/rendering. The same release adds
-`SKBitmap.GetPixels`, GIF `SKCodec`, system font family discovery and the PDF
-writer in the compatibility module. Ordinary `SimdSkia.Compatibility` and
-`SimdSkia.Avalonia` users do not acquire the PDF parser dependency. Keep all
-direct SimdSkia package references on the same preview version.
+The optional parser is not pulled in by ordinary Avalonia or compatibility users. Keep all direct SimdSkia package versions aligned.
 
 ```shell
-dotnet add package SimdSkia.Pdf --version 0.1.1
+dotnet add package SimdSkia.Pdf --version 0.1.2-preview.1
 ```
 
 Every package includes `CHANGELOG.md` and NuGet release notes. This release is a

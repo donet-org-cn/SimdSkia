@@ -1,0 +1,50 @@
+[
+  {
+    "engine": "after",
+    "backend": "cpu",
+    "runs": 3,
+    "allSampleCountsSufficient": true,
+    "drawingP50Ms": 1.3364,
+    "drawingP95Ms": 1.7802,
+    "drawingMeanMs": 1.3571720000000005,
+    "cpuPercentMachine": 0.6747214708247116,
+    "cpuPercentOneCore": 8.096657649896539,
+    "peakWorkingSetBytes": 107466752,
+    "peakPrivateBytes": 50692096,
+    "allocationBytesPerFrame": 19378.436781609194,
+    "frames": 527,
+    "cpuFallbackCommands": 0
+  },
+  {
+    "engine": "after",
+    "backend": "direct2d",
+    "runs": 3,
+    "allSampleCountsSufficient": true,
+    "drawingP50Ms": 1.4027,
+    "drawingP95Ms": 1.8058,
+    "drawingMeanMs": 1.4273362573099413,
+    "cpuPercentMachine": 1.2495999280870238,
+    "cpuPercentOneCore": 14.995199137044285,
+    "peakWorkingSetBytes": 140173312,
+    "peakPrivateBytes": 110415872,
+    "allocationBytesPerFrame": 18387.929824561405,
+    "frames": 518,
+    "cpuFallbackCommands": 0
+  },
+  {
+    "engine": "after",
+    "backend": "vulkan",
+    "runs": 3,
+    "allSampleCountsSufficient": true,
+    "drawingP50Ms": 2.4069,
+    "drawingP95Ms": 3.1855,
+    "drawingMeanMs": 2.552900568181818,
+    "cpuPercentMachine": 0.831958737828344,
+    "cpuPercentOneCore": 9.983504853940127,
+    "peakWorkingSetBytes": 154927104,
+    "peakPrivateBytes": 138493952,
+    "allocationBytesPerFrame": 20363.415204678364,
+    "frames": 523,
+    "cpuFallbackCommands": 0
+  }
+]

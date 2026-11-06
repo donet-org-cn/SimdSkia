@@ -83,21 +83,5 @@ public class SKRoundRect : SKObject
     }
     public SKRoundRect? Transform(SKMatrix matrix)=>TryTransform(matrix,out var transformed)?transformed:null;
     internal SKPath ToPath(SKPathDirection direction=SKPathDirection.Clockwise)
-    {
-        ThrowIfDisposed();if(!Enum.IsDefined(direction))throw new ArgumentOutOfRangeException(nameof(direction));var path=new SKPath();
-        if(Type==SKRoundRectType.Empty)return path;
-        const float k=.5522847498307936f;var r=radii;float l=rect.Left,t=rect.Top,b=rect.Bottom,right=rect.Right;
-        // Build clockwise then reverse segment endpoints and cubic controls when requested.
-        var geometry=new List<(SKPoint Start,SKPoint C1,SKPoint C2,SKPoint End,bool Curve)>();SKPoint at=new(l+r[0].X,t),first=at;
-        void Line(SKPoint to){geometry.Add((at,default,default,to,false));at=to;}
-        void Curve(SKPoint c1,SKPoint c2,SKPoint to){geometry.Add((at,c1,c2,to,true));at=to;}
-        Line(new(right-r[1].X,t));Curve(new(right-r[1].X*(1-k),t),new(right,t+r[1].Y*(1-k)),new(right,t+r[1].Y));
-        Line(new(right,b-r[2].Y));Curve(new(right,b-r[2].Y*(1-k)),new(right-r[2].X*(1-k),b),new(right-r[2].X,b));
-        Line(new(l+r[3].X,b));Curve(new(l+r[3].X*(1-k),b),new(l,b-r[3].Y*(1-k)),new(l,b-r[3].Y));
-        Line(new(l,t+r[0].Y));Curve(new(l,t+r[0].Y*(1-k)),new(l+r[0].X*(1-k),t),first);
-        path.MoveTo(first);
-        if(direction==SKPathDirection.Clockwise)foreach(var e in geometry){if(e.Curve)path.CubicTo(e.C1,e.C2,e.End);else path.LineTo(e.End);}
-        else for(int i=geometry.Count-1;i>=0;i--){var e=geometry[i];if(e.Curve)path.CubicTo(e.C2,e.C1,e.Start);else path.LineTo(e.Start);}
-        path.Close();return path;
-    }
+    {ThrowIfDisposed();var path=new SKPath();try{path.AddRoundRect(this,direction);return path;}catch{path.Dispose();throw;}}
 }

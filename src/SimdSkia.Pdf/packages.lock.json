@@ -8,6 +8,11 @@
         "resolved": "0.1.16",
         "contentHash": "qQcbsNMYVY+K5ELptax2S8thNMk0+rSQq3H/KdYj3LLcko8yTCz8y5KIvsKxIyAuTN0ZYNnfsZkM+0EvxTwHVA=="
       },
+      "Clipper2": {
+        "type": "Transitive",
+        "resolved": "2.0.0",
+        "contentHash": "2X23RZxJrjRjOSZc20aqXY9jpmHLekDRy4PIMfrsi2LPNzxFYlnuqzX/nLdk77fbURHUeX+gMhUn2a1z9/wMTQ=="
+      },
       "Sdcb.SimdCodecs": {
         "type": "Transitive",
         "resolved": "1.4.0",
@@ -147,39 +152,52 @@
       "simdskia.compatibility": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.0, )",
-          "SimdSkia.Cpu": "[0.1.0, )",
-          "SimdSkia.Gpu": "[0.1.0, )",
-          "SimdSkia.Imaging": "[0.1.0, )",
-          "SimdSkia.Text": "[0.1.0, )"
+          "SimdSkia.Core": "[0.1.2-preview.1, )",
+          "SimdSkia.Cpu": "[0.1.2-preview.1, )",
+          "SimdSkia.Gpu": "[0.1.2-preview.1, )",
+          "SimdSkia.Gpu.Direct2D": "[0.1.2-preview.1, )",
+          "SimdSkia.Imaging": "[0.1.2-preview.1, )",
+          "SimdSkia.Text": "[0.1.2-preview.1, )"
         }
       },
       "simdskia.core": {
-        "type": "Project"
+        "type": "Project",
+        "dependencies": {
+          "Clipper2": "[2.0.0, 2.0.0]"
+        }
       },
       "simdskia.cpu": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.0, )"
+          "SimdSkia.Core": "[0.1.2-preview.1, )"
         }
       },
       "simdskia.gpu": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.0, )"
+          "SimdSkia.Core": "[0.1.2-preview.1, )",
+          "SimdSkia.Cpu": "[0.1.2-preview.1, )"
+        }
+      },
+      "simdskia.gpu.direct2d": {
+        "type": "Project",
+        "dependencies": {
+          "SimdSkia.Core": "[0.1.2-preview.1, )",
+          "SimdSkia.Cpu": "[0.1.2-preview.1, )",
+          "SimdSkia.Gpu": "[0.1.2-preview.1, )"
         }
       },
       "simdskia.imaging": {
         "type": "Project",
         "dependencies": {
           "Sdcb.SimdCodecs": "[1.4.0, 1.4.0]",
-          "SimdSkia.Core": "[0.1.0, )"
+          "SimdSkia.Core": "[0.1.2-preview.1, )"
         }
       },
       "simdskia.text": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.0, )"
+          "SimdSkia.Core": "[0.1.2-preview.1, )"
         }
       }
     }

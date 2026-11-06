@@ -1,0 +1,10 @@
+{
+  "reason": "User explicitly requested leaving real native Skia handles/version contracts missing; no surrogate handles or fabricated native versions.",
+  "entries": [
+    "method SkiaSharp.SkiaSharpVersion.CheckNativeLibraryCompatible<>(throwIfIncompatible:System.Boolean:in=False:out=False:optional=True:default=False:requiredmods=):System.Boolean;static=True;virtual=False;abstract=False;constraints=",
+    "property SkiaSharp.SKObject.Handle[]:System.IntPtr;get=public,static=False,virtual=True;set=protected,static=False,virtual=True",
+    "property SkiaSharp.SkiaSharpVersion.NativeMinimum[]:System.Version;get=public,static=True,virtual=False;set=-",
+    "property SkiaSharp.SkiaSharpVersion.Native[]:System.Version;get=public,static=True,virtual=False;set=-",
+    "type SkiaSharp.SkiaSharpVersion;kind=class;base=System.Object;abstract=True;sealed=True;interfaces=;layout=Auto,size=0,pack=0;constraints="
+  ]
+}

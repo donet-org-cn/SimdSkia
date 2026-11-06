@@ -21,7 +21,7 @@ internal static class TileRowValidation
             for(int y=0;y<5;y++)for(int x=0;x<7;x++)pixels.GetRowSpan(y)[x*4+3]=255;
             if(translucent)pixels.GetRowSpan(2)[3*4+3]=137;
             using var shader=new TileShader(pixels.Share(),transform,mode,sampling);
-            foreach(var format in Enum.GetValues<PixelFormat>())foreach(int x in new[]{-17,-1,0,3,65537})
+            foreach(var format in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})foreach(int x in new[]{-17,-1,0,3,65537})
             {
                 var row=new byte[33*4];row.AsSpan().Fill(71);var matrix=new Matrix3(1,0,-2,0,1,1,0,0,1);
                 bool copied=shader.TryCopyOpaqueRow(row,format,matrix,x,1);
@@ -37,7 +37,7 @@ internal static class TileRowValidation
                 else if(row.Any(b=>b!=71))throw new InvalidOperationException("Rejected tile row partially overwrote the destination.");
                 checks++;
             }
-            foreach(byte opacity in new byte[]{173,255})foreach(var blend in Enum.GetValues<CompositeMode>())
+            foreach(byte opacity in new byte[]{173,255})foreach(var blend in new[]{CompositeMode.SourceOver,CompositeMode.Source,CompositeMode.Clear})
             {
                 using var fast=new PixelBuffer(37,19,PixelFormat.Rgba8888,AlphaFormat.Premultiplied,157);
                 random.NextBytes(fast.GetPixelSpan());using var reference=fast.Clone();

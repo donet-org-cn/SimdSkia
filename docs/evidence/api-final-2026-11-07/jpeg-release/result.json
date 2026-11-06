@@ -1,0 +1,563 @@
+{
+  "threshold": 1,
+  "qualityPassed": false,
+  "passedCases": 21,
+  "totalCases": 24,
+  "releaseExceptionExplicitlyEnabled": true,
+  "knownExceptionsOnly": true,
+  "releaseCheckPassed": true,
+  "rows": [
+    {
+      "actual": {
+        "alpha": "Opaque",
+        "a": 0,
+        "storage": "erase",
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "outAlpha": 255
+      },
+      "expected": {
+        "alpha": "Opaque",
+        "a": 0,
+        "storage": "erase",
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "outAlpha": 255
+      },
+      "maximumChannelError": 0,
+      "qualityPassed": true,
+      "knownPreview10Exception": false
+    },
+    {
+      "actual": {
+        "alpha": "Opaque",
+        "a": 0,
+        "storage": "raw",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "expected": {
+        "alpha": "Opaque",
+        "a": 0,
+        "storage": "raw",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "maximumChannelError": 0,
+      "qualityPassed": true,
+      "knownPreview10Exception": false
+    },
+    {
+      "actual": {
+        "alpha": "Opaque",
+        "a": 32,
+        "storage": "erase",
+        "r": 22,
+        "g": 11,
+        "b": 7,
+        "outAlpha": 255
+      },
+      "expected": {
+        "alpha": "Opaque",
+        "a": 32,
+        "storage": "erase",
+        "r": 22,
+        "g": 11,
+        "b": 5,
+        "outAlpha": 255
+      },
+      "maximumChannelError": 2,
+      "qualityPassed": false,
+      "knownPreview10Exception": true
+    },
+    {
+      "actual": {
+        "alpha": "Opaque",
+        "a": 32,
+        "storage": "raw",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "expected": {
+        "alpha": "Opaque",
+        "a": 32,
+        "storage": "raw",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "maximumChannelError": 0,
+      "qualityPassed": true,
+      "knownPreview10Exception": false
+    },
+    {
+      "actual": {
+        "alpha": "Opaque",
+        "a": 128,
+        "storage": "erase",
+        "r": 90,
+        "g": 45,
+        "b": 22,
+        "outAlpha": 255
+      },
+      "expected": {
+        "alpha": "Opaque",
+        "a": 128,
+        "storage": "erase",
+        "r": 90,
+        "g": 45,
+        "b": 22,
+        "outAlpha": 255
+      },
+      "maximumChannelError": 0,
+      "qualityPassed": true,
+      "knownPreview10Exception": false
+    },
+    {
+      "actual": {
+        "alpha": "Opaque",
+        "a": 128,
+        "storage": "raw",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "expected": {
+        "alpha": "Opaque",
+        "a": 128,
+        "storage": "raw",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "maximumChannelError": 0,
+      "qualityPassed": true,
+      "knownPreview10Exception": false
+    },
+    {
+      "actual": {
+        "alpha": "Opaque",
+        "a": 255,
+        "storage": "erase",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "expected": {
+        "alpha": "Opaque",
+        "a": 255,
+        "storage": "erase",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "maximumChannelError": 0,
+      "qualityPassed": true,
+      "knownPreview10Exception": false
+    },
+    {
+      "actual": {
+        "alpha": "Opaque",
+        "a": 255,
+        "storage": "raw",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "expected": {
+        "alpha": "Opaque",
+        "a": 255,
+        "storage": "raw",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "maximumChannelError": 0,
+      "qualityPassed": true,
+      "knownPreview10Exception": false
+    },
+    {
+      "actual": {
+        "alpha": "Premul",
+        "a": 0,
+        "storage": "erase",
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "outAlpha": 255
+      },
+      "expected": {
+        "alpha": "Premul",
+        "a": 0,
+        "storage": "erase",
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "outAlpha": 255
+      },
+      "maximumChannelError": 0,
+      "qualityPassed": true,
+      "knownPreview10Exception": false
+    },
+    {
+      "actual": {
+        "alpha": "Premul",
+        "a": 0,
+        "storage": "raw",
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "outAlpha": 255
+      },
+      "expected": {
+        "alpha": "Premul",
+        "a": 0,
+        "storage": "raw",
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "outAlpha": 255
+      },
+      "maximumChannelError": 0,
+      "qualityPassed": true,
+      "knownPreview10Exception": false
+    },
+    {
+      "actual": {
+        "alpha": "Premul",
+        "a": 32,
+        "storage": "erase",
+        "r": 22,
+        "g": 11,
+        "b": 7,
+        "outAlpha": 255
+      },
+      "expected": {
+        "alpha": "Premul",
+        "a": 32,
+        "storage": "erase",
+        "r": 22,
+        "g": 11,
+        "b": 5,
+        "outAlpha": 255
+      },
+      "maximumChannelError": 2,
+      "qualityPassed": false,
+      "knownPreview10Exception": true
+    },
+    {
+      "actual": {
+        "alpha": "Premul",
+        "a": 32,
+        "storage": "raw",
+        "r": 22,
+        "g": 11,
+        "b": 7,
+        "outAlpha": 255
+      },
+      "expected": {
+        "alpha": "Premul",
+        "a": 32,
+        "storage": "raw",
+        "r": 22,
+        "g": 11,
+        "b": 5,
+        "outAlpha": 255
+      },
+      "maximumChannelError": 2,
+      "qualityPassed": false,
+      "knownPreview10Exception": true
+    },
+    {
+      "actual": {
+        "alpha": "Premul",
+        "a": 128,
+        "storage": "erase",
+        "r": 90,
+        "g": 45,
+        "b": 22,
+        "outAlpha": 255
+      },
+      "expected": {
+        "alpha": "Premul",
+        "a": 128,
+        "storage": "erase",
+        "r": 90,
+        "g": 45,
+        "b": 22,
+        "outAlpha": 255
+      },
+      "maximumChannelError": 0,
+      "qualityPassed": true,
+      "knownPreview10Exception": false
+    },
+    {
+      "actual": {
+        "alpha": "Premul",
+        "a": 128,
+        "storage": "raw",
+        "r": 90,
+        "g": 45,
+        "b": 22,
+        "outAlpha": 255
+      },
+      "expected": {
+        "alpha": "Premul",
+        "a": 128,
+        "storage": "raw",
+        "r": 90,
+        "g": 45,
+        "b": 22,
+        "outAlpha": 255
+      },
+      "maximumChannelError": 0,
+      "qualityPassed": true,
+      "knownPreview10Exception": false
+    },
+    {
+      "actual": {
+        "alpha": "Premul",
+        "a": 255,
+        "storage": "erase",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "expected": {
+        "alpha": "Premul",
+        "a": 255,
+        "storage": "erase",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "maximumChannelError": 0,
+      "qualityPassed": true,
+      "knownPreview10Exception": false
+    },
+    {
+      "actual": {
+        "alpha": "Premul",
+        "a": 255,
+        "storage": "raw",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "expected": {
+        "alpha": "Premul",
+        "a": 255,
+        "storage": "raw",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "maximumChannelError": 0,
+      "qualityPassed": true,
+      "knownPreview10Exception": false
+    },
+    {
+      "actual": {
+        "alpha": "Unpremul",
+        "a": 0,
+        "storage": "erase",
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "outAlpha": 255
+      },
+      "expected": {
+        "alpha": "Unpremul",
+        "a": 0,
+        "storage": "erase",
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "outAlpha": 255
+      },
+      "maximumChannelError": 0,
+      "qualityPassed": true,
+      "knownPreview10Exception": false
+    },
+    {
+      "actual": {
+        "alpha": "Unpremul",
+        "a": 0,
+        "storage": "raw",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "expected": {
+        "alpha": "Unpremul",
+        "a": 0,
+        "storage": "raw",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "maximumChannelError": 0,
+      "qualityPassed": true,
+      "knownPreview10Exception": false
+    },
+    {
+      "actual": {
+        "alpha": "Unpremul",
+        "a": 32,
+        "storage": "erase",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "expected": {
+        "alpha": "Unpremul",
+        "a": 32,
+        "storage": "erase",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "maximumChannelError": 0,
+      "qualityPassed": true,
+      "knownPreview10Exception": false
+    },
+    {
+      "actual": {
+        "alpha": "Unpremul",
+        "a": 32,
+        "storage": "raw",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "expected": {
+        "alpha": "Unpremul",
+        "a": 32,
+        "storage": "raw",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "maximumChannelError": 0,
+      "qualityPassed": true,
+      "knownPreview10Exception": false
+    },
+    {
+      "actual": {
+        "alpha": "Unpremul",
+        "a": 128,
+        "storage": "erase",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "expected": {
+        "alpha": "Unpremul",
+        "a": 128,
+        "storage": "erase",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "maximumChannelError": 0,
+      "qualityPassed": true,
+      "knownPreview10Exception": false
+    },
+    {
+      "actual": {
+        "alpha": "Unpremul",
+        "a": 128,
+        "storage": "raw",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "expected": {
+        "alpha": "Unpremul",
+        "a": 128,
+        "storage": "raw",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "maximumChannelError": 0,
+      "qualityPassed": true,
+      "knownPreview10Exception": false
+    },
+    {
+      "actual": {
+        "alpha": "Unpremul",
+        "a": 255,
+        "storage": "erase",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "expected": {
+        "alpha": "Unpremul",
+        "a": 255,
+        "storage": "erase",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "maximumChannelError": 0,
+      "qualityPassed": true,
+      "knownPreview10Exception": false
+    },
+    {
+      "actual": {
+        "alpha": "Unpremul",
+        "a": 255,
+        "storage": "raw",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "expected": {
+        "alpha": "Unpremul",
+        "a": 255,
+        "storage": "raw",
+        "r": 181,
+        "g": 90,
+        "b": 45,
+        "outAlpha": 255
+      },
+      "maximumChannelError": 0,
+      "qualityPassed": true,
+      "knownPreview10Exception": false
+    }
+  ]
+}

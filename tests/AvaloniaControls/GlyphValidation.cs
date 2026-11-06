@@ -17,7 +17,7 @@ internal static class GlyphValidation
             var run=new GlyphRunGeometry(input,Matrix3.Identity,positioning);
             input[0]=new(PathGeometry.Rectangle(new(0,0,1,1)),default);
             Check(ReferenceEquals(run.Glyphs[0].Outline,outline),"Glyph geometry retained a mutable caller array.");
-            foreach(var matrix in matrices)foreach(var format in Enum.GetValues<PixelFormat>())foreach(var alpha in Enum.GetValues<AlphaFormat>())foreach(var composite in Enum.GetValues<CompositeMode>())foreach(bool aa in new[]{false,true})foreach(bool snap in new[]{false,true})
+            foreach(var matrix in matrices)foreach(var format in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})foreach(var alpha in Enum.GetValues<AlphaFormat>())foreach(var composite in new[]{CompositeMode.SourceOver,CompositeMode.Source,CompositeMode.Clear})foreach(bool aa in new[]{false,true})foreach(bool snap in new[]{false,true})
             {
                 using var actual=new PixelBuffer(64,36,format,alpha,64*4+7);random.NextBytes(actual.GetPixelSpan());
                 using var expected=actual.Clone();using var canvas=new RasterCanvas(actual);using var reference=new RasterCanvas(expected);

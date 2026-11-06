@@ -1,0 +1,57 @@
+[
+  {
+    "scene": "regular-iterator-512-curves",
+    "msPerFrame": 0.02269257956543938,
+    "cpuMsPerFrame": 0.02171739377091961,
+    "cpuPercentOfMachine": 7.9752185467692955,
+    "allocatedBytesPerFrame": 88136,
+    "workingSetMiB": 36.86328125,
+    "privateMiB": 18.51171875,
+    "frames": 35254,
+    "perFrame": 1
+  },
+  {
+    "scene": "raw-iterator-512-curves",
+    "msPerFrame": 0.010370408202947773,
+    "cpuMsPerFrame": 0.010329841981774108,
+    "cpuPercentOfMachine": 8.30073559595422,
+    "allocatedBytesPerFrame": 56,
+    "workingSetMiB": 36.58984375,
+    "privateMiB": 18.5,
+    "frames": 77143,
+    "perFrame": 1
+  },
+  {
+    "scene": "font-measure-and-offsets",
+    "msPerFrame": 0.05587815277777778,
+    "cpuMsPerFrame": 0.05750868055555555,
+    "cpuPercentOfMachine": 8.576500489118146,
+    "allocatedBytesPerFrame": 0.04055555555555555,
+    "workingSetMiB": 47.36328125,
+    "privateMiB": 28.2109375,
+    "frames": 144,
+    "perFrame": 100
+  },
+  {
+    "scene": "path-distance-query",
+    "msPerFrame": 2.6340876688694186E-05,
+    "cpuMsPerFrame": 2.623793672273971E-05,
+    "cpuPercentOfMachine": 8.300766723658233,
+    "allocatedBytesPerFrame": 1.1063148848741073E-05,
+    "workingSetMiB": 47.56640625,
+    "privateMiB": 28.3125,
+    "frames": 303711,
+    "perFrame": 100
+  },
+  {
+    "scene": "data-subset-stream",
+    "msPerFrame": 6.997577438690725E-05,
+    "cpuMsPerFrame": 6.833571717471411E-05,
+    "cpuPercentOfMachine": 8.138020833333332,
+    "allocatedBytesPerFrame": 96.00002938982524,
+    "workingSetMiB": 49.59765625,
+    "privateMiB": 30.18359375,
+    "frames": 11432528,
+    "perFrame": 1
+  }
+]

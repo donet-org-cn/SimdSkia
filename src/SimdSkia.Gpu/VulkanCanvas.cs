@@ -7,13 +7,17 @@ namespace SimdSkia.Gpu;
 public sealed class VulkanDeviceLostException(string message) : Exception(message);
 
 /// <summary>Vulkan 1.0 compute rasterizer. Coverage and compositing execute on the device.</summary>
-public sealed unsafe class VulkanCanvas : ICanvasBackend
+public sealed unsafe partial class VulkanCanvas : ICanvasBackend
 {
     public const int MaximumCachedTextures=256;
     private readonly int ownerThread=Environment.CurrentManagedThreadId;
     private readonly PixelBuffer target;
+    private readonly SimdSkia.Cpu.GlyphMaskCommands glyphMasks=new();
     private readonly bool optimizedCoverage;
     private IntPtr instance,physical,device,queue,command;
+    private readonly BorrowedVulkanContext? borrowedContext;
+    private uint queueFamily;
+    private bool abandoned;
     private ulong descriptorLayout,pipelineLayout,pipeline,descriptorPool,commandPool,fence,sampler;
     private readonly ulong[] specializedPipelines=new ulong[4];
     private ulong coveragePipeline,cachedPathPipeline;
@@ -25,6 +29,7 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
     private GpuBuffer? hostUpload;
     private bool uploadPending;
     private bool outputInitialized;
+    private bool shadowStale;
     private Texture? emptyTexture;
     private readonly List<Queued> pending=[];
     private readonly Dictionary<PixelBuffer,ImageEntry> imageCache=[];
@@ -33,7 +38,7 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
     public const int MaximumCachedPathMasks=64;
     public const long MaximumPathMaskBytes=32*1024*1024;
     private readonly record struct MaskKey(PathGeometry Geometry,Matrix3 Transform,float Tolerance,RectF? Clip,bool Antialias);
-    private sealed class MaskEntry{public GpuBuffer? Buffer;public bool Ready;public long Bytes,Used,Batch;}
+    private sealed class MaskEntry{public GpuBuffer? Buffer;public bool Ready;public long Bytes,Used,Batch,Touched;}
     private readonly Dictionary<MaskKey,MaskEntry> maskCache=[];
     private long maskBytes,batchId;
     private bool disposed,faulted;
@@ -66,7 +71,7 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
     private static int EdgePayload(Queued item)=>checked((item.Data.Length*4+checked((item.Command.CoverageClip?.Width??0)*(item.Command.CoverageClip?.Height??0))+15)&~15);
     private sealed class ImageEntry
     {
-        public required Texture Texture;public required byte[] Snapshot;public int Hash;public long Used;
+        public required Texture Texture;public required byte[] Snapshot;public int Hash;public long Used,Touched;
     }
     private sealed class EdgeEntry
     {
@@ -74,7 +79,7 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
     }
     private sealed class Texture(IntPtr device,int width,int height) : IDisposable
     {
-        public ulong Image,Memory,View;
+        public ulong Image,Memory,View,AllocationSize;
         public GpuBuffer? Staging;
         public bool Uploaded;
         public int Width=>width;
@@ -85,13 +90,15 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
     }
 
     public VulkanCanvas(PixelBuffer target):this(target,true) { }
-    internal VulkanCanvas(PixelBuffer target,bool optimizedCoverage)
+    internal VulkanCanvas(PixelBuffer target,bool optimizedCoverage):this(target,optimizedCoverage,null) { }
+    internal VulkanCanvas(PixelBuffer target,bool optimizedCoverage,BorrowedVulkanContext? borrowedContext)
     {
+        this.borrowedContext=borrowedContext;
         this.optimizedCoverage=optimizedCoverage;
         ArgumentNullException.ThrowIfNull(target);
         // Opaque targets use the same premultiplied storage operations (Src/Clear
         // may write physical alpha). This preserves the former window staging path.
-        if(target.Alpha==AlphaFormat.Straight)throw new NotSupportedException("Vulkan targets require RGBA8888 or BGRA8888 premultiplied/opaque storage.");
+        if(target.Format==PixelFormat.Alpha8||target.Alpha==AlphaFormat.Straight)throw new NotSupportedException("Vulkan targets require RGBA8888 or BGRA8888 premultiplied/opaque storage.");
         if((long)target.Width*target.Height*4>128*1024*1024||target.Width>32768||target.Height>32768)throw new NotSupportedException("The initial Vulkan offscreen target is limited to 128 MiB and 32768 pixels per dimension.");
         this.target=target.Share();
         try{Initialize();}
@@ -99,11 +106,25 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
     }
     private void Initialize()
     {
-        var info=new Vk.InstanceInfo {Type=1};IntPtr created=default;Check(Vk.vkCreateInstance(&info,null,&created));instance=created;
+        IntPtr created=default;uint family;
+        if(borrowedContext is {} borrowed)
+        {
+            instance=borrowed.Instance;physical=borrowed.PhysicalDevice;device=borrowed.Device;queue=borrowed.Queue;family=borrowed.QueueFamily;
+            if(instance==IntPtr.Zero||physical==IntPtr.Zero||device==IntPtr.Zero||queue==IntPtr.Zero)throw new ArgumentException("A borrowed Vulkan context requires live instance, physical device, device and queue handles.");
+            uint queueCount=0;Vk.vkGetPhysicalDeviceQueueFamilyProperties(physical,&queueCount,null);
+            if(queueCount>4096||family>=queueCount)throw new ArgumentException("Invalid Vulkan queue family.");
+            var families=new Vk.QueueFamily[queueCount];fixed(Vk.QueueFamily* ptr=families)Vk.vkGetPhysicalDeviceQueueFamilyProperties(physical,&queueCount,ptr);
+            if((families[family].Flags&2)==0)throw new NotSupportedException("This Vulkan rasterizer requires a compute-capable queue.");
+            timestampBits=families[family].TimestampBits;byte* properties=stackalloc byte[4096];Vk.vkGetPhysicalDeviceProperties(physical,properties);
+            IsSoftwareDevice=*(uint*)(properties+16)==4;var name=new ReadOnlySpan<byte>(properties+20,256);int end=name.IndexOf((byte)0);DeviceName=Encoding.UTF8.GetString(end>=0?name[..end]:name);
+        }
+        else
+        {
+        var info=new Vk.InstanceInfo {Type=1};Check(Vk.vkCreateInstance(&info,null,&created));instance=created;
         uint count=0;Check(Vk.vkEnumeratePhysicalDevices(instance,&count,null));
         if(count==0)throw new InvalidOperationException("No Vulkan device was found. Install a Vulkan-capable driver; no CPU rendering fallback is substituted.");
         var devices=new IntPtr[count];fixed(IntPtr* ptr=devices)Check(Vk.vkEnumeratePhysicalDevices(instance,&count,ptr));
-        int score=-1;uint family=0;
+        int score=-1;family=0;
         byte* properties=stackalloc byte[4096];
         foreach(IntPtr candidate in devices)
         {
@@ -120,6 +141,9 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
         if(physical==IntPtr.Zero)throw new InvalidOperationException("No Vulkan compute queue is available.");
         float priority=1;var q=new Vk.QueueInfo {Type=2,Family=family,Count=1,Priorities=&priority};var d=new Vk.DeviceInfo {Type=3,QueueCount=1,Queues=&q};
         Check(Vk.vkCreateDevice(physical,&d,null,&created));device=created;Vk.vkGetDeviceQueue(device,family,0,&created);queue=created;
+        }
+        queueFamily=family;
+        byte* caps=stackalloc byte[4096];Vk.vkGetPhysicalDeviceProperties(physical,caps);MaximumImageSize=(int)Math.Min(32768,*(uint*)(caps+300));
         Vk.MemoryProperties propertiesMemory=default;Vk.vkGetPhysicalDeviceMemoryProperties(physical,&propertiesMemory);memory=propertiesMemory;
         var bindings=stackalloc Vk.LayoutBinding[5];for(uint i=0;i<5;i++)bindings[i]=new(){Binding=i,DescriptorType=i==3?1u:i==2?6u:7u,Count=1,Stages=32};
         var layoutInfo=new Vk.DescriptorLayoutInfo {Type=32,Count=5,Bindings=bindings};ulong handle=0;Check(Vk.vkCreateDescriptorSetLayout(device,&layoutInfo,null,&handle));descriptorLayout=handle;
@@ -173,9 +197,14 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
     }
     public void Execute(in DrawingCommand command)
     {
-        Validate();if(!Enum.IsDefined(command.Kind)||!Enum.IsDefined(command.Paint.Composite))throw new NotSupportedException("Unknown Vulkan drawing command/composite mode.");
-        if(command.Kind==CommandKind.DrawGlyphRun)throw new NotSupportedException("Vulkan glyph masks are not implemented.");
+        if(command.TextPixelGeometry is 1 or 2&&target.Format==PixelFormat.Bgra8888)throw new NotSupportedException("LCD glyph composition on this GPU pipeline requires explicit raster fallback.");
+        if(command.FixedTriangleEdges)throw new NotSupportedException("Fixed mesh coverage currently requires the CPU backend.");
+        if(command.LatticeRectangleEdges)throw new NotSupportedException("Lattice cell edge rounding currently requires the CPU backend.");
+        if(command.Paint.MaskFilter is not null){Validate();throw new NotSupportedException("Mask filters require explicit CPU fallback on this Vulkan pipeline.");}
+        if(command.Paint.ImageFilter is not null){Validate();throw new NotSupportedException("Image filters require explicit CPU fallback on this Vulkan pipeline.");}
+        Validate();if(command.Paint.Blender is not null||command.Paint.FloatingColor is not null||command.Paint.Dither)throw new NotSupportedException("Custom blender/float-paint/dither stages require explicit raster fallback on this Vulkan pipeline.");if(command.Paint.ColorFilter is not null)throw new NotSupportedException("Color filters require explicit CPU fallback on this GPU pipeline.");if(command.Paint.Composite is not (CompositeMode.SourceOver or CompositeMode.Source or CompositeMode.Clear))throw new NotSupportedException("This Vulkan pipeline requires explicit fallback for the requested blend mode.");if(!Enum.IsDefined(command.Kind)||!Enum.IsDefined(command.Paint.Composite))throw new NotSupportedException("Unknown Vulkan drawing command/composite mode.");
         if(command.Kind==CommandKind.Clear&&command.CoverageClip is not null)throw new NotSupportedException("Clear with a coverage clip is undefined; use a Source rectangle.");
+        if(command.Image?.Format==PixelFormat.Alpha8)throw new NotSupportedException("Vulkan alpha-only image tinting is not implemented.");
         if(!Enum.IsDefined(command.Sampling))throw new NotSupportedException("Unknown Vulkan image sampling mode.");
         if(!float.IsFinite(command.CurveTolerance)||command.CurveTolerance<=0)throw new ArgumentOutOfRangeException(nameof(command.CurveTolerance));
         if(command.CoverageClip is {} mask&&(long)mask.Width*mask.Height>64*1024*1024)throw new NotSupportedException("A coverage clip exceeds the 64 MiB upload budget.");
@@ -185,11 +214,18 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
         if(command.Paint.Shader is not null and not LinearGradient)
         {
             if(!command.Paint.Shader.TryGetLinearGradient(out var linear)||linear is null)throw new NotSupportedException("Vulkan accepts linear gradient shaders; other shaders require an explicit CPU fallback.");
-            if(linear.Stops.Length>32||linear.Stops.ToArray().Any(s=>s.Offset<0||s.Offset>1))throw new NotSupportedException("Vulkan linear gradients accept up to 32 stops in [0,1].");
+            if(linear.Stops.Length>32||!linear.HasUnitStops)throw new NotSupportedException("Vulkan linear gradients accept up to 32 stops in [0,1].");
             float dx=linear.End.X-linear.Start.X,dy=linear.End.Y-linear.Start.Y;if(!float.IsFinite(dx*dx+dy*dy))throw new NotSupportedException("Gradient coordinates exceed Vulkan float32 precision.");
         }
         if(command.Paint.Shader is LinearGradient shader)
         {float dx=shader.End.X-shader.Start.X,dy=shader.End.Y-shader.Start.Y;if(!float.IsFinite(dx*dx+dy*dy))throw new NotSupportedException("Gradient coordinates exceed Vulkan float32 precision.");}
+        if(command.Kind==CommandKind.DrawGlyphRun)
+        {
+            var masks=glyphMasks.Resolve(command);
+            foreach(var glyph in masks)
+                Execute(command with{Kind=CommandKind.FillRectangle,Rectangle=glyph.Bounds,Transform=Matrix3.Identity,ShaderTransform=command.ShaderTransform??command.Transform,GlyphRun=null,CoverageClip=glyph,Paint=command.Paint with{Antialias=false}});
+            return;
+        }
         if(optimizedCoverage&&OverwritesTarget(command))pending.Clear();
         if(pending.Count>=128)Flush();EdgeEntry? edges=null;
         if(command.Kind==CommandKind.FillPath)
@@ -233,7 +269,7 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
                 }
             }
             else TextureCacheHits++;
-            entry!.Used=++useCounter;texture=entry.Texture;
+            entry!.Used=++useCounter;entry.Touched=Stopwatch.GetTimestamp();texture=entry.Texture;
         }
         pending.Add(new(command with {Image=null},edges,texture));
     }
@@ -288,9 +324,10 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
         for(int y=0;y<target.Height;y++)target.GetRowSpan(y)[..(target.Width*4)].CopyTo(hostUpload.Bytes.Slice(y*target.Width*4,target.Width*4));
         uploadPending=true;
     }
-    public void Flush()
+    public void Flush()=>Flush(true);
+    private void Flush(bool updateTarget)
     {
-        Validate();if(pending.Count==0)return;
+        Validate();if(pending.Count==0){if(externalImage is not null&&!outputInitialized)ReadInitialExternal(updateTarget);if(updateTarget&&shadowStale)CopyReadbackToTarget();return;}
         batchId++;
         long recordingStart=Stopwatch.GetTimestamp();
         List<VulkanDispatchProfile>? profiles=EnableProfiling?new(pending.Count):null;
@@ -300,7 +337,8 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
         uint query=0;
         bool submitted=false,completed=false;
         int edgeStride=256,paramStride=768;
-        int edgeBytesNeeded=pending.Sum(p=>((EdgePayload(p)+255)&~255))+edgeStride,paramBytesNeeded=pending.Count*paramStride+paramStride;
+        int edgeBytesNeeded=edgeStride,paramBytesNeeded=pending.Count*paramStride+RectangleBatchUniformBytes;
+        foreach(var item in pending)edgeBytesNeeded+=((EdgePayload(item)+255)&~255);
         try
         {
             if(edgesArena is null||edgesArena.Size<edgeBytesNeeded)
@@ -325,7 +363,12 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
             inputBarriers[0]=new(){Type=44,SourceAccess=4096,DestinationAccess=32,SourceFamily=uint.MaxValue,DestinationFamily=uint.MaxValue,Buffer=deviceEdgesArena.Handle,Size=(ulong)edgeBytesNeeded};
             inputBarriers[1]=new(){Type=44,SourceAccess=4096,DestinationAccess=8,SourceFamily=uint.MaxValue,DestinationFamily=uint.MaxValue,Buffer=deviceParamsArena.Handle,Size=(ulong)paramBytesNeeded};
             Vk.vkCmdPipelineBarrier(command,4096,2048,0,0,null,2,inputBarriers,0,null);
-            if(uploadPending||!outputInitialized)
+            bool replacesTarget=OverwritesTarget(pending[0].Command);
+            if(externalImage is not null&&!replacesTarget)
+            {
+                RecordExternalCopy(false);var visible=new Vk.BufferBarrier{Type=44,SourceAccess=4096,DestinationAccess=32|64,SourceFamily=uint.MaxValue,DestinationFamily=uint.MaxValue,Buffer=output!.Handle,Size=(ulong)output.Size};Vk.vkCmdPipelineBarrier(command,4096,2048,0,0,null,1,&visible,0,null);
+            }
+            else if((uploadPending||!outputInitialized)&&!replacesTarget)
             {
                 if(uploadPending){var uploadRegion=new Vk.BufferCopy{Size=(ulong)output!.Size};Vk.vkCmdCopyBuffer(command,hostUpload!.Handle,output.Handle,1,&uploadRegion);}
                 else Vk.vkCmdFillBuffer(command,output!.Handle,0,(ulong)output.Size,0);
@@ -334,13 +377,18 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
             }
             ulong boundPipeline=optimizedCoverage?specializedPipelines[0]:pipeline;
             Vk.vkCmdBindPipeline(command,1,boundPipeline);
-            foreach(var texture in imageCache.Values.Select(e=>e.Texture).Concat(retiredTextures).Prepend(emptyTexture!).Where(t=>!t.Uploaded))RecordTextureUpload(texture);
+            if(!emptyTexture!.Uploaded)RecordTextureUpload(emptyTexture);
+            foreach(var entry in imageCache.Values)if(!entry.Texture.Uploaded)RecordTextureUpload(entry.Texture);
+            foreach(var texture in retiredTextures)if(!texture.Uploaded)RecordTextureUpload(texture);
             if(profiles is not null)Vk.vkCmdWriteTimestamp(command,8192,queryPool,query++);
             var buffers=stackalloc Vk.DescriptorBuffer[5];var writes=stackalloc Vk.WriteDescriptor[5];int setIndex=0,edgeOffset=0,paramOffset=0;
             Span<uint> words=stackalloc uint[160];
             Span<RectF> unbarriered=stackalloc RectF[128];int unbarrieredCount=0;
-            foreach(var item in pending)
+            for(int pendingIndex=0;pendingIndex<pending.Count;pendingIndex++)
             {
+                if(TransferClear(pending[pendingIndex].Command,ref unbarrieredCount)){if(profiles is not null){Vk.vkCmdWriteTimestamp(command,8192,queryPool,query++);profiles.Add(new(CommandKind.Clear,false,target.Width,target.Height,0,0){Color=pending[pendingIndex].Command.Paint.Color,Composite=CompositeMode.Source});}continue;}
+                int batched=RectangleBatch(pendingIndex,ref paramOffset,ref setIndex,unbarriered,ref unbarrieredCount,ref boundPipeline);if(batched>0){if(profiles is not null){var first=pending[pendingIndex].Command;Vk.vkCmdWriteTimestamp(command,8192,queryPool,query++);profiles.Add(new(CommandKind.FillRectangle,first.Paint.Antialias,lastRectangleBatchWidth,lastRectangleBatchHeight,0,0){Color=first.Paint.Color,Composite=first.Paint.Composite,Shader=first.Paint.Shader is not null,CommandCount=batched});}pendingIndex+=batched-1;continue;}
+                var item=pending[pendingIndex];
                 var cmd=item.Command;
                 if(cmd.Kind!=CommandKind.Clear&&!cmd.Transform.TryInvert(out _))continue;
                 // Validation has already happened in Execute. Transparent SrcOver
@@ -401,21 +449,21 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
                     if(profiles is not null){Vk.vkCmdWriteTimestamp(command,8192,queryPool,query++);profiles.Add(new(cmd.Kind,cmd.Paint.Antialias,(int)bw,(int)bh,item.Edges.Length/4,0){Color=cmd.Paint.Color,Composite=cmd.Paint.Composite,Shader=cmd.Paint.Shader is not null});}
                 }
             }
-            var transferBarrier=new Vk.BufferBarrier {Type=44,SourceAccess=64,DestinationAccess=2048,SourceFamily=uint.MaxValue,DestinationFamily=uint.MaxValue,Buffer=output!.Handle,Size=(ulong)output.Size};
-            Vk.vkCmdPipelineBarrier(command,2048,4096,0,0,null,1,&transferBarrier,0,null);
+            var transferBarrier=new Vk.BufferBarrier {Type=44,SourceAccess=64|4096,DestinationAccess=2048,SourceFamily=uint.MaxValue,DestinationFamily=uint.MaxValue,Buffer=output!.Handle,Size=(ulong)output.Size};
+            Vk.vkCmdPipelineBarrier(command,2048|4096,4096,0,0,null,1,&transferBarrier,0,null);
             var copyRegion=new Vk.BufferCopy {Size=(ulong)output.Size};Vk.vkCmdCopyBuffer(command,output.Handle,readback!.Handle,1,&copyRegion);
+            if(externalImage is not null)RecordExternalCopy(true);
             var hostBarrier=new Vk.BufferBarrier {Type=44,SourceAccess=4096,DestinationAccess=8192,SourceFamily=uint.MaxValue,DestinationFamily=uint.MaxValue,Buffer=readback.Handle,Size=(ulong)readback.Size};
             Vk.vkCmdPipelineBarrier(command,4096,16384,0,0,null,1,&hostBarrier,0,null);
             if(profiles is not null)Vk.vkCmdWriteTimestamp(command,8192,queryPool,query++);
             Check(Vk.vkEndCommandBuffer(command));double recordingMs=Stopwatch.GetElapsedTime(recordingStart).TotalMilliseconds;
-            IntPtr recorded=command;var submit=new Vk.SubmitInfo {Type=4,CommandCount=1,Commands=&recorded};var timer=Stopwatch.StartNew();
-            Check(Vk.vkQueueSubmit(queue,1,&submit,fence));submitted=true;LastSubmitMilliseconds=timer.Elapsed.TotalMilliseconds;
-            int result=Vk.vkWaitForFences(device,1,&waitFence,1,10_000_000_000);LastCompletionMilliseconds=timer.Elapsed.TotalMilliseconds;
+            IntPtr recorded=command;var submit=new Vk.SubmitInfo {Type=4,CommandCount=1,Commands=&recorded};long submissionStart=Stopwatch.GetTimestamp();
+            Check(Vk.vkQueueSubmit(queue,1,&submit,fence));submitted=true;LastSubmitMilliseconds=Stopwatch.GetElapsedTime(submissionStart).TotalMilliseconds;
+            int result=Vk.vkWaitForFences(device,1,&waitFence,1,10_000_000_000);LastCompletionMilliseconds=Stopwatch.GetElapsedTime(submissionStart).TotalMilliseconds;
             if(result==2)throw new TimeoutException("Vulkan completion fence timed out; the frame is not reported as completed.");Check(result);completed=true;
             outputInitialized=true;uploadPending=false;
             long hostCopyStart=Stopwatch.GetTimestamp();
-            if(target.RowBytes==target.Width*4)readback.Bytes.CopyTo(target.GetPixelSpan());
-            else for(int y=0;y<target.Height;y++)readback.Bytes.Slice(y*target.Width*4,target.Width*4).CopyTo(target.GetRowSpan(y));
+            shadowStale=true;if(updateTarget)CopyReadbackToTarget();
             double hostCopyMs=Stopwatch.GetElapsedTime(hostCopyStart).TotalMilliseconds;
             if(profiles is not null)
             {
@@ -426,7 +474,8 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
                     unchecked(stamps[query-1]-stamps[query-2])&mask,recordingMs,LastCompletionMilliseconds,hostCopyMs,profiles);
             }
             else LastProfile=null;
-            foreach(var texture in imageCache.Values.Select(e=>e.Texture).Prepend(emptyTexture!)){texture.Uploaded=true;texture.Staging?.Dispose();texture.Staging=null;}
+            emptyTexture!.Uploaded=true;emptyTexture.Staging?.Dispose();emptyTexture.Staging=null;
+            foreach(var entry in imageCache.Values){var texture=entry.Texture;texture.Uploaded=true;texture.Staging?.Dispose();texture.Staging=null;}
             foreach(var retired in retiredTextures)retired.Dispose();retiredTextures.Clear();
             CompletedBatches++;pending.Clear();TrimTextures();
         }
@@ -439,11 +488,11 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
     }
     private MaskEntry? ResolveMask(in DrawingCommand cmd,uint width,uint height)
     {
-        long bytes=(long)width*height*4;if(bytes==0||bytes>MaximumPathMaskBytes)return null;
+        long bytes=(long)width*height*4;if(!cachePathMasks||bytes==0||bytes>Math.Min(cacheLimit,MaximumPathMaskBytes))return null;
         var key=new MaskKey(cmd.Path!,cmd.Transform,cmd.CurveTolerance,cmd.Clip,cmd.Paint.Antialias);
         if(maskCache.TryGetValue(key,out var entry))
         {
-            entry.Used=++useCounter;entry.Batch=batchId;
+            entry.Used=++useCounter;entry.Batch=batchId;entry.Touched=Stopwatch.GetTimestamp();
             if(entry.Buffer is not null){PathMaskHits++;return entry;}
             if(!ReserveMasks(bytes,false))return null;
             entry.Buffer=Allocate((int)bytes,deviceLocal:true);entry.Bytes+=bytes;maskBytes+=bytes;return entry;
@@ -452,7 +501,7 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
         if(!ReserveMasks(retained,true))return null;
         // Admit on the second identical use. Animating/transient geometry gets
         // full-quality direct GPU rendering without allocating a mask every frame.
-        maskCache.Add(key,new(){Bytes=retained,Used=++useCounter,Batch=batchId});maskBytes+=retained;return null;
+        maskCache.Add(key,new(){Bytes=retained,Used=++useCounter,Batch=batchId,Touched=Stopwatch.GetTimestamp()});maskBytes+=retained;return null;
     }
     private bool ReserveMasks(long bytes,bool newEntry)
     {
@@ -491,7 +540,7 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
         if(cmd.Kind is CommandKind.FillRectangle or CommandKind.DrawImage&&cmd.Transform.M01==0&&cmd.Transform.M10==0)
         {
             words[32]=1;var a=cmd.Transform.Map(rect.Left,rect.Top);var b=cmd.Transform.Map(rect.Right,rect.Bottom);
-            float Edge(float v)=>cmd.Kind==CommandKind.DrawImage?cmd.Paint.Antialias?v:MathF.Ceiling(v-.5f):MathF.Floor(v+.5f);
+            float Edge(float v)=>cmd.Kind==CommandKind.DrawImage?cmd.Paint.Antialias?v:cmd.AliasedRectangleEdges?MathF.Floor(v+.5f):MathF.Ceiling(v-.5f):MathF.Floor(v+.5f);
             floats[33]=Edge(MathF.Min(a.X,b.X));floats[34]=Edge(MathF.Min(a.Y,b.Y));floats[35]=Edge(MathF.Max(a.X,b.X));floats[36]=Edge(MathF.Max(a.Y,b.Y));
         }
         ComputeBounds(cmd,item.Edges,clip,rect,out var originX,out var originY,out var extentX,out var extentY);
@@ -535,9 +584,11 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
     private static uint Pack(Rgba32 c)=>(uint)(c.R|(c.G<<8)|(c.B<<16)|(c.A<<24));
     private void TrimTextures()
     {
-        long bytes=imageCache.Values.Sum(e=>(long)e.Texture.Size);
-        foreach(var entry in imageCache.OrderBy(e=>e.Value.Used).ToArray())
-        {if(imageCache.Count<=MaximumCachedTextures&&bytes<=64*1024*1024)break;bytes-=entry.Value.Texture.Size;entry.Value.Texture.Dispose();imageCache.Remove(entry.Key);}
+        long bytes=0;foreach(var entry in imageCache.Values)bytes+=entry.Texture.Size;
+        if(imageCache.Count>MaximumCachedTextures||bytes>64*1024*1024)
+            foreach(var entry in imageCache.OrderBy(e=>e.Value.Used).ToArray())
+            {if(imageCache.Count<=MaximumCachedTextures&&bytes<=64*1024*1024)break;bytes-=entry.Value.Texture.Size;entry.Value.Texture.Dispose();imageCache.Remove(entry.Key);}
+        TrimResourceCache();
     }
     private Texture AllocateTexture(int width,int height,ReadOnlySpan<byte> data)
     {
@@ -550,7 +601,7 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
             uint type=uint.MaxValue;var properties=memory;
             for(uint i=0;i<properties.TypeCount;i++)if((requirements.TypeBits&(1u<<(int)i))!=0){if(type==uint.MaxValue)type=i;if((properties.Types[i*2]&1)!=0){type=i;break;}}
             if(type==uint.MaxValue)throw new NotSupportedException("No compatible Vulkan image memory.");
-            var allocate=new Vk.AllocateInfo {Type=5,Size=requirements.Size,MemoryType=type};Check(Vk.vkAllocateMemory(device,&allocate,null,&handle));result.Memory=handle;Check(Vk.vkBindImageMemory(device,result.Image,handle,0));
+            var allocate=new Vk.AllocateInfo {Type=5,Size=requirements.Size,MemoryType=type};Check(Vk.vkAllocateMemory(device,&allocate,null,&handle));result.Memory=handle;result.AllocationSize=requirements.Size;Check(Vk.vkBindImageMemory(device,result.Image,handle,0));
             var view=new Vk.ImageViewInfo {Type=15,Image=result.Image,ViewType=1,Format=37,Aspect=1,Mips=1,Layers=1};Check(Vk.vkCreateImageView(device,&view,null,&handle));result.View=handle;return result;
         }
         catch{result.Dispose();throw;}
@@ -574,7 +625,7 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
             if(preferCached)for(uint i=0;i<properties.TypeCount;i++)if((requirements.TypeBits&(1u<<(int)i))!=0&&(properties.Types[i*2]&14)==14){memoryType=i;break;}
             if(deviceLocal)for(uint i=0;i<properties.TypeCount;i++)if((requirements.TypeBits&(1u<<(int)i))!=0&&(properties.Types[i*2]&1)!=0){memoryType=i;break;}
             if(memoryType==uint.MaxValue)throw new NotSupportedException("No compatible Vulkan buffer memory type is available.");
-            var allocation=new Vk.AllocateInfo {Type=5,Size=requirements.Size,MemoryType=memoryType};Check(Vk.vkAllocateMemory(device,&allocation,null,&handle));result.Memory=handle;
+            var allocation=new Vk.AllocateInfo {Type=5,Size=requirements.Size,MemoryType=memoryType};Check(Vk.vkAllocateMemory(device,&allocation,null,&handle));result.Memory=handle;result.AllocationSize=requirements.Size;
             Check(Vk.vkBindBufferMemory(device,result.Handle,handle,0));
             if(!deviceLocal){void* mapped=null;Check(Vk.vkMapMemory(device,handle,0,(ulong)size,0,&mapped));result.Pointer=mapped;}
             return result;
@@ -587,7 +638,7 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
     }
     private sealed class GpuBuffer(IntPtr device,int size) : IDisposable
     {
-        public ulong Handle,Memory;
+        public ulong Handle,Memory,AllocationSize;
         public void* Pointer;
         public int Size=>size;
         public Span<byte> Bytes=>Pointer is null?throw new ObjectDisposedException(nameof(GpuBuffer)):new(Pointer,size);
@@ -600,8 +651,9 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
     }
     private void DisposeCore()
     {
+        glyphMasks.Clear();
         if(disposed)return;disposed=true;
-        if(device!=IntPtr.Zero)
+        if(device!=IntPtr.Zero&&!abandoned)
         {
             Vk.vkDeviceWaitIdle(device);pending.Clear();foreach(var entry in imageCache.Values)entry.Texture.Dispose();imageCache.Clear();foreach(var retired in retiredTextures)retired.Dispose();retiredTextures.Clear();edgeCache.Clear();edgeBytes=0;emptyTexture?.Dispose();output?.Dispose();readback?.Dispose();empty?.Dispose();edgesArena?.Dispose();paramsArena?.Dispose();hostUpload?.Dispose();
             if(fence!=0)Vk.vkDestroyFence(device,fence,null);if(commandPool!=0)Vk.vkDestroyCommandPool(device,commandPool,null);if(descriptorPool!=0)Vk.vkDestroyDescriptorPool(device,descriptorPool,null);
@@ -609,11 +661,12 @@ public sealed unsafe class VulkanCanvas : ICanvasBackend
             deviceEdgesArena?.Dispose();deviceParamsArena?.Dispose();
             if(sampler!=0)Vk.vkDestroySampler(device,sampler,null);
             foreach(ulong specialized in specializedPipelines)if(specialized!=0)Vk.vkDestroyPipeline(device,specialized,null);
+            if(rectangleBatchPipeline!=0)Vk.vkDestroyPipeline(device,rectangleBatchPipeline,null);
             if(coveragePipeline!=0)Vk.vkDestroyPipeline(device,coveragePipeline,null);if(cachedPathPipeline!=0)Vk.vkDestroyPipeline(device,cachedPathPipeline,null);
             foreach(var mask in maskCache.Values)mask.Buffer?.Dispose();maskCache.Clear();maskBytes=0;
-            if(pipeline!=0)Vk.vkDestroyPipeline(device,pipeline,null);if(pipelineLayout!=0)Vk.vkDestroyPipelineLayout(device,pipelineLayout,null);if(descriptorLayout!=0)Vk.vkDestroyDescriptorSetLayout(device,descriptorLayout,null);Vk.vkDestroyDevice(device,null);device=IntPtr.Zero;
+            if(pipeline!=0)Vk.vkDestroyPipeline(device,pipeline,null);if(pipelineLayout!=0)Vk.vkDestroyPipelineLayout(device,pipelineLayout,null);if(descriptorLayout!=0)Vk.vkDestroyDescriptorSetLayout(device,descriptorLayout,null);if(borrowedContext is null)Vk.vkDestroyDevice(device,null);device=IntPtr.Zero;
         }
-        if(instance!=IntPtr.Zero){Vk.vkDestroyInstance(instance,null);instance=IntPtr.Zero;}target.Dispose();
+        if(instance!=IntPtr.Zero){if(borrowedContext is null)Vk.vkDestroyInstance(instance,null);instance=IntPtr.Zero;}externalImage=null;externalRows=null;target.Dispose();
     }
     ~VulkanCanvas(){try{DisposeCore();}catch{ /* Finalizers cannot report a completed frame or throw. */ }}
 }

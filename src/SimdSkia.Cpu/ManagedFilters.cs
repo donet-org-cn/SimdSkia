@@ -5,7 +5,7 @@ using System.Runtime.Intrinsics.X86;
 namespace SimdSkia.Cpu;
 
 /// <summary>Separable Gaussian filters in encoded premultiplied RGBA, with transparent extension.</summary>
-public static class ManagedFilters
+public static partial class ManagedFilters
 {
     private const int Scale=16384;
     private static readonly object gate=new();

@@ -1,0 +1,4730 @@
+{
+  "metadataCases": 431,
+  "metadataValues": 10875,
+  "metadataPassed": false,
+  "metadataOutsideSpanPassed": true,
+  "knownPaddedSpanDifferences": [
+    {
+      "key": "values.span-padding-Bgra8888-Opaque.bytes",
+      "original": 308,
+      "managed": 380
+    },
+    {
+      "key": "values.span-padding-Bgra8888-Opaque.typed",
+      "original": 77,
+      "managed": 95
+    },
+    {
+      "key": "values.span-padding-Bgra8888-Opaque.offset",
+      "original": 256,
+      "managed": 316
+    },
+    {
+      "key": "values.span-padding-Bgra8888-Premul.bytes",
+      "original": 308,
+      "managed": 380
+    },
+    {
+      "key": "values.span-padding-Bgra8888-Premul.typed",
+      "original": 77,
+      "managed": 95
+    },
+    {
+      "key": "values.span-padding-Bgra8888-Premul.offset",
+      "original": 256,
+      "managed": 316
+    },
+    {
+      "key": "values.span-padding-Bgra8888-Unpremul.bytes",
+      "original": 308,
+      "managed": 380
+    },
+    {
+      "key": "values.span-padding-Bgra8888-Unpremul.typed",
+      "original": 77,
+      "managed": 95
+    },
+    {
+      "key": "values.span-padding-Bgra8888-Unpremul.offset",
+      "original": 256,
+      "managed": 316
+    },
+    {
+      "key": "values.span-padding-Rgba8888-Opaque.bytes",
+      "original": 308,
+      "managed": 380
+    },
+    {
+      "key": "values.span-padding-Rgba8888-Opaque.typed",
+      "original": 77,
+      "managed": 95
+    },
+    {
+      "key": "values.span-padding-Rgba8888-Opaque.offset",
+      "original": 256,
+      "managed": 316
+    },
+    {
+      "key": "values.span-padding-Rgba8888-Premul.bytes",
+      "original": 308,
+      "managed": 380
+    },
+    {
+      "key": "values.span-padding-Rgba8888-Premul.typed",
+      "original": 77,
+      "managed": 95
+    },
+    {
+      "key": "values.span-padding-Rgba8888-Premul.offset",
+      "original": 256,
+      "managed": 316
+    },
+    {
+      "key": "values.span-padding-Rgba8888-Unpremul.bytes",
+      "original": 308,
+      "managed": 380
+    },
+    {
+      "key": "values.span-padding-Rgba8888-Unpremul.typed",
+      "original": 77,
+      "managed": 95
+    },
+    {
+      "key": "values.span-padding-Rgba8888-Unpremul.offset",
+      "original": 256,
+      "managed": 316
+    },
+    {
+      "key": "values.span-typed-offset-compact",
+      "original": 3,
+      "managed": 2
+    }
+  ],
+  "otherDifferences": [],
+  "transfers": [
+    {
+      "name": "read-Rgba8888-Premul-Rgba8888-Premul-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Rgba8888-Premul-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Rgba8888-Premul-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Rgba8888-Premul-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Rgba8888-Premul--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Rgba8888-Premul--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Rgba8888-Premul-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Rgba8888-Premul-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Rgba8888-Premul-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Rgba8888-Premul-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Rgba8888-Premul--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Rgba8888-Premul--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Rgba8888-Unpremul-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 1,
+      "rmse": 0.1013606067599229,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Rgba8888-Unpremul-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 1,
+      "rmse": 0.1013606067599229,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Rgba8888-Unpremul-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 1,
+      "rmse": 0.0827605888602368,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Rgba8888-Unpremul-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 1,
+      "rmse": 0.0827605888602368,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Rgba8888-Unpremul--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 1,
+      "rmse": 0.0827605888602368,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Rgba8888-Unpremul--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 1,
+      "rmse": 0.0827605888602368,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Rgba8888-Unpremul-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Rgba8888-Unpremul-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Rgba8888-Unpremul-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Rgba8888-Unpremul-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Rgba8888-Unpremul--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Rgba8888-Unpremul--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Rgba8888-Opaque-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Rgba8888-Opaque-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Rgba8888-Opaque-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Rgba8888-Opaque-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Rgba8888-Opaque--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Rgba8888-Opaque--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Rgba8888-Opaque-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Rgba8888-Opaque-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Rgba8888-Opaque-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Rgba8888-Opaque-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Rgba8888-Opaque--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Rgba8888-Opaque--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Bgra8888-Premul-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Bgra8888-Premul-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Bgra8888-Premul-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Bgra8888-Premul-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Bgra8888-Premul--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Bgra8888-Premul--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Bgra8888-Premul-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Bgra8888-Premul-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Bgra8888-Premul-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Bgra8888-Premul-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Bgra8888-Premul--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Bgra8888-Premul--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Bgra8888-Unpremul-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 1,
+      "rmse": 0.1013606067599229,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Bgra8888-Unpremul-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 1,
+      "rmse": 0.1013606067599229,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Bgra8888-Unpremul-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 1,
+      "rmse": 0.0827605888602368,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Bgra8888-Unpremul-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 1,
+      "rmse": 0.0827605888602368,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Bgra8888-Unpremul--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 1,
+      "rmse": 0.0827605888602368,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Bgra8888-Unpremul--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 1,
+      "rmse": 0.0827605888602368,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Bgra8888-Unpremul-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Bgra8888-Unpremul-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Bgra8888-Unpremul-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Bgra8888-Unpremul-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Bgra8888-Unpremul--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Bgra8888-Unpremul--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Bgra8888-Opaque-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Bgra8888-Opaque-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Bgra8888-Opaque-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Bgra8888-Opaque-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Bgra8888-Opaque--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Bgra8888-Opaque--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Bgra8888-Opaque-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Bgra8888-Opaque-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Bgra8888-Opaque-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Bgra8888-Opaque-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Premul-Bgra8888-Opaque--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Premul-Bgra8888-Opaque--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "scale-Rgba8888-Premul-nearest",
+      "kind": "scale",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "scale-Rgba8888-Premul-linear",
+      "kind": "scale",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 3,
+      "passed": true
+    },
+    {
+      "name": "scale-Rgba8888-Premul-mitchell",
+      "kind": "scale",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 3,
+      "passed": true
+    },
+    {
+      "name": "scale-Rgba8888-Premul-catmull",
+      "kind": "scale",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 3,
+      "passed": true
+    },
+    {
+      "name": "erase-Rgba8888-Premul",
+      "kind": "erase",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Rgba8888-Premul-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Rgba8888-Premul-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Rgba8888-Premul-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Rgba8888-Premul-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Rgba8888-Premul--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Rgba8888-Premul--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Rgba8888-Premul-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Rgba8888-Premul-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Rgba8888-Premul-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Rgba8888-Premul-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Rgba8888-Premul--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Rgba8888-Premul--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Rgba8888-Unpremul-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Rgba8888-Unpremul-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Rgba8888-Unpremul-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Rgba8888-Unpremul-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Rgba8888-Unpremul--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Rgba8888-Unpremul--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Rgba8888-Unpremul-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Rgba8888-Unpremul-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Rgba8888-Unpremul-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Rgba8888-Unpremul-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Rgba8888-Unpremul--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Rgba8888-Unpremul--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Rgba8888-Opaque-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Rgba8888-Opaque-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Rgba8888-Opaque-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Rgba8888-Opaque-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Rgba8888-Opaque--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Rgba8888-Opaque--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Rgba8888-Opaque-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Rgba8888-Opaque-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Rgba8888-Opaque-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Rgba8888-Opaque-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Rgba8888-Opaque--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Rgba8888-Opaque--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Bgra8888-Premul-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Bgra8888-Premul-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Bgra8888-Premul-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Bgra8888-Premul-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Bgra8888-Premul--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Bgra8888-Premul--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Bgra8888-Premul-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Bgra8888-Premul-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Bgra8888-Premul-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Bgra8888-Premul-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Bgra8888-Premul--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Bgra8888-Premul--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Bgra8888-Unpremul-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Bgra8888-Unpremul-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Bgra8888-Unpremul-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Bgra8888-Unpremul-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Bgra8888-Unpremul--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Bgra8888-Unpremul--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Bgra8888-Unpremul-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Bgra8888-Unpremul-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Bgra8888-Unpremul-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Bgra8888-Unpremul-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Bgra8888-Unpremul--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Bgra8888-Unpremul--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Bgra8888-Opaque-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Bgra8888-Opaque-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Bgra8888-Opaque-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Bgra8888-Opaque-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Bgra8888-Opaque--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Bgra8888-Opaque--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Bgra8888-Opaque-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Bgra8888-Opaque-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Bgra8888-Opaque-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Bgra8888-Opaque-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Unpremul-Bgra8888-Opaque--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Unpremul-Bgra8888-Opaque--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "scale-Rgba8888-Unpremul-nearest",
+      "kind": "scale",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "scale-Rgba8888-Unpremul-linear",
+      "kind": "scale",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 3,
+      "passed": true
+    },
+    {
+      "name": "scale-Rgba8888-Unpremul-mitchell",
+      "kind": "scale",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 3,
+      "passed": true
+    },
+    {
+      "name": "scale-Rgba8888-Unpremul-catmull",
+      "kind": "scale",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 3,
+      "passed": true
+    },
+    {
+      "name": "erase-Rgba8888-Unpremul",
+      "kind": "erase",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Rgba8888-Premul-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Rgba8888-Premul-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Rgba8888-Premul-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Rgba8888-Premul-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Rgba8888-Premul--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Rgba8888-Premul--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Rgba8888-Premul-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Rgba8888-Premul-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Rgba8888-Premul-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Rgba8888-Premul-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Rgba8888-Premul--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Rgba8888-Premul--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Rgba8888-Unpremul-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Rgba8888-Unpremul-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Rgba8888-Unpremul-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Rgba8888-Unpremul-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Rgba8888-Unpremul--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Rgba8888-Unpremul--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Rgba8888-Unpremul-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Rgba8888-Unpremul-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Rgba8888-Unpremul-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Rgba8888-Unpremul-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Rgba8888-Unpremul--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Rgba8888-Unpremul--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Rgba8888-Opaque-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Rgba8888-Opaque-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Rgba8888-Opaque-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Rgba8888-Opaque-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Rgba8888-Opaque--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Rgba8888-Opaque--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Rgba8888-Opaque-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Rgba8888-Opaque-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Rgba8888-Opaque-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Rgba8888-Opaque-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Rgba8888-Opaque--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Rgba8888-Opaque--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Bgra8888-Premul-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Bgra8888-Premul-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Bgra8888-Premul-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Bgra8888-Premul-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Bgra8888-Premul--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Bgra8888-Premul--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Bgra8888-Premul-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Bgra8888-Premul-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Bgra8888-Premul-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Bgra8888-Premul-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Bgra8888-Premul--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Bgra8888-Premul--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Bgra8888-Unpremul-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Bgra8888-Unpremul-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Bgra8888-Unpremul-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Bgra8888-Unpremul-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Bgra8888-Unpremul--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Bgra8888-Unpremul--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Bgra8888-Unpremul-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Bgra8888-Unpremul-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Bgra8888-Unpremul-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Bgra8888-Unpremul-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Bgra8888-Unpremul--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Bgra8888-Unpremul--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Bgra8888-Opaque-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Bgra8888-Opaque-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Bgra8888-Opaque-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Bgra8888-Opaque-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Bgra8888-Opaque--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Bgra8888-Opaque--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Bgra8888-Opaque-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Bgra8888-Opaque-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Bgra8888-Opaque-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Bgra8888-Opaque-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Rgba8888-Opaque-Bgra8888-Opaque--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Rgba8888-Opaque-Bgra8888-Opaque--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "scale-Rgba8888-Opaque-nearest",
+      "kind": "scale",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "scale-Rgba8888-Opaque-linear",
+      "kind": "scale",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 3,
+      "passed": true
+    },
+    {
+      "name": "scale-Rgba8888-Opaque-mitchell",
+      "kind": "scale",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 3,
+      "passed": true
+    },
+    {
+      "name": "scale-Rgba8888-Opaque-catmull",
+      "kind": "scale",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 3,
+      "passed": true
+    },
+    {
+      "name": "erase-Rgba8888-Opaque",
+      "kind": "erase",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Rgba8888-Premul-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Rgba8888-Premul-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Rgba8888-Premul-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Rgba8888-Premul-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Rgba8888-Premul--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Rgba8888-Premul--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Rgba8888-Premul-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Rgba8888-Premul-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Rgba8888-Premul-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Rgba8888-Premul-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Rgba8888-Premul--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Rgba8888-Premul--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Rgba8888-Unpremul-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 1,
+      "rmse": 0.1013606067599229,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Rgba8888-Unpremul-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 1,
+      "rmse": 0.1013606067599229,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Rgba8888-Unpremul-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 1,
+      "rmse": 0.0827605888602368,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Rgba8888-Unpremul-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 1,
+      "rmse": 0.0827605888602368,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Rgba8888-Unpremul--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 1,
+      "rmse": 0.0827605888602368,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Rgba8888-Unpremul--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 1,
+      "rmse": 0.0827605888602368,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Rgba8888-Unpremul-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Rgba8888-Unpremul-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Rgba8888-Unpremul-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Rgba8888-Unpremul-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Rgba8888-Unpremul--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Rgba8888-Unpremul--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Rgba8888-Opaque-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Rgba8888-Opaque-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Rgba8888-Opaque-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Rgba8888-Opaque-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Rgba8888-Opaque--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Rgba8888-Opaque--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Rgba8888-Opaque-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Rgba8888-Opaque-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Rgba8888-Opaque-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Rgba8888-Opaque-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Rgba8888-Opaque--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Rgba8888-Opaque--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Bgra8888-Premul-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Bgra8888-Premul-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Bgra8888-Premul-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Bgra8888-Premul-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Bgra8888-Premul--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Bgra8888-Premul--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Bgra8888-Premul-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Bgra8888-Premul-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Bgra8888-Premul-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Bgra8888-Premul-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Bgra8888-Premul--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Bgra8888-Premul--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Bgra8888-Unpremul-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 1,
+      "rmse": 0.1013606067599229,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Bgra8888-Unpremul-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 1,
+      "rmse": 0.1013606067599229,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Bgra8888-Unpremul-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 1,
+      "rmse": 0.0827605888602368,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Bgra8888-Unpremul-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 1,
+      "rmse": 0.0827605888602368,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Bgra8888-Unpremul--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 1,
+      "rmse": 0.0827605888602368,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Bgra8888-Unpremul--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 1,
+      "rmse": 0.0827605888602368,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Bgra8888-Unpremul-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Bgra8888-Unpremul-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Bgra8888-Unpremul-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Bgra8888-Unpremul-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Bgra8888-Unpremul--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Bgra8888-Unpremul--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Bgra8888-Opaque-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Bgra8888-Opaque-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Bgra8888-Opaque-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Bgra8888-Opaque-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Bgra8888-Opaque--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Bgra8888-Opaque--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Bgra8888-Opaque-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Bgra8888-Opaque-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Bgra8888-Opaque-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Bgra8888-Opaque-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Premul-Bgra8888-Opaque--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Premul-Bgra8888-Opaque--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "scale-Bgra8888-Premul-nearest",
+      "kind": "scale",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "scale-Bgra8888-Premul-linear",
+      "kind": "scale",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 3,
+      "passed": true
+    },
+    {
+      "name": "scale-Bgra8888-Premul-mitchell",
+      "kind": "scale",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 3,
+      "passed": true
+    },
+    {
+      "name": "scale-Bgra8888-Premul-catmull",
+      "kind": "scale",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 3,
+      "passed": true
+    },
+    {
+      "name": "erase-Bgra8888-Premul",
+      "kind": "erase",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Rgba8888-Premul-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Rgba8888-Premul-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Rgba8888-Premul-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Rgba8888-Premul-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Rgba8888-Premul--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Rgba8888-Premul--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Rgba8888-Premul-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Rgba8888-Premul-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Rgba8888-Premul-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Rgba8888-Premul-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Rgba8888-Premul--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Rgba8888-Premul--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Rgba8888-Unpremul-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Rgba8888-Unpremul-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Rgba8888-Unpremul-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Rgba8888-Unpremul-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Rgba8888-Unpremul--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Rgba8888-Unpremul--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Rgba8888-Unpremul-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Rgba8888-Unpremul-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Rgba8888-Unpremul-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Rgba8888-Unpremul-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Rgba8888-Unpremul--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Rgba8888-Unpremul--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Rgba8888-Opaque-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Rgba8888-Opaque-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Rgba8888-Opaque-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Rgba8888-Opaque-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Rgba8888-Opaque--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Rgba8888-Opaque--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Rgba8888-Opaque-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Rgba8888-Opaque-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Rgba8888-Opaque-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Rgba8888-Opaque-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Rgba8888-Opaque--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Rgba8888-Opaque--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Bgra8888-Premul-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Bgra8888-Premul-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Bgra8888-Premul-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Bgra8888-Premul-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Bgra8888-Premul--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Bgra8888-Premul--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Bgra8888-Premul-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Bgra8888-Premul-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Bgra8888-Premul-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Bgra8888-Premul-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Bgra8888-Premul--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Bgra8888-Premul--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Bgra8888-Unpremul-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Bgra8888-Unpremul-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Bgra8888-Unpremul-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Bgra8888-Unpremul-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Bgra8888-Unpremul--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Bgra8888-Unpremul--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Bgra8888-Unpremul-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Bgra8888-Unpremul-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Bgra8888-Unpremul-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Bgra8888-Unpremul-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Bgra8888-Unpremul--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Bgra8888-Unpremul--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Bgra8888-Opaque-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Bgra8888-Opaque-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Bgra8888-Opaque-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Bgra8888-Opaque-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Bgra8888-Opaque--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Bgra8888-Opaque--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Bgra8888-Opaque-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Bgra8888-Opaque-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Bgra8888-Opaque-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Bgra8888-Opaque-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Unpremul-Bgra8888-Opaque--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Unpremul-Bgra8888-Opaque--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "scale-Bgra8888-Unpremul-nearest",
+      "kind": "scale",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "scale-Bgra8888-Unpremul-linear",
+      "kind": "scale",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 3,
+      "passed": true
+    },
+    {
+      "name": "scale-Bgra8888-Unpremul-mitchell",
+      "kind": "scale",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 3,
+      "passed": true
+    },
+    {
+      "name": "scale-Bgra8888-Unpremul-catmull",
+      "kind": "scale",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 3,
+      "passed": true
+    },
+    {
+      "name": "erase-Bgra8888-Unpremul",
+      "kind": "erase",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Rgba8888-Premul-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Rgba8888-Premul-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Rgba8888-Premul-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Rgba8888-Premul-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Rgba8888-Premul--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Rgba8888-Premul--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Rgba8888-Premul-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Rgba8888-Premul-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Rgba8888-Premul-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Rgba8888-Premul-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Rgba8888-Premul--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Rgba8888-Premul--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Rgba8888-Unpremul-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Rgba8888-Unpremul-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Rgba8888-Unpremul-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Rgba8888-Unpremul-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Rgba8888-Unpremul--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Rgba8888-Unpremul--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Rgba8888-Unpremul-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Rgba8888-Unpremul-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Rgba8888-Unpremul-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Rgba8888-Unpremul-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Rgba8888-Unpremul--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Rgba8888-Unpremul--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Rgba8888-Opaque-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Rgba8888-Opaque-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Rgba8888-Opaque-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Rgba8888-Opaque-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Rgba8888-Opaque--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Rgba8888-Opaque--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Rgba8888-Opaque-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Rgba8888-Opaque-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Rgba8888-Opaque-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Rgba8888-Opaque-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Rgba8888-Opaque--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Rgba8888-Opaque--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Bgra8888-Premul-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Bgra8888-Premul-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Bgra8888-Premul-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Bgra8888-Premul-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Bgra8888-Premul--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Bgra8888-Premul--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Bgra8888-Premul-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Bgra8888-Premul-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Bgra8888-Premul-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Bgra8888-Premul-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Bgra8888-Premul--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Bgra8888-Premul--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Bgra8888-Unpremul-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Bgra8888-Unpremul-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Bgra8888-Unpremul-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Bgra8888-Unpremul-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Bgra8888-Unpremul--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Bgra8888-Unpremul--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Bgra8888-Unpremul-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Bgra8888-Unpremul-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Bgra8888-Unpremul-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Bgra8888-Unpremul-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Bgra8888-Unpremul--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Bgra8888-Unpremul--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Bgra8888-Opaque-0-0",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Bgra8888-Opaque-0-0",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Bgra8888-Opaque-2-1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Bgra8888-Opaque-2-1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Bgra8888-Opaque--2--1",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Bgra8888-Opaque--2--1",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Bgra8888-Opaque-10-6",
+      "kind": "read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Bgra8888-Opaque-10-6",
+      "kind": "pointer-read",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Bgra8888-Opaque-11-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Bgra8888-Opaque-11-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "read-Bgra8888-Opaque-Bgra8888-Opaque--2147483648-0",
+      "kind": "read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "pointer-read-Bgra8888-Opaque-Bgra8888-Opaque--2147483648-0",
+      "kind": "pointer-read",
+      "originalResult": false,
+      "managedResult": false,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "scale-Bgra8888-Opaque-nearest",
+      "kind": "scale",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "name": "scale-Bgra8888-Opaque-linear",
+      "kind": "scale",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 3,
+      "passed": true
+    },
+    {
+      "name": "scale-Bgra8888-Opaque-mitchell",
+      "kind": "scale",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 3,
+      "passed": true
+    },
+    {
+      "name": "scale-Bgra8888-Opaque-catmull",
+      "kind": "scale",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 3,
+      "passed": true
+    },
+    {
+      "name": "erase-Bgra8888-Opaque",
+      "kind": "erase",
+      "originalResult": true,
+      "managedResult": true,
+      "maximum": 0,
+      "rmse": 0.0,
+      "threshold": 1,
+      "passed": true
+    }
+  ],
+  "pixelPass": 462,
+  "pixelTotal": 462,
+  "fullCompatibility": false,
+  "spanPolicy": "Intentional difference: managed spans include stride through the last pixel and use physical stride for offsets; baseline 3.119.4 uses compact Info size/byte offsets and y*Height+x for typed offsets. Pointer/ReadPixels APIs are separately compared."
+}

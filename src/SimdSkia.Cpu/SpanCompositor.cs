@@ -11,7 +11,26 @@ internal static partial class SpanCompositor
 {
     public static void Apply(Span<byte> pixels, PixelFormat format, AlphaFormat alpha, Paint paint, byte coverage = 255)
     {
+        if(format==PixelFormat.Alpha8)throw new NotSupportedException("The 32-bit span compositor requires RGBA/BGRA; use RasterCanvas for Alpha8 targets.");
         if (pixels.IsEmpty || coverage == 0) return;
+        if(paint.FloatingColor is not null||paint.Blender is not null)
+        {
+            var stored=paint.Color;var f=paint.FloatingColor??new Vector4(stored.R/255f,stored.G/255f,stored.B/255f,stored.A/255f);var source=new Vector4(f.X*f.W,f.Y*f.W,f.Z*f.W,f.W);
+            if(paint.ColorFilter is {} cf)source=cf.FilterRaster(source);
+            BlendKernel.ApplyCustom(pixels,format,alpha,source,paint.Composite,coverage,paint.Blender);return;
+        }
+        if(paint.ColorFilter is {} filter)
+        {
+            var c0=paint.Color;float a=c0.A/255f;var source=paint.FilteredConstant?.Value??filter.Filter(new(c0.R/255f*a,c0.G/255f*a,c0.B/255f*a,a));
+            if(coverage==255&&(paint.Composite==CompositeMode.Source||paint.Composite==CompositeMode.SourceOver&&source.W>=1))
+            {
+                if(paint.FilteredConstant is {} constant){var p=alpha==AlphaFormat.Straight?constant.Straight:constant.Premultiplied;Fill(pixels,format==PixelFormat.Rgba8888?p.R:p.B,p.G,format==PixelFormat.Rgba8888?p.B:p.R,p.A);return;}
+                if(alpha==AlphaFormat.Straight&&source.W>0){source.X/=source.W;source.Y/=source.W;source.Z/=source.W;}
+                byte r=ColorBlend.Byte(source.X),g=ColorBlend.Byte(source.Y),b=ColorBlend.Byte(source.Z);Fill(pixels,format==PixelFormat.Rgba8888?r:b,g,format==PixelFormat.Rgba8888?b:r,ColorBlend.Byte(source.W));return;
+            }
+            BlendKernel.ApplyPremultiplied(pixels,format,alpha,source,255,paint.Composite,coverage);return;
+        }
+        if(paint.Composite is not (CompositeMode.SourceOver or CompositeMode.Source or CompositeMode.Clear)){BlendKernel.Apply(pixels,format,alpha,paint.Color,paint.Composite,coverage);return;}
         var c = paint.Color;
         int ri = format == PixelFormat.Rgba8888 ? 0 : 2, bi = 2-ri;
         if (coverage == 255)
@@ -61,7 +80,7 @@ internal static partial class SpanCompositor
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Vector<ushort> Divide255(Vector<ushort> n)
+    internal static Vector<ushort> Divide255(Vector<ushort> n)
     {
         // n = channel * alpha + 127, so 0 <= n <= 65152.
         // floor((n+1)*257/65536) is exactly floor((n)/255) on this

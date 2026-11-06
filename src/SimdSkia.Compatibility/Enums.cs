@@ -1,6 +1,9 @@
 namespace SkiaSharp;
 
 public enum SKAlphaType { Unknown=0, Opaque=1, Premul=2, Unpremul=3 }
+[Obsolete("Use SKSamplingOptions instead.")]
+public enum SKFilterQuality { None=0,Low=1,Medium=2,High=3 }
+public enum SKImageCachingHint { Allow=0,Disallow=1 }
 public enum SKColorType
 {
     Unknown=0, Alpha8=1, Rgb565=2, Argb4444=3, Rgba8888=4, Rgb888x=5, Bgra8888=6,
@@ -11,6 +14,9 @@ public enum SKColorType
 public enum SKPaintStyle { Fill=0, Stroke=1, StrokeAndFill=2 }
 public enum SKPathFillType { Winding=0,EvenOdd=1,InverseWinding=2,InverseEvenOdd=3 }
 public enum SKPathDirection { Clockwise=0,CounterClockwise=1 }
+public enum SKPathAddMode { Append=0,Extend=1 }
+[Flags]
+public enum SKPathSegmentMask { Line=1,Quad=2,Conic=4,Cubic=8 }
 public enum SKStrokeCap { Butt=0,Round=1,Square=2 }
 public enum SKStrokeJoin { Miter=0,Round=1,Bevel=2 }
 public enum SKClipOperation { Difference=0,Intersect=1 }

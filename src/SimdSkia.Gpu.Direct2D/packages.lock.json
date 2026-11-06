@@ -2,8 +2,29 @@
   "version": 1,
   "dependencies": {
     "net10.0": {
+      "Clipper2": {
+        "type": "Transitive",
+        "resolved": "2.0.0",
+        "contentHash": "2X23RZxJrjRjOSZc20aqXY9jpmHLekDRy4PIMfrsi2LPNzxFYlnuqzX/nLdk77fbURHUeX+gMhUn2a1z9/wMTQ=="
+      },
       "simdskia.core": {
-        "type": "Project"
+        "type": "Project",
+        "dependencies": {
+          "Clipper2": "[2.0.0, 2.0.0]"
+        }
+      },
+      "simdskia.cpu": {
+        "type": "Project",
+        "dependencies": {
+          "SimdSkia.Core": "[0.1.2-preview.1, )"
+        }
+      },
+      "simdskia.gpu": {
+        "type": "Project",
+        "dependencies": {
+          "SimdSkia.Core": "[0.1.2-preview.1, )",
+          "SimdSkia.Cpu": "[0.1.2-preview.1, )"
+        }
       }
     }
   }

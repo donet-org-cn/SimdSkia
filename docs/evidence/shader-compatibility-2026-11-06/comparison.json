@@ -1,0 +1,469 @@
+{
+  "baseline": "SkiaSharp 3.119.4 CPU",
+  "behaviorCases": 16,
+  "behaviorPassed": true,
+  "managedChecks": {
+    "scalarChecks": 480
+  },
+  "pixelThreshold": {
+    "maximum": 32,
+    "rmse": 2
+  },
+  "images": [
+    {
+      "scene": "alpha-Clamp",
+      "maxError": 2,
+      "rmse": 0.8798345791788079,
+      "passed": true
+    },
+    {
+      "scene": "alpha-Decal",
+      "maxError": 2,
+      "rmse": 0.7383225848217109,
+      "passed": true
+    },
+    {
+      "scene": "alpha-Mirror",
+      "maxError": 2,
+      "rmse": 0.8553260440332461,
+      "passed": true
+    },
+    {
+      "scene": "alpha-Repeat",
+      "maxError": 2,
+      "rmse": 0.8588865799548637,
+      "passed": true
+    },
+    {
+      "scene": "degenerate-alpha-Clamp",
+      "maxError": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "scene": "degenerate-alpha-Decal",
+      "maxError": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "scene": "degenerate-alpha-Mirror",
+      "maxError": 1,
+      "rmse": 0.7071067811865476,
+      "passed": true
+    },
+    {
+      "scene": "degenerate-alpha-Repeat",
+      "maxError": 1,
+      "rmse": 0.7071067811865476,
+      "passed": true
+    },
+    {
+      "scene": "degenerate-linear-Clamp",
+      "maxError": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "scene": "degenerate-linear-Decal",
+      "maxError": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "scene": "degenerate-linear-Mirror",
+      "maxError": 1,
+      "rmse": 0.5,
+      "passed": true
+    },
+    {
+      "scene": "degenerate-linear-Repeat",
+      "maxError": 1,
+      "rmse": 0.5,
+      "passed": true
+    },
+    {
+      "scene": "degenerate-radial-Clamp",
+      "maxError": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "scene": "degenerate-radial-Decal",
+      "maxError": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "scene": "degenerate-radial-Mirror",
+      "maxError": 1,
+      "rmse": 0.5,
+      "passed": true
+    },
+    {
+      "scene": "degenerate-radial-Repeat",
+      "maxError": 1,
+      "rmse": 0.5,
+      "passed": true
+    },
+    {
+      "scene": "degenerate-sweep-Clamp",
+      "maxError": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "scene": "degenerate-sweep-Decal",
+      "maxError": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "scene": "degenerate-sweep-Mirror",
+      "maxError": 1,
+      "rmse": 0.5,
+      "passed": true
+    },
+    {
+      "scene": "degenerate-sweep-Repeat",
+      "maxError": 1,
+      "rmse": 0.5,
+      "passed": true
+    },
+    {
+      "scene": "empty-shader",
+      "maxError": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "scene": "linear-Clamp",
+      "maxError": 1,
+      "rmse": 0.3187605313823961,
+      "passed": true
+    },
+    {
+      "scene": "linear-clamped-stops",
+      "maxError": 1,
+      "rmse": 0.31772967824473053,
+      "passed": true
+    },
+    {
+      "scene": "linear-Decal",
+      "maxError": 1,
+      "rmse": 0.3187605313823961,
+      "passed": true
+    },
+    {
+      "scene": "linear-hard-stops",
+      "maxError": 1,
+      "rmse": 0.3029799910885206,
+      "passed": true
+    },
+    {
+      "scene": "linear-Mirror",
+      "maxError": 1,
+      "rmse": 0.3713609235593791,
+      "passed": true
+    },
+    {
+      "scene": "linear-partial-stops",
+      "maxError": 2,
+      "rmse": 0.23824922940588916,
+      "passed": true
+    },
+    {
+      "scene": "linear-Repeat",
+      "maxError": 1,
+      "rmse": 0.3724686700331318,
+      "passed": true
+    },
+    {
+      "scene": "linear-uniform",
+      "maxError": 1,
+      "rmse": 0.3180416838958574,
+      "passed": true
+    },
+    {
+      "scene": "local-canvas",
+      "maxError": 1,
+      "rmse": 0.37275532619014984,
+      "passed": true
+    },
+    {
+      "scene": "local-matrix",
+      "maxError": 1,
+      "rmse": 0.37304176207229134,
+      "passed": true
+    },
+    {
+      "scene": "local-nested",
+      "maxError": 1,
+      "rmse": 0.373266664637612,
+      "passed": true
+    },
+    {
+      "scene": "local-perspective",
+      "maxError": 1,
+      "rmse": 0.2679129406169101,
+      "passed": true
+    },
+    {
+      "scene": "one-color",
+      "maxError": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "scene": "radial-alpha",
+      "maxError": 2,
+      "rmse": 0.992372030084358,
+      "passed": true
+    },
+    {
+      "scene": "radial-Clamp",
+      "maxError": 1,
+      "rmse": 0.2135257870111945,
+      "passed": true
+    },
+    {
+      "scene": "radial-Decal",
+      "maxError": 1,
+      "rmse": 0.2135257870111945,
+      "passed": true
+    },
+    {
+      "scene": "radial-local",
+      "maxError": 1,
+      "rmse": 0.23895269128401755,
+      "passed": true
+    },
+    {
+      "scene": "radial-Mirror",
+      "maxError": 1,
+      "rmse": 0.3613228462452243,
+      "passed": true
+    },
+    {
+      "scene": "radial-Repeat",
+      "maxError": 1,
+      "rmse": 0.37434839220971683,
+      "passed": true
+    },
+    {
+      "scene": "retained-multi",
+      "maxError": 1,
+      "rmse": 0.3187605313823961,
+      "passed": true
+    },
+    {
+      "scene": "solid-retained",
+      "maxError": 1,
+      "rmse": 0.7071067811865476,
+      "passed": true
+    },
+    {
+      "scene": "sweep-Clamp",
+      "maxError": 1,
+      "rmse": 0.273772116686488,
+      "passed": true
+    },
+    {
+      "scene": "sweep-Decal",
+      "maxError": 1,
+      "rmse": 0.273772116686488,
+      "passed": true
+    },
+    {
+      "scene": "sweep-full",
+      "maxError": 1,
+      "rmse": 0.3688459885660274,
+      "passed": true
+    },
+    {
+      "scene": "sweep-local",
+      "maxError": 1,
+      "rmse": 0.3737773035595527,
+      "passed": true
+    },
+    {
+      "scene": "sweep-Mirror",
+      "maxError": 1,
+      "rmse": 0.3712992851860713,
+      "passed": true
+    },
+    {
+      "scene": "sweep-negative-start",
+      "maxError": 1,
+      "rmse": 0.2657972786906875,
+      "passed": true
+    },
+    {
+      "scene": "sweep-Repeat",
+      "maxError": 1,
+      "rmse": 0.3694247005480278,
+      "passed": true
+    },
+    {
+      "scene": "two-local",
+      "maxError": 1,
+      "rmse": 0.36077343403183804,
+      "passed": true
+    }
+  ],
+  "erase": [
+    {
+      "scene": "erase-alpha-Bgra8888-Opaque-0",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-alpha-Bgra8888-Opaque-1",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-alpha-Bgra8888-Opaque-255",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-alpha-Bgra8888-Premul-0",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-alpha-Bgra8888-Premul-1",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-alpha-Bgra8888-Premul-255",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-alpha-Bgra8888-Unpremul-0",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-alpha-Bgra8888-Unpremul-1",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-alpha-Bgra8888-Unpremul-255",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-alpha-Rgba8888-Opaque-0",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-alpha-Rgba8888-Opaque-1",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-alpha-Rgba8888-Opaque-255",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-alpha-Rgba8888-Premul-0",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-alpha-Rgba8888-Premul-1",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-alpha-Rgba8888-Premul-255",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-alpha-Rgba8888-Unpremul-0",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-alpha-Rgba8888-Unpremul-1",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-alpha-Rgba8888-Unpremul-255",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-Bgra8888-Opaque-False",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-Bgra8888-Opaque-True",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-Bgra8888-Premul-False",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-Bgra8888-Premul-True",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-Bgra8888-Unpremul-False",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-Bgra8888-Unpremul-True",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-Rgba8888-Opaque-False",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-Rgba8888-Opaque-True",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-Rgba8888-Premul-False",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-Rgba8888-Premul-True",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-Rgba8888-Unpremul-False",
+      "bytes": 564,
+      "exact": true
+    },
+    {
+      "scene": "erase-Rgba8888-Unpremul-True",
+      "bytes": 564,
+      "exact": true
+    }
+  ],
+  "failures": [],
+  "passed": true,
+  "scope": "SKColor gradients and Erase; not a claim of complete SKShader/GPU/API compatibility"
+}

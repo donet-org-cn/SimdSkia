@@ -12,8 +12,8 @@ internal static class RecordedBlendValidation
         if(count!=12288||fixture.Length!=12+count*16)throw new InvalidDataException("Native blend fixture length");
         int checks=0;
         foreach(bool simd in new[]{false,true})
-        foreach(var sourceFormat in Enum.GetValues<PixelFormat>())
-        foreach(var destinationFormat in Enum.GetValues<PixelFormat>())
+        foreach(var sourceFormat in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})
+        foreach(var destinationFormat in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})
         foreach(var sampling in new[]{ImageSampling.Nearest,ImageSampling.Bilinear})
         foreach(int width in new[]{2,9})
         {

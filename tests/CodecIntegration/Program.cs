@@ -28,7 +28,7 @@ using(var source=new PixelBuffer(13,9,PixelFormat.Bgra8888,AlphaFormat.Straight,
         sequence.Dispose();Throws<ObjectDisposedException>(()=>sequence.DecodeFrame(0));
         Check(first.ReadPixel(0,0)==decoded.ReadPixel(0,0),format+" returned frame pixels outlive reader");
     }
-    Throws<NotSupportedException>(()=>ImageCodec.Encode(source,ImageFileFormat.Webp));
+    using var webp=ImageCodec.Decode(ImageCodec.Encode(source,ImageFileFormat.Webp));Check(webp.Width==source.Width&&webp.Height==source.Height,"WebP encoding produces a decodable image");
 }
 foreach(var format in new[]{SKEncodedImageFormat.Png,SKEncodedImageFormat.Jpeg,SKEncodedImageFormat.Gif,SKEncodedImageFormat.Bmp,SKEncodedImageFormat.Ico})
 {

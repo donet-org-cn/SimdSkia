@@ -9,6 +9,8 @@ permissions:
   contents: read
 jobs:
   desktop:
+    env:
+      RELEASE_VERSION: 0.1.2-preview.1
     strategy:
       fail-fast: false
       matrix:
@@ -71,21 +73,21 @@ jobs:
           exit $p.ExitCode
       - name: Pack and validate all preview modules
         shell: pwsh
-        run: ./tools/pack-release.ps1 -Version 0.1.1 -Output artifacts/desktop-packages
+        run: ./tools/pack-preview.ps1 -Version $env:RELEASE_VERSION -Output artifacts/desktop-packages
       - name: Consume optional PDF nupkg on the current OS
         shell: pwsh
-        run: ./tools/test-pdf-package.ps1 -Version 0.1.1 -Packages artifacts/desktop-packages
+        run: ./tools/test-pdf-package.ps1 -Version $env:RELEASE_VERSION -Packages artifacts/desktop-packages
       - name: Consume actual nupkg on Linux
         if: runner.os == 'Linux'
-        run: xvfb-run -a -s '-screen 0 1280x900x24' pwsh -NoProfile -File tools/test-desktop-package.ps1 -Version 0.1.1 -Packages artifacts/desktop-packages -SystemFonts
+        run: xvfb-run -a -s '-screen 0 1280x900x24' pwsh -NoProfile -File tools/test-desktop-package.ps1 -Version "$RELEASE_VERSION" -Packages artifacts/desktop-packages -SystemFonts
       - name: Consume actual nupkg on macOS
         if: runner.os == 'macOS'
         shell: pwsh
-        run: ./tools/test-desktop-package.ps1 -Version 0.1.1 -Packages artifacts/desktop-packages -SystemFonts
+        run: ./tools/test-desktop-package.ps1 -Version $env:RELEASE_VERSION -Packages artifacts/desktop-packages -SystemFonts
       - name: Consume actual nupkg on Windows
         if: runner.os == 'Windows'
         shell: pwsh
-        run: ./tools/test-desktop-package.ps1 -Version 0.1.1 -Packages artifacts/desktop-packages
+        run: ./tools/test-desktop-package.ps1 -Version $env:RELEASE_VERSION -Packages artifacts/desktop-packages
       - uses: actions/upload-artifact@v4
         if: always()
         with:

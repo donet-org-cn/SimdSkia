@@ -1,0 +1,332 @@
+[
+  {
+    "suite": "final-raster",
+    "command": [
+      "python",
+      "tools/check-final-raster.py",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\final-validation-1\\final-raster"
+    ],
+    "startedUtc": "2026-11-06T21:08:36.335508+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "alpha-compatibility",
+    "command": [
+      "python",
+      "tools/check-alpha-compatibility.py",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\final-validation-1\\alpha-compatibility"
+    ],
+    "startedUtc": "2026-11-06T21:08:42.164940+00:00",
+    "exitCode": 2
+  },
+  {
+    "suite": "final-paint",
+    "command": [
+      "python",
+      "tools/check-final-paint.py",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\final-validation-1\\final-paint"
+    ],
+    "startedUtc": "2026-11-06T21:08:47.752761+00:00",
+    "exitCode": 2
+  },
+  {
+    "suite": "skp-documents",
+    "command": [
+      "python",
+      "tools/check-skp-documents.py",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\final-validation-1\\skp-documents"
+    ],
+    "startedUtc": "2026-11-06T21:08:52.694954+00:00",
+    "exitCode": 2
+  },
+  {
+    "suite": "embedded-bitmaps",
+    "command": [
+      "python",
+      "tools/check-embedded-bitmaps.py",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\final-validation-1\\embedded-bitmaps"
+    ],
+    "startedUtc": "2026-11-06T21:09:00.231125+00:00",
+    "exitCode": 2
+  },
+  {
+    "suite": "svg-documents",
+    "command": [
+      "python",
+      "tools/check-svg-documents.py",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\final-validation-1\\svg-documents"
+    ],
+    "startedUtc": "2026-11-06T21:09:06.225266+00:00",
+    "exitCode": 1
+  },
+  {
+    "suite": "skp-validation",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/SkpDocuments/Validation",
+      "-c",
+      "Release",
+      "--",
+      "artifacts\\api-final-2026-11-07\\final-validation-1\\skp-validation"
+    ],
+    "startedUtc": "2026-11-06T21:11:00.503932+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "float-simd",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/FloatPaintSimd",
+      "-c",
+      "Release",
+      "--",
+      "artifacts\\api-final-2026-11-07\\final-validation-1\\float-simd"
+    ],
+    "startedUtc": "2026-11-06T21:11:03.772554+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "xps-Original",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/XpsDocuments/Original",
+      "-c",
+      "Release",
+      "--",
+      "artifacts\\api-final-2026-11-07\\final-validation-1\\xps-Original"
+    ],
+    "startedUtc": "2026-11-06T21:11:06.797849+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "xps-read-Original",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/XpsDocuments/Reader",
+      "-c",
+      "Release",
+      "--",
+      "artifacts\\api-final-2026-11-07\\final-validation-1\\xps-Original\\pages.xps",
+      "artifacts\\api-final-2026-11-07\\final-validation-1\\xps-read-Original"
+    ],
+    "startedUtc": "2026-11-06T21:11:09.156588+00:00",
+    "exitCode": 2
+  },
+  {
+    "suite": "lcd-Original",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/LcdText/Original",
+      "-c",
+      "Release",
+      "--",
+      "artifacts\\api-final-2026-11-07\\final-validation-1\\lcd-Original"
+    ],
+    "startedUtc": "2026-11-06T21:11:11.350982+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "xps-Managed",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/XpsDocuments/Managed",
+      "-c",
+      "Release",
+      "--",
+      "artifacts\\api-final-2026-11-07\\final-validation-1\\xps-Managed"
+    ],
+    "startedUtc": "2026-11-06T21:11:13.214436+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "xps-read-Managed",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/XpsDocuments/Reader",
+      "-c",
+      "Release",
+      "--",
+      "artifacts\\api-final-2026-11-07\\final-validation-1\\xps-Managed\\pages.xps",
+      "artifacts\\api-final-2026-11-07\\final-validation-1\\xps-read-Managed"
+    ],
+    "startedUtc": "2026-11-06T21:11:16.645295+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "lcd-Managed",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/LcdText/Managed",
+      "-c",
+      "Release",
+      "--",
+      "artifacts\\api-final-2026-11-07\\final-validation-1\\lcd-Managed"
+    ],
+    "startedUtc": "2026-11-06T21:11:18.711087+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "GlContext",
+    "command": [
+      "python",
+      "tools/check-gl-interop.py",
+      "--project",
+      "GlContext",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\final-validation-1\\GlContext"
+    ],
+    "startedUtc": "2026-11-06T21:11:22.199380+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "GlSystem",
+    "command": [
+      "python",
+      "tools/check-gl-interop.py",
+      "--project",
+      "GlSystem",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\final-validation-1\\GlSystem"
+    ],
+    "startedUtc": "2026-11-06T21:11:28.197771+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "GlInterop",
+    "command": [
+      "python",
+      "tools/check-gl-interop.py",
+      "--project",
+      "GlInterop",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\final-validation-1\\GlInterop"
+    ],
+    "startedUtc": "2026-11-06T21:11:33.961198+00:00",
+    "exitCode": 2
+  },
+  {
+    "suite": "VulkanInterop",
+    "command": [
+      "python",
+      "tools/check-gl-interop.py",
+      "--project",
+      "VulkanInterop",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\final-validation-1\\VulkanInterop"
+    ],
+    "startedUtc": "2026-11-06T21:11:40.136206+00:00",
+    "exitCode": 2
+  },
+  {
+    "suite": "D3DContext-Original",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/D3DContext/Original",
+      "-c",
+      "Release",
+      "--",
+      "artifacts\\api-final-2026-11-07\\final-validation-1\\D3DContext-Original"
+    ],
+    "startedUtc": "2026-11-06T21:11:47.948028+00:00",
+    "exitCode": 3
+  },
+  {
+    "suite": "D3DContext-Managed",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/D3DContext/Managed",
+      "-c",
+      "Release",
+      "--",
+      "artifacts\\api-final-2026-11-07\\final-validation-1\\D3DContext-Managed"
+    ],
+    "startedUtc": "2026-11-06T21:11:49.981917+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "MetalContext-Original",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/MetalContext/Original",
+      "-c",
+      "Release",
+      "--",
+      "artifacts\\api-final-2026-11-07\\final-validation-1\\MetalContext-Original"
+    ],
+    "startedUtc": "2026-11-06T21:11:53.726529+00:00",
+    "exitCode": 3
+  },
+  {
+    "suite": "MetalContext-Managed",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/MetalContext/Managed",
+      "-c",
+      "Release",
+      "--",
+      "artifacts\\api-final-2026-11-07\\final-validation-1\\MetalContext-Managed"
+    ],
+    "startedUtc": "2026-11-06T21:11:55.580251+00:00",
+    "exitCode": 3
+  },
+  {
+    "suite": "D3DInterop",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/D3DInterop/Managed",
+      "-c",
+      "Release",
+      "--",
+      "artifacts\\api-final-2026-11-07\\final-validation-1\\D3DInterop"
+    ],
+    "startedUtc": "2026-11-06T21:11:58.381250+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "gpu-optimization",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/GpuOptimization",
+      "-c",
+      "Release",
+      "--",
+      "baseline/fonts/ZenOldMincho-Regular.ttf"
+    ],
+    "startedUtc": "2026-11-06T21:12:02.682951+00:00",
+    "exitCode": 0
+  }
+]

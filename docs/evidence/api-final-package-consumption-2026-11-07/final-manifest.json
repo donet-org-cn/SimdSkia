@@ -1,0 +1,130 @@
+[
+  {
+    "id": "SimdSkia.Core",
+    "version": "0.1.2-preview.1",
+    "bytes": 87641,
+    "sha256": "a7482e65bc2e917ef271c146b35a5e920abfc127d33a3119a7b558da84842141",
+    "dependencies": {
+      "Clipper2": "[2.0.0]"
+    }
+  },
+  {
+    "id": "SimdSkia.Cpu",
+    "version": "0.1.2-preview.1",
+    "bytes": 98982,
+    "sha256": "cf079e5a52e7a5d300888ff66714ddfab0daa84d83a424f93f2f47995c0c80a5",
+    "dependencies": {
+      "SimdSkia.Core": "0.1.2-preview.1"
+    }
+  },
+  {
+    "id": "SimdSkia.Text",
+    "version": "0.1.2-preview.1",
+    "bytes": 66473,
+    "sha256": "97b0325dd3cdc708e3e8c02f29b449caa8c0fdd810f019e4bb7d7a1bbbeb6c3a",
+    "dependencies": {
+      "SimdSkia.Core": "0.1.2-preview.1"
+    }
+  },
+  {
+    "id": "SimdSkia.Imaging",
+    "version": "0.1.2-preview.1",
+    "bytes": 64406,
+    "sha256": "d123cc5aa3f504d31ae038b1f4efc789246c47208334bc80cb1e40555f94f52d",
+    "dependencies": {
+      "SimdSkia.Core": "0.1.2-preview.1",
+      "Sdcb.SimdCodecs": "[1.4.0]"
+    }
+  },
+  {
+    "id": "SimdSkia.Gpu",
+    "version": "0.1.2-preview.1",
+    "bytes": 146862,
+    "sha256": "766f3b4a90a8d7716c34d816af8fc600a499fbe380e024442d5858c6be1d51b6",
+    "dependencies": {
+      "SimdSkia.Core": "0.1.2-preview.1",
+      "SimdSkia.Cpu": "0.1.2-preview.1"
+    }
+  },
+  {
+    "id": "SimdSkia.Gpu.Direct2D",
+    "version": "0.1.2-preview.1",
+    "bytes": 45617,
+    "sha256": "0bf06069e91dcc6f70f76d829081fc59d46679b301f14bd9da3930afe703382e",
+    "dependencies": {
+      "SimdSkia.Core": "0.1.2-preview.1",
+      "SimdSkia.Cpu": "0.1.2-preview.1",
+      "SimdSkia.Gpu": "0.1.2-preview.1"
+    }
+  },
+  {
+    "id": "SimdSkia.Compatibility",
+    "version": "0.1.2-preview.1",
+    "bytes": 277831,
+    "sha256": "07f29fa46c5604c62177ce1749300bc36b2cbaca0d512f8c47256cf59da4f65a",
+    "dependencies": {
+      "SimdSkia.Core": "0.1.2-preview.1",
+      "SimdSkia.Cpu": "0.1.2-preview.1",
+      "SimdSkia.Gpu.Direct2D": "0.1.2-preview.1",
+      "SimdSkia.Gpu": "0.1.2-preview.1",
+      "SimdSkia.Imaging": "0.1.2-preview.1",
+      "SimdSkia.Text": "0.1.2-preview.1"
+    }
+  },
+  {
+    "id": "SimdSkia.Avalonia",
+    "version": "0.1.2-preview.1",
+    "bytes": 94336,
+    "sha256": "f4a2a377bdbdcfa38235b19837c73973b26eda995389a2769dc84a987a96d3cd",
+    "dependencies": {
+      "SimdSkia.Core": "0.1.2-preview.1",
+      "SimdSkia.Cpu": "0.1.2-preview.1",
+      "SimdSkia.Imaging": "0.1.2-preview.1",
+      "SimdSkia.Text": "0.1.2-preview.1",
+      "Avalonia": "[12.1.0, 13.0.0)",
+      "Clipper2": "[2.0.0]"
+    }
+  },
+  {
+    "id": "SimdSkia.Avalonia.Desktop",
+    "version": "0.1.2-preview.1",
+    "bytes": 8065810,
+    "sha256": "c0d139ff9f9ca4dd501feadb3690c149fbf5c157d6d9fb3ae87f11f5eefca13d",
+    "dependencies": {
+      "SimdSkia.Avalonia": "0.1.2-preview.1",
+      "Avalonia": "[12.1.0, 13.0.0)",
+      "Tmds.DBus.Protocol": "[0.94.1]"
+    }
+  },
+  {
+    "id": "SimdSkia.Avalonia.Gpu",
+    "version": "0.1.2-preview.1",
+    "bytes": 40202,
+    "sha256": "63ad409239b12df965352c77130543da928e472cbabca8e0de77a0a0fe64123b",
+    "dependencies": {
+      "SimdSkia.Avalonia": "0.1.2-preview.1",
+      "SimdSkia.Gpu.Direct2D": "0.1.2-preview.1",
+      "SimdSkia.Gpu": "0.1.2-preview.1",
+      "Avalonia": "[12.1.0, 13.0.0)"
+    }
+  },
+  {
+    "id": "SimdSkia",
+    "version": "0.1.2-preview.1",
+    "bytes": 21205,
+    "sha256": "e84f29b06801a68ba964709f301e31c2f3482a83e0b3829ff90fb3a9635072c0",
+    "dependencies": {
+      "SimdSkia.Compatibility": "0.1.2-preview.1"
+    }
+  },
+  {
+    "id": "SimdSkia.Pdf",
+    "version": "0.1.2-preview.1",
+    "bytes": 41467,
+    "sha256": "de1f001666c5b0774c2723db870732f0f8fbdeedc7cb39aae9877fa7cf603581",
+    "dependencies": {
+      "SimdSkia.Compatibility": "0.1.2-preview.1",
+      "PdfPig": "[0.1.16]"
+    }
+  }
+]

@@ -143,7 +143,7 @@ for(int k=0;k<76;k++)
 }
 Compare("in-flight cache pressure",pressure.ToArray());
 if(optimized.CachedPathMasks>VulkanCanvas.MaximumCachedPathMasks||optimized.PathMaskBytes>VulkanCanvas.MaximumPathMaskBytes)throw new Exception("GPU mask cache exceeded its bounds.");checks++;cacheChecks++;
-foreach(bool aa in new[]{false,true})foreach(var mode in Enum.GetValues<CompositeMode>())
+foreach(bool aa in new[]{false,true})foreach(var mode in new[]{CompositeMode.SourceOver,CompositeMode.Source,CompositeMode.Clear})
 foreach(bool partial in new[]{false,true})
 {
     var c=DrawingCommand.FillRectangle(new(0,0,width,height),Matrix3.Identity,new(Color() with{A=255},mode,aa)) with{Clip=partial?new RectF(.0625f,.0625f,width-.03125f,height-.03125f):null};
@@ -189,11 +189,24 @@ var contours=new PathGeometry(huge).Flatten(Matrix3.Identity);
 var values=new List<float>();foreach(var contour in contours)for(int i=0;i<contour.Length;i++)
 {var a=contour[i];var b=contour[(i+1)%contour.Length];if(a==b)continue;values.Add(a.X);values.Add(a.Y);values.Add(b.X);values.Add(b.Y);}
 if(TiledEdges.Create(contours,values.ToArray(),4096,4096) is not null)throw new Exception("Expected bounded bin fallback.");checks++;
-var unchanged=actual.CopyBytes();bool glyphRejected=false;
-try{optimized.Execute(new(CommandKind.DrawGlyphRun,default,Matrix3.Identity,new(new(0,0,0,255),CompositeMode.SourceOver)){GlyphRun=new([new(PathGeometry.Rectangle(new(1,1,5,5)),default)],Matrix3.Identity)});}
-catch(NotSupportedException){glyphRejected=true;}
-optimized.Flush();
-if(!glyphRejected||!actual.GetPixelSpan().SequenceEqual(unchanged))throw new Exception("Unsupported Vulkan glyph command was ignored or modified pixels.");checks++;
+Compare("supported glyph mask command",DrawingCommand.Clear(new(255,255,255,255)),new(CommandKind.DrawGlyphRun,default,Matrix3.Identity,new(new(0,0,0,255),CompositeMode.SourceOver)){GlyphRun=new([new(PathGeometry.Rectangle(new(1,1,5,5)),default)],Matrix3.Identity)});
+if(actual.ReadPixel(2,2)!=new Rgba32(0,0,0,255))throw new Exception("The supported glyph command did not draw its interior.");checks++;
+long batchesBefore=optimized.RectangleBatchDispatches;
+for(int iteration=0;iteration<24;iteration++)
+{
+    var commands=new List<DrawingCommand>{DrawingCommand.Clear(Color())};
+    for(int n=0;n<24;n++)
+    {
+        float x=n%8*15+Next(0,.4f),y=n/8*24+Next(0,.4f);IColorShader? shader=n%3==0?new LinearGradient(new(0,0),new(width,height),Color(),Color()):null;
+        commands.Add(DrawingCommand.FillRectangle(new(x,y,x+Next(8,12),y+Next(8,18)),Matrix3.Identity,new(Color(),(CompositeMode)(n%3),n%2==0,shader)));
+    }
+    // These overlap previous rectangles, so they must keep painter order and
+    // cannot run as independent Z slices of the same batch.
+    commands.Add(DrawingCommand.FillRectangle(new(2,2,43,41),Matrix3.Identity,new(Color(),CompositeMode.SourceOver,true)));
+    commands.Add(DrawingCommand.FillRectangle(new(3,3,44,42),Matrix3.Identity,new(Color(),CompositeMode.SourceOver,true)));
+    Compare("disjoint rectangle batch and overlap order "+iteration,commands.ToArray());
+}
+if(optimized.RectangleBatchDispatches-batchesBefore<24)throw new Exception("The disjoint rectangle workload never used real batch dispatches.");checks++;
 Directory.CreateDirectory("artifacts/optimization-2026-10-21");
-File.WriteAllText("artifacts/optimization-2026-10-21/gpu-kernel-tests.json",JsonSerializer.Serialize(new{Checks=checks,Comparisons=comparisons,BinningChecks=checks-comparisons-cacheChecks-profilingChecks-1,CacheChecks=cacheChecks,ProfilingChecks=profilingChecks,UnsupportedGlyphChecks=1,Passed=true,Device=optimized.DeviceName,MaximumChannelError=0,Reference="Unrestricted GPU edge scan and 16x16 samples",Font=fontPath},new JsonSerializerOptions{WriteIndented=true}));
-Console.WriteLine($"PASS {checks} GPU checks ({comparisons} exact-byte comparisons, {checks-comparisons-cacheChecks-profilingChecks-1} binning limits, {cacheChecks} cache checks, {profilingChecks} profiling checks, 1 unsupported glyph rejection; tiles, winding, AA, inverse fills, clipping, shaders, cache, stride, initialization, CJK).");
+File.WriteAllText("artifacts/optimization-2026-10-21/gpu-kernel-tests.json",JsonSerializer.Serialize(new{Checks=checks,Comparisons=comparisons,BinningChecks=checks-comparisons-cacheChecks-profilingChecks-2,CacheChecks=cacheChecks,ProfilingChecks=profilingChecks,SupportedGlyphChecks=1,RectangleBatchDispatches=optimized.RectangleBatchDispatches,Passed=true,Device=optimized.DeviceName,MaximumChannelError=0,Reference="Unrestricted GPU edge scan and 16x16 samples",Font=fontPath},new JsonSerializerOptions{WriteIndented=true}));
+Console.WriteLine($"PASS {checks} GPU checks ({comparisons} exact-byte comparisons; {optimized.RectangleBatchDispatches} real rectangle batch dispatches; tiles, winding, AA, inverse fills, clipping, shaders, cache, stride, initialization, CJK).");

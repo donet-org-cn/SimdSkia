@@ -1,0 +1,101 @@
+--- before/src/SimdSkia.Core/Primitives.cs
++++ after/src/SimdSkia.Core/Primitives.cs
+@@ -65,6 +65,7 @@
+     public PointF End{get;}
+     public ReadOnlyMemory<LinearColorStop> Stops=>stops;
+     public GradientExtendMode Extend{get;}
++    public bool HasUnitStops{get;}
+     /// <summary>Maps drawing-local points into the gradient's coordinate system.</summary>
+     public Matrix3 SampleTransform{get;}
+     public LinearGradientDescription(PointF start,PointF end,IEnumerable<LinearColorStop> stops,GradientExtendMode extend=GradientExtendMode.Clamp,Matrix3? sampleTransform=null)
+@@ -73,6 +74,7 @@
+         if(!float.IsFinite(start.X)||!float.IsFinite(start.Y)||!float.IsFinite(end.X)||!float.IsFinite(end.Y)||!SampleTransform.IsFinite||!SampleTransform.IsAffine)throw new ArgumentException("Gradient coordinates must be finite and affine.");
+         if(!Enum.IsDefined(extend)||this.stops.Length==0||this.stops.Any(s=>!float.IsFinite(s.Offset)))throw new ArgumentException("Gradient stops and spread must be valid.");
+         for(int i=1;i<this.stops.Length;i++)if(this.stops[i].Offset<this.stops[i-1].Offset)throw new ArgumentException("Gradient stops must be ordered.");
++        HasUnitStops=this.stops[0].Offset>=0&&this.stops[^1].Offset<=1;
+     }
+ }
+ public readonly record struct Paint(Rgba32 Color, CompositeMode Composite,bool Antialias=false,IColorShader? Shader=null);
+--- before/src/SimdSkia.Gpu.Direct2D/Direct2DCanvas.cs
++++ after/src/SimdSkia.Gpu.Direct2D/Direct2DCanvas.cs
+@@ -12,6 +12,9 @@
+     private bool drawing,disposed,faulted;
+     private readonly Dictionary<(PathGeometry Geometry,float Tolerance),nint> paths=[];
+     private readonly Dictionary<Rgba32,nint> solids=[];
++    private readonly Dictionary<(IColorShader Shader,byte Opacity),nint> gradients=[];
++    public const int MaximumCachedGradientBrushes=64;
++    public int CachedGradientBrushes=>gradients.Count;
+     private readonly Dictionary<CoverageClip,(nint Bitmap,nint Brush,long Bytes)> clips=[];
+     private long clipBytes;
+     private sealed class CachedImage(nint bitmap,byte[] snapshot,int hash,long used){internal nint Bitmap=bitmap;internal byte[] Snapshot=snapshot;internal int Hash=hash;internal long Used=used;}
+@@ -78,15 +81,26 @@
+             D2DNative.Blend(context,command.Paint.Composite);D2DNative.Antialias(context,command.Paint.Antialias);D2DNative.Transform(context,command.Transform);
+             if(command.Kind==CommandKind.Clear){D2DNative.Clear(context,command.Paint.Color);return;}
+             if(command.Kind==CommandKind.DrawImage){nint bitmap=CachedBitmap(command.Image!,command.ImageIsImmutable);D2DNative.DrawBitmap(context,bitmap,command.Rectangle,command.ImageSource??new(0,0,command.Image!.Width,command.Image.Height),command.Paint.Color.A,command.Sampling);return;}
+-            bool temporary=command.Paint.Shader is not null&&command.Paint.Composite!=CompositeMode.Clear;
+-            nint brush=temporary?(gradient is not null?D2DNative.Gradient(context,gradient,command.Paint.Color.A):D2DNative.Gradient(context,(LinearGradient)command.Paint.Shader!,command.Paint.Color.A)):Solid(command.Paint.Composite==CompositeMode.Clear?default:command.Paint.Color);
+-            try{if(command.Kind==CommandKind.FillRectangle)D2DNative.FillRect(context,command.Rectangle,brush);else D2DNative.FillPath(context,GetPath(command.Path!,command.Transform,command.CurveTolerance),brush);}finally{if(temporary)D2DNative.Release(ref brush);}
++            nint brush=command.Paint.Shader is {} shader&&command.Paint.Composite!=CompositeMode.Clear?Gradient(shader,gradient,command.Paint.Color.A):Solid(command.Paint.Composite==CompositeMode.Clear?default:command.Paint.Color);
++            if(command.Kind==CommandKind.FillRectangle)D2DNative.FillRect(context,command.Rectangle,brush);else D2DNative.FillPath(context,GetPath(command.Path!,command.Transform,command.CurveTolerance),brush);
+         }
+         catch{faulted=true;throw;}
+         finally{if(coverage)D2DNative.PopLayer(context);if(clipped){D2DNative.Transform(context,Matrix3.Identity);D2DNative.PopClip(context);}}
+     }
+     private nint Solid(Rgba32 color)
+     {if(solids.TryGetValue(color,out nint brush))return brush;brush=D2DNative.Solid(context,color);if(solids.Count>=256){foreach(nint value in solids.Values){nint old=value;D2DNative.Release(ref old);}solids.Clear();}solids.Add(color,brush);return brush;}
++    private nint Gradient(IColorShader shader,LinearGradientDescription? description,byte opacity)
++    {
++        var key=(shader,opacity);if(gradients.TryGetValue(key,out nint brush))return brush;
++        brush=description is null?D2DNative.Gradient(context,(LinearGradient)shader,opacity):D2DNative.Gradient(context,description,opacity);
++        try
++        {
++            if(gradients.Count>=MaximumCachedGradientBrushes)
++            {foreach(nint value in gradients.Values){nint old=value;D2DNative.Release(ref old);}gradients.Clear();}
++            gradients.Add(key,brush);return brush;
++        }
++        catch{D2DNative.Release(ref brush);throw;}
++    }
+     private nint CoverageBrush(CoverageClip mask)
+     {
+         if(clips.TryGetValue(mask,out var found))return found.Brush;
+@@ -176,6 +190,7 @@
+     {
+         foreach(var value in paths.Values){nint p=value;D2DNative.Release(ref p);}paths.Clear();
+         foreach(var value in solids.Values){nint p=value;D2DNative.Release(ref p);}solids.Clear();
++        foreach(var value in gradients.Values){nint p=value;D2DNative.Release(ref p);}gradients.Clear();
+         foreach(var value in clips.Values){nint p=value.Brush,b=value.Bitmap;D2DNative.Release(ref p);D2DNative.Release(ref b);}clips.Clear();clipBytes=0;
+         foreach(var value in images.Values){nint p=value.Bitmap;D2DNative.Release(ref p);}images.Clear();imageBytes=0;
+         D2DNative.Release(ref context);D2DNative.Release(ref target);D2DNative.Release(ref drawingDevice);D2DNative.Release(ref factory);D2DNative.Release(ref completion);D2DNative.Release(ref staging);D2DNative.Release(ref texture);D2DNative.Release(ref swapChain);if(immediate!=0){D2DNative.ClearState(immediate);D2DNative.Flush(immediate);}D2DNative.Release(ref immediate);D2DNative.Release(ref device);pixels.Dispose();
+--- before/src/SimdSkia.Gpu.Direct2D/Direct2DNative.cs
++++ after/src/SimdSkia.Gpu.Direct2D/Direct2DNative.cs
+@@ -60,7 +60,7 @@
+         =>Gradient(context,new LinearGradientDescription(gradient.Start,gradient.End,[new(0,gradient.StartColor),new(1,gradient.EndColor)]),opacity);
+     internal static nint Gradient(nint context,LinearGradientDescription gradient,byte opacity)
+     {
+-        var values=gradient.Stops.Span;if(values.Length>256||values.ToArray().Any(s=>s.Offset<0||s.Offset>1))throw new NotSupportedException("Direct2D gradients accept up to 256 stops in [0,1].");
++        var values=gradient.Stops.Span;if(values.Length>256||!gradient.HasUnitStops)throw new NotSupportedException("Direct2D gradients accept up to 256 stops in [0,1].");
+         if(!gradient.SampleTransform.TryInvert(out var transform))throw new NotSupportedException("Singular gradient transform.");
+         Stop* stops=stackalloc Stop[values.Length];for(int i=0;i<values.Length;i++)stops[i]=new(){Position=values[i].Offset,Color=ColorOf(values[i].Color)};
+         nint collection=0,r=0;
+--- before/src/SimdSkia.Gpu/VulkanCanvas.cs
++++ after/src/SimdSkia.Gpu/VulkanCanvas.cs
+@@ -185,7 +185,7 @@
+         if(command.Paint.Shader is not null and not LinearGradient)
+         {
+             if(!command.Paint.Shader.TryGetLinearGradient(out var linear)||linear is null)throw new NotSupportedException("Vulkan accepts linear gradient shaders; other shaders require an explicit CPU fallback.");
+-            if(linear.Stops.Length>32||linear.Stops.ToArray().Any(s=>s.Offset<0||s.Offset>1))throw new NotSupportedException("Vulkan linear gradients accept up to 32 stops in [0,1].");
++            if(linear.Stops.Length>32||!linear.HasUnitStops)throw new NotSupportedException("Vulkan linear gradients accept up to 32 stops in [0,1].");
+             float dx=linear.End.X-linear.Start.X,dy=linear.End.Y-linear.Start.Y;if(!float.IsFinite(dx*dx+dy*dy))throw new NotSupportedException("Gradient coordinates exceed Vulkan float32 precision.");
+         }
+         if(command.Paint.Shader is LinearGradient shader)
+--- before/src/SimdSkia.Avalonia.Gpu/WindowGpuCanvas.cs
++++ after/src/SimdSkia.Avalonia.Gpu/WindowGpuCanvas.cs
+@@ -67,7 +67,7 @@
+         if(textMode==SimdSkiaGpuTextMode.ManagedGlyphAtlas&&command.Kind==CommandKind.DrawGlyphRun&&command.Paint.Shader is null&&command.Paint.Composite==CompositeMode.SourceOver&&DrawTextAtlas(command))return;
+         string? unsupported = command.Paint.Shader is not null and not LinearGradient ? "brush shader" : null;
+         if(command.Paint.Shader is {} shader&&shader.TryGetLinearGradient(out var linear)&&linear is not null)
+-            unsupported=linear.Stops.Length>(kind==SimdSkiaGpuBackend.Direct2D?256:32)||linear.Stops.ToArray().Any(s=>s.Offset<0||s.Offset>1)?"gradient stop limits":null;
++            unsupported=linear.Stops.Length>(kind==SimdSkiaGpuBackend.Direct2D?256:32)||!linear.HasUnitStops?"gradient stop limits":null;
+         if(kind==SimdSkiaGpuBackend.Direct2D&&command.Paint.Shader is {} gradientShader&&gradientShader.TryGetLinearGradient(out var description)&&description is not null&&description.SampleTransform!=Matrix3.Identity)unsupported="exact transformed gradient sampling";
+         if(command.Kind==CommandKind.DrawGlyphRun&&command.Paint.Shader is not null)unsupported="transformed glyph brush";
+         if (kind == SimdSkiaGpuBackend.Direct2D)

@@ -50,7 +50,7 @@ internal static class CompletionValidation
         {c.Clear(Colors.Transparent);c.DrawRectangle(Brushes.White,null,new Rect(4,4,8,8),new BoxShadows(new BoxShadow{IsInset=true,OffsetX=3,Color=Color.FromArgb(128,0,0,0)}));}
         Check(Pixel(target,5,8).R==127&&Pixel(target,9,8).R==255&&Pixel(target,3,8).A==0,"Inset BoxShadow ignored its hole or interior clip.");
         var random=new Random(1307);
-        foreach(int width in new[]{1,2,7,8,15,31,32,65})foreach(var format in Enum.GetValues<SimdSkia.PixelFormat>())foreach(var alpha in Enum.GetValues<SimdSkia.AlphaFormat>())
+        foreach(int width in new[]{1,2,7,8,15,31,32,65})foreach(var format in new[]{SimdSkia.PixelFormat.Rgba8888,SimdSkia.PixelFormat.Bgra8888})foreach(var alpha in Enum.GetValues<SimdSkia.AlphaFormat>())
         {
             using var input=new CorePixel(width,13,format,alpha,width*4+11);random.NextBytes(input.GetPixelSpan());
             var snapshot=input.CopyBytes();
@@ -117,7 +117,7 @@ internal static class CompletionValidation
             Marshal.Copy(a.Address,aa,0,aa.Length);Marshal.Copy(b.Address,bb,0,bb.Length);
             Check(aa.SequenceEqual(bb),$"Opacity 1 changed nested layers, clear or clip at scale {scaling}, clip={clipped}.");
         }
-        foreach(var format in Enum.GetValues<SimdSkia.PixelFormat>())foreach(var alpha in Enum.GetValues<SimdSkia.AlphaFormat>())
+        foreach(var format in new[]{SimdSkia.PixelFormat.Rgba8888,SimdSkia.PixelFormat.Bgra8888})foreach(var alpha in Enum.GetValues<SimdSkia.AlphaFormat>())
         {
             using var input=new CorePixel(13,11,format,alpha,13*4+11);
             for(int y=0;y<11;y++)for(int x=0;x<13;x++)input.WritePixel(x,y,new((byte)random.Next(256),(byte)random.Next(256),(byte)random.Next(256),(byte)random.Next(256)));

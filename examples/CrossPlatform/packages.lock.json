@@ -212,7 +212,10 @@
         }
       },
       "simdskia.core": {
-        "type": "Project"
+        "type": "Project",
+        "dependencies": {
+          "Clipper2": "[2.0.0, 2.0.0]"
+        }
       },
       "simdskia.cpu": {
         "type": "Project",
@@ -223,13 +226,16 @@
       "simdskia.gpu": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.1, )"
+          "SimdSkia.Core": "[0.1.1, )",
+          "SimdSkia.Cpu": "[0.1.1, )"
         }
       },
       "simdskia.gpu.direct2d": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.1, )"
+          "SimdSkia.Core": "[0.1.1, )",
+          "SimdSkia.Cpu": "[0.1.1, )",
+          "SimdSkia.Gpu": "[0.1.1, )"
         }
       },
       "simdskia.imaging": {

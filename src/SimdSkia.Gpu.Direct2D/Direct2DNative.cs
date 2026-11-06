@@ -7,6 +7,7 @@ internal static unsafe partial class D2DNative
     internal static readonly Guid DxgiDevice=new("54ec77fa-1377-44e6-8c32-88fd5f44c84c"), DxgiSurface=new("cafcb56c-6ac3-4889-bf47-9e23bbd260ec"),
         DxgiFactory2=new("50c83a1c-e072-4c48-87b0-3630fa36a6d0"), Texture2D=new("6f15aaf2-d208-4e89-9ab4-489535d34f9c"), Factory1=new("bb12d362-daee-4b9a-aa1d-14ba401cfa1f");
     internal static void* Slot(nint obj,int slot)=>((void**)(*(nint*)obj))[slot];
+    internal static nint Retain(nint obj){((delegate* unmanaged[Stdcall]<nint,uint>)Slot(obj,1))(obj);return obj;}
     internal static void Check(int hr){if(hr<0)Marshal.ThrowExceptionForHR(hr);}
     internal static nint Query(nint obj,Guid iid){nint result=0;Check(((delegate* unmanaged[Stdcall]<nint,Guid*,nint*,int>)Slot(obj,0))(obj,&iid,&result));return result;}
     internal static void Release(ref nint obj){nint value=Interlocked.Exchange(ref obj,0);if(value!=0)((delegate* unmanaged[Stdcall]<nint,uint>)Slot(value,2))(value);}
@@ -23,7 +24,7 @@ internal static unsafe partial class D2DNative
     internal static nint CreateFactory(){nint result=0;Guid iid=Factory1;Check(D2D1CreateFactory(0,&iid,null,&result));return result;}
     internal static nint DrawingDevice(nint factory,nint dxgi){nint result=0;Check(((delegate* unmanaged[Stdcall]<nint,nint,nint*,int>)Slot(factory,17))(factory,dxgi,&result));return result;}
     internal static nint DrawingContext(nint device){nint result=0;Check(((delegate* unmanaged[Stdcall]<nint,uint,nint*,int>)Slot(device,4))(device,0,&result));return result;}
-    internal static nint Texture(nint device,int width,int height,bool staging){var d=new TextureDescription{Width=(uint)width,Height=(uint)height,Mips=1,Array=1,Format=87,SampleCount=1,Usage=staging?3u:0,Bind=staging?0u:40,Cpu=staging?0x20000u:0};nint r=0;Check(((delegate* unmanaged[Stdcall]<nint,TextureDescription*,void*,nint*,int>)Slot(device,5))(device,&d,null,&r));return r;}
+    internal static nint Texture(nint device,int width,int height,bool staging,uint format=87){var d=new TextureDescription{Width=(uint)width,Height=(uint)height,Mips=1,Array=1,Format=format,SampleCount=1,Usage=staging?3u:0,Bind=staging?0u:40,Cpu=staging?0x20000u:0};nint r=0;Check(((delegate* unmanaged[Stdcall]<nint,TextureDescription*,void*,nint*,int>)Slot(device,5))(device,&d,null,&r));return r;}
     internal static nint Swapchain(nint factory,nint device,nint hwnd,int width,int height){var d=new SwapDescription{Width=(uint)width,Height=(uint)height,Format=87,SampleCount=1,Usage=0x20,BufferCount=1,Effect=1,Alpha=3};nint r=0;Check(((delegate* unmanaged[Stdcall]<nint,nint,nint,SwapDescription*,void*,nint,nint*,int>)Slot(factory,15))(factory,device,hwnd,&d,null,0,&r));return r;}
     internal static nint Backbuffer(nint swapchain){nint r=0;Guid iid=Texture2D;Check(((delegate* unmanaged[Stdcall]<nint,uint,Guid*,nint*,int>)Slot(swapchain,9))(swapchain,0,&iid,&r));return r;}
     internal static void Present(nint swapchain)=>Check(((delegate* unmanaged[Stdcall]<nint,uint,uint,int>)Slot(swapchain,8))(swapchain,0,0));
@@ -60,7 +61,7 @@ internal static unsafe partial class D2DNative
         =>Gradient(context,new LinearGradientDescription(gradient.Start,gradient.End,[new(0,gradient.StartColor),new(1,gradient.EndColor)]),opacity);
     internal static nint Gradient(nint context,LinearGradientDescription gradient,byte opacity)
     {
-        var values=gradient.Stops.Span;if(values.Length>256||values.ToArray().Any(s=>s.Offset<0||s.Offset>1))throw new NotSupportedException("Direct2D gradients accept up to 256 stops in [0,1].");
+        var values=gradient.Stops.Span;if(values.Length>256||!gradient.HasUnitStops)throw new NotSupportedException("Direct2D gradients accept up to 256 stops in [0,1].");
         if(!gradient.SampleTransform.TryInvert(out var transform))throw new NotSupportedException("Singular gradient transform.");
         Stop* stops=stackalloc Stop[values.Length];for(int i=0;i<values.Length;i++)stops[i]=new(){Position=values[i].Offset,Color=ColorOf(values[i].Color)};
         nint collection=0,r=0;

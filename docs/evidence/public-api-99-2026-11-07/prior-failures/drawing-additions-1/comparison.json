@@ -1,0 +1,579 @@
+{
+  "metadata": 0,
+  "differences": [],
+  "cases": [
+    {
+      "kind": "patch",
+      "scene": 0,
+      "transform": 0,
+      "offset": 0,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.44311868237151397,
+      "passed": true
+    },
+    {
+      "kind": "patch-mutated",
+      "scene": 0,
+      "transform": 0,
+      "offset": 30720,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.43376380861785446,
+      "passed": true
+    },
+    {
+      "kind": "patch",
+      "scene": 0,
+      "transform": 1,
+      "offset": 61440,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.3770775782249589,
+      "passed": true
+    },
+    {
+      "kind": "patch-mutated",
+      "scene": 0,
+      "transform": 1,
+      "offset": 92160,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.3693145396090799,
+      "passed": true
+    },
+    {
+      "kind": "patch",
+      "scene": 0,
+      "transform": 2,
+      "offset": 122880,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.44311868237151397,
+      "passed": true
+    },
+    {
+      "kind": "patch-mutated",
+      "scene": 0,
+      "transform": 2,
+      "offset": 153600,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.43368875648326416,
+      "passed": true
+    },
+    {
+      "kind": "patch",
+      "scene": 1,
+      "transform": 0,
+      "offset": 184320,
+      "length": 30720,
+      "maximum": 2,
+      "rmse": 0.49895724599742347,
+      "passed": true
+    },
+    {
+      "kind": "patch-mutated",
+      "scene": 1,
+      "transform": 0,
+      "offset": 215040,
+      "length": 30720,
+      "maximum": 2,
+      "rmse": 0.4897716836275177,
+      "passed": true
+    },
+    {
+      "kind": "patch",
+      "scene": 1,
+      "transform": 1,
+      "offset": 245760,
+      "length": 30720,
+      "maximum": 2,
+      "rmse": 0.4259257686694557,
+      "passed": true
+    },
+    {
+      "kind": "patch-mutated",
+      "scene": 1,
+      "transform": 1,
+      "offset": 276480,
+      "length": 30720,
+      "maximum": 2,
+      "rmse": 0.414578098794425,
+      "passed": true
+    },
+    {
+      "kind": "patch",
+      "scene": 1,
+      "transform": 2,
+      "offset": 307200,
+      "length": 30720,
+      "maximum": 2,
+      "rmse": 0.5007806406002533,
+      "passed": true
+    },
+    {
+      "kind": "patch-mutated",
+      "scene": 1,
+      "transform": 2,
+      "offset": 337920,
+      "length": 30720,
+      "maximum": 2,
+      "rmse": 0.48870710596088807,
+      "passed": true
+    },
+    {
+      "kind": "patch",
+      "scene": 2,
+      "transform": 0,
+      "offset": 368640,
+      "length": 30720,
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "kind": "patch-mutated",
+      "scene": 2,
+      "transform": 0,
+      "offset": 399360,
+      "length": 30720,
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "kind": "patch",
+      "scene": 2,
+      "transform": 1,
+      "offset": 430080,
+      "length": 30720,
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "kind": "patch-mutated",
+      "scene": 2,
+      "transform": 1,
+      "offset": 460800,
+      "length": 30720,
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "kind": "patch",
+      "scene": 2,
+      "transform": 2,
+      "offset": 491520,
+      "length": 30720,
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "kind": "patch-mutated",
+      "scene": 2,
+      "transform": 2,
+      "offset": 522240,
+      "length": 30720,
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "kind": "patch",
+      "scene": 3,
+      "transform": 0,
+      "offset": 552960,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.11223928122542481,
+      "passed": true
+    },
+    {
+      "kind": "patch-mutated",
+      "scene": 3,
+      "transform": 0,
+      "offset": 583680,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.10840342283956413,
+      "passed": true
+    },
+    {
+      "kind": "patch",
+      "scene": 3,
+      "transform": 1,
+      "offset": 614400,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.09128709291752768,
+      "passed": true
+    },
+    {
+      "kind": "patch-mutated",
+      "scene": 3,
+      "transform": 1,
+      "offset": 645120,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.09252674163001022,
+      "passed": true
+    },
+    {
+      "kind": "patch",
+      "scene": 3,
+      "transform": 2,
+      "offset": 675840,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.12049161450767712,
+      "passed": true
+    },
+    {
+      "kind": "patch-mutated",
+      "scene": 3,
+      "transform": 2,
+      "offset": 706560,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.11019041284673242,
+      "passed": true
+    },
+    {
+      "kind": "patch",
+      "scene": 4,
+      "transform": 0,
+      "offset": 737280,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.4460474563690878,
+      "passed": true
+    },
+    {
+      "kind": "patch-mutated",
+      "scene": 4,
+      "transform": 0,
+      "offset": 768000,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.4364570902925815,
+      "passed": true
+    },
+    {
+      "kind": "patch",
+      "scene": 4,
+      "transform": 1,
+      "offset": 798720,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.3777675652214379,
+      "passed": true
+    },
+    {
+      "kind": "patch-mutated",
+      "scene": 4,
+      "transform": 1,
+      "offset": 829440,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.3701949092482679,
+      "passed": true
+    },
+    {
+      "kind": "patch",
+      "scene": 4,
+      "transform": 2,
+      "offset": 860160,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.44553631071627225,
+      "passed": true
+    },
+    {
+      "kind": "patch-mutated",
+      "scene": 4,
+      "transform": 2,
+      "offset": 890880,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.4366062299143245,
+      "passed": true
+    },
+    {
+      "kind": "patch",
+      "scene": 5,
+      "transform": 0,
+      "offset": 921600,
+      "length": 30720,
+      "maximum": 2,
+      "rmse": 0.5,
+      "passed": true
+    },
+    {
+      "kind": "patch-mutated",
+      "scene": 5,
+      "transform": 0,
+      "offset": 952320,
+      "length": 30720,
+      "maximum": 2,
+      "rmse": 0.49123171085547807,
+      "passed": true
+    },
+    {
+      "kind": "patch",
+      "scene": 5,
+      "transform": 1,
+      "offset": 983040,
+      "length": 30720,
+      "maximum": 2,
+      "rmse": 0.42851639651632156,
+      "passed": true
+    },
+    {
+      "kind": "patch-mutated",
+      "scene": 5,
+      "transform": 1,
+      "offset": 1013760,
+      "length": 30720,
+      "maximum": 2,
+      "rmse": 0.4180186399352705,
+      "passed": true
+    },
+    {
+      "kind": "patch",
+      "scene": 5,
+      "transform": 2,
+      "offset": 1044480,
+      "length": 30720,
+      "maximum": 2,
+      "rmse": 0.5028240559579463,
+      "passed": true
+    },
+    {
+      "kind": "patch-mutated",
+      "scene": 5,
+      "transform": 2,
+      "offset": 1075200,
+      "length": 30720,
+      "maximum": 2,
+      "rmse": 0.49301765308150985,
+      "passed": true
+    },
+    {
+      "kind": "patch",
+      "scene": 6,
+      "transform": 0,
+      "offset": 1105920,
+      "length": 30720,
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "kind": "patch-mutated",
+      "scene": 6,
+      "transform": 0,
+      "offset": 1136640,
+      "length": 30720,
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "kind": "patch",
+      "scene": 6,
+      "transform": 1,
+      "offset": 1167360,
+      "length": 30720,
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "kind": "patch-mutated",
+      "scene": 6,
+      "transform": 1,
+      "offset": 1198080,
+      "length": 30720,
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "kind": "patch",
+      "scene": 6,
+      "transform": 2,
+      "offset": 1228800,
+      "length": 30720,
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "kind": "patch-mutated",
+      "scene": 6,
+      "transform": 2,
+      "offset": 1259520,
+      "length": 30720,
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "kind": "patch",
+      "scene": 7,
+      "transform": 0,
+      "offset": 1290240,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.11496149717767828,
+      "passed": true
+    },
+    {
+      "kind": "patch-mutated",
+      "scene": 7,
+      "transform": 0,
+      "offset": 1320960,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.11223928122542481,
+      "passed": true
+    },
+    {
+      "kind": "patch",
+      "scene": 7,
+      "transform": 1,
+      "offset": 1351680,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.09749465797331325,
+      "passed": true
+    },
+    {
+      "kind": "patch-mutated",
+      "scene": 7,
+      "transform": 1,
+      "offset": 1382400,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.09648780147424509,
+      "passed": true
+    },
+    {
+      "kind": "patch",
+      "scene": 7,
+      "transform": 2,
+      "offset": 1413120,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.11396614080506544,
+      "passed": true
+    },
+    {
+      "kind": "patch-mutated",
+      "scene": 7,
+      "transform": 2,
+      "offset": 1443840,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.11121956512532616,
+      "passed": true
+    },
+    {
+      "kind": "picture-filter",
+      "scene": 0,
+      "transform": 0,
+      "offset": 1474560,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.1270662556831409,
+      "passed": true
+    },
+    {
+      "kind": "picture-filter",
+      "scene": 0,
+      "transform": 1,
+      "offset": 1505280,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.16770509831248423,
+      "passed": true
+    },
+    {
+      "kind": "picture-filter",
+      "scene": 0,
+      "transform": 2,
+      "offset": 1536000,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.12719428216970552,
+      "passed": true
+    },
+    {
+      "kind": "picture-filter",
+      "scene": 1,
+      "transform": 0,
+      "offset": 1566720,
+      "length": 30720,
+      "maximum": 1,
+      "rmse": 0.10458250331675945,
+      "passed": true
+    },
+    {
+      "kind": "picture-filter",
+      "scene": 1,
+      "transform": 1,
+      "offset": 1597440,
+      "length": 30720,
+      "maximum": 235,
+      "rmse": 7.124216422556004,
+      "passed": false
+    },
+    {
+      "kind": "picture-filter",
+      "scene": 1,
+      "transform": 2,
+      "offset": 1628160,
+      "length": 30720,
+      "maximum": 235,
+      "rmse": 14.243979448203136,
+      "passed": false
+    },
+    {
+      "kind": "paint-filter",
+      "scene": 0,
+      "transform": 0,
+      "offset": 1658880,
+      "length": 30720,
+      "maximum": 134,
+      "rmse": 85.71755946129124,
+      "passed": false
+    },
+    {
+      "kind": "paint-filter",
+      "scene": 1,
+      "transform": 0,
+      "offset": 1689600,
+      "length": 30720,
+      "maximum": 134,
+      "rmse": 23.14638650704108,
+      "passed": false
+    }
+  ],
+  "local": [
+    {
+      "checks": 107
+    },
+    {
+      "checks": 107
+    }
+  ],
+  "gate": {
+    "maximum": 3,
+    "rmse": 0.75
+  },
+  "passed": false
+}

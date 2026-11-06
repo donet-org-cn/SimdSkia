@@ -10,7 +10,7 @@ internal static class GlyphMaskGamma
     private static int Canonical(int value){int bits=value>>5;return (bits<<5)|(bits<<2)|(bits>>1);}
     internal static int Luminance(Paint paint)
     {
-        if(paint.Shader is not null)return 4;
+        if(paint.ColorFilter is not null||paint.Shader is not null)return 4;
         var c=paint.Color;
         return ((Canonical(c.R)*54+Canonical(c.G)*183+Canonical(c.B)*19)>>8)>>5;
     }

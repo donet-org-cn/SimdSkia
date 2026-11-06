@@ -6,7 +6,7 @@ using SimdSkia.Imaging;
 using System.Text.Json;
 
 var random=new Random(20261012);
-int checks=0;
+int checks=BlendValidation.Run();
 float Next(float min,float max)=>min+(float)random.NextDouble()*(max-min);
 Rgba32 Color()=>new((byte)random.Next(256),(byte)random.Next(256),(byte)random.Next(256),(byte)random.Next(256));
 void Equal(PixelBuffer expected,PixelBuffer actual,string label)
@@ -16,10 +16,35 @@ void Equal(PixelBuffer expected,PixelBuffer actual,string label)
     {int i=0;while(i<a.Length&&a[i]==b[i])i++;throw new Exception($"{label}: byte {i} expected {a[i]}, actual {b[i]}");}
     checks++;
 }
+// Opaque gradient SIMD must retain the frozen renderer's double projection,
+// float interpolation and ties-to-even channel rounding, including short tails.
+foreach(bool useSimd in new[]{false,true})foreach(var format in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})foreach(var alpha in Enum.GetValues<AlphaFormat>())
+for(int iteration=0;iteration<40;iteration++)
+{
+    int width=iteration+1;
+    using var expected=new PixelBuffer(width,17,format,alpha,width*4+7);using var actual=new PixelBuffer(width,17,format,alpha,width*4+7);
+    random.NextBytes(expected.GetPixelSpan());expected.GetPixelSpan().CopyTo(actual.GetPixelSpan());
+    using var reference=new BaselineRasterCanvas(expected);using var renderer=new RasterCanvas(actual);
+    var gradient=new LinearGradient(new(Next(-10,10),Next(-10,10)),new(Next(10,50),Next(1,40)),Color() with {A=255},Color() with {A=255});
+    var transform=new Matrix3(iteration%2==0?1:1.31f,0,2.3f,0,.73f,-1.9f,0,0,1);
+    var command=DrawingCommand.FillRectangle(new(-100,-100,100,100),transform,new(new(255,255,255,255),iteration%2==0?CompositeMode.Source:CompositeMode.SourceOver,false,gradient)) with {Clip=new(1,1,width-1,16)};
+    CpuOptions.EnableSimd=useSimd;reference.Execute(command);renderer.Execute(command);Equal(expected,actual,"opaque gradient SIMD/stride/rounding");
+}
+CpuOptions.EnableSimd=true;
+foreach(bool useSimd in new[]{false,true})foreach(var format in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})
+foreach(int width in new[]{1,7,8,9,15,16,17,255,257})
+{
+    using var expected=new PixelBuffer(width,11,format,AlphaFormat.Straight,width*4+3);using var actual=new PixelBuffer(width,11,format,AlphaFormat.Straight,width*4+3);
+    using var reference=new BaselineRasterCanvas(expected);using var renderer=new RasterCanvas(actual);
+    var gradient=new LinearGradient(new(0,0),new(255,255),new(0,0,0,255),new(255,255,255,255));
+    var command=DrawingCommand.FillRectangle(new(0,0,width,11),Matrix3.Identity,new(new(255,255,255,255),CompositeMode.Source,false,gradient));
+    CpuOptions.EnableSimd=useSimd;reference.Execute(command);renderer.Execute(command);Equal(expected,actual,"gradient half-integer ties and vector tails");
+}
+CpuOptions.EnableSimd=true;
 // Full-width AA spans may merge their fully covered rows, while fractional
 // first/last rows, padded stride, alpha layouts and all composites stay exact.
-foreach(bool simd in new[]{false,true})foreach(var format in Enum.GetValues<PixelFormat>())
-foreach(var alpha in Enum.GetValues<AlphaFormat>())foreach(var mode in Enum.GetValues<CompositeMode>())
+foreach(bool simd in new[]{false,true})foreach(var format in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})
+foreach(var alpha in Enum.GetValues<AlphaFormat>())foreach(var mode in new[]{CompositeMode.SourceOver,CompositeMode.Source,CompositeMode.Clear})
 foreach(int padding in new[]{0,5})foreach(float y in new[]{-3.5f,0f,.03125f,5.5f,18.999f})
 {
     CpuOptions.EnableSimd=simd;
@@ -36,7 +61,7 @@ foreach(int padding in new[]{0,5})foreach(float y in new[]{-3.5f,0f,.03125f,5.5f
 // Medium-size repeating fills: exercise both threshold boundaries and uneven
 // copy tails. Sentinel rows and row padding must not be overwritten.
 foreach(int width in new[]{4095,4096,4097,33003,65535,65536,65537})
-foreach(var format in Enum.GetValues<PixelFormat>())foreach(var alpha in Enum.GetValues<AlphaFormat>())
+foreach(var format in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})foreach(var alpha in Enum.GetValues<AlphaFormat>())
 foreach(int padding in new[]{0,7})foreach(var mode in new[]{CompositeMode.Source,CompositeMode.SourceOver})
 {
     using var expected=new PixelBuffer(width,3,format,alpha,width*4+padding);
@@ -54,7 +79,7 @@ foreach(int padding in new[]{0,7})foreach(var mode in new[]{CompositeMode.Source
 // The SSE2 opaque-black glyph kernel must preserve all coverage values and
 // short vector tails on arbitrary destination bytes, both channel orders and
 // alpha metadata. Scalar glyph drawing is the independent compositing oracle.
-foreach(int width in new[]{3,4,5,7,8,9,17})foreach(var format in Enum.GetValues<PixelFormat>())
+foreach(int width in new[]{3,4,5,7,8,9,17})foreach(var format in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})
 foreach(var alpha in Enum.GetValues<AlphaFormat>())
 {
     using var expected=new PixelBuffer(width,19,format,alpha,width*4+3);
@@ -76,10 +101,10 @@ foreach(var alpha in Enum.GetValues<AlphaFormat>())
 // Native opaque alpha metadata overrides physical A bytes. Exercise direct
 // row copies, mirrored mappings, fractional clips, padding and scalar tails.
 foreach(bool enabled in new[]{false,true})
-foreach(var format in Enum.GetValues<PixelFormat>())
+foreach(var format in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})
 foreach(var alpha in Enum.GetValues<AlphaFormat>())
 foreach(int width in new[]{1,7,8,9,31,32,33,65})
-foreach(var mode in Enum.GetValues<CompositeMode>())
+foreach(var mode in new[]{CompositeMode.SourceOver,CompositeMode.Source,CompositeMode.Clear})
 {
     CpuOptions.EnableSimd=enabled;
     using var image=new PixelBuffer(width,9,format,AlphaFormat.Opaque,width*4+3);random.NextBytes(image.GetPixelSpan());
@@ -94,7 +119,7 @@ foreach(var mode in Enum.GetValues<CompositeMode>())
     }
 }
 foreach(bool simd in new[]{false,true})
-foreach(var format in Enum.GetValues<PixelFormat>())
+foreach(var format in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})
 foreach(var alpha in Enum.GetValues<AlphaFormat>())
 {
     CpuOptions.EnableSimd=simd;
@@ -146,7 +171,7 @@ foreach(var alpha in Enum.GetValues<AlphaFormat>())
 }
 // Dense small AA contours and adversarial edge order exercise both coverage representations,
 // all blend/alpha/stride combinations and coherent-sort fallback against the frozen renderer.
-foreach(bool simd in new[]{false,true})foreach(var format in Enum.GetValues<PixelFormat>())foreach(var alpha in Enum.GetValues<AlphaFormat>())
+foreach(bool simd in new[]{false,true})foreach(var format in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})foreach(var alpha in Enum.GetValues<AlphaFormat>())
 {
     CpuOptions.EnableSimd=simd;
     using var a=new PixelBuffer(97,63,format,alpha,397);using var b=new PixelBuffer(97,63,format,alpha,397);
@@ -160,7 +185,7 @@ foreach(bool simd in new[]{false,true})foreach(var format in Enum.GetValues<Pixe
     foreach(var rule in Enum.GetValues<FillRule>())
     {
         var geometry=new PathGeometry(segments,rule);
-        foreach(var mode in Enum.GetValues<CompositeMode>())
+        foreach(var mode in new[]{CompositeMode.SourceOver,CompositeMode.Source,CompositeMode.Clear})
         {
             var paint=new Paint(Color(),mode,true);
             var c=new DrawingCommand(CommandKind.FillPath,default,new(1,0,.03125f,0,1,.0625f,0,0,1),paint){Path=geometry,Clip=new(2.03125f,3.09375f,92.96875f,59.9375f)};
@@ -171,7 +196,7 @@ foreach(bool simd in new[]{false,true})foreach(var format in Enum.GetValues<Pixe
     }
 }
 // Opaque horizontal gradient row caching: rectangle/clip/transform changes.
-foreach(var format in Enum.GetValues<PixelFormat>())foreach(var alpha in Enum.GetValues<AlphaFormat>())
+foreach(var format in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})foreach(var alpha in Enum.GetValues<AlphaFormat>())
 using(var a=new PixelBuffer(97,63,format,alpha,397))using(var b=new PixelBuffer(97,63,format,alpha,397))
 using(var reference=new BaselineRasterCanvas(a))using(var actual=new RasterCanvas(b))
 {

@@ -1,0 +1,130 @@
+[
+  {
+    "scene": "bounds",
+    "original": {
+      "msPerFrame": 0.00013830891105724236,
+      "cpuMsPerFrame": 0.00013686817042236768,
+      "allocatedBytesPerFrame": 0,
+      "workingSetMiB": 35.70703125,
+      "privateMiB": 15.91796875
+    },
+    "before": {
+      "msPerFrame": 7.74723559265965e-05,
+      "cpuMsPerFrame": 7.666535221902777e-05,
+      "allocatedBytesPerFrame": 0,
+      "workingSetMiB": 33.83203125,
+      "privateMiB": 15.796875
+    },
+    "after": {
+      "msPerFrame": 7.751760715549528e-05,
+      "cpuMsPerFrame": 7.671013208095887e-05,
+      "allocatedBytesPerFrame": 0,
+      "workingSetMiB": 33.90234375,
+      "privateMiB": 15.89453125
+    },
+    "speedupVsBefore": 0.9994162457980932,
+    "afterOriginalRatio": 0.5604671930604155
+  },
+  {
+    "scene": "lines",
+    "original": {
+      "msPerFrame": 0.052990532544378695,
+      "cpuMsPerFrame": 0.052437516559215754,
+      "allocatedBytesPerFrame": 0,
+      "workingSetMiB": 35.55859375,
+      "privateMiB": 14.5546875
+    },
+    "before": {
+      "msPerFrame": 0.0168279139555755,
+      "cpuMsPerFrame": 0.016652176351806148,
+      "allocatedBytesPerFrame": 0.013910702266098272,
+      "workingSetMiB": 34.89453125,
+      "privateMiB": 14.30078125
+    },
+    "after": {
+      "msPerFrame": 0.01684282225465978,
+      "cpuMsPerFrame": 0.017105743319110713,
+      "allocatedBytesPerFrame": 0.013923197844150012,
+      "workingSetMiB": 35,
+      "privateMiB": 14.37890625
+    },
+    "speedupVsBefore": 0.9991148574236034,
+    "afterOriginalRatio": 0.317845876346953,
+    "quality": {
+      "beforeAfterExact": true,
+      "beforeMaxError": 1,
+      "beforeRmse": 0.4550068680800324,
+      "maxError": 1,
+      "rmse": 0.4550068680800324,
+      "passed": true
+    }
+  },
+  {
+    "scene": "circles",
+    "original": {
+      "msPerFrame": 0.06155269798933115,
+      "cpuMsPerFrame": 0.06095995893223819,
+      "allocatedBytesPerFrame": 0,
+      "workingSetMiB": 35.69140625,
+      "privateMiB": 14.62890625
+    },
+    "before": {
+      "msPerFrame": 0.0514027585025272,
+      "cpuMsPerFrame": 0.05086524458151289,
+      "allocatedBytesPerFrame": 0.04249121905251435,
+      "workingSetMiB": 34.9453125,
+      "privateMiB": 14.2265625
+    },
+    "after": {
+      "msPerFrame": 0.05209652717485675,
+      "cpuMsPerFrame": 0.05154974822017711,
+      "allocatedBytesPerFrame": 0.04306303177635006,
+      "workingSetMiB": 35.0703125,
+      "privateMiB": 14.30859375
+    },
+    "speedupVsBefore": 0.9866830149733209,
+    "afterOriginalRatio": 0.8463727647468284,
+    "quality": {
+      "beforeAfterExact": false,
+      "beforeMaxError": 9,
+      "beforeRmse": 1.0924098933092834,
+      "maxError": 13,
+      "rmse": 1.517476317772373,
+      "passed": true
+    }
+  },
+  {
+    "scene": "mixed",
+    "original": {
+      "msPerFrame": 0.11797679905623279,
+      "cpuMsPerFrame": 0.1173650919153983,
+      "allocatedBytesPerFrame": 0,
+      "workingSetMiB": 35.76171875,
+      "privateMiB": 14.703125
+    },
+    "before": {
+      "msPerFrame": 0.06778804789877993,
+      "cpuMsPerFrame": 0.06707523723452327,
+      "allocatedBytesPerFrame": 0.05603253502033439,
+      "workingSetMiB": 35.015625,
+      "privateMiB": 14.30078125
+    },
+    "after": {
+      "msPerFrame": 0.06762612419700215,
+      "cpuMsPerFrame": 0.06691648822269808,
+      "allocatedBytesPerFrame": 0.05589992110898231,
+      "workingSetMiB": 35.1484375,
+      "privateMiB": 14.3828125
+    },
+    "speedupVsBefore": 1.0023943957117234,
+    "afterOriginalRatio": 0.573215452003988,
+    "quality": {
+      "beforeAfterExact": false,
+      "beforeMaxError": 9,
+      "beforeRmse": 0.8272862055058772,
+      "maxError": 13,
+      "rmse": 1.0451171692499064,
+      "passed": true
+    }
+  }
+]

@@ -1,0 +1,210 @@
+[
+  {
+    "backend": "vulkan",
+    "before": {
+      "msPerFrame": 0.4430104318936877,
+      "cpuMsPerFrame": 0.12305999536715312,
+      "allocatedBytesPerFrame": 3560.5225851285613,
+      "workingSetMiB": 78.51953125,
+      "privateMiB": 86.2265625
+    },
+    "after": {
+      "msPerFrame": 0.44518143779212105,
+      "cpuMsPerFrame": 0.13109410430839002,
+      "allocatedBytesPerFrame": 488.24215446249724,
+      "workingSetMiB": 72.34765625,
+      "privateMiB": 80.14453125
+    },
+    "beforeAfterExact": true,
+    "runs": [
+      {
+        "version": "before",
+        "backend": "vulkan",
+        "device": "NVIDIA GeForce GTX 1050 Ti",
+        "runtime": "10.0.14",
+        "frames": 5659,
+        "msPerFrame": 0.3534285562820286,
+        "cpuMsPerFrame": 0.1463376921717618,
+        "allocatedBytesPerFrame": 3560.531542675384,
+        "workingSetMiB": 78.51953125,
+        "privateMiB": 86.2265625,
+        "pixelSha256": "A195F5FE9479D0CEB0950CBA2CF2EEF3199C0985A47764EBF27F55AB815AA1C9",
+        "scope": "64 shared three-stop gradient tiles, completed fence/readback each frame; 384x256 BGRA premul; not a full Avalonia app"
+      },
+      {
+        "version": "before",
+        "backend": "vulkan",
+        "device": "NVIDIA GeForce GTX 1050 Ti",
+        "runtime": "10.0.14",
+        "frames": 4515,
+        "msPerFrame": 0.4430104318936877,
+        "cpuMsPerFrame": 0.11766334440753046,
+        "allocatedBytesPerFrame": 3560.4996677740864,
+        "workingSetMiB": 78.359375,
+        "privateMiB": 86.078125,
+        "pixelSha256": "A195F5FE9479D0CEB0950CBA2CF2EEF3199C0985A47764EBF27F55AB815AA1C9",
+        "scope": "64 shared three-stop gradient tiles, completed fence/readback each frame; 384x256 BGRA premul; not a full Avalonia app"
+      },
+      {
+        "version": "before",
+        "backend": "vulkan",
+        "device": "NVIDIA GeForce GTX 1050 Ti",
+        "runtime": "10.0.14",
+        "frames": 4317,
+        "msPerFrame": 0.463380240908038,
+        "cpuMsPerFrame": 0.12305999536715312,
+        "allocatedBytesPerFrame": 3560.5225851285613,
+        "workingSetMiB": 78.67578125,
+        "privateMiB": 86.37109375,
+        "pixelSha256": "A195F5FE9479D0CEB0950CBA2CF2EEF3199C0985A47764EBF27F55AB815AA1C9",
+        "scope": "64 shared three-stop gradient tiles, completed fence/readback each frame; 384x256 BGRA premul; not a full Avalonia app"
+      },
+      {
+        "version": "after",
+        "backend": "vulkan",
+        "device": "NVIDIA GeForce GTX 1050 Ti",
+        "runtime": "10.0.14",
+        "frames": 5346,
+        "msPerFrame": 0.37413352038907594,
+        "cpuMsPerFrame": 0.14321455293677515,
+        "allocatedBytesPerFrame": 488.149644594089,
+        "workingSetMiB": 72.7734375,
+        "privateMiB": 80.6015625,
+        "pixelSha256": "A195F5FE9479D0CEB0950CBA2CF2EEF3199C0985A47764EBF27F55AB815AA1C9",
+        "scope": "64 shared three-stop gradient tiles, completed fence/readback each frame; 384x256 BGRA premul; not a full Avalonia app"
+      },
+      {
+        "version": "after",
+        "backend": "vulkan",
+        "device": "NVIDIA GeForce GTX 1050 Ti",
+        "runtime": "10.0.14",
+        "frames": 4410,
+        "msPerFrame": 0.4535328571428571,
+        "cpuMsPerFrame": 0.13109410430839002,
+        "allocatedBytesPerFrame": 488.2467120181406,
+        "workingSetMiB": 72.34765625,
+        "privateMiB": 80.14453125,
+        "pixelSha256": "A195F5FE9479D0CEB0950CBA2CF2EEF3199C0985A47764EBF27F55AB815AA1C9",
+        "scope": "64 shared three-stop gradient tiles, completed fence/readback each frame; 384x256 BGRA premul; not a full Avalonia app"
+      },
+      {
+        "version": "after",
+        "backend": "vulkan",
+        "device": "NVIDIA GeForce GTX 1050 Ti",
+        "runtime": "10.0.14",
+        "frames": 4493,
+        "msPerFrame": 0.44518143779212105,
+        "cpuMsPerFrame": 0.12519474738482084,
+        "allocatedBytesPerFrame": 488.24215446249724,
+        "workingSetMiB": 72.29296875,
+        "privateMiB": 80.0234375,
+        "pixelSha256": "A195F5FE9479D0CEB0950CBA2CF2EEF3199C0985A47764EBF27F55AB815AA1C9",
+        "scope": "64 shared three-stop gradient tiles, completed fence/readback each frame; 384x256 BGRA premul; not a full Avalonia app"
+      }
+    ]
+  },
+  {
+    "backend": "direct2d",
+    "before": {
+      "msPerFrame": 6.24529937694704,
+      "cpuMsPerFrame": 6.5225856697819315,
+      "allocatedBytesPerFrame": 3074.3426791277257,
+      "workingSetMiB": 60.84375,
+      "privateMiB": 73.59765625
+    },
+    "after": {
+      "msPerFrame": 0.14861415514935353,
+      "cpuMsPerFrame": 0.29257690592955865,
+      "allocatedBytesPerFrame": 0.06538861643632041,
+      "workingSetMiB": 60.8828125,
+      "privateMiB": 55.71484375
+    },
+    "beforeAfterExact": true,
+    "runs": [
+      {
+        "version": "before",
+        "backend": "direct2d",
+        "device": "NVIDIA GeForce GTX 1050 Ti",
+        "runtime": "10.0.14",
+        "frames": 312,
+        "msPerFrame": 6.411275320512821,
+        "cpuMsPerFrame": 6.610576923076923,
+        "allocatedBytesPerFrame": 3074.4102564102564,
+        "workingSetMiB": 60.95703125,
+        "privateMiB": 81.41796875,
+        "pixelSha256": "02E4143B8909A31889DE9FCF9297C21935F7813AEB297FED071605E56E9EA349",
+        "scope": "64 shared three-stop gradient tiles, completed fence/readback each frame; 384x256 BGRA premul; not a full Avalonia app"
+      },
+      {
+        "version": "before",
+        "backend": "direct2d",
+        "device": "NVIDIA GeForce GTX 1050 Ti",
+        "runtime": "10.0.14",
+        "frames": 324,
+        "msPerFrame": 6.189142283950617,
+        "cpuMsPerFrame": 6.4621913580246915,
+        "allocatedBytesPerFrame": 3074.320987654321,
+        "workingSetMiB": 60.84375,
+        "privateMiB": 73.59765625,
+        "pixelSha256": "02E4143B8909A31889DE9FCF9297C21935F7813AEB297FED071605E56E9EA349",
+        "scope": "64 shared three-stop gradient tiles, completed fence/readback each frame; 384x256 BGRA premul; not a full Avalonia app"
+      },
+      {
+        "version": "before",
+        "backend": "direct2d",
+        "device": "NVIDIA GeForce GTX 1050 Ti",
+        "runtime": "10.0.14",
+        "frames": 321,
+        "msPerFrame": 6.24529937694704,
+        "cpuMsPerFrame": 6.5225856697819315,
+        "allocatedBytesPerFrame": 3074.3426791277257,
+        "workingSetMiB": 60.62890625,
+        "privateMiB": 73.453125,
+        "pixelSha256": "02E4143B8909A31889DE9FCF9297C21935F7813AEB297FED071605E56E9EA349",
+        "scope": "64 shared three-stop gradient tiles, completed fence/readback each frame; 384x256 BGRA premul; not a full Avalonia app"
+      },
+      {
+        "version": "after",
+        "backend": "direct2d",
+        "device": "NVIDIA GeForce GTX 1050 Ti",
+        "runtime": "10.0.14",
+        "frames": 12699,
+        "msPerFrame": 0.15750230726828884,
+        "cpuMsPerFrame": 0.3100637845499646,
+        "allocatedBytesPerFrame": 0.06929679502323018,
+        "workingSetMiB": 60.6953125,
+        "privateMiB": 55.16796875,
+        "pixelSha256": "02E4143B8909A31889DE9FCF9297C21935F7813AEB297FED071605E56E9EA349",
+        "scope": "64 shared three-stop gradient tiles, completed fence/readback each frame; 384x256 BGRA premul; not a full Avalonia app"
+      },
+      {
+        "version": "after",
+        "backend": "direct2d",
+        "device": "NVIDIA GeForce GTX 1050 Ti",
+        "runtime": "10.0.14",
+        "frames": 13458,
+        "msPerFrame": 0.14861415514935353,
+        "cpuMsPerFrame": 0.29257690592955865,
+        "allocatedBytesPerFrame": 0.06538861643632041,
+        "workingSetMiB": 60.98828125,
+        "privateMiB": 57.140625,
+        "pixelSha256": "02E4143B8909A31889DE9FCF9297C21935F7813AEB297FED071605E56E9EA349",
+        "scope": "64 shared three-stop gradient tiles, completed fence/readback each frame; 384x256 BGRA premul; not a full Avalonia app"
+      },
+      {
+        "version": "after",
+        "backend": "direct2d",
+        "device": "NVIDIA GeForce GTX 1050 Ti",
+        "runtime": "10.0.14",
+        "frames": 13639,
+        "msPerFrame": 0.14664533323557447,
+        "cpuMsPerFrame": 0.2864029620939952,
+        "allocatedBytesPerFrame": 0.06452085930053524,
+        "workingSetMiB": 60.8828125,
+        "privateMiB": 55.71484375,
+        "pixelSha256": "02E4143B8909A31889DE9FCF9297C21935F7813AEB297FED071605E56E9EA349",
+        "scope": "64 shared three-stop gradient tiles, completed fence/readback each frame; 384x256 BGRA premul; not a full Avalonia app"
+      }
+    ]
+  }
+]

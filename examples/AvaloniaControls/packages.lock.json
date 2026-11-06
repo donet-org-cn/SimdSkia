@@ -189,7 +189,10 @@
         }
       },
       "simdskia.core": {
-        "type": "Project"
+        "type": "Project",
+        "dependencies": {
+          "Clipper2": "[2.0.0, 2.0.0]"
+        }
       },
       "simdskia.cpu": {
         "type": "Project",

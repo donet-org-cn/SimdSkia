@@ -9,7 +9,7 @@ internal static class TextureCacheValidation
         void Check(bool ok,string reason){if(!ok)throw new InvalidOperationException(reason);count++;}
         using var expected=new PixelBuffer(target.Width,target.Height,target.Format,target.Alpha);
         using var cpu=new RasterCanvas(expected);
-        foreach(var format in Enum.GetValues<PixelFormat>())foreach(var alpha in Enum.GetValues<AlphaFormat>())
+        foreach(var format in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})foreach(var alpha in Enum.GetValues<AlphaFormat>())
         {
             using var source=new PixelBuffer(3,2,format,alpha,17);
             for(int y=0;y<2;y++)for(int x=0;x<3;x++)source.WritePixel(x,y,new((byte)(53+x*71),(byte)(31+y*153),97,alpha==AlphaFormat.Opaque?(byte)255:(byte)137));

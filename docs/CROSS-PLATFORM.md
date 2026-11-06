@@ -1,6 +1,6 @@
 # 跨平台桌面接入（0.1.0-preview.3）
 
-最新 main 源码的 Vulkan 性能与限制见 [专项报告](VULKAN-OPTIMIZATION-2026-10-22.md)。Windows 已实测路径覆盖缓存、直接 BGRA 输出、采样和 AOT；Linux 物理 GPU 仍待验证，macOS GPU/Metal 仍未实现。下文保留包版本对应的宿主配置。
+最新0.1.2-preview.1的API、GPU、内存与限制见[最终报告](PUBLIC-API-FINAL-2026-11-07.md)。桌面CPU仍支持Windows/Linux X11/macOS官方窗口宿主，Avalonia接受>=12.1.0且<13.0.0，宿主矩阵为12.1.0–12.1.5。Windows已验证GL、Vulkan、Direct2D与D3D12互操作；Linux物理GPU仍未在本轮实测。Metal核心及资源互操作已有C#实现，但没有Mac GPU，未实机验证，尚未接入Avalonia Metal窗口呈现。以下为旧版记录，不代表新硬件验收。
 
 新增源码项目 `src/SimdSkia.Avalonia.Desktop`，为固定 Avalonia 12.1.4 提供统一入口：
 

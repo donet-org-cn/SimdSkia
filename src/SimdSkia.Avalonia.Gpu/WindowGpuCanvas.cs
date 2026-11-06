@@ -64,10 +64,10 @@ internal sealed class WindowGpuCanvas : ICanvasBackend
                 Execute(command with{Image=crop,ImageSource=new(source.Left-left,source.Top-top,source.Right-left,source.Bottom-top),ImageIsImmutable=true});return;
             }
         }
-        if(textMode==SimdSkiaGpuTextMode.ManagedGlyphAtlas&&command.Kind==CommandKind.DrawGlyphRun&&command.Paint.Shader is null&&command.Paint.Composite==CompositeMode.SourceOver&&DrawTextAtlas(command))return;
+        if(textMode==SimdSkiaGpuTextMode.ManagedGlyphAtlas&&command.Kind==CommandKind.DrawGlyphRun&&command.Paint.Shader is null&&command.Paint.ColorFilter is null&&command.Paint.ImageFilter is null&&command.Paint.MaskFilter is null&&command.Paint.Composite==CompositeMode.SourceOver&&DrawTextAtlas(command))return;
         string? unsupported = command.Paint.Shader is not null and not LinearGradient ? "brush shader" : null;
         if(command.Paint.Shader is {} shader&&shader.TryGetLinearGradient(out var linear)&&linear is not null)
-            unsupported=linear.Stops.Length>(kind==SimdSkiaGpuBackend.Direct2D?256:32)||linear.Stops.ToArray().Any(s=>s.Offset<0||s.Offset>1)?"gradient stop limits":null;
+            unsupported=linear.Stops.Length>(kind==SimdSkiaGpuBackend.Direct2D?256:32)||!linear.HasUnitStops?"gradient stop limits":null;
         if(kind==SimdSkiaGpuBackend.Direct2D&&command.Paint.Shader is {} gradientShader&&gradientShader.TryGetLinearGradient(out var description)&&description is not null&&description.SampleTransform!=Matrix3.Identity)unsupported="exact transformed gradient sampling";
         if(command.Kind==CommandKind.DrawGlyphRun&&command.Paint.Shader is not null)unsupported="transformed glyph brush";
         if (kind == SimdSkiaGpuBackend.Direct2D)
@@ -77,6 +77,10 @@ internal sealed class WindowGpuCanvas : ICanvasBackend
             else if (command.Kind == CommandKind.DrawImage && (command.Sampling == ImageSampling.Mitchell || command.NearestLowerBoundary)) unsupported = "exact image sampling";
             else if (command.Paint.Shader is not null && command.ShaderTransform is {} shaderTransform && shaderTransform != command.Transform) unsupported = "independent brush transform";
         }
+        if(command.Paint.Composite is not (CompositeMode.SourceOver or CompositeMode.Source or CompositeMode.Clear))unsupported="blend mode";
+        if(command.Paint.ColorFilter is not null)unsupported="color filter";
+        if(command.Paint.ImageFilter is not null)unsupported="image filter";
+        if(command.Paint.MaskFilter is not null)unsupported="mask filter";
         if (unsupported is not null)
         {
             if (!fallback) throw new NotSupportedException($"{kind} cannot draw {unsupported}. Explicitly enable allowCpuFallback to preserve this feature with managed CPU rendering.");

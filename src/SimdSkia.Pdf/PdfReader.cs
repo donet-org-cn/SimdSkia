@@ -10,6 +10,7 @@ using UglyToad.PdfPig.Graphics.Core;
 using UglyToad.PdfPig.Graphics.Operations;
 using UglyToad.PdfPig.Outline.Destinations;
 using UglyToad.PdfPig.Parser;
+using UglyToad.PdfPig.Parser.Parts;
 using UglyToad.PdfPig.PdfFonts;
 using UglyToad.PdfPig.Tokenization.Scanner;
 using UglyToad.PdfPig.Tokens;
@@ -54,11 +55,28 @@ internal sealed class RenderFactory : BasePageFactory<RenderedPdfPage>
     public RenderFactory(IPdfTokenScanner pdfScanner,IResourceStore resourceStore,ILookupFilterProvider filterProvider,IPageContentParser pageContentParser,ParsingOptions parsingOptions):base(pdfScanner,resourceStore,filterProvider,pageContentParser,parsingOptions) { }
     protected override RenderedPdfPage ProcessPage(int pageNumber,DictionaryToken dictionary,NamedDestinations namedDestinations,MediaBox mediaBox,CropBox cropBox,UserSpaceUnit userSpaceUnit,PageRotationDegrees rotation,TransformationMatrix initialMatrix,IReadOnlyList<IGraphicsStateOperation> operations)
     {
-        if(dictionary.ContainsKey(NameToken.Annots))throw new NotSupportedException("PDF annotations/forms require appearance rendering; this reader does not silently omit them.");
+        if(dictionary.TryGet(NameToken.Annots,out var annotations))ValidateNonPaintingLinks(annotations);
         if(dictionary.ContainsKey(NameToken.Group))throw new NotSupportedException("PDF page transparency groups are not supported.");
         if(userSpaceUnit.PointMultiples!=1||(dictionary.TryGet(NameToken.UserUnit,out var unitToken)&&(unitToken is not NumericToken number||number.Double!=1)))throw new NotSupportedException("Non-default PDF UserUnit requires a separately validated page transform.");
         var crop=new CropBox(mediaBox.Bounds.Intersect(cropBox.Bounds)??cropBox.Bounds);
         return new RenderProcessor(pageNumber,ResourceStore,PdfScanner,PageContentParser,FilterProvider,crop,userSpaceUnit,rotation,initialMatrix,(PdfReader.ReaderOptions)ParsingOptions).Process(pageNumber,operations);
+    }
+    private void ValidateNonPaintingLinks(IToken token)
+    {
+        var annotations=DirectObjectFinder.Get<ArrayToken>(token,PdfScanner)??throw new InvalidDataException("Invalid annotation array.");
+        if(annotations.Length>65536)throw new NotSupportedException("PDF annotation count exceeds 65536.");
+        foreach(var item in annotations.Data)
+        {
+            var annotation=DirectObjectFinder.Get<DictionaryToken>(item,PdfScanner)??throw new InvalidDataException("Invalid annotation dictionary.");
+            // A borderless link with no appearance stream is navigation
+            // metadata and paints nothing by PDF definition. Forms, visible
+            // borders and appearance streams still need an actual renderer.
+            bool safe=annotation.TryGet(NameToken.Subtype,out NameToken subtype)&&subtype.Data=="Link"&&!annotation.ContainsKey(NameToken.Create("AP"))&&!annotation.ContainsKey(NameToken.Create("BS"));
+            if(safe&&annotation.TryGet(NameToken.Create("Border"),out var borderToken))
+            {var border=DirectObjectFinder.Get<ArrayToken>(borderToken,PdfScanner)??throw new InvalidDataException("Invalid link border.");safe=border.Length>=3&&border.Data[2] is NumericToken width&&width.Double==0;}
+            else safe=false;
+            if(!safe)throw new NotSupportedException("PDF annotation appearance, visible borders and forms require rendering not yet implemented by this reader.");
+        }
     }
 }
 

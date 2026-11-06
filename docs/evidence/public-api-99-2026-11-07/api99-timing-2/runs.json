@@ -1,0 +1,596 @@
+[
+  {
+    "variant": "original",
+    "fork": 0,
+    "rows": [
+      {
+        "scene": "mesh",
+        "frames": 2058,
+        "msPerFrame": 0.38877638483965016,
+        "cpuMsPerFrame": 0.37961613216715256,
+        "cpuPercentOfMachine": 8.136985401940937,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 27.80859375,
+        "privateMiB": 8.90625
+      },
+      {
+        "scene": "patch",
+        "frames": 908,
+        "msPerFrame": 0.8811144273127753,
+        "cpuMsPerFrame": 0.8776156387665198,
+        "cpuPercentOfMachine": 8.300242771750183,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 27.37890625,
+        "privateMiB": 7.53515625
+      },
+      {
+        "scene": "atlas32",
+        "frames": 18337,
+        "msPerFrame": 0.04362855974259693,
+        "cpuMsPerFrame": 0.04260511534056825,
+        "cpuPercentOfMachine": 8.137848921274871,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 30.625,
+        "privateMiB": 10.0078125
+      },
+      {
+        "scene": "runtime",
+        "frames": 2530,
+        "msPerFrame": 0.3162587747035573,
+        "cpuMsPerFrame": 0.3149703557312253,
+        "cpuPercentOfMachine": 8.29938384124573,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 32.19921875,
+        "privateMiB": 10.62890625
+      },
+      {
+        "scene": "perlin",
+        "frames": 56,
+        "msPerFrame": 14.448348214285714,
+        "cpuMsPerFrame": 14.508928571428571,
+        "cpuPercentOfMachine": 8.368274096252147,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 29.6875,
+        "privateMiB": 8.015625
+      },
+      {
+        "scene": "bilingual",
+        "frames": 10721,
+        "msPerFrame": 0.0746227777259584,
+        "cpuMsPerFrame": 0.07578584087305289,
+        "cpuPercentOfMachine": 8.463215832857102,
+        "allocatedBytesPerFrame": 960,
+        "workingSetMiB": 40.82421875,
+        "privateMiB": 18.86328125
+      }
+    ]
+  },
+  {
+    "variant": "before",
+    "fork": 0,
+    "rows": [
+      {
+        "scene": "mesh",
+        "frames": 327,
+        "msPerFrame": 2.450549847094801,
+        "cpuMsPerFrame": 2.436926605504587,
+        "cpuPercentOfMachine": 8.28700617398729,
+        "allocatedBytesPerFrame": 331.6697247706422,
+        "workingSetMiB": 32.5625,
+        "privateMiB": 12.5
+      },
+      {
+        "scene": "patch",
+        "frames": 251,
+        "msPerFrame": 3.1907685258964142,
+        "cpuMsPerFrame": 3.237051792828685,
+        "cpuPercentOfMachine": 8.454211387624,
+        "allocatedBytesPerFrame": 991735.235059761,
+        "workingSetMiB": 41.0859375,
+        "privateMiB": 20.609375
+      },
+      {
+        "scene": "atlas32",
+        "frames": 1742,
+        "msPerFrame": 0.4592801377726751,
+        "cpuMsPerFrame": 0.4574483352468427,
+        "cpuPercentOfMachine": 8.300096492039406,
+        "allocatedBytesPerFrame": 6177.377726750861,
+        "workingSetMiB": 42.078125,
+        "privateMiB": 21.12109375
+      },
+      {
+        "scene": "runtime",
+        "frames": 119,
+        "msPerFrame": 6.7666369747899155,
+        "cpuMsPerFrame": 6.959033613445378,
+        "cpuPercentOfMachine": 8.570276046249987,
+        "allocatedBytesPerFrame": 5.042016806722689,
+        "workingSetMiB": 41.1484375,
+        "privateMiB": 19.53515625
+      },
+      {
+        "scene": "perlin",
+        "frames": 137,
+        "msPerFrame": 5.8649459854014605,
+        "cpuMsPerFrame": 6.04470802919708,
+        "cpuPercentOfMachine": 8.588752059329941,
+        "allocatedBytesPerFrame": 4.37956204379562,
+        "workingSetMiB": 40.8203125,
+        "privateMiB": 18.9296875
+      },
+      {
+        "scene": "bilingual",
+        "frames": 37637,
+        "msPerFrame": 0.021256205329861572,
+        "cpuMsPerFrame": 0.021172649254722745,
+        "cpuPercentOfMachine": 8.300575810748684,
+        "allocatedBytesPerFrame": 0.022531020006908094,
+        "workingSetMiB": 40.375,
+        "privateMiB": 16.71484375
+      }
+    ]
+  },
+  {
+    "variant": "after",
+    "fork": 0,
+    "rows": [
+      {
+        "scene": "mesh",
+        "frames": 320,
+        "msPerFrame": 2.506748125,
+        "cpuMsPerFrame": 2.44140625,
+        "cpuPercentOfMachine": 8.116113414200052,
+        "allocatedBytesPerFrame": 2.975,
+        "workingSetMiB": 32.30078125,
+        "privateMiB": 12.4296875
+      },
+      {
+        "scene": "patch",
+        "frames": 297,
+        "msPerFrame": 2.700486531986532,
+        "cpuMsPerFrame": 2.683080808080808,
+        "cpuPercentOfMachine": 8.279621641941313,
+        "allocatedBytesPerFrame": 3.2053872053872055,
+        "workingSetMiB": 33.95703125,
+        "privateMiB": 13.77734375
+      },
+      {
+        "scene": "atlas32",
+        "frames": 1786,
+        "msPerFrame": 0.44814473684210526,
+        "cpuMsPerFrame": 0.44617861142217247,
+        "cpuPercentOfMachine": 8.296772871606406,
+        "allocatedBytesPerFrame": 272.5330347144457,
+        "workingSetMiB": 34.734375,
+        "privateMiB": 14
+      },
+      {
+        "scene": "runtime",
+        "frames": 123,
+        "msPerFrame": 6.527150406504066,
+        "cpuMsPerFrame": 6.605691056910569,
+        "cpuPercentOfMachine": 8.433607630582866,
+        "allocatedBytesPerFrame": 4.878048780487805,
+        "workingSetMiB": 36.171875,
+        "privateMiB": 14.53515625
+      },
+      {
+        "scene": "perlin",
+        "frames": 135,
+        "msPerFrame": 5.940508888888889,
+        "cpuMsPerFrame": 5.902777777777778,
+        "cpuPercentOfMachine": 8.280404210289005,
+        "allocatedBytesPerFrame": 4.444444444444445,
+        "workingSetMiB": 35.47265625,
+        "privateMiB": 13.6171875
+      },
+      {
+        "scene": "bilingual",
+        "frames": 37805,
+        "msPerFrame": 0.021161341092448088,
+        "cpuMsPerFrame": 0.02107856103689988,
+        "cpuPercentOfMachine": 8.30073455836811,
+        "allocatedBytesPerFrame": 0.02243089538420844,
+        "workingSetMiB": 38.05859375,
+        "privateMiB": 14.578125
+      }
+    ]
+  },
+  {
+    "variant": "before",
+    "fork": 1,
+    "rows": [
+      {
+        "scene": "mesh",
+        "frames": 324,
+        "msPerFrame": 2.4720873456790127,
+        "cpuMsPerFrame": 2.459490740740741,
+        "cpuPercentOfMachine": 8.290870550615557,
+        "allocatedBytesPerFrame": 331.7037037037037,
+        "workingSetMiB": 32.765625,
+        "privateMiB": 12.69921875
+      },
+      {
+        "scene": "patch",
+        "frames": 252,
+        "msPerFrame": 3.178496825396825,
+        "cpuMsPerFrame": 3.162202380952381,
+        "cpuPercentOfMachine": 8.290612813384385,
+        "allocatedBytesPerFrame": 991734.4761904762,
+        "workingSetMiB": 41.26171875,
+        "privateMiB": 20.80859375
+      },
+      {
+        "scene": "atlas32",
+        "frames": 1735,
+        "msPerFrame": 0.46128178674351583,
+        "cpuMsPerFrame": 0.45929394812680113,
+        "cpuPercentOfMachine": 8.297421831336038,
+        "allocatedBytesPerFrame": 6177.383285302593,
+        "workingSetMiB": 42.33984375,
+        "privateMiB": 21.65625
+      },
+      {
+        "scene": "runtime",
+        "frames": 118,
+        "msPerFrame": 6.784100847457627,
+        "cpuMsPerFrame": 6.753177966101695,
+        "cpuPercentOfMachine": 8.295348833432707,
+        "allocatedBytesPerFrame": 5.084745762711864,
+        "workingSetMiB": 41.3671875,
+        "privateMiB": 20.05859375
+      },
+      {
+        "scene": "perlin",
+        "frames": 138,
+        "msPerFrame": 5.826234057971015,
+        "cpuMsPerFrame": 5.774456521739131,
+        "cpuPercentOfMachine": 8.259275294417318,
+        "allocatedBytesPerFrame": 4.3478260869565215,
+        "workingSetMiB": 41.03125,
+        "privateMiB": 19.38671875
+      },
+      {
+        "scene": "bilingual",
+        "frames": 37938,
+        "msPerFrame": 0.02108707628235542,
+        "cpuMsPerFrame": 0.021004665506879645,
+        "cpuPercentOfMachine": 8.30076568606434,
+        "allocatedBytesPerFrame": 0.022352258948811217,
+        "workingSetMiB": 40.42578125,
+        "privateMiB": 16.8203125
+      }
+    ]
+  },
+  {
+    "variant": "after",
+    "fork": 1,
+    "rows": [
+      {
+        "scene": "mesh",
+        "frames": 326,
+        "msPerFrame": 2.455362883435583,
+        "cpuMsPerFrame": 2.540260736196319,
+        "cpuPercentOfMachine": 8.621470826618866,
+        "allocatedBytesPerFrame": 2.920245398773006,
+        "workingSetMiB": 32.40625,
+        "privateMiB": 13.234375
+      },
+      {
+        "scene": "patch",
+        "frames": 305,
+        "msPerFrame": 2.6286619672131146,
+        "cpuMsPerFrame": 2.612704918032787,
+        "cpuPercentOfMachine": 8.282746604611784,
+        "allocatedBytesPerFrame": 3.121311475409836,
+        "workingSetMiB": 34.03515625,
+        "privateMiB": 13.8046875
+      },
+      {
+        "scene": "atlas32",
+        "frames": 1807,
+        "msPerFrame": 0.44283132263420033,
+        "cpuMsPerFrame": 0.44099335915882676,
+        "cpuPercentOfMachine": 8.29874598254778,
+        "allocatedBytesPerFrame": 272.5268400664084,
+        "workingSetMiB": 34.828125,
+        "privateMiB": 14.0234375
+      },
+      {
+        "scene": "runtime",
+        "frames": 125,
+        "msPerFrame": 6.4136792,
+        "cpuMsPerFrame": 6.625,
+        "cpuPercentOfMachine": 8.607903765023567,
+        "allocatedBytesPerFrame": 4.8,
+        "workingSetMiB": 35.90625,
+        "privateMiB": 14.55859375
+      },
+      {
+        "scene": "perlin",
+        "frames": 137,
+        "msPerFrame": 5.843416788321168,
+        "cpuMsPerFrame": 5.8166058394160585,
+        "cpuPercentOfMachine": 8.295098070934152,
+        "allocatedBytesPerFrame": 4.37956204379562,
+        "workingSetMiB": 35.46875,
+        "privateMiB": 13.64453125
+      },
+      {
+        "scene": "bilingual",
+        "frames": 37519,
+        "msPerFrame": 0.02132287107865348,
+        "cpuMsPerFrame": 0.021239238785681923,
+        "cpuPercentOfMachine": 8.300648439624966,
+        "allocatedBytesPerFrame": 0.022601881713265277,
+        "workingSetMiB": 38.140625,
+        "privateMiB": 14.77734375
+      }
+    ]
+  },
+  {
+    "variant": "original",
+    "fork": 1,
+    "rows": [
+      {
+        "scene": "mesh",
+        "frames": 2182,
+        "msPerFrame": 0.3666759853345554,
+        "cpuMsPerFrame": 0.3652039413382218,
+        "cpuPercentOfMachine": 8.299878638198095,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 27.9453125,
+        "privateMiB": 9.0234375
+      },
+      {
+        "scene": "patch",
+        "frames": 952,
+        "msPerFrame": 0.8406969537815125,
+        "cpuMsPerFrame": 0.8370535714285714,
+        "cpuPercentOfMachine": 8.297218631749994,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 27.515625,
+        "privateMiB": 7.65234375
+      },
+      {
+        "scene": "atlas32",
+        "frames": 18941,
+        "msPerFrame": 0.04223713109128346,
+        "cpuMsPerFrame": 0.04207143234253735,
+        "cpuPercentOfMachine": 8.300641176680143,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 30.77734375,
+        "privateMiB": 10.12890625
+      },
+      {
+        "scene": "runtime",
+        "frames": 2576,
+        "msPerFrame": 0.3105891304347826,
+        "cpuMsPerFrame": 0.3093458850931677,
+        "cpuPercentOfMachine": 8.299976152313224,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 32.34375,
+        "privateMiB": 10.7421875
+      },
+      {
+        "scene": "perlin",
+        "frames": 57,
+        "msPerFrame": 14.14668947368421,
+        "cpuMsPerFrame": 13.980263157894736,
+        "cpuPercentOfMachine": 8.235297254468934,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 29.828125,
+        "privateMiB": 8.140625
+      },
+      {
+        "scene": "bilingual",
+        "frames": 11004,
+        "msPerFrame": 0.07270260814249364,
+        "cpuMsPerFrame": 0.07383678662304617,
+        "cpuPercentOfMachine": 8.463335372866954,
+        "allocatedBytesPerFrame": 960,
+        "workingSetMiB": 39.19921875,
+        "privateMiB": 16.52734375
+      }
+    ]
+  },
+  {
+    "variant": "after",
+    "fork": 2,
+    "rows": [
+      {
+        "scene": "mesh",
+        "frames": 325,
+        "msPerFrame": 2.4620224615384614,
+        "cpuMsPerFrame": 2.451923076923077,
+        "cpuPercentOfMachine": 8.299149429743377,
+        "allocatedBytesPerFrame": 2.9292307692307693,
+        "workingSetMiB": 32.42578125,
+        "privateMiB": 12.5390625
+      },
+      {
+        "scene": "patch",
+        "frames": 302,
+        "msPerFrame": 2.657040728476821,
+        "cpuMsPerFrame": 2.638658940397351,
+        "cpuPercentOfMachine": 8.275682140528048,
+        "allocatedBytesPerFrame": 3.152317880794702,
+        "workingSetMiB": 34.08984375,
+        "privateMiB": 13.88671875
+      },
+      {
+        "scene": "atlas32",
+        "frames": 1796,
+        "msPerFrame": 0.44550623608017814,
+        "cpuMsPerFrame": 0.4436943207126949,
+        "cpuPercentOfMachine": 8.299440890296218,
+        "allocatedBytesPerFrame": 272.5300668151448,
+        "workingSetMiB": 34.9140625,
+        "privateMiB": 14.10546875
+      },
+      {
+        "scene": "runtime",
+        "frames": 113,
+        "msPerFrame": 7.1084221238938055,
+        "cpuMsPerFrame": 7.32853982300885,
+        "cpuPercentOfMachine": 8.59138133995442,
+        "allocatedBytesPerFrame": 5.3097345132743365,
+        "workingSetMiB": 36.4375,
+        "privateMiB": 14.63671875
+      },
+      {
+        "scene": "perlin",
+        "frames": 138,
+        "msPerFrame": 5.836667391304348,
+        "cpuMsPerFrame": 5.88768115942029,
+        "cpuPercentOfMachine": 8.406168515775434,
+        "allocatedBytesPerFrame": 4.3478260869565215,
+        "workingSetMiB": 35.58984375,
+        "privateMiB": 13.73046875
+      },
+      {
+        "scene": "bilingual",
+        "frames": 37947,
+        "msPerFrame": 0.021082475558015127,
+        "cpuMsPerFrame": 0.020999683769467942,
+        "cpuPercentOfMachine": 8.300607974808525,
+        "allocatedBytesPerFrame": 0.02234695759875616,
+        "workingSetMiB": 38.30859375,
+        "privateMiB": 14.9140625
+      }
+    ]
+  },
+  {
+    "variant": "original",
+    "fork": 2,
+    "rows": [
+      {
+        "scene": "mesh",
+        "frames": 2117,
+        "msPerFrame": 0.3779027869626831,
+        "cpuMsPerFrame": 0.3764170996693434,
+        "cpuPercentOfMachine": 8.30057166056557,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 27.9453125,
+        "privateMiB": 8.27734375
+      },
+      {
+        "scene": "patch",
+        "frames": 849,
+        "msPerFrame": 0.9429458186101296,
+        "cpuMsPerFrame": 0.9202002355712603,
+        "cpuPercentOfMachine": 8.132318045304064,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 27.515625,
+        "privateMiB": 7.68359375
+      },
+      {
+        "scene": "atlas32",
+        "frames": 17887,
+        "msPerFrame": 0.04472581763291776,
+        "cpuMsPerFrame": 0.04455051154469727,
+        "cpuPercentOfMachine": 8.300670228535694,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 30.78125,
+        "privateMiB": 10.15234375
+      },
+      {
+        "scene": "runtime",
+        "frames": 2354,
+        "msPerFrame": 0.3399534409515718,
+        "cpuMsPerFrame": 0.3385195412064571,
+        "cpuPercentOfMachine": 8.29818391843353,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 32.34765625,
+        "privateMiB": 10.765625
+      },
+      {
+        "scene": "perlin",
+        "frames": 57,
+        "msPerFrame": 14.245291228070174,
+        "cpuMsPerFrame": 14.25438596491228,
+        "cpuPercentOfMachine": 8.338653650936589,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 29.80859375,
+        "privateMiB": 8.09375
+      },
+      {
+        "scene": "bilingual",
+        "frames": 10965,
+        "msPerFrame": 0.07296307341541268,
+        "cpuMsPerFrame": 0.07267441860465117,
+        "cpuPercentOfMachine": 8.30036519419464,
+        "allocatedBytesPerFrame": 960,
+        "workingSetMiB": 41.01953125,
+        "privateMiB": 18.50390625
+      }
+    ]
+  },
+  {
+    "variant": "before",
+    "fork": 2,
+    "rows": [
+      {
+        "scene": "mesh",
+        "frames": 326,
+        "msPerFrame": 2.4596730061349694,
+        "cpuMsPerFrame": 2.4923312883435584,
+        "cpuPercentOfMachine": 8.443979078137392,
+        "allocatedBytesPerFrame": 331.680981595092,
+        "workingSetMiB": 32.6328125,
+        "privateMiB": 12.59765625
+      },
+      {
+        "scene": "patch",
+        "frames": 252,
+        "msPerFrame": 3.183881746031746,
+        "cpuMsPerFrame": 3.162202380952381,
+        "cpuPercentOfMachine": 8.276590844110377,
+        "allocatedBytesPerFrame": 991734.4761904762,
+        "workingSetMiB": 41.1875,
+        "privateMiB": 20.70703125
+      },
+      {
+        "scene": "atlas32",
+        "frames": 1763,
+        "msPerFrame": 0.453931310266591,
+        "cpuMsPerFrame": 0.4519994327850255,
+        "cpuPercentOfMachine": 8.297867661217454,
+        "allocatedBytesPerFrame": 6177.3613159387405,
+        "workingSetMiB": 42.171875,
+        "privateMiB": 21.09765625
+      },
+      {
+        "scene": "runtime",
+        "frames": 122,
+        "msPerFrame": 6.568409016393443,
+        "cpuMsPerFrame": 6.659836065573771,
+        "cpuPercentOfMachine": 8.44932673060826,
+        "allocatedBytesPerFrame": 4.918032786885246,
+        "workingSetMiB": 41.20703125,
+        "privateMiB": 19.5859375
+      },
+      {
+        "scene": "perlin",
+        "frames": 138,
+        "msPerFrame": 5.801068840579711,
+        "cpuMsPerFrame": 6.000905797101449,
+        "cpuPercentOfMachine": 8.620402495375561,
+        "allocatedBytesPerFrame": 4.3478260869565215,
+        "workingSetMiB": 40.8515625,
+        "privateMiB": 18.82421875
+      },
+      {
+        "scene": "bilingual",
+        "frames": 38078,
+        "msPerFrame": 0.02100963548505699,
+        "cpuMsPerFrame": 0.02092743841588319,
+        "cpuPercentOfMachine": 8.30073040802625,
+        "allocatedBytesPerFrame": 0.022270077209937497,
+        "workingSetMiB": 40.25390625,
+        "privateMiB": 16.88671875
+      }
+    ]
+  }
+]

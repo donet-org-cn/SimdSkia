@@ -1,0 +1,134 @@
+[
+  {
+    "scene": "rectangles",
+    "Original": {
+      "msPerFrame": 0.7383957179771133,
+      "drawCallsMsPerFrame": 0.017611930983847283,
+      "completeReadbackMsPerFrame": 0.7206449612403101,
+      "cpuMsPerFrame": 1.072641336270191,
+      "cpuPercentOfMachine": 12.10747412656213,
+      "allocatedBytesPerFrame": 0.4656084656084656,
+      "sampledMedianWorkingSetMiB": 72.69140625,
+      "sampledPeakWorkingSetMiB": 73.03515625,
+      "sampledMedianPrivateMiB": 80.7109375,
+      "sampledPeakPrivateMiB": 80.74609375
+    },
+    "Managed": {
+      "msPerFrame": 0.43824669149868534,
+      "drawCallsMsPerFrame": 0.02255158902916848,
+      "completeReadbackMsPerFrame": 0.4156455083260298,
+      "cpuMsPerFrame": 0.8490359333917616,
+      "cpuPercentOfMachine": 15.75326516807485,
+      "allocatedBytesPerFrame": 0.26993865030674846,
+      "sampledMedianWorkingSetMiB": 82.4921875,
+      "sampledPeakWorkingSetMiB": 82.4921875,
+      "sampledMedianPrivateMiB": 97.21484375,
+      "sampledPeakPrivateMiB": 97.21484375
+    },
+    "quality": {
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    "managedOverOriginal": 0.593511962256895
+  },
+  {
+    "scene": "paths",
+    "Original": {
+      "msPerFrame": 0.8414927639882205,
+      "drawCallsMsPerFrame": 0.03536798986486487,
+      "completeReadbackMsPerFrame": 0.8058443416070677,
+      "cpuMsPerFrame": 0.8313978040540541,
+      "cpuPercentOfMachine": 8.202933051366596,
+      "allocatedBytesPerFrame": 0.5115692048801009,
+      "sampledMedianWorkingSetMiB": 75.298828125,
+      "sampledPeakWorkingSetMiB": 75.34375,
+      "sampledMedianPrivateMiB": 87.95703125,
+      "sampledPeakPrivateMiB": 88.0
+    },
+    "Managed": {
+      "msPerFrame": 0.4480268309070549,
+      "drawCallsMsPerFrame": 0.025554230855101587,
+      "completeReadbackMsPerFrame": 0.4224113549832027,
+      "cpuMsPerFrame": 0.8610267656320288,
+      "cpuPercentOfMachine": 15.94833511400596,
+      "allocatedBytesPerFrame": 4032.272340425532,
+      "sampledMedianWorkingSetMiB": 91.6953125,
+      "sampledPeakWorkingSetMiB": 91.6953125,
+      "sampledMedianPrivateMiB": 106.14453125,
+      "sampledPeakPrivateMiB": 106.14453125
+    },
+    "quality": {
+      "maximum": 32,
+      "rmse": 0.5920205074573008,
+      "passed": false
+    },
+    "managedOverOriginal": 0.5324191128912982
+  },
+  {
+    "scene": "gradient",
+    "Original": {
+      "msPerFrame": 0.7594245634016704,
+      "drawCallsMsPerFrame": 0.04641408504176158,
+      "completeReadbackMsPerFrame": 0.7127559225512529,
+      "cpuMsPerFrame": 1.0025151860288535,
+      "cpuPercentOfMachine": 11.131510113316743,
+      "allocatedBytesPerFrame": 0.4677296886864085,
+      "sampledMedianWorkingSetMiB": 74.1640625,
+      "sampledPeakWorkingSetMiB": 74.35546875,
+      "sampledMedianPrivateMiB": 81.44921875,
+      "sampledPeakPrivateMiB": 81.44921875
+    },
+    "Managed": {
+      "msPerFrame": 0.480573618452667,
+      "drawCallsMsPerFrame": 0.030084478616049976,
+      "completeReadbackMsPerFrame": 0.4503415425276309,
+      "cpuMsPerFrame": 0.9010091302258529,
+      "cpuPercentOfMachine": 15.36227899148461,
+      "allocatedBytesPerFrame": 4608.515291936978,
+      "sampledMedianWorkingSetMiB": 92.0078125,
+      "sampledPeakWorkingSetMiB": 92.0078125,
+      "sampledMedianPrivateMiB": 106.0703125,
+      "sampledPeakPrivateMiB": 106.0703125
+    },
+    "quality": {
+      "maximum": 1,
+      "rmse": 0.019030026985880324,
+      "passed": true
+    },
+    "managedOverOriginal": 0.6328128448993621
+  },
+  {
+    "scene": "image",
+    "Original": {
+      "msPerFrame": 0.7432381129271917,
+      "drawCallsMsPerFrame": 0.025061812778603268,
+      "completeReadbackMsPerFrame": 0.7179467682020803,
+      "cpuMsPerFrame": 1.0331060889054913,
+      "cpuPercentOfMachine": 11.584956122746677,
+      "allocatedBytesPerFrame": 0.45170876671619614,
+      "sampledMedianWorkingSetMiB": 73.56640625,
+      "sampledPeakWorkingSetMiB": 73.9765625,
+      "sampledMedianPrivateMiB": 81.3984375,
+      "sampledPeakPrivateMiB": 81.3984375
+    },
+    "Managed": {
+      "msPerFrame": 0.4699119332863519,
+      "drawCallsMsPerFrame": 0.030167600741083836,
+      "completeReadbackMsPerFrame": 0.4396544749823819,
+      "cpuMsPerFrame": 0.8478682170542635,
+      "cpuPercentOfMachine": 15.035941790281429,
+      "allocatedBytesPerFrame": 0.2856471693680996,
+      "sampledMedianWorkingSetMiB": 79.43359375,
+      "sampledPeakWorkingSetMiB": 79.43359375,
+      "sampledMedianPrivateMiB": 94.03125,
+      "sampledPeakPrivateMiB": 94.03125
+    },
+    "quality": {
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    "managedOverOriginal": 0.6322495107733864
+  }
+]

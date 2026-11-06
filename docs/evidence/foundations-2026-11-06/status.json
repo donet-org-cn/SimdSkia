@@ -1,0 +1,42 @@
+{
+  "goal": "At most 99 missing APIs on the fixed 3235-entry SkiaSharp 3.119.4 baseline",
+  "goalComplete": false,
+  "matching": 2317,
+  "missing": 918,
+  "extra": 0,
+  "publicTypes": 144,
+  "baselineHash": "03A164AC1097F84793632DF806DA91E2829F0FCA65D8F2B922E45554AB083296",
+  "replacementHash": "7EDD875DF7F2A36A58E345DE1E8706425399020F20662FBB592967779F472628",
+  "published": false,
+  "scope": "CPU value, path, font, stream, pixel and integer region APIs; no new full-page or GPU performance claim",
+  "strictReferenceFailures": {
+    "fontNumericValues": 186,
+    "imageBase64PixelCases": 48,
+    "regionNumericOrBitmapValues": 8,
+    "priorJpegStillFails": true,
+    "priorWholePage": "0/18; not rerun"
+  },
+  "performance": {
+    "cpu": "Intel Core i7-8700K, 6 cores / 12 logical processors",
+    "runtime": ".NET SDK 10.0.403 / runtime 10.0.14 Windows x64",
+    "backend": "CPU JIT",
+    "forksPerReport": 3,
+    "serialProcessesPerReport": 9,
+    "allocation": "Managed allocation only; native Skia heaps are not counted here",
+    "memory": "Process WS and private memory, not per-operation retained bytes"
+  },
+  "aot": {
+    "checks": 40,
+    "passed": true,
+    "actualNativeAot": true,
+    "log": "aot-result-3.log",
+    "exeBytes": 2466816,
+    "exeSha256": "e774547883087fff62a6abc79f04353dd00ad7e7119df99ff3b36ec5dc9ef746"
+  },
+  "fullBuild": {
+    "passed": true,
+    "warnings": 0,
+    "errors": 0
+  },
+  "regressionNote": "First Features run failed an obsolete rejection assertion. Raw glyph measurement now follows SKFont; complex DrawText still rejects shaping-dependent input. Test was corrected and rerun; original failure is retained."
+}

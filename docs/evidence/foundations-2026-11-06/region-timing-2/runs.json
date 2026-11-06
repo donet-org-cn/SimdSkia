@@ -1,0 +1,551 @@
+[
+  {
+    "variant": "original",
+    "fork": 0,
+    "rows": [
+      {
+        "scene": "region-contains-rectangle",
+        "msPerFrame": 8.448124305669957e-06,
+        "cpuMsPerFrame": 8.580124102915025e-06,
+        "cpuPercentOfMachine": 8.463539550781778,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 27.703125,
+        "privateMiB": 8.4921875,
+        "frames": 946956,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-contains-region",
+        "msPerFrame": 1.0887329885683178e-05,
+        "cpuMsPerFrame": 1.1057430593358737e-05,
+        "cpuPercentOfMachine": 8.46353108725281,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 26.82421875,
+        "privateMiB": 7.7109375,
+        "frames": 734800,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-intersects-region",
+        "msPerFrame": 1.4114407803852172e-05,
+        "cpuMsPerFrame": 1.4334938258318233e-05,
+        "cpuPercentOfMachine": 8.46353743489795,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 26.8515625,
+        "privateMiB": 7.71875,
+        "frames": 566797,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-rectangle-iterator",
+        "msPerFrame": 0.00031886386427880175,
+        "cpuMsPerFrame": 0.00032384607167739907,
+        "cpuPercentOfMachine": 8.46354060872409,
+        "allocatedBytesPerFrame": 88,
+        "workingSetMiB": 33.69140625,
+        "privateMiB": 13.96875,
+        "frames": 2508908,
+        "perFrame": 1
+      },
+      {
+        "scene": "region-boolean-operation",
+        "msPerFrame": 0.0005110800204176417,
+        "cpuMsPerFrame": 0.0005190655159702884,
+        "cpuPercentOfMachine": 8.463539550781778,
+        "allocatedBytesPerFrame": 80,
+        "workingSetMiB": 33.1328125,
+        "privateMiB": 13.1796875,
+        "frames": 1565313,
+        "perFrame": 1
+      }
+    ]
+  },
+  {
+    "variant": "before",
+    "fork": 0,
+    "rows": [
+      {
+        "scene": "region-contains-rectangle",
+        "msPerFrame": 0.0007892959747434886,
+        "cpuMsPerFrame": 0.0007861829123914759,
+        "cpuPercentOfMachine": 8.300465832298373,
+        "allocatedBytesPerFrame": 1619.3338595106552,
+        "workingSetMiB": 37.4765625,
+        "privateMiB": 19.05078125,
+        "frames": 10136,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-contains-region",
+        "msPerFrame": 0.0007772807733411057,
+        "cpuMsPerFrame": 0.0007741911979014865,
+        "cpuPercentOfMachine": 8.300209573065654,
+        "allocatedBytesPerFrame": 1496,
+        "workingSetMiB": 37.09375,
+        "privateMiB": 18.828125,
+        "frames": 10293,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-intersects-region",
+        "msPerFrame": 0.000839391879131256,
+        "cpuMsPerFrame": 0.0008360875039345294,
+        "cpuPercentOfMachine": 8.300528083893441,
+        "allocatedBytesPerFrame": 1704,
+        "workingSetMiB": 39.64453125,
+        "privateMiB": 21.01953125,
+        "frames": 9531,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-rectangle-iterator",
+        "msPerFrame": 0.00039585358371063115,
+        "cpuMsPerFrame": 0.00039430713278408667,
+        "cpuPercentOfMachine": 8.300778137208198,
+        "allocatedBytesPerFrame": 2088.0001662584427,
+        "workingSetMiB": 40.2421875,
+        "privateMiB": 21.03125,
+        "frames": 2020950,
+        "perFrame": 1
+      },
+      {
+        "scene": "region-boolean-operation",
+        "msPerFrame": 0.001051791461567588,
+        "cpuMsPerFrame": 0.0010887671441793933,
+        "cpuPercentOfMachine": 8.626291300469207,
+        "allocatedBytesPerFrame": 2440.1000673145695,
+        "workingSetMiB": 38.01171875,
+        "privateMiB": 18.6171875,
+        "frames": 760608,
+        "perFrame": 1
+      }
+    ]
+  },
+  {
+    "variant": "after",
+    "fork": 0,
+    "rows": [
+      {
+        "scene": "region-contains-rectangle",
+        "msPerFrame": 8.020396869238473e-06,
+        "cpuMsPerFrame": 7.989066195334737e-06,
+        "cpuPercentOfMachine": 8.300780212402474,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 25.82421875,
+        "privateMiB": 8.96484375,
+        "frames": 997457,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-contains-region",
+        "msPerFrame": 1.2518358156172642e-05,
+        "cpuMsPerFrame": 1.2469447408858609e-05,
+        "cpuPercentOfMachine": 8.300773986822762,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 24.921875,
+        "privateMiB": 7.40625,
+        "frames": 639062,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-intersects-region",
+        "msPerFrame": 1.1721772155237212e-05,
+        "cpuMsPerFrame": 1.1675978144766744e-05,
+        "cpuPercentOfMachine": 8.30077709961145,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 24.9609375,
+        "privateMiB": 7.4140625,
+        "frames": 682491,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-rectangle-iterator",
+        "msPerFrame": 5.180956229662723e-05,
+        "cpuMsPerFrame": 5.160718119390603e-05,
+        "cpuPercentOfMachine": 8.30078125,
+        "allocatedBytesPerFrame": 40,
+        "workingSetMiB": 31,
+        "privateMiB": 13.10546875,
+        "frames": 15441165,
+        "perFrame": 1
+      },
+      {
+        "scene": "region-boolean-operation",
+        "msPerFrame": 0.0005100308377318169,
+        "cpuMsPerFrame": 0.0005080384027623264,
+        "cpuPercentOfMachine": 8.300779174805207,
+        "allocatedBytesPerFrame": 504.0207276480635,
+        "workingSetMiB": 30.98046875,
+        "privateMiB": 12.6484375,
+        "frames": 1568533,
+        "perFrame": 1
+      }
+    ]
+  },
+  {
+    "variant": "before",
+    "fork": 1,
+    "rows": [
+      {
+        "scene": "region-contains-rectangle",
+        "msPerFrame": 0.0008010739961950536,
+        "cpuMsPerFrame": 0.0007979122859717633,
+        "cpuPercentOfMachine": 8.300443006947466,
+        "allocatedBytesPerFrame": 1621.0906178031441,
+        "workingSetMiB": 37.3828125,
+        "privateMiB": 18.921875,
+        "frames": 9987,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-contains-region",
+        "msPerFrame": 0.0007553044750755288,
+        "cpuMsPerFrame": 0.00075233666918429,
+        "cpuPercentOfMachine": 8.300589298872465,
+        "allocatedBytesPerFrame": 1496,
+        "workingSetMiB": 36.98046875,
+        "privateMiB": 18.6953125,
+        "frames": 10592,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-intersects-region",
+        "msPerFrame": 0.0008403999999999999,
+        "cpuMsPerFrame": 0.0008370535714285714,
+        "cpuPercentOfMachine": 8.30015043856667,
+        "allocatedBytesPerFrame": 1704,
+        "workingSetMiB": 39.58203125,
+        "privateMiB": 20.94921875,
+        "frames": 9520,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-rectangle-iterator",
+        "msPerFrame": 0.00038921329805116113,
+        "cpuMsPerFrame": 0.00038769278822085314,
+        "cpuPercentOfMachine": 8.300778137208198,
+        "allocatedBytesPerFrame": 2088.000163469524,
+        "workingSetMiB": 40.1953125,
+        "privateMiB": 20.9609375,
+        "frames": 2055429,
+        "perFrame": 1
+      },
+      {
+        "scene": "region-boolean-operation",
+        "msPerFrame": 0.0010733436642583537,
+        "cpuMsPerFrame": 0.0010901138414270094,
+        "cpuPercentOfMachine": 8.463535319015177,
+        "allocatedBytesPerFrame": 2440.1000570213396,
+        "workingSetMiB": 37.91015625,
+        "privateMiB": 18.609375,
+        "frames": 745335,
+        "perFrame": 1
+      }
+    ]
+  },
+  {
+    "variant": "after",
+    "fork": 1,
+    "rows": [
+      {
+        "scene": "region-contains-rectangle",
+        "msPerFrame": 8.148560404738792e-06,
+        "cpuMsPerFrame": 8.116726032294765e-06,
+        "cpuPercentOfMachine": 8.30077709961145,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 26,
+        "privateMiB": 8.39453125,
+        "frames": 981769,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-contains-region",
+        "msPerFrame": 1.3770038831475528e-05,
+        "cpuMsPerFrame": 1.3716237615582162e-05,
+        "cpuPercentOfMachine": 8.300773986822762,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 25.1015625,
+        "privateMiB": 7.61328125,
+        "frames": 580972,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-intersects-region",
+        "msPerFrame": 1.2359553078839995e-05,
+        "cpuMsPerFrame": 1.2311265880084601e-05,
+        "cpuPercentOfMachine": 8.300776062014961,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 25.12890625,
+        "privateMiB": 7.51171875,
+        "frames": 647273,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-rectangle-iterator",
+        "msPerFrame": 5.204247863233407e-05,
+        "cpuMsPerFrame": 5.183918770017652e-05,
+        "cpuPercentOfMachine": 8.30078125,
+        "allocatedBytesPerFrame": 40,
+        "workingSetMiB": 31.171875,
+        "privateMiB": 13.3125,
+        "frames": 15372058,
+        "perFrame": 1
+      },
+      {
+        "scene": "region-boolean-operation",
+        "msPerFrame": 0.000513680726960783,
+        "cpuMsPerFrame": 0.0005217068578928308,
+        "cpuPercentOfMachine": 8.463539550781778,
+        "allocatedBytesPerFrame": 504.0207116017332,
+        "workingSetMiB": 31.20703125,
+        "privateMiB": 12.84375,
+        "frames": 1557388,
+        "perFrame": 1
+      }
+    ]
+  },
+  {
+    "variant": "original",
+    "fork": 1,
+    "rows": [
+      {
+        "scene": "region-contains-rectangle",
+        "msPerFrame": 8.340798693831251e-06,
+        "cpuMsPerFrame": 8.30821537187963e-06,
+        "cpuPercentOfMachine": 8.300779174805207,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 27.6875,
+        "privateMiB": 9.25,
+        "frames": 959141,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-contains-region",
+        "msPerFrame": 1.0630338416400465e-05,
+        "cpuMsPerFrame": 1.0588800420960875e-05,
+        "cpuPercentOfMachine": 8.300770874036408,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 26.8046875,
+        "privateMiB": 7.69140625,
+        "frames": 752564,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-intersects-region",
+        "msPerFrame": 1.3376957213850486e-05,
+        "cpuMsPerFrame": 1.3324688484459337e-05,
+        "cpuPercentOfMachine": 8.3007719116316,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 26.8359375,
+        "privateMiB": 7.6875,
+        "frames": 598044,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-rectangle-iterator",
+        "msPerFrame": 0.00030200816554577597,
+        "cpuMsPerFrame": 0.00030082844614911277,
+        "cpuPercentOfMachine": 8.30078125,
+        "allocatedBytesPerFrame": 88,
+        "workingSetMiB": 33.66796875,
+        "privateMiB": 14.38671875,
+        "frames": 2648935,
+        "perFrame": 1
+      },
+      {
+        "scene": "region-boolean-operation",
+        "msPerFrame": 0.0005047230711381754,
+        "cpuMsPerFrame": 0.0004928935009349992,
+        "cpuPercentOfMachine": 8.138018798828634,
+        "allocatedBytesPerFrame": 80,
+        "workingSetMiB": 33.1171875,
+        "privateMiB": 13.32421875,
+        "frames": 1585028,
+        "perFrame": 1
+      }
+    ]
+  },
+  {
+    "variant": "after",
+    "fork": 2,
+    "rows": [
+      {
+        "scene": "region-contains-rectangle",
+        "msPerFrame": 7.937541486046301e-06,
+        "cpuMsPerFrame": 7.906533487983062e-06,
+        "cpuPercentOfMachine": 8.300779174805207,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 25.88671875,
+        "privateMiB": 8.25,
+        "frames": 1007869,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-contains-region",
+        "msPerFrame": 1.2725632423610482e-05,
+        "cpuMsPerFrame": 1.2675911830532901e-05,
+        "cpuPercentOfMachine": 8.300773986822762,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 24.984375,
+        "privateMiB": 7.47265625,
+        "frames": 628653,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-intersects-region",
+        "msPerFrame": 1.3251226566045738e-05,
+        "cpuMsPerFrame": 1.3199457362543439e-05,
+        "cpuPercentOfMachine": 8.30077709961145,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 25.00390625,
+        "privateMiB": 7.37109375,
+        "frames": 603718,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-rectangle-iterator",
+        "msPerFrame": 5.255079247580381e-05,
+        "cpuMsPerFrame": 5.23455159426952e-05,
+        "cpuPercentOfMachine": 8.30078125,
+        "allocatedBytesPerFrame": 40,
+        "workingSetMiB": 31.05078125,
+        "privateMiB": 13.17578125,
+        "frames": 15223367,
+        "perFrame": 1
+      },
+      {
+        "scene": "region-boolean-operation",
+        "msPerFrame": 0.0005176004177034849,
+        "cpuMsPerFrame": 0.000515578476624521,
+        "cpuPercentOfMachine": 8.300780212402474,
+        "allocatedBytesPerFrame": 504.02070401412016,
+        "workingSetMiB": 31.10546875,
+        "privateMiB": 12.71875,
+        "frames": 1545594,
+        "perFrame": 1
+      }
+    ]
+  },
+  {
+    "variant": "original",
+    "fork": 2,
+    "rows": [
+      {
+        "scene": "region-contains-rectangle",
+        "msPerFrame": 8.16705817496899e-06,
+        "cpuMsPerFrame": 8.135154587078695e-06,
+        "cpuPercentOfMachine": 8.300780212402474,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 27.68359375,
+        "privateMiB": 9.234375,
+        "frames": 979545,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-contains-region",
+        "msPerFrame": 1.0637871311156057e-05,
+        "cpuMsPerFrame": 1.0596305205503497e-05,
+        "cpuPercentOfMachine": 8.3007719116316,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 26.80078125,
+        "privateMiB": 7.67578125,
+        "frames": 752031,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-intersects-region",
+        "msPerFrame": 1.3342027888173794e-05,
+        "cpuMsPerFrame": 1.3289910591735615e-05,
+        "cpuPercentOfMachine": 8.30078125,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 26.828125,
+        "privateMiB": 7.671875,
+        "frames": 599609,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-rectangle-iterator",
+        "msPerFrame": 0.00030849328063241104,
+        "cpuMsPerFrame": 0.00030728815193290274,
+        "cpuPercentOfMachine": 8.300779174805207,
+        "allocatedBytesPerFrame": 88,
+        "workingSetMiB": 33.66796875,
+        "privateMiB": 14.375,
+        "frames": 2593250,
+        "perFrame": 1
+      },
+      {
+        "scene": "region-boolean-operation",
+        "msPerFrame": 0.0005106192974837991,
+        "cpuMsPerFrame": 0.000508121333157344,
+        "cpuPercentOfMachine": 8.292566426383864,
+        "allocatedBytesPerFrame": 80,
+        "workingSetMiB": 33.1171875,
+        "privateMiB": 13.3125,
+        "frames": 1568277,
+        "perFrame": 1
+      }
+    ]
+  },
+  {
+    "variant": "before",
+    "fork": 2,
+    "rows": [
+      {
+        "scene": "region-contains-rectangle",
+        "msPerFrame": 0.0007901707654320988,
+        "cpuMsPerFrame": 0.000787037037037037,
+        "cpuPercentOfMachine": 8.300284270479304,
+        "allocatedBytesPerFrame": 1619.3667160493826,
+        "workingSetMiB": 37.54296875,
+        "privateMiB": 19.0546875,
+        "frames": 10125,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-contains-region",
+        "msPerFrame": 0.0007852232800078516,
+        "cpuMsPerFrame": 0.0007974285994700167,
+        "cpuPercentOfMachine": 8.462864637495667,
+        "allocatedBytesPerFrame": 1496,
+        "workingSetMiB": 37.1953125,
+        "privateMiB": 18.83203125,
+        "frames": 10189,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-intersects-region",
+        "msPerFrame": 0.000851906080289639,
+        "cpuMsPerFrame": 0.0008319135342349058,
+        "cpuPercentOfMachine": 8.13776652812933,
+        "allocatedBytesPerFrame": 1704,
+        "workingSetMiB": 39.765625,
+        "privateMiB": 21.16015625,
+        "frames": 9391,
+        "perFrame": 100
+      },
+      {
+        "scene": "region-rectangle-iterator",
+        "msPerFrame": 0.0003958442808948846,
+        "cpuMsPerFrame": 0.0003942977677365341,
+        "cpuPercentOfMachine": 8.300776062014961,
+        "allocatedBytesPerFrame": 2088.000166254494,
+        "workingSetMiB": 40.359375,
+        "privateMiB": 21.16796875,
+        "frames": 2020998,
+        "perFrame": 1
+      },
+      {
+        "scene": "region-boolean-operation",
+        "msPerFrame": 0.0010628571694285421,
+        "cpuMsPerFrame": 0.0010587041925682454,
+        "cpuPercentOfMachine": 8.3007719116316,
+        "allocatedBytesPerFrame": 2440.1000997756046,
+        "workingSetMiB": 38.265625,
+        "privateMiB": 18.7578125,
+        "frames": 752689,
+        "perFrame": 1
+      }
+    ]
+  }
+]

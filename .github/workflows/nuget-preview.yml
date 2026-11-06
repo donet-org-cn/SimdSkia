@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Release version (0.1.1, or an approved preview)'
+        description: 'Approved release version'
         required: true
-        default: '0.1.1'
+        default: '0.1.2-preview.1'
       publish:
         description: 'Publish verified packages to NuGet.org using trusted publishing'
         type: boolean
@@ -74,6 +74,22 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           dotnet run --project tests/AvaloniaControls -c Release --no-build -- --frames 5 --output artifacts/nuget-controls
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Verify final managed API behavior and retained native gaps
+        shell: pwsh
+        run: |
+          foreach ($project in @('FinalRaster/Managed','AlphaCompatibility/Managed','FinalPaint/Managed','SkpDocuments/Validation','FloatPaintSimd')) {
+            dotnet run --project "tests/$project" -c Release --no-build -- "artifacts/nuget-final-api/$project"
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
+          dotnet run --project tools/ApiAudit -c Release --no-build -- extract src/SimdSkia.Compatibility/bin/Release/net10.0/SimdSkia.Compatibility.dll artifacts/nuget-final-api/implemented.json
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet run --project tools/ApiAudit -c Release --no-build -- compare docs/api/baseline-3.119.4.json artifacts/nuget-final-api/implemented.json artifacts/nuget-final-api/comparison.json
+          if ($LASTEXITCODE -notin @(0,2)) { exit $LASTEXITCODE }
+          python tools/check-final-api-baseline.py --comparison artifacts/nuget-final-api/comparison.json
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $env:DOTNET_EnableAVX2 = '0'
+          dotnet run --project tests/FloatPaintSimd -c Release --no-build -- artifacts/nuget-final-api/float-sse2
+          exit $LASTEXITCODE
       - name: Record unchanged JPEG gate and enforce only disclosed preview exceptions
         run: python tools/check-jpeg-parity.py --output artifacts/jpeg-parity --check-documented-differences
       - name: Verify full codec integration
@@ -127,6 +143,7 @@ jobs:
             artifacts/nuget-consumer/window.png
             artifacts/desktop-package-consumer/results/
             artifacts/pdf-package-consumer/results/
+            artifacts/nuget-final-api/**/*.json
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         if: failure()
@@ -138,6 +155,7 @@ jobs:
             artifacts/codec-package-consumer/*.log
             artifacts/desktop-package-consumer/*.log
             artifacts/pdf-package-consumer/*.log
+            artifacts/nuget-final-api/**/*.json
           if-no-files-found: ignore
 
   avalonia-versions:

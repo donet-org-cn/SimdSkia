@@ -4,6 +4,7 @@ public sealed partial class RasterCanvas
 {
     private void DrawGlyphRun(in DrawingCommand command)
     {
+        if(DrawLcdText(command))return;
         var run=command.GlyphRun??throw new ArgumentException("A glyph command requires shaped outlines.");
         var matrix=command.Transform;
         // Execute already validated a finite affine matrix. A pure translation

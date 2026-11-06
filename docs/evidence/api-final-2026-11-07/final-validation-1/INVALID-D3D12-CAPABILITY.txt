@@ -1,0 +1,1 @@
+Earlier D3D12 Original exit 3 was caused by the test descriptor omitting the real DXGI Adapter. It is not a backend capability result. Superseded by gpu-completion-final-1/D3DContext and D3DInterop, both matching original/current with a complete descriptor.

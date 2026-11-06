@@ -108,7 +108,7 @@ internal static class Validation
     private static void RunCompositorOracle()
     {
         var random=new Random(416);
-        foreach(var format in Enum.GetValues<SimdSkia.PixelFormat>())foreach(int width in new[]{1,7,8,9,16,17,31,65})foreach(byte opacity in new byte[]{0,1,63,127,128,254,255})
+        foreach(var format in new[]{SimdSkia.PixelFormat.Rgba8888,SimdSkia.PixelFormat.Bgra8888})foreach(int width in new[]{1,7,8,9,16,17,31,65})foreach(byte opacity in new byte[]{0,1,63,127,128,254,255})
         {
             using var source=new CorePixel(width,3,format,SimdSkia.AlphaFormat.Premultiplied);using var destination=new CorePixel(width+4,5,format,SimdSkia.AlphaFormat.Premultiplied,(width+6)*4);
             random.NextBytes(source.GetPixelSpan());random.NextBytes(destination.GetPixelSpan());
@@ -125,7 +125,7 @@ internal static class Validation
         using var clipped=new CorePixel(2,1,SimdSkia.PixelFormat.Rgba8888,SimdSkia.AlphaFormat.Premultiplied);using var raster=new RasterCanvas(clipped);
         raster.Execute(DrawingCommand.FillRectangle(new(0,0,2,1),Matrix3.Identity,new(new(255,0,0,255),CompositeMode.SourceOver)) with{CoverageClip=new(0,0,2,1,new byte[]{128,0})});
         Assert(clipped.ReadPixel(0,0).A==128&&clipped.ReadPixel(1,0).A==0,"Coverage clip was ignored by a rectangle.");
-        foreach(var format in Enum.GetValues<SimdSkia.PixelFormat>())foreach(var alpha in Enum.GetValues<SimdSkia.AlphaFormat>())foreach(bool aa in new[]{false,true})foreach(bool mirror in new[]{false,true})
+        foreach(var format in new[]{SimdSkia.PixelFormat.Rgba8888,SimdSkia.PixelFormat.Bgra8888})foreach(var alpha in Enum.GetValues<SimdSkia.AlphaFormat>())foreach(bool aa in new[]{false,true})foreach(bool mirror in new[]{false,true})
         {
             using var source=new CorePixel(7,5,format,alpha);using var axis=new CorePixel(19,13,format,SimdSkia.AlphaFormat.Premultiplied,19*4+9);using var general=axis.Clone();
             for(int y=0;y<5;y++)for(int x=0;x<7;x++)source.WritePixel(x,y,new((byte)(x*31),(byte)(y*53),(byte)(x*y*8),(byte)(x*27+y*15)));

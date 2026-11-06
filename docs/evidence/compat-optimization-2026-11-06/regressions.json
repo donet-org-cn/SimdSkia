@@ -1,0 +1,41 @@
+[
+  {
+    "name": "basic",
+    "exitCode": 0,
+    "lastLines": [
+      "PASS Backend unknown command fails explicitly",
+      "PASS Warm drawing loop has zero thread allocations",
+      "36/36 tests passed."
+    ]
+  },
+  {
+    "name": "compatibility",
+    "exitCode": 0,
+    "lastLines": [
+      "PASS 37 compatibility expansion checks; artifacts\\compat-2026-11-06\\compat-expansion-final"
+    ]
+  },
+  {
+    "name": "features",
+    "exitCode": 0,
+    "lastLines": [
+      "PASS Independent fixed-Huffman DEFLATE fixture",
+      "PASS SIMD clear agrees with scalar for formats, stride, alpha, and tails",
+      "PASS Managed Chinese/Latin TrueType glyphs and text"
+    ]
+  },
+  {
+    "name": "codecs",
+    "exitCode": 0,
+    "lastLines": [
+      "PASS 1417 full codec integration assertions; NativeAot=False"
+    ]
+  },
+  {
+    "name": "pdf",
+    "exitCode": 0,
+    "lastLines": [
+      "PASS 18 PDF checks"
+    ]
+  }
+]

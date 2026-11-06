@@ -1,0 +1,206 @@
+[
+  {
+    "suite": "basic",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/SimdSkia.Tests",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "startedUtc": "2026-11-06T11:59:36.356180+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "pixels",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/PixelCompatibility/Managed",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "artifacts\\api-completion-2026-11-06\\regression-5\\pixels-data"
+    ],
+    "startedUtc": "2026-11-06T11:59:37.561976+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "codecs",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/CodecIntegration",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "startedUtc": "2026-11-06T11:59:39.002390+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "pdf",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Pdf",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "startedUtc": "2026-11-06T11:59:40.479766+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "features",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Features",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "baseline/fonts/ZenOldMincho-Regular.ttf"
+    ],
+    "startedUtc": "2026-11-06T11:59:42.139949+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "platform-fonts",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/PlatformFonts",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "startedUtc": "2026-11-06T11:59:43.489491+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "optimization",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Optimization",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "baseline/fonts/ZenOldMincho-Regular.ttf"
+    ],
+    "startedUtc": "2026-11-06T11:59:45.128271+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "avalonia",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Avalonia",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "baseline/fonts/ZenOldMincho-Regular.ttf",
+      "artifacts\\api-completion-2026-11-06\\regression-5\\avalonia-data"
+    ],
+    "startedUtc": "2026-11-06T11:59:50.602871+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "controls",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/AvaloniaControls",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "--frames",
+      "5",
+      "--output",
+      "artifacts\\api-completion-2026-11-06\\regression-5\\controls-data"
+    ],
+    "startedUtc": "2026-11-06T11:59:51.959744+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "direct2d",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Direct2D",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "startedUtc": "2026-11-06T11:59:58.736004+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "vulkan",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Gpu",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "startedUtc": "2026-11-06T12:00:00.240193+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "gpu-sampling",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/GpuSampling",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "startedUtc": "2026-11-06T12:00:01.880825+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "jpeg-known-failure",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Imaging",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "startedUtc": "2026-11-06T12:00:03.929438+00:00",
+    "exitCode": 3762504530
+  }
+]

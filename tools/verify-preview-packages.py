@@ -14,9 +14,12 @@ args=parser.parse_args()
 if not re.fullmatch(r'\d+\.\d+\.\d+(?:-preview\.\d+)?',args.version):
     raise SystemExit('Expected a stable or preview SemVer.')
 ids=['SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Text','SimdSkia.Imaging','SimdSkia.Gpu','SimdSkia.Gpu.Direct2D','SimdSkia.Compatibility','SimdSkia.Avalonia','SimdSkia.Avalonia.Desktop','SimdSkia.Avalonia.Gpu','SimdSkia']
-if args.version in ('0.1.0-preview.9','0.1.0-preview.10','0.1.0','0.1.1'):
+modern=args.version in ('0.1.0-preview.10','0.1.0','0.1.1','0.1.2-preview.1')
+matrix=args.version in ('0.1.1','0.1.2-preview.1')
+if args.version=='0.1.0-preview.9' or modern:
     ids.append('SimdSkia.Pdf')
 release_topics={
+    '0.1.2-preview.1':(('3230','Vulkan','Metal','12.1.0','画质'),'3230'),
     '0.1.1':(('12.1.0','12.1.5','Sdcb.SimdCodecs','画质'),'12.1.0'),
     '0.1.0':(('Sdcb.SimdCodecs','性能','画质'),'Sdcb.SimdCodecs'),
     '0.1.0-preview.7':(('AVX2','24/24'),'AVX2'),
@@ -27,7 +30,7 @@ release_topics={
 if args.version not in release_topics:
     raise SystemExit('Configure release topics and the package list before publishing a new version.')
 topics,release_topic=release_topics[args.version]
-framework='net10.0' if args.version in ('0.1.0-preview.10','0.1.0','0.1.1') else 'net8.0'
+framework='net10.0' if modern else 'net8.0'
 assert {path.name for path in args.directory.glob('*.nupkg')}=={f'{name}.{args.version}.nupkg' for name in ids},'Unexpected or missing packages in output directory'
 rows=[]
 for package_id in ids:
@@ -41,7 +44,7 @@ for package_id in ids:
         assert args.version in readme and args.version in changelog,(path,'Missing current version notes')
         for topic in topics:
             assert topic in readme and topic in changelog,(path,'Missing release topic',topic)
-        allowed_bridges={f'hosts/12.1.{i}.0/native/libAvaloniaNative.dylib' for i in range(6)} if args.version=='0.1.1' and package_id=='SimdSkia.Avalonia.Desktop' else set()
+        allowed_bridges={f'hosts/12.1.{i}.0/native/libAvaloniaNative.dylib' for i in range(6)} if matrix and package_id=='SimdSkia.Avalonia.Desktop' else set()
         assert not any((name.lower().endswith(('.ttf','.ttc','.otf','.woff','.woff2','.so','.dylib')) or name.lower().startswith('runtimes/')) and name not in allowed_bridges for name in names),path
         assert allowed_bridges.issubset(names),path
         assert not any('skiasharp.dll' in name.lower() or 'harfbuzz' in name.lower() for name in names),path
@@ -55,7 +58,7 @@ for package_id in ids:
         release_notes=metadata.findtext(prefix+'releaseNotes') or ''
         assert release_notes.strip() and release_topic in release_notes and 'CHANGELOG.md' in release_notes,(path,'Missing NuGet release notes')
         dependencies={element.attrib['id']:element.attrib['version'] for element in metadata.iter(prefix+'dependency')}
-        if args.version in ('0.1.0-preview.10','0.1.0','0.1.1'):
+        if modern:
             assert not any(name.startswith('lib/net8.0/') for name in names),path
             assert 'JpegLibrary' not in dependencies,path
             if package_id=='SimdSkia.Imaging':
@@ -77,21 +80,21 @@ for package_id in ids:
         if package_id=='SimdSkia.Gpu':
             assert not any(name.endswith('vulkan-1.dll') for name in names),path
         if package_id=='SimdSkia.Avalonia':
-            assert dependencies.get('Avalonia')==('[12.1.0, 13.0.0)' if args.version=='0.1.1' else '[12.1.5]'),dependencies
+            assert dependencies.get('Avalonia')==('[12.1.0, 13.0.0)' if matrix else '[12.1.5]'),dependencies
             readme=package.read('README.md').decode('utf-8')
             for step in ('Demo.csproj','Program.cs','dotnet restore','dotnet run','dotnet publish','UseSimdSkiaDesktop()','SimdSkia.Avalonia.Desktop','12.1.5'):
                 assert step in readme,(path,'Missing README instructions',step)
             assert '\u7cfb\u7edf' in readme and '\u9884\u89c8' in readme,path
         if package_id=='SimdSkia.Avalonia.Desktop':
-            if args.version=='0.1.1':
+            if matrix:
                 assert dependencies.get('Tmds.DBus.Protocol')=='[0.94.1]',dependencies
                 assert not any(name in dependencies for name in ('Avalonia.Native','Avalonia.FreeDesktop','Avalonia.FreeDesktop.AtSpi')),dependencies
             else:
                 assert dependencies.get('Avalonia.Native')=='[12.1.5]',dependencies
             hosts=['Avalonia.Win32.dll','Avalonia.Win32.Automation.dll','Avalonia.X11.dll']
-            if args.version=='0.1.1':hosts+=['Avalonia.FreeDesktop.dll','Avalonia.FreeDesktop.AtSpi.dll','Avalonia.Native.dll']
+            if matrix:hosts+=['Avalonia.FreeDesktop.dll','Avalonia.FreeDesktop.AtSpi.dll','Avalonia.Native.dll']
             for host in hosts:
-                if args.version=='0.1.1':
+                if matrix:
                     for patch in range(6):
                         assert f'hosts/12.1.{patch}.0/{host}' in names,(path,host,patch)
                     assert f'lib/{framework}/{host}' not in names,(path,'Unconditional mismatched host')
@@ -99,7 +102,7 @@ for package_id in ids:
                 else:
                     assert f'lib/{framework}/{host}' in names,(path,host)
         if package_id=='SimdSkia.Gpu.Direct2D':
-            assert set(dependencies)=={'SimdSkia.Core'},dependencies
+            assert set(dependencies)==({'SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Gpu'} if args.version=='0.1.2-preview.1' else {'SimdSkia.Core'}),dependencies
         rows.append({'id':package_id,'version':args.version,'bytes':path.stat().st_size,'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'dependencies':dependencies})
 (args.directory/'manifest.json').write_text(json.dumps(rows,indent=2)+'\n',encoding='utf-8')
 print(f'PASS {len(rows)} {args.version} packages: dependency versions, managed assemblies, README, CHANGELOG, NuGet release notes, MIT, symbols and no font/native drawing binaries')

@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../Program.cs" Link="Program.cs"/>
+    <ProjectReference Include="../../../src/SimdSkia.Compatibility/SimdSkia.Compatibility.csproj" Condition="'$(UsePackedSimdSkia)' != 'true'"/>
+    <PackageReference Include="SimdSkia.Compatibility" Version="[0.1.1]" Condition="'$(UsePackedSimdSkia)' == 'true'"/>
+  </ItemGroup>
+</Project>

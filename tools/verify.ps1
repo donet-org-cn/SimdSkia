@@ -8,12 +8,20 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Build failed.' }
     dotnet run --project tests/SimdSkia.Tests -c Release --no-build
     if ($LASTEXITCODE -ne 0) { throw 'Behavior tests failed.' }
+    dotnet run --project tests/PixelCompatibility/Managed -c Release --no-build -- artifacts/pixel-compatibility/verify-managed
+    if ($LASTEXITCODE -ne 0) { throw 'Pixel transfer, scalar/SIMD and lease checks failed.' }
     dotnet run --project tests/CodecIntegration -c Release --no-build
     if ($LASTEXITCODE -ne 0) { throw 'Full codec integration tests failed.' }
     dotnet run --project tests/CompatibilityExpansion/Managed -c Release --no-build -- artifacts/compat-expansion/managed
     if ($LASTEXITCODE -ne 0) { throw 'Standalone compatibility expansion tests failed.' }
     dotnet run --project tests/Pdf -c Release --no-build
     if ($LASTEXITCODE -ne 0) { throw 'Managed PDF export/read tests failed.' }
+    foreach($apiSuite in @('RuntimeEffects','MeshAtlas','DrawingAdditions','PdfAnnotations')){
+        dotnet run --project "tests/$apiSuite/Managed" -c Release --no-build -- "artifacts/api99-verify/$apiSuite"
+        if($LASTEXITCODE -ne 0){throw "API integration failed: $apiSuite"}
+    }
+    dotnet run --project tests/CacheControls/Managed -c Release --no-build
+    if($LASTEXITCODE -ne 0){throw 'Font/resource cache budget and concurrent purge checks failed.'}
     $fontPath=$env:SIMDSKIA_CJK_FONT
     if(-not $fontPath -and (Test-Path -LiteralPath baseline/fonts/ZenOldMincho-Regular.ttf)){$fontPath=(Resolve-Path baseline/fonts/ZenOldMincho-Regular.ttf).Path}
     if($fontPath){dotnet run --project tests/Features -c Release --no-build -- $fontPath}
@@ -42,6 +50,22 @@ try {
         if ($LASTEXITCODE -notin @(0,2)) { throw 'API audit failed.' }
         $apiReport = Get-Content -LiteralPath docs/api/comparison.json -Raw | ConvertFrom-Json
         if ($apiReport.AddedOrDifferent.Count -ne 0) { throw 'A replacement public signature does not match the pinned baseline. Inspect docs/api/comparison.json.' }
+        $geometryOutput=Join-Path 'artifacts/geometry-compatibility' ([Guid]::NewGuid().ToString('N'))
+        python tools/check-geometry-compatibility.py --output $geometryOutput
+        if($LASTEXITCODE -ne 0){throw 'Geometry/color API reference checks failed.'}
+        $shaderOutput=Join-Path 'artifacts/shader-compatibility' ([Guid]::NewGuid().ToString('N'))
+        python tools/check-shader-compatibility.py --output $shaderOutput
+        if($LASTEXITCODE -ne 0){throw 'Gradient and strided Erase reference checks failed.'}
+        $pixelOutput=Join-Path 'artifacts/pixel-compatibility' ([Guid]::NewGuid().ToString('N'))
+        python tools/check-pixel-compatibility.py --output $pixelOutput
+        if($LASTEXITCODE -eq 2){$referenceQualityFailed=$true;Write-Output 'FAIL: pixel API reference gate, including the documented padded-Span difference. Final exit code remains 2.'}
+        elseif($LASTEXITCODE -ne 0){throw 'Pixel reference check failed to execute.'}
+        foreach($suite in @('blends','canvas-operations','raster-shaders','color-filters','text-blobs','image-filters','utilities')) {
+            $suiteOutput=Join-Path 'artifacts/api-completion-reference' ($suite+'-'+[Guid]::NewGuid().ToString('N'))
+            python (Join-Path 'tools' ('check-'+$suite+'.py')) --output $suiteOutput
+            if($LASTEXITCODE -eq 2){$referenceQualityFailed=$true;Write-Output ('FAIL: '+$suite+' fixed reference gate; final exit remains 2.')}
+            elseif($LASTEXITCODE -ne 0){throw ('Reference suite execution failed: '+$suite)}
+        }
         # Exit 2 is expected while the tracked public API has missing entries.
         dotnet run --project tests/ManagedRenderer -c Release --no-build
         if ($LASTEXITCODE -ne 0) { throw 'Managed rendering failed.' }

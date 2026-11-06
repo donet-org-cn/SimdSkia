@@ -4,7 +4,7 @@ using SimdSkia;
 namespace SkiaSharp;
 
 [StructLayout(LayoutKind.Sequential)]
-public struct SKMatrix : IEquatable<SKMatrix>
+public partial struct SKMatrix : IEquatable<SKMatrix>
 {
     public static readonly SKMatrix Empty;
     public float ScaleX { readonly get; set; }

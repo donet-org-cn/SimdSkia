@@ -1,0 +1,33 @@
+// Forwarding signatures from the fixed SkiaSharp 3.119.4 public metadata.
+namespace SkiaSharp;
+public partial class SKSurface
+{
+    public static SKSurface Create(GRContext context,GRBackendRenderTarget renderTarget,SKColorType colorType)=>ImportSurface(context,null,renderTarget,GRSurfaceOrigin.BottomLeft,0,colorType,null,null);
+    public static SKSurface Create(GRContext context,GRBackendRenderTarget renderTarget,SKColorType colorType,SKSurfaceProperties props)=>ImportSurface(context,null,renderTarget,GRSurfaceOrigin.BottomLeft,0,colorType,null,props);
+    public static SKSurface Create(GRContext context,GRBackendRenderTarget renderTarget,GRSurfaceOrigin origin,SKColorType colorType)=>ImportSurface(context,null,renderTarget,origin,0,colorType,null,null);
+    public static SKSurface Create(GRContext context,GRBackendRenderTarget renderTarget,GRSurfaceOrigin origin,SKColorType colorType,SKColorSpace colorspace)=>ImportSurface(context,null,renderTarget,origin,0,colorType,colorspace,null);
+    public static SKSurface Create(GRContext context,GRBackendRenderTarget renderTarget,GRSurfaceOrigin origin,SKColorType colorType,SKColorSpace colorspace,SKSurfaceProperties props)=>ImportSurface(context,null,renderTarget,origin,0,colorType,colorspace,props);
+    public static SKSurface Create(GRContext context,GRBackendRenderTarget renderTarget,GRSurfaceOrigin origin,SKColorType colorType,SKSurfaceProperties props)=>ImportSurface(context,null,renderTarget,origin,0,colorType,null,props);
+    public static SKSurface Create(GRContext context,GRBackendTexture texture,SKColorType colorType)=>ImportSurface(context,texture,null,GRSurfaceOrigin.BottomLeft,0,colorType,null,null);
+    public static SKSurface Create(GRContext context,GRBackendTexture texture,SKColorType colorType,SKSurfaceProperties props)=>ImportSurface(context,texture,null,GRSurfaceOrigin.BottomLeft,0,colorType,null,props);
+    public static SKSurface Create(GRContext context,GRBackendTexture texture,GRSurfaceOrigin origin,SKColorType colorType)=>ImportSurface(context,texture,null,origin,0,colorType,null,null);
+    public static SKSurface Create(GRContext context,GRBackendTexture texture,GRSurfaceOrigin origin,SKColorType colorType,SKSurfaceProperties props)=>ImportSurface(context,texture,null,origin,0,colorType,null,props);
+    public static SKSurface Create(GRContext context,GRBackendTexture texture,GRSurfaceOrigin origin,int sampleCount,SKColorType colorType)=>ImportSurface(context,texture,null,origin,sampleCount,colorType,null,null);
+    public static SKSurface Create(GRContext context,GRBackendTexture texture,GRSurfaceOrigin origin,int sampleCount,SKColorType colorType,SKColorSpace colorspace)=>ImportSurface(context,texture,null,origin,sampleCount,colorType,colorspace,null);
+    public static SKSurface Create(GRContext context,GRBackendTexture texture,GRSurfaceOrigin origin,int sampleCount,SKColorType colorType,SKColorSpace colorspace,SKSurfaceProperties props)=>ImportSurface(context,texture,null,origin,sampleCount,colorType,colorspace,props);
+    public static SKSurface Create(GRContext context,GRBackendTexture texture,GRSurfaceOrigin origin,int sampleCount,SKColorType colorType,SKSurfaceProperties props)=>ImportSurface(context,texture,null,origin,sampleCount,colorType,null,props);
+    public static SKSurface Create(GRRecordingContext context,GRBackendRenderTarget renderTarget,SKColorType colorType)=>ImportSurface(context,null,renderTarget,GRSurfaceOrigin.BottomLeft,0,colorType,null,null);
+    public static SKSurface Create(GRRecordingContext context,GRBackendRenderTarget renderTarget,SKColorType colorType,SKSurfaceProperties props)=>ImportSurface(context,null,renderTarget,GRSurfaceOrigin.BottomLeft,0,colorType,null,props);
+    public static SKSurface Create(GRRecordingContext context,GRBackendRenderTarget renderTarget,GRSurfaceOrigin origin,SKColorType colorType)=>ImportSurface(context,null,renderTarget,origin,0,colorType,null,null);
+    public static SKSurface Create(GRRecordingContext context,GRBackendRenderTarget renderTarget,GRSurfaceOrigin origin,SKColorType colorType,SKColorSpace colorspace)=>ImportSurface(context,null,renderTarget,origin,0,colorType,colorspace,null);
+    public static SKSurface Create(GRRecordingContext context,GRBackendRenderTarget renderTarget,GRSurfaceOrigin origin,SKColorType colorType,SKColorSpace colorspace,SKSurfaceProperties props)=>ImportSurface(context,null,renderTarget,origin,0,colorType,colorspace,props);
+    public static SKSurface Create(GRRecordingContext context,GRBackendRenderTarget renderTarget,GRSurfaceOrigin origin,SKColorType colorType,SKSurfaceProperties props)=>ImportSurface(context,null,renderTarget,origin,0,colorType,null,props);
+    public static SKSurface Create(GRRecordingContext context,GRBackendTexture texture,SKColorType colorType)=>ImportSurface(context,texture,null,GRSurfaceOrigin.BottomLeft,0,colorType,null,null);
+    public static SKSurface Create(GRRecordingContext context,GRBackendTexture texture,SKColorType colorType,SKSurfaceProperties props)=>ImportSurface(context,texture,null,GRSurfaceOrigin.BottomLeft,0,colorType,null,props);
+    public static SKSurface Create(GRRecordingContext context,GRBackendTexture texture,GRSurfaceOrigin origin,SKColorType colorType)=>ImportSurface(context,texture,null,origin,0,colorType,null,null);
+    public static SKSurface Create(GRRecordingContext context,GRBackendTexture texture,GRSurfaceOrigin origin,SKColorType colorType,SKSurfaceProperties props)=>ImportSurface(context,texture,null,origin,0,colorType,null,props);
+    public static SKSurface Create(GRRecordingContext context,GRBackendTexture texture,GRSurfaceOrigin origin,int sampleCount,SKColorType colorType)=>ImportSurface(context,texture,null,origin,sampleCount,colorType,null,null);
+    public static SKSurface Create(GRRecordingContext context,GRBackendTexture texture,GRSurfaceOrigin origin,int sampleCount,SKColorType colorType,SKColorSpace colorspace)=>ImportSurface(context,texture,null,origin,sampleCount,colorType,colorspace,null);
+    public static SKSurface Create(GRRecordingContext context,GRBackendTexture texture,GRSurfaceOrigin origin,int sampleCount,SKColorType colorType,SKColorSpace colorspace,SKSurfaceProperties props)=>ImportSurface(context,texture,null,origin,sampleCount,colorType,colorspace,props);
+    public static SKSurface Create(GRRecordingContext context,GRBackendTexture texture,GRSurfaceOrigin origin,int sampleCount,SKColorType colorType,SKSurfaceProperties props)=>ImportSurface(context,texture,null,origin,sampleCount,colorType,null,props);
+}

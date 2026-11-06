@@ -6,7 +6,7 @@ internal static class CoverageRunValidation
     internal static int Run()
     {
         var random=new Random(9321);int checks=0;
-        foreach(bool simd in new[]{false,true})foreach(var format in Enum.GetValues<PixelFormat>())
+        foreach(bool simd in new[]{false,true})foreach(var format in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})
         foreach(int width in new[]{31,65,159})foreach(bool gradient in new[]{false,true})
         foreach(var mode in new[]{CompositeMode.SourceOver,CompositeMode.Source})
         foreach(var offset in new[]{(-7,2),(3,-3),(173,1),(0,0),(-90,-20)})

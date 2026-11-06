@@ -1,0 +1,443 @@
+[
+  {
+    "variant": "original",
+    "fork": 0,
+    "engine": "SkiaSharp, Version=3.119.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756",
+    "runtime": ".NET 10.0.14",
+    "results": [
+      {
+        "scene": "bounds",
+        "frames": 4338116,
+        "msPerFrame": 0.00013830891105724236,
+        "cpuMsPerFrame": 0.00013686817042236768,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 35.8203125,
+        "privateMiB": 16.015625,
+        "pixelSha256": "DE2F256064A0AF797747C2B97505DC0B9F3DF0DE4F489EAC731C23AE9CA9CC31"
+      },
+      {
+        "scene": "lines",
+        "frames": 11323,
+        "msPerFrame": 0.052990532544378695,
+        "cpuMsPerFrame": 0.052437516559215754,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 35.6640625,
+        "privateMiB": 14.6015625,
+        "pixelSha256": "D4261BAA01E67D7760FC4456A760601089C63200DA6B53ABAA74BC94780A9F1C"
+      },
+      {
+        "scene": "circles",
+        "frames": 9740,
+        "msPerFrame": 0.061606796714579054,
+        "cpuMsPerFrame": 0.06095995893223819,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 35.80078125,
+        "privateMiB": 14.6796875,
+        "pixelSha256": "D88C772A90612813C7F6C7A98F4205A64D3DB699D5313508D44BFEF2DCB32E6F"
+      },
+      {
+        "scene": "mixed",
+        "frames": 5059,
+        "msPerFrame": 0.11861002174342755,
+        "cpuMsPerFrame": 0.1173650919153983,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 35.87109375,
+        "privateMiB": 14.75390625,
+        "pixelSha256": "0ABE2B2CB82627188F4676C22139484DA12A6DDB43DAC8C1BA043199766898B7"
+      }
+    ],
+    "sink": 2147483600.0
+  },
+  {
+    "variant": "before",
+    "fork": 0,
+    "engine": "SimdSkia.Compatibility, Version=0.1.1.0, Culture=neutral, PublicKeyToken=null",
+    "runtime": ".NET 10.0.14",
+    "results": [
+      {
+        "scene": "bounds",
+        "frames": 7681682,
+        "msPerFrame": 7.810789355768698e-05,
+        "cpuMsPerFrame": 7.729426966646107e-05,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 33.83203125,
+        "privateMiB": 15.796875,
+        "pixelSha256": "DE2F256064A0AF797747C2B97505DC0B9F3DF0DE4F489EAC731C23AE9CA9CC31"
+      },
+      {
+        "scene": "lines",
+        "frames": 35628,
+        "msPerFrame": 0.01684109689008645,
+        "cpuMsPerFrame": 0.017103822835971706,
+        "allocatedBytesPerFrame": 0.013921634669361176,
+        "workingSetMiB": 34.8515625,
+        "privateMiB": 14.30078125,
+        "pixelSha256": "C901AAF27DA8F2C84C94DB20F3C2E78F02451E5AB39B4581BEB89D86AA504A26"
+      },
+      {
+        "scene": "circles",
+        "frames": 11673,
+        "msPerFrame": 0.0514027585025272,
+        "cpuMsPerFrame": 0.05086524458151289,
+        "allocatedBytesPerFrame": 0.04249121905251435,
+        "workingSetMiB": 34.91796875,
+        "privateMiB": 14.2265625,
+        "pixelSha256": "3732E09758C0E2309F2C9EABB5CD8DF01D17DE29712EF69578CC453E125216F2"
+      },
+      {
+        "scene": "mixed",
+        "frames": 8852,
+        "msPerFrame": 0.06778804789877993,
+        "cpuMsPerFrame": 0.06707523723452327,
+        "allocatedBytesPerFrame": 0.05603253502033439,
+        "workingSetMiB": 34.9921875,
+        "privateMiB": 14.30078125,
+        "pixelSha256": "D71C238EC9F91CCD9BE3E5627AD68F2A2471999908F066F819AD7B781FEA5436"
+      }
+    ],
+    "sink": 2147483600.0
+  },
+  {
+    "variant": "after",
+    "fork": 0,
+    "engine": "SimdSkia.Compatibility, Version=0.1.1.0, Culture=neutral, PublicKeyToken=null",
+    "runtime": ".NET 10.0.14",
+    "results": [
+      {
+        "scene": "bounds",
+        "frames": 7709114,
+        "msPerFrame": 7.78299685281603e-05,
+        "cpuMsPerFrame": 7.701922685278749e-05,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 33.81640625,
+        "privateMiB": 15.796875,
+        "pixelSha256": "DE2F256064A0AF797747C2B97505DC0B9F3DF0DE4F489EAC731C23AE9CA9CC31"
+      },
+      {
+        "scene": "lines",
+        "frames": 35732,
+        "msPerFrame": 0.016791786074107244,
+        "cpuMsPerFrame": 0.017054041195567,
+        "allocatedBytesPerFrame": 0.013881114966976379,
+        "workingSetMiB": 34.90625,
+        "privateMiB": 14.28125,
+        "pixelSha256": "C901AAF27DA8F2C84C94DB20F3C2E78F02451E5AB39B4581BEB89D86AA504A26"
+      },
+      {
+        "scene": "circles",
+        "frames": 11518,
+        "msPerFrame": 0.05209652717485675,
+        "cpuMsPerFrame": 0.05154974822017711,
+        "allocatedBytesPerFrame": 0.04306303177635006,
+        "workingSetMiB": 34.98046875,
+        "privateMiB": 14.20703125,
+        "pixelSha256": "3BE27D42DA113C1637B8E3A31731829C13A85C3E853C65D27666D4D4C41A92B0"
+      },
+      {
+        "scene": "mixed",
+        "frames": 8728,
+        "msPerFrame": 0.06874948441796516,
+        "cpuMsPerFrame": 0.0680281851512374,
+        "allocatedBytesPerFrame": 0.05682859761686526,
+        "workingSetMiB": 35.05078125,
+        "privateMiB": 14.28125,
+        "pixelSha256": "0D70D7EF9A4FFC15562B0C65D843724580B99CD1848187A20AE080975B369F59"
+      }
+    ],
+    "sink": 2147483600.0
+  },
+  {
+    "variant": "before",
+    "fork": 1,
+    "engine": "SimdSkia.Compatibility, Version=0.1.1.0, Culture=neutral, PublicKeyToken=null",
+    "runtime": ".NET 10.0.14",
+    "results": [
+      {
+        "scene": "bounds",
+        "frames": 7744698,
+        "msPerFrame": 7.74723559265965e-05,
+        "cpuMsPerFrame": 7.666535221902777e-05,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 33.828125,
+        "privateMiB": 15.77734375,
+        "pixelSha256": "DE2F256064A0AF797747C2B97505DC0B9F3DF0DE4F489EAC731C23AE9CA9CC31"
+      },
+      {
+        "scene": "lines",
+        "frames": 35656,
+        "msPerFrame": 0.0168279139555755,
+        "cpuMsPerFrame": 0.016652176351806148,
+        "allocatedBytesPerFrame": 0.013910702266098272,
+        "workingSetMiB": 34.89453125,
+        "privateMiB": 14.2578125,
+        "pixelSha256": "C901AAF27DA8F2C84C94DB20F3C2E78F02451E5AB39B4581BEB89D86AA504A26"
+      },
+      {
+        "scene": "circles",
+        "frames": 12026,
+        "msPerFrame": 0.04989402960252786,
+        "cpuMsPerFrame": 0.04937219358057542,
+        "allocatedBytesPerFrame": 0.041243971395310164,
+        "workingSetMiB": 34.9453125,
+        "privateMiB": 14.18359375,
+        "pixelSha256": "3732E09758C0E2309F2C9EABB5CD8DF01D17DE29712EF69578CC453E125216F2"
+      },
+      {
+        "scene": "mixed",
+        "frames": 9062,
+        "msPerFrame": 0.06621331935555065,
+        "cpuMsPerFrame": 0.06552085632310749,
+        "allocatedBytesPerFrame": 0.05473405429265063,
+        "workingSetMiB": 35.015625,
+        "privateMiB": 14.2578125,
+        "pixelSha256": "D71C238EC9F91CCD9BE3E5627AD68F2A2471999908F066F819AD7B781FEA5436"
+      }
+    ],
+    "sink": 2147483600.0
+  },
+  {
+    "variant": "after",
+    "fork": 1,
+    "engine": "SimdSkia.Compatibility, Version=0.1.1.0, Culture=neutral, PublicKeyToken=null",
+    "runtime": ".NET 10.0.14",
+    "results": [
+      {
+        "scene": "bounds",
+        "frames": 7793287,
+        "msPerFrame": 7.698934993668268e-05,
+        "cpuMsPerFrame": 7.618736484361477e-05,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 33.96875,
+        "privateMiB": 15.94140625,
+        "pixelSha256": "DE2F256064A0AF797747C2B97505DC0B9F3DF0DE4F489EAC731C23AE9CA9CC31"
+      },
+      {
+        "scene": "lines",
+        "frames": 35624,
+        "msPerFrame": 0.01684282225465978,
+        "cpuMsPerFrame": 0.017105743319110713,
+        "allocatedBytesPerFrame": 0.013923197844150012,
+        "workingSetMiB": 35.01171875,
+        "privateMiB": 14.421875,
+        "pixelSha256": "C901AAF27DA8F2C84C94DB20F3C2E78F02451E5AB39B4581BEB89D86AA504A26"
+      },
+      {
+        "scene": "circles",
+        "frames": 11512,
+        "msPerFrame": 0.05212356671299514,
+        "cpuMsPerFrame": 0.05157661570535094,
+        "allocatedBytesPerFrame": 0.043085476025017375,
+        "workingSetMiB": 35.0859375,
+        "privateMiB": 14.34375,
+        "pixelSha256": "3BE27D42DA113C1637B8E3A31731829C13A85C3E853C65D27666D4D4C41A92B0"
+      },
+      {
+        "scene": "mixed",
+        "frames": 8949,
+        "msPerFrame": 0.0670529221142027,
+        "cpuMsPerFrame": 0.06634819532908705,
+        "allocatedBytesPerFrame": 0.05542518717175103,
+        "workingSetMiB": 35.1640625,
+        "privateMiB": 14.41796875,
+        "pixelSha256": "0D70D7EF9A4FFC15562B0C65D843724580B99CD1848187A20AE080975B369F59"
+      }
+    ],
+    "sink": 2147483600.0
+  },
+  {
+    "variant": "original",
+    "fork": 1,
+    "engine": "SkiaSharp, Version=3.119.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756",
+    "runtime": ".NET 10.0.14",
+    "results": [
+      {
+        "scene": "bounds",
+        "frames": 4162186,
+        "msPerFrame": 0.00014415504256657437,
+        "cpuMsPerFrame": 0.00014265340376427195,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 35.6796875,
+        "privateMiB": 15.13671875,
+        "pixelSha256": "DE2F256064A0AF797747C2B97505DC0B9F3DF0DE4F489EAC731C23AE9CA9CC31"
+      },
+      {
+        "scene": "lines",
+        "frames": 11510,
+        "msPerFrame": 0.05212881841876629,
+        "cpuMsPerFrame": 0.0515855777584709,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 35.55859375,
+        "privateMiB": 14.5546875,
+        "pixelSha256": "D4261BAA01E67D7760FC4456A760601089C63200DA6B53ABAA74BC94780A9F1C"
+      },
+      {
+        "scene": "circles",
+        "frames": 9748,
+        "msPerFrame": 0.06155269798933115,
+        "cpuMsPerFrame": 0.060909930242100944,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 35.69140625,
+        "privateMiB": 14.62890625,
+        "pixelSha256": "D88C772A90612813C7F6C7A98F4205A64D3DB699D5313508D44BFEF2DCB32E6F"
+      },
+      {
+        "scene": "mixed",
+        "frames": 5086,
+        "msPerFrame": 0.11797679905623279,
+        "cpuMsPerFrame": 0.11674203696421549,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 35.76171875,
+        "privateMiB": 14.703125,
+        "pixelSha256": "0ABE2B2CB82627188F4676C22139484DA12A6DDB43DAC8C1BA043199766898B7"
+      }
+    ],
+    "sink": 2147483600.0
+  },
+  {
+    "variant": "after",
+    "fork": 2,
+    "engine": "SimdSkia.Compatibility, Version=0.1.1.0, Culture=neutral, PublicKeyToken=null",
+    "runtime": ".NET 10.0.14",
+    "results": [
+      {
+        "scene": "bounds",
+        "frames": 7740177,
+        "msPerFrame": 7.751760715549528e-05,
+        "cpuMsPerFrame": 7.671013208095887e-05,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 33.90234375,
+        "privateMiB": 15.89453125,
+        "pixelSha256": "DE2F256064A0AF797747C2B97505DC0B9F3DF0DE4F489EAC731C23AE9CA9CC31"
+      },
+      {
+        "scene": "lines",
+        "frames": 35196,
+        "msPerFrame": 0.017047408796454142,
+        "cpuMsPerFrame": 0.017313757245141493,
+        "allocatedBytesPerFrame": 0.014092510512558245,
+        "workingSetMiB": 35,
+        "privateMiB": 14.37890625,
+        "pixelSha256": "C901AAF27DA8F2C84C94DB20F3C2E78F02451E5AB39B4581BEB89D86AA504A26"
+      },
+      {
+        "scene": "circles",
+        "frames": 11616,
+        "msPerFrame": 0.051656344696969704,
+        "cpuMsPerFrame": 0.05111484159779614,
+        "allocatedBytesPerFrame": 0.04269972451790634,
+        "workingSetMiB": 35.0703125,
+        "privateMiB": 14.30859375,
+        "pixelSha256": "3BE27D42DA113C1637B8E3A31731829C13A85C3E853C65D27666D4D4C41A92B0"
+      },
+      {
+        "scene": "mixed",
+        "frames": 8873,
+        "msPerFrame": 0.06762612419700215,
+        "cpuMsPerFrame": 0.06691648822269808,
+        "allocatedBytesPerFrame": 0.05589992110898231,
+        "workingSetMiB": 35.1484375,
+        "privateMiB": 14.3828125,
+        "pixelSha256": "0D70D7EF9A4FFC15562B0C65D843724580B99CD1848187A20AE080975B369F59"
+      }
+    ],
+    "sink": 2147483600.0
+  },
+  {
+    "variant": "original",
+    "fork": 2,
+    "engine": "SkiaSharp, Version=3.119.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756",
+    "runtime": ".NET 10.0.14",
+    "results": [
+      {
+        "scene": "bounds",
+        "frames": 4372022,
+        "msPerFrame": 0.0001372362719126299,
+        "cpuMsPerFrame": 0.00013580672741354,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 35.70703125,
+        "privateMiB": 15.91796875,
+        "pixelSha256": "DE2F256064A0AF797747C2B97505DC0B9F3DF0DE4F489EAC731C23AE9CA9CC31"
+      },
+      {
+        "scene": "lines",
+        "frames": 11234,
+        "msPerFrame": 0.05341204379562044,
+        "cpuMsPerFrame": 0.05285294641267581,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 35.5390625,
+        "privateMiB": 14.51171875,
+        "pixelSha256": "D4261BAA01E67D7760FC4456A760601089C63200DA6B53ABAA74BC94780A9F1C"
+      },
+      {
+        "scene": "circles",
+        "frames": 9767,
+        "msPerFrame": 0.061433009112316986,
+        "cpuMsPerFrame": 0.06239121531688338,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 35.671875,
+        "privateMiB": 14.5859375,
+        "pixelSha256": "D88C772A90612813C7F6C7A98F4205A64D3DB699D5313508D44BFEF2DCB32E6F"
+      },
+      {
+        "scene": "mixed",
+        "frames": 5138,
+        "msPerFrame": 0.1167966718567536,
+        "cpuMsPerFrame": 0.1186015959517322,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 35.7421875,
+        "privateMiB": 14.66015625,
+        "pixelSha256": "0ABE2B2CB82627188F4676C22139484DA12A6DDB43DAC8C1BA043199766898B7"
+      }
+    ],
+    "sink": 2147483600.0
+  },
+  {
+    "variant": "before",
+    "fork": 2,
+    "engine": "SimdSkia.Compatibility, Version=0.1.1.0, Culture=neutral, PublicKeyToken=null",
+    "runtime": ".NET 10.0.14",
+    "results": [
+      {
+        "scene": "bounds",
+        "frames": 7801493,
+        "msPerFrame": 7.69083558749588e-05,
+        "cpuMsPerFrame": 7.610722716792799e-05,
+        "allocatedBytesPerFrame": 0,
+        "workingSetMiB": 34.09375,
+        "privateMiB": 16.203125,
+        "pixelSha256": "DE2F256064A0AF797747C2B97505DC0B9F3DF0DE4F489EAC731C23AE9CA9CC31"
+      },
+      {
+        "scene": "lines",
+        "frames": 35912,
+        "msPerFrame": 0.01670758799287146,
+        "cpuMsPerFrame": 0.01653347070617064,
+        "allocatedBytesPerFrame": 0.013811539318333704,
+        "workingSetMiB": 35.09765625,
+        "privateMiB": 14.6875,
+        "pixelSha256": "C901AAF27DA8F2C84C94DB20F3C2E78F02451E5AB39B4581BEB89D86AA504A26"
+      },
+      {
+        "scene": "circles",
+        "frames": 11433,
+        "msPerFrame": 0.05248210443453162,
+        "cpuMsPerFrame": 0.05193300096212718,
+        "allocatedBytesPerFrame": 0.04338318901425697,
+        "workingSetMiB": 35.15625,
+        "privateMiB": 14.61328125,
+        "pixelSha256": "3732E09758C0E2309F2C9EABB5CD8DF01D17DE29712EF69578CC453E125216F2"
+      },
+      {
+        "scene": "mixed",
+        "frames": 8788,
+        "msPerFrame": 0.06828220300409649,
+        "cpuMsPerFrame": 0.06934171597633136,
+        "allocatedBytesPerFrame": 0.056440600819299046,
+        "workingSetMiB": 35.23046875,
+        "privateMiB": 14.6875,
+        "pixelSha256": "D71C238EC9F91CCD9BE3E5627AD68F2A2471999908F066F819AD7B781FEA5436"
+      }
+    ],
+    "sink": 2147483600.0
+  }
+]

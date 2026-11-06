@@ -1,0 +1,2098 @@
+{
+  "summary": {
+    "cases": 24,
+    "exactInputs": 24,
+    "encoderOver1": 3,
+    "decoderOriginalOver1": 0,
+    "decoderManagedOver1": 0,
+    "jointOver1": 3,
+    "originalHeader": {
+      "marker": "0xc0",
+      "components": 3,
+      "sampling": [
+        "0x22",
+        "0x11",
+        "0x11"
+      ]
+    },
+    "managedHeader": {
+      "marker": "0xc0",
+      "components": 3,
+      "sampling": [
+        "0x11",
+        "0x11",
+        "0x11"
+      ]
+    },
+    "aligned444EncoderOver1": 3,
+    "aligned444DecoderOver1": 0
+  },
+  "cases": [
+    {
+      "case": "Opaque-0-erase",
+      "inputExact": true,
+      "originalHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x22",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "managedHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x11",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "encoderOnly": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          0,
+          0,
+          0,
+          255
+        ]
+      },
+      "decoderOnOriginal": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          0,
+          0,
+          0,
+          255
+        ]
+      },
+      "decoderOnManaged": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          0,
+          0,
+          0,
+          255
+        ]
+      },
+      "joint": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          0,
+          0,
+          0,
+          255
+        ]
+      },
+      "referenceCenter": [
+        0,
+        0,
+        0,
+        255
+      ]
+    },
+    {
+      "case": "Opaque-0-raw",
+      "inputExact": true,
+      "originalHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x22",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "managedHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x11",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "encoderOnly": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnOriginal": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnManaged": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "joint": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "referenceCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    },
+    {
+      "case": "Opaque-128-erase",
+      "inputExact": true,
+      "originalHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x22",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "managedHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x11",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "encoderOnly": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          90,
+          45,
+          22,
+          255
+        ]
+      },
+      "decoderOnOriginal": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          90,
+          45,
+          22,
+          255
+        ]
+      },
+      "decoderOnManaged": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          90,
+          45,
+          22,
+          255
+        ]
+      },
+      "joint": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          90,
+          45,
+          22,
+          255
+        ]
+      },
+      "referenceCenter": [
+        90,
+        45,
+        22,
+        255
+      ]
+    },
+    {
+      "case": "Opaque-128-raw",
+      "inputExact": true,
+      "originalHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x22",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "managedHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x11",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "encoderOnly": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnOriginal": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnManaged": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "joint": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "referenceCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    },
+    {
+      "case": "Opaque-255-erase",
+      "inputExact": true,
+      "originalHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x22",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "managedHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x11",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "encoderOnly": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnOriginal": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnManaged": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "joint": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "referenceCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    },
+    {
+      "case": "Opaque-255-raw",
+      "inputExact": true,
+      "originalHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x22",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "managedHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x11",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "encoderOnly": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnOriginal": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnManaged": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "joint": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "referenceCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    },
+    {
+      "case": "Opaque-32-erase",
+      "inputExact": true,
+      "originalHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x22",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "managedHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x11",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "encoderOnly": {
+        "maximum": 2,
+        "rmse": 1.0,
+        "center": [
+          22,
+          11,
+          7,
+          255
+        ]
+      },
+      "decoderOnOriginal": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          22,
+          11,
+          5,
+          255
+        ]
+      },
+      "decoderOnManaged": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          22,
+          11,
+          7,
+          255
+        ]
+      },
+      "joint": {
+        "maximum": 2,
+        "rmse": 1.0,
+        "center": [
+          22,
+          11,
+          7,
+          255
+        ]
+      },
+      "referenceCenter": [
+        22,
+        11,
+        5,
+        255
+      ]
+    },
+    {
+      "case": "Opaque-32-raw",
+      "inputExact": true,
+      "originalHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x22",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "managedHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x11",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "encoderOnly": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnOriginal": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnManaged": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "joint": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "referenceCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    },
+    {
+      "case": "Premul-0-erase",
+      "inputExact": true,
+      "originalHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x22",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "managedHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x11",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "encoderOnly": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          0,
+          0,
+          0,
+          255
+        ]
+      },
+      "decoderOnOriginal": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          0,
+          0,
+          0,
+          255
+        ]
+      },
+      "decoderOnManaged": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          0,
+          0,
+          0,
+          255
+        ]
+      },
+      "joint": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          0,
+          0,
+          0,
+          255
+        ]
+      },
+      "referenceCenter": [
+        0,
+        0,
+        0,
+        255
+      ]
+    },
+    {
+      "case": "Premul-0-raw",
+      "inputExact": true,
+      "originalHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x22",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "managedHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x11",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "encoderOnly": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          0,
+          0,
+          0,
+          255
+        ]
+      },
+      "decoderOnOriginal": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          0,
+          0,
+          0,
+          255
+        ]
+      },
+      "decoderOnManaged": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          0,
+          0,
+          0,
+          255
+        ]
+      },
+      "joint": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          0,
+          0,
+          0,
+          255
+        ]
+      },
+      "referenceCenter": [
+        0,
+        0,
+        0,
+        255
+      ]
+    },
+    {
+      "case": "Premul-128-erase",
+      "inputExact": true,
+      "originalHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x22",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "managedHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x11",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "encoderOnly": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          90,
+          45,
+          22,
+          255
+        ]
+      },
+      "decoderOnOriginal": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          90,
+          45,
+          22,
+          255
+        ]
+      },
+      "decoderOnManaged": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          90,
+          45,
+          22,
+          255
+        ]
+      },
+      "joint": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          90,
+          45,
+          22,
+          255
+        ]
+      },
+      "referenceCenter": [
+        90,
+        45,
+        22,
+        255
+      ]
+    },
+    {
+      "case": "Premul-128-raw",
+      "inputExact": true,
+      "originalHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x22",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "managedHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x11",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "encoderOnly": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          90,
+          45,
+          22,
+          255
+        ]
+      },
+      "decoderOnOriginal": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          90,
+          45,
+          22,
+          255
+        ]
+      },
+      "decoderOnManaged": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          90,
+          45,
+          22,
+          255
+        ]
+      },
+      "joint": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          90,
+          45,
+          22,
+          255
+        ]
+      },
+      "referenceCenter": [
+        90,
+        45,
+        22,
+        255
+      ]
+    },
+    {
+      "case": "Premul-255-erase",
+      "inputExact": true,
+      "originalHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x22",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "managedHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x11",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "encoderOnly": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnOriginal": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnManaged": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "joint": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "referenceCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    },
+    {
+      "case": "Premul-255-raw",
+      "inputExact": true,
+      "originalHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x22",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "managedHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x11",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "encoderOnly": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnOriginal": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnManaged": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "joint": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "referenceCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    },
+    {
+      "case": "Premul-32-erase",
+      "inputExact": true,
+      "originalHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x22",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "managedHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x11",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "encoderOnly": {
+        "maximum": 2,
+        "rmse": 1.0,
+        "center": [
+          22,
+          11,
+          7,
+          255
+        ]
+      },
+      "decoderOnOriginal": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          22,
+          11,
+          5,
+          255
+        ]
+      },
+      "decoderOnManaged": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          22,
+          11,
+          7,
+          255
+        ]
+      },
+      "joint": {
+        "maximum": 2,
+        "rmse": 1.0,
+        "center": [
+          22,
+          11,
+          7,
+          255
+        ]
+      },
+      "referenceCenter": [
+        22,
+        11,
+        5,
+        255
+      ]
+    },
+    {
+      "case": "Premul-32-raw",
+      "inputExact": true,
+      "originalHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x22",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "managedHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x11",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "encoderOnly": {
+        "maximum": 2,
+        "rmse": 1.0,
+        "center": [
+          22,
+          11,
+          7,
+          255
+        ]
+      },
+      "decoderOnOriginal": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          22,
+          11,
+          5,
+          255
+        ]
+      },
+      "decoderOnManaged": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          22,
+          11,
+          7,
+          255
+        ]
+      },
+      "joint": {
+        "maximum": 2,
+        "rmse": 1.0,
+        "center": [
+          22,
+          11,
+          7,
+          255
+        ]
+      },
+      "referenceCenter": [
+        22,
+        11,
+        5,
+        255
+      ]
+    },
+    {
+      "case": "Unpremul-0-erase",
+      "inputExact": true,
+      "originalHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x22",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "managedHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x11",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "encoderOnly": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          0,
+          0,
+          0,
+          255
+        ]
+      },
+      "decoderOnOriginal": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          0,
+          0,
+          0,
+          255
+        ]
+      },
+      "decoderOnManaged": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          0,
+          0,
+          0,
+          255
+        ]
+      },
+      "joint": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          0,
+          0,
+          0,
+          255
+        ]
+      },
+      "referenceCenter": [
+        0,
+        0,
+        0,
+        255
+      ]
+    },
+    {
+      "case": "Unpremul-0-raw",
+      "inputExact": true,
+      "originalHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x22",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "managedHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x11",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "encoderOnly": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnOriginal": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnManaged": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "joint": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "referenceCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    },
+    {
+      "case": "Unpremul-128-erase",
+      "inputExact": true,
+      "originalHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x22",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "managedHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x11",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "encoderOnly": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnOriginal": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnManaged": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "joint": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "referenceCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    },
+    {
+      "case": "Unpremul-128-raw",
+      "inputExact": true,
+      "originalHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x22",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "managedHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x11",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "encoderOnly": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnOriginal": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnManaged": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "joint": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "referenceCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    },
+    {
+      "case": "Unpremul-255-erase",
+      "inputExact": true,
+      "originalHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x22",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "managedHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x11",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "encoderOnly": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnOriginal": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnManaged": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "joint": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "referenceCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    },
+    {
+      "case": "Unpremul-255-raw",
+      "inputExact": true,
+      "originalHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x22",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "managedHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x11",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "encoderOnly": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnOriginal": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnManaged": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "joint": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "referenceCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    },
+    {
+      "case": "Unpremul-32-erase",
+      "inputExact": true,
+      "originalHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x22",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "managedHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x11",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "encoderOnly": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnOriginal": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnManaged": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "joint": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "referenceCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    },
+    {
+      "case": "Unpremul-32-raw",
+      "inputExact": true,
+      "originalHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x22",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "managedHeader": {
+        "marker": "0xc0",
+        "components": 3,
+        "sampling": [
+          "0x11",
+          "0x11",
+          "0x11"
+        ]
+      },
+      "encoderOnly": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnOriginal": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "decoderOnManaged": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "joint": {
+        "maximum": 0,
+        "rmse": 0.0,
+        "center": [
+          181,
+          90,
+          45,
+          255
+        ]
+      },
+      "referenceCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    }
+  ],
+  "aligned444": [
+    {
+      "case": "Opaque-0-erase",
+      "inputExact": true,
+      "encoderMaximum": 0,
+      "decoderMaximum": 0,
+      "original444Center": [
+        0,
+        0,
+        0,
+        255
+      ],
+      "managedCenter": [
+        0,
+        0,
+        0,
+        255
+      ]
+    },
+    {
+      "case": "Opaque-0-raw",
+      "inputExact": true,
+      "encoderMaximum": 0,
+      "decoderMaximum": 0,
+      "original444Center": [
+        181,
+        90,
+        45,
+        255
+      ],
+      "managedCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    },
+    {
+      "case": "Opaque-128-erase",
+      "inputExact": true,
+      "encoderMaximum": 0,
+      "decoderMaximum": 0,
+      "original444Center": [
+        90,
+        45,
+        22,
+        255
+      ],
+      "managedCenter": [
+        90,
+        45,
+        22,
+        255
+      ]
+    },
+    {
+      "case": "Opaque-128-raw",
+      "inputExact": true,
+      "encoderMaximum": 0,
+      "decoderMaximum": 0,
+      "original444Center": [
+        181,
+        90,
+        45,
+        255
+      ],
+      "managedCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    },
+    {
+      "case": "Opaque-255-erase",
+      "inputExact": true,
+      "encoderMaximum": 0,
+      "decoderMaximum": 0,
+      "original444Center": [
+        181,
+        90,
+        45,
+        255
+      ],
+      "managedCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    },
+    {
+      "case": "Opaque-255-raw",
+      "inputExact": true,
+      "encoderMaximum": 0,
+      "decoderMaximum": 0,
+      "original444Center": [
+        181,
+        90,
+        45,
+        255
+      ],
+      "managedCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    },
+    {
+      "case": "Opaque-32-erase",
+      "inputExact": true,
+      "encoderMaximum": 2,
+      "decoderMaximum": 0,
+      "original444Center": [
+        22,
+        11,
+        5,
+        255
+      ],
+      "managedCenter": [
+        22,
+        11,
+        7,
+        255
+      ]
+    },
+    {
+      "case": "Opaque-32-raw",
+      "inputExact": true,
+      "encoderMaximum": 0,
+      "decoderMaximum": 0,
+      "original444Center": [
+        181,
+        90,
+        45,
+        255
+      ],
+      "managedCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    },
+    {
+      "case": "Premul-0-erase",
+      "inputExact": true,
+      "encoderMaximum": 0,
+      "decoderMaximum": 0,
+      "original444Center": [
+        0,
+        0,
+        0,
+        255
+      ],
+      "managedCenter": [
+        0,
+        0,
+        0,
+        255
+      ]
+    },
+    {
+      "case": "Premul-0-raw",
+      "inputExact": true,
+      "encoderMaximum": 0,
+      "decoderMaximum": 0,
+      "original444Center": [
+        0,
+        0,
+        0,
+        255
+      ],
+      "managedCenter": [
+        0,
+        0,
+        0,
+        255
+      ]
+    },
+    {
+      "case": "Premul-128-erase",
+      "inputExact": true,
+      "encoderMaximum": 0,
+      "decoderMaximum": 0,
+      "original444Center": [
+        90,
+        45,
+        22,
+        255
+      ],
+      "managedCenter": [
+        90,
+        45,
+        22,
+        255
+      ]
+    },
+    {
+      "case": "Premul-128-raw",
+      "inputExact": true,
+      "encoderMaximum": 0,
+      "decoderMaximum": 0,
+      "original444Center": [
+        90,
+        45,
+        22,
+        255
+      ],
+      "managedCenter": [
+        90,
+        45,
+        22,
+        255
+      ]
+    },
+    {
+      "case": "Premul-255-erase",
+      "inputExact": true,
+      "encoderMaximum": 0,
+      "decoderMaximum": 0,
+      "original444Center": [
+        181,
+        90,
+        45,
+        255
+      ],
+      "managedCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    },
+    {
+      "case": "Premul-255-raw",
+      "inputExact": true,
+      "encoderMaximum": 0,
+      "decoderMaximum": 0,
+      "original444Center": [
+        181,
+        90,
+        45,
+        255
+      ],
+      "managedCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    },
+    {
+      "case": "Premul-32-erase",
+      "inputExact": true,
+      "encoderMaximum": 2,
+      "decoderMaximum": 0,
+      "original444Center": [
+        22,
+        11,
+        5,
+        255
+      ],
+      "managedCenter": [
+        22,
+        11,
+        7,
+        255
+      ]
+    },
+    {
+      "case": "Premul-32-raw",
+      "inputExact": true,
+      "encoderMaximum": 2,
+      "decoderMaximum": 0,
+      "original444Center": [
+        22,
+        11,
+        5,
+        255
+      ],
+      "managedCenter": [
+        22,
+        11,
+        7,
+        255
+      ]
+    },
+    {
+      "case": "Unpremul-0-erase",
+      "inputExact": true,
+      "encoderMaximum": 0,
+      "decoderMaximum": 0,
+      "original444Center": [
+        0,
+        0,
+        0,
+        255
+      ],
+      "managedCenter": [
+        0,
+        0,
+        0,
+        255
+      ]
+    },
+    {
+      "case": "Unpremul-0-raw",
+      "inputExact": true,
+      "encoderMaximum": 0,
+      "decoderMaximum": 0,
+      "original444Center": [
+        181,
+        90,
+        45,
+        255
+      ],
+      "managedCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    },
+    {
+      "case": "Unpremul-128-erase",
+      "inputExact": true,
+      "encoderMaximum": 0,
+      "decoderMaximum": 0,
+      "original444Center": [
+        181,
+        90,
+        45,
+        255
+      ],
+      "managedCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    },
+    {
+      "case": "Unpremul-128-raw",
+      "inputExact": true,
+      "encoderMaximum": 0,
+      "decoderMaximum": 0,
+      "original444Center": [
+        181,
+        90,
+        45,
+        255
+      ],
+      "managedCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    },
+    {
+      "case": "Unpremul-255-erase",
+      "inputExact": true,
+      "encoderMaximum": 0,
+      "decoderMaximum": 0,
+      "original444Center": [
+        181,
+        90,
+        45,
+        255
+      ],
+      "managedCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    },
+    {
+      "case": "Unpremul-255-raw",
+      "inputExact": true,
+      "encoderMaximum": 0,
+      "decoderMaximum": 0,
+      "original444Center": [
+        181,
+        90,
+        45,
+        255
+      ],
+      "managedCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    },
+    {
+      "case": "Unpremul-32-erase",
+      "inputExact": true,
+      "encoderMaximum": 0,
+      "decoderMaximum": 0,
+      "original444Center": [
+        181,
+        90,
+        45,
+        255
+      ],
+      "managedCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    },
+    {
+      "case": "Unpremul-32-raw",
+      "inputExact": true,
+      "encoderMaximum": 0,
+      "decoderMaximum": 0,
+      "original444Center": [
+        181,
+        90,
+        45,
+        255
+      ],
+      "managedCenter": [
+        181,
+        90,
+        45,
+        255
+      ]
+    }
+  ]
+}

@@ -8,7 +8,7 @@ void Check(bool value, string message) { if (!value) throw new InvalidOperationE
 // Former Vulkan windows staged both PMA and Opaque framebuffers through RGBA/PMA.
 // Direct framebuffer output must preserve those exact physical storage bytes,
 // including Src/Clear writing nonopaque alpha into an Opaque metadata target.
-foreach(var format in Enum.GetValues<PixelFormat>())
+foreach(var format in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})
 {
     using var actual=new PixelBuffer(48,40,format,AlphaFormat.Opaque,48*4+12);
     using var expected=new PixelBuffer(48,40,PixelFormat.Rgba8888,AlphaFormat.Premultiplied);
@@ -28,7 +28,7 @@ foreach(var format in Enum.GetValues<PixelFormat>())
     Check(true,"Opaque Vulkan framebuffer preserves the former staging contract.");
 }
 foreach (var backend in Enum.GetValues<SimdSkiaGpuBackend>())
-foreach (var format in Enum.GetValues<PixelFormat>())
+foreach (var format in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})
 {
     using var target = new PixelBuffer(48, 40, format, AlphaFormat.Premultiplied, 48 * 4 + 16);
     using var expected = new PixelBuffer(48, 40, format, AlphaFormat.Premultiplied);

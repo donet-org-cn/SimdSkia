@@ -22,7 +22,15 @@ foreach(var fixture in fixtures.RootElement.GetProperty("cases").EnumerateArray(
     for(int i=0;i<expected.Length;i++){int error=Math.Abs(actual[i]-expected[i]);maximum=Math.Max(maximum,error);square+=error*error;}
     double rmse=Math.Sqrt(square/expected.Length);results.Add(new{name,maximum,rmse});
     Check(maximum<=fixture.GetProperty("max").GetInt32()&&rmse<=fixture.GetProperty("rmse").GetDouble(),$"{name} pixel gate max {maximum}, RMSE {rmse:F3}; expected {Convert.ToHexString(expected.AsSpan(0,16))}, actual {Convert.ToHexString(actual[..16])}");
-    using var bitmap=SKBitmap.Decode(encoded);Check(bitmap.Width==image.Width&&bitmap.GetPixel(7,3).Red==image.ReadPixel(7,3).R,name+" compatibility decode");
+    using var bitmap=SKBitmap.Decode(encoded);Check(bitmap.Width==image.Width&&bitmap.Height==image.Height,name+" compatibility dimensions");
+    // The compatibility factory follows native N32/PMA; ImageCodec keeps the
+    // straight RGBA contract used by the independent fixture check above.
+    int ri=bitmap.ColorType==SKColorType.Rgba8888?0:2;
+    for(int y=0;y<image.Height;y++)for(int x=0;x<image.Width;x++)
+    {
+        var c=image.ReadPixel(x,y);var pm=SKPMColor.PreMultiply(new SKColor(c.R,c.G,c.B,c.A));var px=bitmap.GetPixelSpan().Slice(y*bitmap.RowBytes+x*4,4);
+        Check(px[ri]==pm.Red&&px[1]==pm.Green&&px[2-ri]==pm.Blue&&px[3]==pm.Alpha,name+" compatibility PMA physical pixels");
+    }
     foreach(int length in new[]{0,2,encoded.Length/2,encoded.Length-4})
     {
         bool rejected=false;try{using var truncated=ImageCodec.Decode(encoded.AsSpan(0,length));}catch(Exception e)when(e is InvalidDataException or NotSupportedException or ArgumentException){rejected=true;}

@@ -149,10 +149,10 @@ var tests=new (string Name,Action Run)[]
         using var bitmap=new SKBitmap(1,1); var image=SKImage.FromBitmap(bitmap); image.Dispose();
         Throws<ObjectDisposedException>(()=>SKBitmap.FromImage(image)); Throws<ArgumentNullException>(()=>SKBitmap.FromImage(null!));
     }),
-    ("Bitmap copy preserves stride and independent bytes", () =>
+    ("Bitmap copy packs rows and owns independent pixels", () =>
     {
         using var bitmap=new SKBitmap(new SKImageInfo(2,2),12); bitmap.Erase(SKColors.Red); using var copy=bitmap.Copy();
-        Equal(12,copy.RowBytes); bitmap.Erase(SKColors.Blue); Equal(SKColors.Red,copy.GetPixel(1,1));
+        Equal(8,copy.RowBytes); bitmap.Erase(SKColors.Blue); Equal(SKColors.Red,copy.GetPixel(1,1));
     }),
     ("Disposed paint rejects drawing", () =>
     {
@@ -173,16 +173,15 @@ var tests=new (string Name,Action Run)[]
     ("Unsupported features throw before mutation", () =>
     {
         using var bitmap=new SKBitmap(2,2); using var canvas=new SKCanvas(bitmap); canvas.Clear(SKColors.Blue); using var paint=new SKPaint { Style=SKPaintStyle.StrokeAndFill };
-        Throws<NotSupportedException>(()=>canvas.DrawRect(SKRect.Create(2,2),paint)); paint.Style=SKPaintStyle.Stroke;paint.StrokeCap=SKStrokeCap.Round;
-        Throws<NotSupportedException>(()=>canvas.DrawRect(SKRect.Create(2,2),paint)); paint.Style=SKPaintStyle.Fill; paint.BlendMode=SKBlendMode.Multiply;
-        Throws<NotSupportedException>(()=>canvas.DrawRect(SKRect.Create(2,2),paint)); Equal(SKColors.Blue,bitmap.GetPixel(0,0));
+        Throws<NotSupportedException>(()=>canvas.DrawRect(SKRect.Create(2,2),paint)); paint.Style=SKPaintStyle.Fill;
+        Throws<ArgumentOutOfRangeException>(()=>paint.BlendMode=(SKBlendMode)999); Equal(SKColors.Blue,bitmap.GetPixel(0,0));
     }),
     ("Unknown formats and native handles fail explicitly", () =>
     {
         Throws<NotSupportedException>(()=>new SKBitmap(new SKImageInfo(1,1,SKColorType.RgbaF16)));
-        Throws<NotSupportedException>(()=>SKColorSpace.CreateSrgbLinear()); using var bitmap=new SKBitmap(1,1);
+        using var linear=SKColorSpace.CreateSrgbLinear();Equal(true,linear.GammaIsLinear); using var bitmap=new SKBitmap(1,1);
         if(bitmap.GetPixels()==IntPtr.Zero)throw new Exception("Allocated bitmap must expose pinned pixels."); Throws<NotSupportedException>(()=>_ = bitmap.Handle);
-        Throws<NotSupportedException>(()=>SKSurface.Create(new SKImageInfo(1,1),IntPtr.Zero));
+        if(SKSurface.Create(new SKImageInfo(1,1),IntPtr.Zero) is not null)throw new Exception("A null direct pixel pointer must fail creation.");
     }),
     ("Perspective and nonfinite matrices rejected atomically", () =>
     {
@@ -190,10 +189,12 @@ var tests=new (string Name,Action Run)[]
         Throws<NotSupportedException>(()=>canvas.SetMatrix(in m)); Equal(SKMatrix.Identity,canvas.TotalMatrix);
         Throws<ArgumentException>(()=>canvas.Translate(float.PositiveInfinity,0)); Equal(SKMatrix.Identity,canvas.TotalMatrix);
     }),
-    ("sRGB metadata supported; disposed profiles rejected", () =>
+    ("Static color spaces survive Dispose; owned profiles retain independently", () =>
     {
         using var srgb=SKColorSpace.CreateSrgb(); using var bitmap=new SKBitmap(new SKImageInfo(1,1,SKColorType.Rgba8888,SKAlphaType.Premul,srgb));
-        Equal(srgb,bitmap.ColorSpace!); srgb.Dispose(); Throws<ObjectDisposedException>(()=>new SKBitmap(bitmap.Info));
+        Equal(srgb,bitmap.ColorSpace!);srgb.Dispose();Equal(true,srgb.IsSrgb);
+        using var profile=SKColorSpace.CreateRgb(SKColorSpaceTransferFn.TwoDotTwo,SKColorSpaceXyz.DisplayP3);var info=new SKImageInfo(1,1,SKColorType.Rgba8888,SKAlphaType.Premul,profile);using var retained=new SKBitmap(info);profile.Dispose();
+        Throws<ObjectDisposedException>(()=>new SKBitmap(info));using var clone=new SKBitmap(retained.Info);Equal(false,clone.ColorSpace!.IsSrgb);
     }),
     ("Color packing and value equality", () =>
     {

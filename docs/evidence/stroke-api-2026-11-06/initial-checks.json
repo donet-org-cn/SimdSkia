@@ -1,0 +1,364 @@
+{
+  "baseline": "SkiaSharp 3.119.4",
+  "cases": 53,
+  "metadataChecks": 590,
+  "metadataFailures": [
+    "root: keys differ"
+  ],
+  "metadataPassed": false,
+  "pixelThreshold": {
+    "maximum": 32,
+    "rmse": 2
+  },
+  "images": [
+    {
+      "scene": "closed-zero-Butt-Bevel",
+      "maxError": 8,
+      "rmse": 0.2319865276765819,
+      "passed": true
+    },
+    {
+      "scene": "closed-zero-Butt-Miter",
+      "maxError": 2,
+      "rmse": 0.2200019975051363,
+      "passed": true
+    },
+    {
+      "scene": "closed-zero-Butt-Round",
+      "maxError": 19,
+      "rmse": 0.291611439153735,
+      "passed": true
+    },
+    {
+      "scene": "closed-zero-Round-Bevel",
+      "maxError": 16,
+      "rmse": 0.319859626498973,
+      "passed": true
+    },
+    {
+      "scene": "closed-zero-Round-Miter",
+      "maxError": 16,
+      "rmse": 0.31127690333025837,
+      "passed": true
+    },
+    {
+      "scene": "closed-zero-Round-Round",
+      "maxError": 19,
+      "rmse": 0.3654171083651359,
+      "passed": true
+    },
+    {
+      "scene": "closed-zero-Square-Bevel",
+      "maxError": 8,
+      "rmse": 0.23391882689968543,
+      "passed": true
+    },
+    {
+      "scene": "closed-zero-Square-Miter",
+      "maxError": 2,
+      "rmse": 0.22203861704878614,
+      "passed": true
+    },
+    {
+      "scene": "closed-zero-Square-Round",
+      "maxError": 19,
+      "rmse": 0.29315098498896436,
+      "passed": true
+    },
+    {
+      "scene": "outline-Butt-Bevel-False",
+      "maxError": 107,
+      "rmse": 1.0076307975735705,
+      "passed": false
+    },
+    {
+      "scene": "outline-Butt-Bevel-True",
+      "maxError": 9,
+      "rmse": 0.3550822074160257,
+      "passed": true
+    },
+    {
+      "scene": "outline-Butt-Miter-False",
+      "maxError": 107,
+      "rmse": 0.8761414847883803,
+      "passed": false
+    },
+    {
+      "scene": "outline-Butt-Miter-True",
+      "maxError": 11,
+      "rmse": 0.4310525193222544,
+      "passed": true
+    },
+    {
+      "scene": "outline-Butt-Round-False",
+      "maxError": 107,
+      "rmse": 1.007721652882134,
+      "passed": false
+    },
+    {
+      "scene": "outline-Butt-Round-True",
+      "maxError": 12,
+      "rmse": 0.3689080368444655,
+      "passed": true
+    },
+    {
+      "scene": "outline-Round-Bevel-False",
+      "maxError": 107,
+      "rmse": 1.008115264599614,
+      "passed": false
+    },
+    {
+      "scene": "outline-Round-Bevel-True",
+      "maxError": 14,
+      "rmse": 0.3852956770962562,
+      "passed": true
+    },
+    {
+      "scene": "outline-Round-Miter-False",
+      "maxError": 107,
+      "rmse": 0.8766986163255805,
+      "passed": false
+    },
+    {
+      "scene": "outline-Round-Miter-True",
+      "maxError": 14,
+      "rmse": 0.45636302645378984,
+      "passed": true
+    },
+    {
+      "scene": "outline-Round-Round-False",
+      "maxError": 107,
+      "rmse": 1.0082060762500393,
+      "passed": false
+    },
+    {
+      "scene": "outline-Round-Round-True",
+      "maxError": 14,
+      "rmse": 0.3980735163434796,
+      "passed": true
+    },
+    {
+      "scene": "outline-Square-Bevel-False",
+      "maxError": 107,
+      "rmse": 1.0082439120236792,
+      "passed": false
+    },
+    {
+      "scene": "outline-Square-Bevel-True",
+      "maxError": 12,
+      "rmse": 0.3095318021196489,
+      "passed": true
+    },
+    {
+      "scene": "outline-Square-Miter-False",
+      "maxError": 107,
+      "rmse": 0.876846544887559,
+      "passed": false
+    },
+    {
+      "scene": "outline-Square-Miter-True",
+      "maxError": 12,
+      "rmse": 0.3496257415861817,
+      "passed": true
+    },
+    {
+      "scene": "outline-Square-Round-False",
+      "maxError": 107,
+      "rmse": 1.0083347120879864,
+      "passed": false
+    },
+    {
+      "scene": "outline-Square-Round-True",
+      "maxError": 12,
+      "rmse": 0.32529940385502937,
+      "passed": true
+    },
+    {
+      "scene": "stroke-Butt-Bevel-False",
+      "maxError": 107,
+      "rmse": 1.0076307975735705,
+      "passed": false
+    },
+    {
+      "scene": "stroke-Butt-Bevel-True",
+      "maxError": 9,
+      "rmse": 0.3550822074160257,
+      "passed": true
+    },
+    {
+      "scene": "stroke-Butt-Miter-False",
+      "maxError": 107,
+      "rmse": 0.8761414847883803,
+      "passed": false
+    },
+    {
+      "scene": "stroke-Butt-Miter-True",
+      "maxError": 11,
+      "rmse": 0.4310525193222544,
+      "passed": true
+    },
+    {
+      "scene": "stroke-Butt-Round-False",
+      "maxError": 107,
+      "rmse": 1.007721652882134,
+      "passed": false
+    },
+    {
+      "scene": "stroke-Butt-Round-True",
+      "maxError": 12,
+      "rmse": 0.3689080368444655,
+      "passed": true
+    },
+    {
+      "scene": "stroke-Round-Bevel-False",
+      "maxError": 107,
+      "rmse": 1.008115264599614,
+      "passed": false
+    },
+    {
+      "scene": "stroke-Round-Bevel-True",
+      "maxError": 14,
+      "rmse": 0.3852956770962562,
+      "passed": true
+    },
+    {
+      "scene": "stroke-Round-Miter-False",
+      "maxError": 107,
+      "rmse": 0.8766986163255805,
+      "passed": false
+    },
+    {
+      "scene": "stroke-Round-Miter-True",
+      "maxError": 14,
+      "rmse": 0.45636302645378984,
+      "passed": true
+    },
+    {
+      "scene": "stroke-Round-Round-False",
+      "maxError": 107,
+      "rmse": 1.0082060762500393,
+      "passed": false
+    },
+    {
+      "scene": "stroke-Round-Round-True",
+      "maxError": 14,
+      "rmse": 0.3980735163434796,
+      "passed": true
+    },
+    {
+      "scene": "stroke-Square-Bevel-False",
+      "maxError": 107,
+      "rmse": 1.0082439120236792,
+      "passed": false
+    },
+    {
+      "scene": "stroke-Square-Bevel-True",
+      "maxError": 12,
+      "rmse": 0.3095318021196489,
+      "passed": true
+    },
+    {
+      "scene": "stroke-Square-Miter-False",
+      "maxError": 107,
+      "rmse": 0.876846544887559,
+      "passed": false
+    },
+    {
+      "scene": "stroke-Square-Miter-True",
+      "maxError": 12,
+      "rmse": 0.3496257415861817,
+      "passed": true
+    },
+    {
+      "scene": "stroke-Square-Round-False",
+      "maxError": 107,
+      "rmse": 1.0083347120879864,
+      "passed": false
+    },
+    {
+      "scene": "stroke-Square-Round-True",
+      "maxError": 12,
+      "rmse": 0.32529940385502937,
+      "passed": true
+    }
+  ],
+  "directOutline": [
+    {
+      "scene": "stroke-Butt-Bevel-False",
+      "exact": true
+    },
+    {
+      "scene": "stroke-Butt-Bevel-True",
+      "exact": true
+    },
+    {
+      "scene": "stroke-Butt-Miter-False",
+      "exact": true
+    },
+    {
+      "scene": "stroke-Butt-Miter-True",
+      "exact": true
+    },
+    {
+      "scene": "stroke-Butt-Round-False",
+      "exact": true
+    },
+    {
+      "scene": "stroke-Butt-Round-True",
+      "exact": true
+    },
+    {
+      "scene": "stroke-Round-Bevel-False",
+      "exact": true
+    },
+    {
+      "scene": "stroke-Round-Bevel-True",
+      "exact": true
+    },
+    {
+      "scene": "stroke-Round-Miter-False",
+      "exact": true
+    },
+    {
+      "scene": "stroke-Round-Miter-True",
+      "exact": true
+    },
+    {
+      "scene": "stroke-Round-Round-False",
+      "exact": true
+    },
+    {
+      "scene": "stroke-Round-Round-True",
+      "exact": true
+    },
+    {
+      "scene": "stroke-Square-Bevel-False",
+      "exact": true
+    },
+    {
+      "scene": "stroke-Square-Bevel-True",
+      "exact": true
+    },
+    {
+      "scene": "stroke-Square-Miter-False",
+      "exact": true
+    },
+    {
+      "scene": "stroke-Square-Miter-True",
+      "exact": true
+    },
+    {
+      "scene": "stroke-Square-Round-False",
+      "exact": true
+    },
+    {
+      "scene": "stroke-Square-Round-True",
+      "exact": true
+    }
+  ],
+  "managedChecks": {
+    "exactChecks": 603
+  },
+  "fullCompatibility": false,
+  "passed": false
+}

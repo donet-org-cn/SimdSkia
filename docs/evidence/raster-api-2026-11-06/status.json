@@ -1,0 +1,26 @@
+{
+  "goalComplete": false,
+  "targetMaximumMissing": 99,
+  "matching": 2384,
+  "missing": 851,
+  "extra": 0,
+  "publicTypes": 146,
+  "baselineHash": "03A164AC1097F84793632DF806DA91E2829F0FCA65D8F2B922E45554AB083296",
+  "replacementHash": "4FA91A52D644EDB12157CDA2BF65C60875672EA59E8162DA49B8DA227CA476AC",
+  "published": false,
+  "aotChecks": 48,
+  "exactOptimizationChecks": 474413,
+  "strictFailures": {
+    "blends": 48,
+    "canvasImages": 36,
+    "canvasMetadata": 1,
+    "rasterShaderImages": 194,
+    "colorFilters": 0,
+    "imageFactories": 32,
+    "priorFontScalars": 186,
+    "priorRegionFields": 8,
+    "priorJpegStillFails": true,
+    "priorWholePage": "0/18, not rerun"
+  },
+  "scope": "CPU raster microbenchmarks, API/behavior/pixels, AOT and Windows GPU regressions; no whole-app or GPU throughput parity claim"
+}

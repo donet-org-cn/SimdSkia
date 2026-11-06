@@ -17,9 +17,12 @@ internal static class TextCoverageCache
     private static readonly ConditionalWeakTable<PathGeometry,Use> uses=new();
     internal const int MaximumEntries=512;
     internal const long MaximumBytes=16*1024*1024;
+    internal static long ByteLimit=256*1024;
+    internal static int EntryLimit=MaximumEntries;
     internal static bool Enabled=true; // Internal uncached reference for regression tests.
     internal static (int Count,long Bytes) Statistics {get{lock(gate)return(entries.Count,bytes);}}
     internal static void Clear(){lock(gate){entries.Clear();order.Clear();bytes=0;uses.Clear();}}
+    internal static void Configure(long budget,int count){lock(gate){ByteLimit=Math.Min(MaximumBytes,Math.Max(0,budget));EntryLimit=Math.Min(MaximumEntries,Math.Max(0,count));Clear();}}
     internal static bool TryGet(PathGeometry geometry,in DrawingCommand command,int width,int height,out CoverageMask mask,out int offsetX,out int offsetY)
     {
         mask=null!;offsetX=offsetY=0;
@@ -42,11 +45,12 @@ internal static class TextCoverageCache
         if(Enabled)lock(gate)if(entries.TryGetValue(key,out var node)){order.Remove(node);order.AddLast(node);mask=node.Value.Mask;return true;}
         mask=PathRasterizer.Rasterize(geometry.Flatten(local,command.CurveTolerance),geometry.FillRule,w,h,command.Paint.Antialias,compactRuns:true);
         long size=mask.Data.LongLength+(long)mask.Runs.Length*16+(long)geometry.Segments.Length*32;
-        if(!Enabled||size>MaximumBytes||Interlocked.Increment(ref uses.GetValue(geometry,static _=>new()).Count)<2)return true;
+        if(!Enabled||size>ByteLimit||EntryLimit<=0||Interlocked.Increment(ref uses.GetValue(geometry,static _=>new()).Count)<2)return true;
         lock(gate)
         {
+            if(size>ByteLimit||EntryLimit<=0)return true;
             if(entries.TryGetValue(key,out var existing)){mask=existing.Value.Mask;return true;}
-            while(entries.Count>=MaximumEntries||bytes+size>MaximumBytes)
+            while(entries.Count>=MaximumEntries||bytes+size>ByteLimit||EntryLimit<=0)
             {var first=order.First!;bytes-=first.Value.Bytes;entries.Remove(first.Value.Key);order.RemoveFirst();}
             entries.Add(key,order.AddLast(new Entry(key,mask,size)));bytes+=size;
         }

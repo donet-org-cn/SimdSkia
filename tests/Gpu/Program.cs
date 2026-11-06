@@ -21,6 +21,29 @@ using(var shader=SKShader.CreateLinearGradient(new(0,0),new(64,0),[SKColors.Red,
     paint.Shader=shader;paint.Color=SKColors.White.WithAlpha(128);foreach(var canvas in new[]{cpu,surface.Canvas}){canvas.Clear(SKColors.White);canvas.DrawRect(SKRect.Create(64,48),paint);}
     using(var image=surface.Snapshot())using(var actual=SKBitmap.FromImage(image))Compare(bitmap,actual,0,"gradient");paint.Shader=null;
 }
+foreach(var mode in new[]{SKShaderTileMode.Clamp,SKShaderTileMode.Repeat,SKShaderTileMode.Mirror})
+{
+    using var shader=SKShader.CreateLinearGradient(new(11,5),new(49,35),[SKColors.Red,SKColors.Green,SKColors.Blue],[0,.3f,1],mode);
+    paint.Shader=shader;paint.Color=SKColors.White;
+    foreach(var canvas in new[]{cpu,surface.Canvas}){canvas.Clear(SKColors.White);canvas.DrawRect(SKRect.Create(64,48),paint);}
+    using var image=surface.Snapshot();using var actual=SKBitmap.FromImage(image);Compare(bitmap,actual,1,"multi-gradient-"+mode);paint.Shader=null;
+}
+using(var shader=SKShader.CreateLinearGradient(new(0,0),new(60,40),[SKColors.Red,SKColors.Green,SKColors.Blue],null,SKShaderTileMode.Clamp,SKMatrix.CreateScale(1.4f,.8f)))
+{
+    paint.Shader=shader;
+    foreach(var canvas in new[]{cpu,surface.Canvas}){canvas.Clear(SKColors.White);canvas.DrawRect(SKRect.Create(64,48),paint);}
+    using var image=surface.Snapshot();using var actual=SKBitmap.FromImage(image);Compare(bitmap,actual,1,"multi-gradient-local-matrix");paint.Shader=null;
+}
+foreach(var shader in new[]{SKShader.CreateRadialGradient(new(32,24),20,[SKColors.Red,SKColors.Blue],SKShaderTileMode.Clamp),SKShader.CreateSweepGradient(new(32,24),[SKColors.Red,SKColors.Blue]),SKShader.CreateLinearGradient(new(0,0),new(60,40),[SKColors.Red,SKColors.Blue],SKShaderTileMode.Decal)})
+{
+    using(shader)
+    {
+        paint.Shader=shader;bool rejected=false;
+        try{surface.Canvas.DrawRect(SKRect.Create(64,48),paint);}catch(NotSupportedException){rejected=true;}
+        if(!rejected)throw new Exception("Unsupported Vulkan gradient was silently accepted.");paint.Shader=null;
+    }
+}
+Console.WriteLine("PASS explicit Vulkan rejection of radial/sweep/decal; CPU implementation remains available");
 paint.Color=SKColors.Red;paint.Style=SKPaintStyle.Stroke;paint.StrokeWidth=4;paint.IsAntialias=true;
 foreach(var canvas in new[]{cpu,surface.Canvas}){canvas.Clear(SKColors.White);canvas.DrawRect(SKRect.Create(8,10,24,16),paint);}
 using(var image=surface.Snapshot())using(var actual=SKBitmap.FromImage(image))Compare(bitmap,actual,0,"miter-stroke-AA");

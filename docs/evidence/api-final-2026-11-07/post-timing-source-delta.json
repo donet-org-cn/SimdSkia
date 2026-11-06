@@ -1,0 +1,35 @@
+{
+  "scope": "CPU/UI/Vulkan timing binaries predate GL in-flight callback and D3D12 Adapter fixes. Changed methods are not used in their measured draw paths; no shader/core/cpu/avalonia rendering source changed. GL/D3D12 are retested and remeasured after these fixes. Original hashes remain intact.",
+  "changed": [
+    {
+      "path": "src\\SimdSkia.Compatibility\\GRContext.cs",
+      "before": "6a0b4cce80a4a32454725532bca5ee2c2df38fa3a2fe0f729fd0adf552761eb6",
+      "after": "b47dd4b969d465ec8e187477d52083ff36b8681e6fa6d5aafadad55ae05d5be7"
+    },
+    {
+      "path": "src\\SimdSkia.Compatibility\\GRContext.Direct3D.cs",
+      "before": "b8c298257bfdb135a0abe27e11ac1e99ee452c08e6b84d614a8ee51be49fe922",
+      "after": "77db63a22a08407ef6beb61a9e2ccface9f4f26b757d5f2999bb3540ce2aca69"
+    },
+    {
+      "path": "src\\SimdSkia.Compatibility\\SKImage.Gpu.cs",
+      "before": "715642afe31caecc78e9880d308f9341e2f203656baa1e8282cd5184efc348d3",
+      "after": "1ada685b700d24eded45e8cb8fadb6eb8627bb339778c551970da3df3e233f4c"
+    },
+    {
+      "path": "src\\SimdSkia.Gpu\\GlCanvas.cs",
+      "before": "5b1ecea9341e52b5babe19c79b1c3689bf30a41de47518eb1289104394010b52",
+      "after": "6e59ef4bfc50fec02978e9137c4e33aa359a0a82b4aefedc0ca7b93008f731a2"
+    },
+    {
+      "path": "src\\SimdSkia.Gpu\\GlImage.cs",
+      "before": "78bb5904ccfc9acf1ec307ed4165052883b60837592918a0e7ef0fcf22e55a74",
+      "after": "0b0c3dcec1aac993c99dc6984a39c7626fab134fc114a7169c33cc882d87b270"
+    },
+    {
+      "path": "src\\SimdSkia.Gpu.Direct2D\\D3D12Device.cs",
+      "before": "54629ea5b7ab9e6599858b3bfb421a24fb4d669b79bc66d03890ba38adcd9ff7",
+      "after": "68eafb33707d5ad5313c5548f60edb0f690140a7f1b8a5451825a8902b56da42"
+    }
+  ]
+}

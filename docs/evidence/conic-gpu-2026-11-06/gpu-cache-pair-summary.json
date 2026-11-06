@@ -1,0 +1,164 @@
+[
+  {
+    "scene": "controls",
+    "scale": 1,
+    "backend": "vulkan",
+    "before": {
+      "meanMs": 1.3150372796632464,
+      "recordingMs": 0.22508021573270193,
+      "completionMs": 1.0865985849056605,
+      "cpuMsPerFrame": 0.5404874213836478,
+      "cpuPercentMachine": 3.4371008838453676,
+      "sampledMedianWorkingSetMiB": 153.0,
+      "sampledMedianPrivateMiB": 150.109375,
+      "allocatedBytesPerFrame": 7945.698500394633
+    },
+    "after": {
+      "meanMs": 1.3128319327731093,
+      "recordingMs": 0.22171377040547657,
+      "completionMs": 1.086226050420168,
+      "cpuMsPerFrame": 0.5744485294117647,
+      "cpuPercentMachine": 3.645232234537858,
+      "sampledMedianWorkingSetMiB": 153.1171875,
+      "sampledMedianPrivateMiB": 150.77734375,
+      "allocatedBytesPerFrame": 7849.69537815126
+    },
+    "beforeAfterExact": true,
+    "ratio": 0.9983229776644037
+  },
+  {
+    "scene": "controls",
+    "scale": 1,
+    "backend": "direct2d",
+    "before": {
+      "meanMs": 1.4935628921422168,
+      "recordingMs": 0.38652488795936657,
+      "completionMs": 1.1070380041828503,
+      "cpuMsPerFrame": 1.9887212429040932,
+      "cpuPercentMachine": 10.831206301039936,
+      "sampledMedianWorkingSetMiB": 145.57421875,
+      "sampledMedianPrivateMiB": 129.8046875,
+      "allocatedBytesPerFrame": 5705.558410516881
+    },
+    "after": {
+      "meanMs": 1.3467694691457828,
+      "recordingMs": 0.27041778237270614,
+      "completionMs": 1.0790122877930477,
+      "cpuMsPerFrame": 1.839969011048235,
+      "cpuPercentMachine": 11.379906310619848,
+      "sampledMedianWorkingSetMiB": 142.94921875,
+      "sampledMedianPrivateMiB": 127.60546875,
+      "allocatedBytesPerFrame": 5609.405551064403
+    },
+    "beforeAfterExact": true,
+    "ratio": 0.9017159412779141
+  },
+  {
+    "scene": "controls",
+    "scale": 1.5,
+    "backend": "vulkan",
+    "before": {
+      "meanMs": 2.36610056791292,
+      "recordingMs": 0.365597005703422,
+      "completionMs": 2.005163416942735,
+      "cpuMsPerFrame": 1.0471126425855513,
+      "cpuPercentMachine": 3.671245821891044,
+      "sampledMedianWorkingSetMiB": 167.18359375,
+      "sampledMedianPrivateMiB": 169.734375,
+      "allocatedBytesPerFrame": 8121.88168480833
+    },
+    "after": {
+      "meanMs": 2.371491176470588,
+      "recordingMs": 0.35885768500948767,
+      "completionMs": 2.012118522027475,
+      "cpuMsPerFrame": 0.9844268119374704,
+      "cpuPercentMachine": 3.463244935840564,
+      "sampledMedianWorkingSetMiB": 167.3984375,
+      "sampledMedianPrivateMiB": 169.7421875,
+      "allocatedBytesPerFrame": 8025.88614800759
+    },
+    "beforeAfterExact": true,
+    "ratio": 1.0022782668795955
+  },
+  {
+    "scene": "controls",
+    "scale": 1.5,
+    "backend": "direct2d",
+    "before": {
+      "meanMs": 2.5662668891170433,
+      "recordingMs": 0.5538440362355309,
+      "completionMs": 1.9923494353182751,
+      "cpuMsPerFrame": 3.076897558386412,
+      "cpuPercentMachine": 9.893615778292785,
+      "sampledMedianWorkingSetMiB": 155.82421875,
+      "sampledMedianPrivateMiB": 143.83984375,
+      "allocatedBytesPerFrame": 5705.404517453799
+    },
+    "after": {
+      "meanMs": 2.3016995395948436,
+      "recordingMs": 0.41311022099447514,
+      "completionMs": 1.8885893186003682,
+      "cpuMsPerFrame": 2.7919728984841523,
+      "cpuPercentMachine": 10.125940654385136,
+      "sampledMedianWorkingSetMiB": 156.1015625,
+      "sampledMedianPrivateMiB": 144.62109375,
+      "allocatedBytesPerFrame": 5609.436464088398
+    },
+    "beforeAfterExact": true,
+    "ratio": 0.8969057541738275
+  },
+  {
+    "scene": "scroll",
+    "scale": 1,
+    "backend": "vulkan",
+    "before": {
+      "meanMs": 1.2977994545454545,
+      "recordingMs": 0.10328363636363637,
+      "completionMs": 1.1945158181818183,
+      "cpuMsPerFrame": 0.38961038961038963,
+      "cpuPercentMachine": 2.4993602637468912,
+      "sampledMedianWorkingSetMiB": 142.453125,
+      "sampledMedianPrivateMiB": 148.1953125,
+      "allocatedBytesPerFrame": 4816.652467532467
+    },
+    "after": {
+      "meanMs": 1.2972397455867082,
+      "recordingMs": 0.1054881439295884,
+      "completionMs": 1.19289979204575,
+      "cpuMsPerFrame": 0.33261941848390447,
+      "cpuPercentMachine": 2.1351495167591295,
+      "sampledMedianWorkingSetMiB": 142.44140625,
+      "sampledMedianPrivateMiB": 147.046875,
+      "allocatedBytesPerFrame": 4816.652128764278
+    },
+    "beforeAfterExact": true,
+    "ratio": 0.9995687246155128
+  },
+  {
+    "scene": "scroll",
+    "scale": 1,
+    "backend": "direct2d",
+    "before": {
+      "meanMs": 0.7620183636086093,
+      "recordingMs": 0.13014088002436053,
+      "completionMs": 0.6323200732712563,
+      "cpuMsPerFrame": 1.1133526187576126,
+      "cpuPercentMachine": 12.18649266451635,
+      "sampledMedianWorkingSetMiB": 130.08203125,
+      "sampledMedianPrivateMiB": 122.03515625,
+      "allocatedBytesPerFrame": 2488.385394292728
+    },
+    "after": {
+      "meanMs": 0.7644290964777948,
+      "recordingMs": 0.1313644925327644,
+      "completionMs": 0.6328411026033691,
+      "cpuMsPerFrame": 1.128105954055321,
+      "cpuPercentMachine": 12.031120063903309,
+      "sampledMedianWorkingSetMiB": 129.94140625,
+      "sampledMedianPrivateMiB": 122.07421875,
+      "allocatedBytesPerFrame": 2488.3846860643184
+    },
+    "beforeAfterExact": true,
+    "ratio": 1.0031636151887064
+  }
+]

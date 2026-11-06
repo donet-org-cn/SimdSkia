@@ -6,13 +6,20 @@ public readonly record struct PointF(float X,float Y)
     public static PointF operator -(PointF a,PointF b)=>new(a.X-b.X,a.Y-b.Y);
     public static PointF operator *(PointF a,float b)=>new(a.X*b,a.Y*b);
 }
-public enum PathVerb { Move,Line,Quadratic,Cubic,Close }
+public enum PathVerb { Move,Line,Quadratic,Cubic,Close,Conic }
 public enum FillRule { Winding,EvenOdd,InverseWinding,InverseEvenOdd }
-public readonly record struct PathSegment(PathVerb Verb,PointF A,PointF B=default,PointF C=default);
+public readonly record struct PathSegment(PathVerb Verb,PointF A,PointF B=default,PointF C=default)
+{
+    // Conics use A=control, B=end and the otherwise unused C payload for weight.
+    // Keep the existing struct layout/constructor and avoid enlarging every glyph segment.
+    public float ConicWeight=>C.X;
+    public static PathSegment Conic(PointF control,PointF end,float weight)=>new(PathVerb.Conic,control,end,new(weight,0));
+}
 public sealed class PathGeometry
 {
     private readonly PathSegment[] segments;
     public FillRule FillRule { get; }
+    public bool HasConics{get;}
     private sealed record BoundsBox(RectF Value);
     private BoundsBox? bounds;
     public RectF ControlBounds
@@ -26,14 +33,16 @@ public sealed class PathGeometry
     public ReadOnlySpan<PathSegment> Segments=>segments;
     public PathGeometry Transform(Matrix3 matrix)
     {
+        if(!matrix.IsFinite||!matrix.IsAffine)throw new NotSupportedException("Path transforms require a finite affine matrix.");
         PointF Map(PointF p){var v=matrix.Map(p.X,p.Y);return new(v.X,v.Y);}
-        return new(segments.Select(s=>new PathSegment(s.Verb,Map(s.A),Map(s.B),Map(s.C))),FillRule);
+        return new(segments.Select(s=>new PathSegment(s.Verb,Map(s.A),Map(s.B),s.Verb==PathVerb.Conic?s.C:Map(s.C))),FillRule);
     }
     public void AppendTransformedTo(List<PathSegment> destination,Matrix3 matrix)
     {
         ArgumentNullException.ThrowIfNull(destination);
+        if(!matrix.IsFinite||!matrix.IsAffine)throw new NotSupportedException("Path transforms require a finite affine matrix.");
         PointF Map(PointF p){var v=matrix.Map(p.X,p.Y);return new(v.X,v.Y);}
-        foreach(var s in segments)destination.Add(new(s.Verb,Map(s.A),Map(s.B),Map(s.C)));
+        foreach(var s in segments)destination.Add(new(s.Verb,Map(s.A),Map(s.B),s.Verb==PathVerb.Conic?s.C:Map(s.C)));
     }
     public RectF GetTightBounds(Matrix3 matrix)
     {
@@ -51,6 +60,20 @@ public sealed class PathGeometry
             if(s.Verb==PathVerb.Move){current=start=b;Include(b.X,b.Y);continue;}
             if(s.Verb==PathVerb.Line){Include(a.X,a.Y);Include(b.X,b.Y);current=b;continue;}
             var c=Map(s.B);
+            if(s.Verb==PathVerb.Conic)
+            {
+                double w=s.ConicWeight;Include(a.X,a.Y);Include(c.X,c.Y);
+                double Eval(double v0,double v1,double v2,double t){double u=1-t;return (u*u*v0+2*w*u*t*v1+t*t*v2)/(u*u+2*w*u*t+t*t);}
+                void Extrema(double v0,double v1,double v2)
+                {
+                    double n0=v0,n1=2*(w*v1-v0),n2=v0-2*w*v1+v2,d1=2*(w-1),d2=2*(1-w);
+                    double aa=n2*d1-n1*d2,bb=2*(n2-n0*d2),cc=n1-n0*d1;
+                    void Root(double t){if(t>0&&t<1)Include(Eval(a.X,b.X,c.X,t),Eval(a.Y,b.Y,c.Y,t));}
+                    if(aa==0){if(bb!=0)Root(-cc/bb);return;}double disc=bb*bb-4*aa*cc;if(disc<0)return;
+                    double q=-.5*(bb+Math.CopySign(Math.Sqrt(disc),bb));if(q==0)Root(-bb/(2*aa));else{Root(q/aa);Root(cc/q);}
+                }
+                Extrema(a.X,b.X,c.X);Extrema(a.Y,b.Y,c.Y);current=c;continue;
+            }
             if(s.Verb==PathVerb.Quadratic)
             {
                 Include(a.X,a.Y);Include(c.X,c.Y);
@@ -77,7 +100,10 @@ public sealed class PathGeometry
         if(!Enum.IsDefined(fillRule)) throw new ArgumentOutOfRangeException(nameof(fillRule));
         this.segments=segments.ToArray(); FillRule=fillRule;
         foreach(var s in this.segments)
-            if(!Finite(s.A)||!Finite(s.B)||!Finite(s.C)) throw new ArgumentException("Path coordinates must be finite.");
+        {
+            if(s.Verb==PathVerb.Conic)HasConics=true;
+            if(!Finite(s.A)||!Finite(s.B)||!Finite(s.C)||s.Verb==PathVerb.Conic&&s.ConicWeight<=0) throw new ArgumentException("Path coordinates and positive conic weights must be finite.");
+        }
     }
     private RectF ComputeControlBounds()
     {
@@ -85,12 +111,13 @@ public sealed class PathGeometry
         void Include(PointF p){l=MathF.Min(l,p.X);t=MathF.Min(t,p.Y);r=MathF.Max(r,p.X);b=MathF.Max(b,p.Y);}
         if(segments.Length>0&&segments[0].Verb!=PathVerb.Move)Include(default);
         foreach(var s in this.segments)
-        {if(s.Verb==PathVerb.Close)continue;Include(s.A);if(s.Verb is PathVerb.Quadratic or PathVerb.Cubic)Include(s.B);if(s.Verb==PathVerb.Cubic)Include(s.C);}
+        {if(s.Verb==PathVerb.Close)continue;Include(s.A);if(s.Verb is PathVerb.Quadratic or PathVerb.Cubic or PathVerb.Conic)Include(s.B);if(s.Verb==PathVerb.Cubic)Include(s.C);}
         return float.IsPositiveInfinity(l)?default:new(l,t,r,b);
     }
     private static bool Finite(PointF p)=>float.IsFinite(p.X)&&float.IsFinite(p.Y);
     public PointF[][] Flatten(Matrix3 matrix,float tolerance=0.125f)
     {
+        if(!float.IsFinite(tolerance)||tolerance<=0)throw new ArgumentOutOfRangeException(nameof(tolerance));
         if(!matrix.IsFinite||!matrix.IsAffine) throw new NotSupportedException("Path rasterization requires a finite affine transform.");
         var contours=new List<PointF[]>(); var points=new List<PointF>(); PointF current=default,start=default;
         PointF Map(PointF p) { var v=matrix.Map(p.X,p.Y); var mapped=new PointF(v.X,v.Y); if(!Finite(mapped))throw new ArgumentException("Transformed path exceeds finite range."); return mapped; }
@@ -107,12 +134,26 @@ public sealed class PathGeometry
                 case PathVerb.Cubic:
                     if(points.Count==0)points.Add(current); var b=Map(s.A);var c=Map(s.B);var d=Map(s.C);
                     Cubic(current,b,c,d,points,tolerance,0);current=d;break;
+                case PathVerb.Conic:
+                    if(points.Count==0)points.Add(current);var conicControl=Map(s.A);var conicEnd=Map(s.B);double w=s.ConicWeight;
+                    RationalQuad((current.X,current.Y,1),(w*conicControl.X,w*conicControl.Y,w),(conicEnd.X,conicEnd.Y,1),points,Math.Min(tolerance,1f/64),0);
+                    current=conicEnd;break;
                 case PathVerb.Close: if(points.Count>0&&points[^1]!=start)points.Add(start); current=start; Finish(); break;
                 default: throw new NotSupportedException("Unknown path verb.");
             }
             if(points.Count>1_000_000)throw new InvalidOperationException("Path subdivision limit exceeded.");
         }
         Finish(); return contours.ToArray();
+    }
+    private static void RationalQuad((double X,double Y,double W) a,(double X,double Y,double W) b,(double X,double Y,double W) c,List<PointF> output,float tolerance,int depth)
+    {
+        static PointF Project((double X,double Y,double W) p)=>new((float)(p.X/p.W),(float)(p.Y/p.W));
+        var start=Project(a);var control=Project(b);var end=Project(c);
+        if(Distance(control,start,end)<=tolerance){output.Add(end);return;}
+        if(depth>=24||output.Count>=1_000_000)throw new InvalidOperationException("Conic subdivision limit exceeded.");
+        var ab=((a.X+b.X)*.5,(a.Y+b.Y)*.5,(a.W+b.W)*.5);var bc=((b.X+c.X)*.5,(b.Y+c.Y)*.5,(b.W+c.W)*.5);
+        var middle=((ab.Item1+bc.Item1)*.5,(ab.Item2+bc.Item2)*.5,(ab.Item3+bc.Item3)*.5);
+        RationalQuad(a,ab,middle,output,tolerance,depth+1);RationalQuad(middle,bc,c,output,tolerance,depth+1);
     }
     private static float Distance(PointF p,PointF a,PointF b)
     {

@@ -1,5 +1,14 @@
 # NuGet 发布记录
 
+## 0.1.2-preview.1 — 待发布验证
+
+本轮预览统一十二包，固定3.119.4基线3230/3235，保留5项真实原生合同缺口；补充SVG/XPS/SKP、Alpha8、浮点颜色、GL/GLES/D3D12/Metal与GPU资源链路，优化Vulkan复制/合批/读回及分配。Metal没有Mac GPU，JPEG/部分文字与整页画质、性能/内存差距仍披露。[完整测试与性能](PUBLIC-API-FINAL-2026-11-07.md)。当前尚未完成本版CI与公开下载验证，不能把下方0.1.1的通过结果当作本版发布成功。
+
+```sh
+dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.2-preview.1
+dotnet add package SimdSkia.Avalonia.Gpu --version 0.1.2-preview.1
+```
+
 ## 正式补丁版 0.1.1 — 已完成公开验证
 
 十二包已公开，全部 DLL、六套官方宿主/桥接库、buildTransitive 目标、README/CHANGELOG/LICENSE 和 nuspec 与冻结 CI 产物一致，本地及 GitHub CI 两次独立下载结果一致。纯 NuGet.org 源与空缓存安装、构建和实际窗口运行通过。[正式发行工作流](https://github.com/donet-org-cn/SimdSkia/actions/runs/41831366323)全部成功；标签 `v0.1.1` 固定在 `b45f5cb09664c55ee421f9617c9fc57fab56f6b7`，[GitHub 正式发行](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.1)。

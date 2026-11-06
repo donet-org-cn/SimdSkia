@@ -9,6 +9,9 @@ internal static partial class SpanCompositor
 {
     public static void ApplyCoverage(Span<byte> pixels,ReadOnlySpan<byte> coverage,PixelFormat format,AlphaFormat alpha,Paint paint)
     {
+        if(paint.Blender is not null||paint.FloatingColor is not null){for(int i=0;i<coverage.Length;i++)Apply(pixels.Slice(i*4,4),format,alpha,paint,coverage[i]);return;}
+        if(paint.ColorFilter is {} filter){var c=paint.Color;float a=c.A/255f;var source=paint.FilteredConstant?.Value??filter.Filter(new(c.R/255f*a,c.G/255f*a,c.B/255f*a,a));for(int i=0;i<coverage.Length;i++)if(coverage[i]!=0)BlendKernel.ApplyPremultiplied(pixels.Slice(i*4,4),format,alpha,source,255,paint.Composite,coverage[i]);return;}
+        if(paint.Composite is not (CompositeMode.SourceOver or CompositeMode.Source or CompositeMode.Clear)){for(int i=0;i<coverage.Length;i++)if(coverage[i]!=0)BlendKernel.Apply(pixels.Slice(i*4,4),format,alpha,paint.Color,paint.Composite,coverage[i]);return;}
         int x=0;
         if(CpuOptions.EnableSimd&&Avx2.IsSupported&&alpha!=AlphaFormat.Straight)
         {

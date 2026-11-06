@@ -10,11 +10,13 @@ public enum SKFontHinting { None=0,Slight=1,Normal=2,Full=3 }
 public enum SKFontEdging { Alias=0,Antialias=1,SubpixelAntialias=2 }
 public enum SKTextAlign { Left=0,Center=1,Right=2 }
 
-public class SKTypeface : SKObject
+public partial class SKTypeface : SKObject
 {
     private TrueTypeFont? data;
     private readonly (string Family,int Weight,int Width,int Slant) description;
     internal TrueTypeFont Font=>data??throw new ObjectDisposedException(nameof(SKTypeface));
+    internal bool HasFont=>data is not null;
+    internal static SKTypeface Retain(TrueTypeFont font)=>new(font);
     private SKTypeface(TrueTypeFont font){data=font;description=InstalledFonts.Describe(font);}
     public string FamilyName {get{ThrowIfDisposed();return description.Family;}}
     public SKFontStyle FontStyle {get{ThrowIfDisposed();return new(description.Weight,description.Width,(SKFontStyleSlant)description.Slant);}}
@@ -28,9 +30,9 @@ public class SKTypeface : SKObject
     public static SKTypeface FromFamilyName(string? familyName,SKFontStyleWeight weight,SKFontStyleWidth width,SKFontStyleSlant slant)=>FromFamilyName(familyName,(int)weight,(int)width,slant);
     public static SKTypeface FromFamilyName(string? familyName,int weight,int width,SKFontStyleSlant slant)=>new(InstalledFonts.Match(familyName,weight,width,(int)slant).Font);
     public static SKTypeface FromData(SKData data,int index=0){ArgumentNullException.ThrowIfNull(data);return new(new(data.AsSpan(),index));}
-    protected override void Dispose(bool disposing)=>data=null;
+    protected override void Dispose(bool disposing){measurementFont?.Dispose();measurementFont=null;data=null;}
     public static SKTypeface FromFile(string path,int index=0)
-    {ArgumentNullException.ThrowIfNull(path);return new(new(File.ReadAllBytes(path),index));}
+    {ArgumentNullException.ThrowIfNull(path);return new(TrueTypeFont.FromFile(path,index));}
     public static SKTypeface FromStream(Stream stream,int index=0)
     {ArgumentNullException.ThrowIfNull(stream);using var copy=new MemoryStream();stream.CopyTo(copy);return new(new(copy.ToArray(),index));}
     public static SKTypeface Default
@@ -45,12 +47,12 @@ public class SKTypeface : SKObject
     public ushort GetGlyph(int codepoint){ThrowIfDisposed();return Font.GetGlyph(codepoint);}
 }
 
-public class SKFont : SKObject
+public partial class SKFont : SKObject
 {
     private SKTypeface typeface;
     private TrueTypeFont font;
     private float size,scaleX,skewX;
-    private readonly Dictionary<(string Text,float X,float Y,SKTextAlign Align),PathGeometry> layouts=[];
+    private readonly Dictionary<(string Text,float X,float Y,SKTextAlign Align),GlyphRunGeometry> layouts=[];
     private long layoutBytes;
     private SKFontHinting hinting;
     private SKFontEdging edging=SKFontEdging.Antialias;
@@ -61,18 +63,19 @@ public class SKFont : SKObject
     public float Size {get{ThrowIfDisposed();return size;}set{ThrowIfDisposed();if(!float.IsFinite(value)||value<0)throw new ArgumentOutOfRangeException(nameof(value));if(size!=value){size=value;ClearLayouts();}}}
     public float ScaleX {get{ThrowIfDisposed();return scaleX;}set{ThrowIfDisposed();if(!float.IsFinite(value))throw new ArgumentOutOfRangeException(nameof(value));if(scaleX!=value){scaleX=value;ClearLayouts();}}}
     public float SkewX {get{ThrowIfDisposed();return skewX;}set{ThrowIfDisposed();if(!float.IsFinite(value))throw new ArgumentOutOfRangeException(nameof(value));if(skewX!=value){skewX=value;ClearLayouts();}}}
-    public SKTypeface Typeface {get{ThrowIfDisposed();return typeface;}set{ThrowIfDisposed();throw new NotSupportedException("Construct a new font to select a different typeface.");}}
+    public SKTypeface Typeface {get{ThrowIfDisposed();if(!typeface.HasFont)typeface=SKTypeface.Retain(font);return typeface;}set{ThrowIfDisposed();var selected=value??SKTypeface.Default;selected.ThrowIfDisposed();var next=selected.Font;typeface=selected;font=next;ClearLayouts();}}
     public SKFontHinting Hinting {get{ThrowIfDisposed();return hinting;}set{ThrowIfDisposed();if(value!=SKFontHinting.None)throw new NotSupportedException("TrueType hint instruction execution is not implemented; use None.");hinting=value;}}
-    public SKFontEdging Edging {get{ThrowIfDisposed();return edging;}set{ThrowIfDisposed();if(value is not (SKFontEdging.Alias or SKFontEdging.Antialias))throw new NotSupportedException("LCD subpixel edging is not implemented.");edging=value;}}
+    public SKFontEdging Edging {get{ThrowIfDisposed();return edging;}set{ThrowIfDisposed();if(!Enum.IsDefined(value))throw new ArgumentOutOfRangeException(nameof(value));edging=value;}}
     public bool Subpixel {get{ThrowIfDisposed();return true;}set{ThrowIfDisposed();if(!value)throw new NotSupportedException("Grid-fitted glyph positioning is not supported; use Subpixel=true.");}}
     public bool BaselineSnap {get{ThrowIfDisposed();return false;}set{ThrowIfDisposed();if(value)throw new NotSupportedException("Baseline grid snapping is not implemented; use BaselineSnap=false.");}}
     public bool LinearMetrics {get{ThrowIfDisposed();return true;}set{ThrowIfDisposed();if(!value)throw new NotSupportedException("Grid-fitted metrics are not implemented; use LinearMetrics=true.");}}
     public bool Embolden {get{ThrowIfDisposed();return false;}set{ThrowIfDisposed();if(value)throw new NotSupportedException("Synthetic font emboldening is not implemented.");}}
     public bool ForceAutoHinting {get{ThrowIfDisposed();return false;}set{ThrowIfDisposed();if(value)throw new NotSupportedException("Auto-hinting is not implemented.");}}
     public ushort GetGlyph(int codepoint){ThrowIfDisposed();return font.GetGlyph(codepoint);}
-    public SKPath GetGlyphPath(ushort glyph){ThrowIfDisposed();return new(font.Outline(glyph).Transform(GlyphTransform(0,0)));}
+    private PathGeometry GlyphOutline(ushort glyph)=>OperatingSystem.IsWindows()?font.WindowsOutline(glyph):font.Outline(glyph);
+    public SKPath GetGlyphPath(ushort glyph){ThrowIfDisposed();return new(GlyphOutline(glyph).Transform(GlyphTransform(0,0)));}
     private Matrix3 GlyphTransform(float x,float y){float factor=size/font.UnitsPerEm;return new(factor*scaleX,-factor*skewX,x,0,-factor,y,0,0,1);}
-    internal FontSnapshot Capture(){ThrowIfDisposed();return new(font,GlyphTransform(0,0),size/font.UnitsPerEm*scaleX,edging==SKFontEdging.Antialias);}
+    internal FontSnapshot Capture(){ThrowIfDisposed();return new(font,GlyphTransform(0,0),size/font.UnitsPerEm*scaleX,edging!=SKFontEdging.Alias,edging==SKFontEdging.SubpixelAntialias,embeddedBitmaps,MathF.Abs(size*scaleX),size);}
     public ushort[] GetGlyphs(ReadOnlySpan<int> codepoints)
     {var result=new ushort[codepoints.Length];GetGlyphs(codepoints,result);return result;}
     public void GetGlyphs(ReadOnlySpan<int> codepoints,Span<ushort> glyphs)
@@ -85,20 +88,23 @@ public class SKFont : SKObject
         for(int i=0;i<glyphs.Length;i++)
         {
             if(!widths.IsEmpty)widths[i]=font.Advance(glyphs[i])*snapshot.AdvanceScale;
-            if(!bounds.IsEmpty)bounds[i]=snapshot.Bounds(glyphs[i]);
+            if(!bounds.IsEmpty)bounds[i]=GlyphBounds(glyphs[i]);
         }
     }
-    internal PathGeometry Layout(string text,float x,float y,SKTextAlign align)
+    internal GlyphRunGeometry Layout(string text,float x,float y,SKTextAlign align)
     {
         ThrowIfDisposed();ArgumentNullException.ThrowIfNull(text);if(!Enum.IsDefined(align))throw new ArgumentOutOfRangeException(nameof(align));
         if(!float.IsFinite(x)||!float.IsFinite(y))throw new ArgumentException("Text origin must be finite.");
         var key=(text,x,y,align);if(layouts.TryGetValue(key,out var cached))return cached;
         var glyphIds=Glyphs(text);float width=glyphIds.Sum(g=>(float)font.Advance(g))*size/font.UnitsPerEm*scaleX;
         if(align==SKTextAlign.Center)x-=width*0.5f;else if(align==SKTextAlign.Right)x-=width;
-        var segments=new List<PathSegment>();
-        foreach(ushort glyph in glyphIds){segments.AddRange(font.Outline(glyph).Transform(GlyphTransform(x,y)).Segments.ToArray());x+=font.Advance(glyph)*size/font.UnitsPerEm*scaleX;}
-        var geometry=new PathGeometry(segments);
-        long bytes=(long)geometry.Segments.Length*32+(long)text.Length*2;
+        var glyphs=new PositionedGlyph[glyphIds.Count];long bytes=(long)text.Length*2+(long)glyphs.Length*24;
+        for(int i=0;i<glyphIds.Count;i++)
+        {
+            var outline=RenderOutline(glyphIds[i]);glyphs[i]=new(outline,new(x,y));
+            bytes+=(long)outline.Segments.Length*32;x+=font.Advance(glyphIds[i])*size/font.UnitsPerEm*scaleX;
+        }
+        var geometry=new GlyphRunGeometry(glyphs,GlyphTransform(0,0),GlyphPositioning.QuarterPixel);
         if(bytes<=4*1024*1024)
         {if(layouts.Count>=64||layoutBytes+bytes>4*1024*1024)ClearLayouts();layouts.Add(key,geometry);layoutBytes+=bytes;}
         return geometry;
@@ -117,17 +123,17 @@ public class SKFont : SKObject
         }
         return glyphs;
     }
-    public float MeasureText(string text,SKPaint? paint=null)
-    {ThrowIfDisposed();ArgumentNullException.ThrowIfNull(text);if(paint is not null&&paint.Style!=SKPaintStyle.Fill)throw new NotSupportedException("Stroked text measurement is not implemented.");return Glyphs(text).Sum(g=>(float)font.Advance(g))*size/font.UnitsPerEm*scaleX;}
-    private void ClearLayouts(){layouts.Clear();layoutBytes=0;}
+    internal SKFont CloneManaged(){ThrowIfDisposed();return new(SKTypeface.Retain(font),size,scaleX,skewX){hinting=hinting,edging=edging,embeddedBitmaps=embeddedBitmaps};}
+    private void ClearLayouts(){layouts.Clear();layoutBytes=0;glyphBoundsCache.Clear();}
     protected override void Dispose(bool disposing){ClearLayouts();font=null!;typeface=null!;}
 }
 
-internal sealed record FontSnapshot(TrueTypeFont Font,Matrix3 Transform,float AdvanceScale,bool Antialias)
+internal sealed record FontSnapshot(TrueTypeFont Font,Matrix3 Transform,float AdvanceScale,bool Antialias,bool LcdText=false,bool EmbeddedBitmaps=false,float PixelSizeX=0,float PixelSizeY=0)
 {
+    internal PathGeometry Outline(ushort glyph)=>EmbeddedBitmaps&&Transform.M01==0&&Font.TryEmbeddedOutline(glyph,PixelSizeX,PixelSizeY,out var bitmap)?bitmap:OperatingSystem.IsWindows()?Font.WindowsOutline(glyph):Font.Outline(glyph);
     internal SKRect Bounds(ushort glyph)
     {
-        var tight=Font.Outline(glyph).GetTightBounds(Transform);
+        var tight=Outline(glyph).GetTightBounds(Transform);
         return tight.IsEmpty?SKRect.Empty:new(MathF.Floor(tight.Left),MathF.Floor(tight.Top),MathF.Ceiling(tight.Right),MathF.Ceiling(tight.Bottom));
     }
     internal SKRect GlobalBounds()

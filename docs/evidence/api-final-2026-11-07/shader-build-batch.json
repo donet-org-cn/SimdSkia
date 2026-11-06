@@ -1,0 +1,14 @@
+{
+  "Target": "Vulkan 1.0 / SPIR-V 1.0",
+  "Compiler": "Glslang Version: 11:16.6.0",
+  "CompilerSha256": "9643709C02C83E26773F96B6A87F197AB2E84F78BE0879AD8FB3619418B5D9AD",
+  "BaseSource": "src/SimdSkia.Gpu/Shaders/renderer.comp",
+  "BaseSourceSha256": "54A0B6A47E2B75EC8D67DCD723DC1D8CD30BF982C6D893D4292B22DC0B9A4E2B",
+  "GeneratedSourceSha256": "03A5F093EEBC9B74F00489912C958B65B67FB2FA09411060746D7CBEC2AFFF87",
+  "Spirv": "src/SimdSkia.Gpu/Shaders/renderer-batch.spv",
+  "SpirvSha256": "C9A651D357F38E31A340C000EE33FC216BB13BF1D96157042B86C04EA6669170",
+  "BatchDraws": 16,
+  "ParameterStrideBytes": 768,
+  "UniformRangeBytes": 12288,
+  "RuntimeCompilerRequired": false
+}
