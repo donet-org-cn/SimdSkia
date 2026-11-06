@@ -8,7 +8,7 @@ on:
       version:
         description: 'Approved release version'
         required: true
-        default: '0.1.2-preview.1'
+        default: '0.1.2-preview.2'
       publish:
         description: 'Publish verified packages to NuGet.org using trusted publishing'
         type: boolean
@@ -92,6 +92,8 @@ jobs:
           exit $LASTEXITCODE
       - name: Record unchanged JPEG gate and enforce only disclosed preview exceptions
         run: python tools/check-jpeg-parity.py --output artifacts/jpeg-parity --check-documented-differences
+      - name: Compare all SaveLayer blend modes and parent clip with the original
+        run: python tools/check-layer-bounds.py --no-build --output artifacts/layer-bounds
       - name: Verify full codec integration
         run: dotnet run --project tests/CodecIntegration -c Release --no-build
       - name: Verify scalar codec fallback
@@ -144,6 +146,7 @@ jobs:
             artifacts/desktop-package-consumer/results/
             artifacts/pdf-package-consumer/results/
             artifacts/nuget-final-api/**/*.json
+            artifacts/layer-bounds/
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         if: failure()
@@ -156,6 +159,7 @@ jobs:
             artifacts/desktop-package-consumer/*.log
             artifacts/pdf-package-consumer/*.log
             artifacts/nuget-final-api/**/*.json
+            artifacts/layer-bounds/
           if-no-files-found: ignore
 
   avalonia-versions:

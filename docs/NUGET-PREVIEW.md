@@ -1,6 +1,18 @@
 # NuGet 发布记录
 
-## 0.1.2-preview.1 — 待发布验证
+## 0.1.2-preview.2 — 修复后候选，待CI及公开下载验证
+
+CI复核新增修正：连续MoveTo保留空轮廓/点；Src/Clear/SrcIn/DstIn/SrcOut/DstATop/Modulate的SaveLayer bounds按原版扩展到父裁剪。原版几何300组/4636值、464组图层组合（2,375,680字节精确比较）和兼容扩展均通过。preview.1标签的CI失败，未上传NuGet；本次使用preview.2保留追溯。
+
+[测试/性能/限制](PUBLIC-API-FINAL-2026-11-07.md)。待最终成功后补充真实CI和公开下载结果，本地打包不等于公开发布。
+
+```sh
+dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.2-preview.2
+dotnet add package SimdSkia.Avalonia.Gpu --version 0.1.2-preview.2
+```
+
+
+## 0.1.2-preview.1 — CI失败，未发布
 
 本轮预览统一十二包，固定3.119.4基线3230/3235，保留5项真实原生合同缺口；补充SVG/XPS/SKP、Alpha8、浮点颜色、GL/GLES/D3D12/Metal与GPU资源链路，优化Vulkan复制/合批/读回及分配。Metal没有Mac GPU，JPEG/部分文字与整页画质、性能/内存差距仍披露。[完整测试与性能](PUBLIC-API-FINAL-2026-11-07.md)。当前尚未完成本版CI与公开下载验证，不能把下方0.1.1的通过结果当作本版发布成功。
 

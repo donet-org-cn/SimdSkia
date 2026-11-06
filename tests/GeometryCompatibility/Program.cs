@@ -10,6 +10,10 @@ void Capture(string key,SKPath p)
 }
 using(var p=new SKPath())
 {
+    p.MoveTo(3,4);p.MoveTo(6,7);Capture("unobserved-consecutive-moves",p);
+}
+using(var p=new SKPath())
+{
     Capture("empty",p);p.Close();Capture("close-empty",p);p.LineTo(10,20);Capture("implicit-move",p);
     p.Close();p.RLineTo(3,7);Capture("relative-after-close",p);p.Rewind();p.MoveTo(3,4);Capture("move",p);p.MoveTo(6,7);Capture("replaced-move",p);
     p.QuadTo(30,80,40,5);p.CubicTo(1,-20,80,70,3,4);p.Close();Capture("curve",p);

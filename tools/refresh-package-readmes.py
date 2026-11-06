@@ -1,6 +1,6 @@
 """Keep usage in current package readmes on the current preview version."""
 from pathlib import Path
-version='0.1.2-preview.1'
+version='0.1.2-preview.2'
 p=Path('docs/NUGET-README.md');s=p.read_text(encoding='utf-8');prefix='\n'.join(s.splitlines()[:4])+'\n\n'
 body=s[s.index('Packages target .NET 10 or later:'):].split('## Standalone SkiaSharp namespace usage')[0]
 body=body.replace('0.1.1',version).replace('version `0.1.0`','version `'+version+'`')
@@ -9,7 +9,7 @@ body=body.replace('macOS GPU/Metal is not implemented.','The Metal core is unver
 sample='''## Standalone SkiaSharp namespace usage
 
 ```shell
-dotnet add package SimdSkia --version 0.1.2-preview.1
+dotnet add package SimdSkia --version 0.1.2-preview.2
 ```
 
 ```csharp

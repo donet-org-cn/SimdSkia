@@ -1,9 +1,9 @@
 name: Geometry and shader API compatibility
 on:
   push:
-    paths: ['src/SimdSkia.Compatibility/**', 'src/SimdSkia.Cpu/**', 'src/SimdSkia.Core/**', 'tests/PixelCompatibility/**', 'tests/StrokeCompatibility/**', 'tests/ConicCompatibility/**', 'tests/GeometryCompatibility/**', 'tests/ShaderCompatibility/**', 'tools/check-pixel-compatibility.py', 'tools/check-geometry-compatibility.py', 'tools/check-shader-compatibility.py', '.github/workflows/geometry-compatibility.yml']
+    paths: ['src/SimdSkia.Compatibility/**', 'src/SimdSkia.Cpu/**', 'src/SimdSkia.Core/**', 'tests/PixelCompatibility/**', 'tests/StrokeCompatibility/**', 'tests/ConicCompatibility/**', 'tests/GeometryCompatibility/**', 'tests/LayerBounds/**', 'tests/ShaderCompatibility/**', 'tools/check-pixel-compatibility.py', 'tools/check-geometry-compatibility.py', 'tools/check-layer-bounds.py', 'tools/check-shader-compatibility.py', '.github/workflows/geometry-compatibility.yml']
   pull_request:
-    paths: ['src/SimdSkia.Compatibility/**', 'src/SimdSkia.Cpu/**', 'src/SimdSkia.Core/**', 'tests/PixelCompatibility/**', 'tests/StrokeCompatibility/**', 'tests/ConicCompatibility/**', 'tests/GeometryCompatibility/**', 'tests/ShaderCompatibility/**', 'tools/check-pixel-compatibility.py', 'tools/check-geometry-compatibility.py', 'tools/check-shader-compatibility.py', '.github/workflows/geometry-compatibility.yml']
+    paths: ['src/SimdSkia.Compatibility/**', 'src/SimdSkia.Cpu/**', 'src/SimdSkia.Core/**', 'tests/PixelCompatibility/**', 'tests/StrokeCompatibility/**', 'tests/ConicCompatibility/**', 'tests/GeometryCompatibility/**', 'tests/LayerBounds/**', 'tests/ShaderCompatibility/**', 'tools/check-pixel-compatibility.py', 'tools/check-geometry-compatibility.py', 'tools/check-layer-bounds.py', 'tools/check-shader-compatibility.py', '.github/workflows/geometry-compatibility.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -23,6 +23,7 @@ jobs:
           ./tools/fetch-test-font.ps1
           ./tools/fetch-avalonia-font.ps1
       - run: python tools/check-geometry-compatibility.py
+      - run: python tools/check-layer-bounds.py --output artifacts/layer-bounds
       - run: dotnet publish tests/GeometryCompatibility/NativeAot -c Release -r win-x64 -o artifacts/geometry-aot
       - run: artifacts/geometry-aot/NativeAot.exe
       - run: python tools/check-shader-compatibility.py --output artifacts/shader-compatibility
@@ -45,5 +46,6 @@ jobs:
           name: geometry-compatibility
           path: |
             artifacts/geometry-compatibility/
+            artifacts/layer-bounds/
             artifacts/shader-compatibility/
             artifacts/pixel-compatibility/

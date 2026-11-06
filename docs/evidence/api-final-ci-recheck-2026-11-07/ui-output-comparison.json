@@ -1,0 +1,98 @@
+{
+  "purpose": "Post-CI regression output check only; .1 s is not a new performance collection.",
+  "comparedTo": "artifacts\\api-final-2026-11-07\\ui-final-timing-1",
+  "workerHashes": {
+    "SimdSkia.Avalonia.dll": "0d9154dd039bf441369ebb0b5b66b644840403b73a5ced92e47943779c7cac7e",
+    "SimdSkia.Avalonia.Gpu.dll": "d1928bad2f13d7d9f364e6922ea0775c5f4fe36e56bc82d75a038e0f6fef7823",
+    "SimdSkia.Core.dll": "0e8b6182dc093b36f6b46a4b68886609e5f6e5d169f044cf26db9501d836471a",
+    "SimdSkia.Cpu.dll": "4f57c11d99380217806ef2aa6af7bd3cde594f0a6e83d9c9e23c515111d73ddc",
+    "SimdSkia.Gpu.Direct2D.dll": "a45108031776cc964dd0d9fae32769efc4a6a3c343b930771b26be45d9777791",
+    "SimdSkia.Gpu.dll": "5717a9cab55e2ac1f4b366cf2a75566120ee3e9d74373d6935416944f3d206bc",
+    "SimdSkia.Imaging.dll": "9e176e1b2fb76bb48f7ad15889ccb69425bedcf3287ed1ee91e0429697f6be6f",
+    "SimdSkia.Text.dll": "574e2be3cd62da5b798d48114abc1b7a7d90524f88e947fe34f646da0c22bd2b"
+  },
+  "results": [
+    {
+      "scene": "controls",
+      "scale": 1,
+      "backend": "cpu",
+      "bytes": 2880000,
+      "byteExact": true,
+      "currentSha256": "1977ff8c0302d0720f2fe45dc7e25c65adcfd4aaf7715c8c55195008481a7fdf",
+      "priorSha256": "1977ff8c0302d0720f2fe45dc7e25c65adcfd4aaf7715c8c55195008481a7fdf"
+    },
+    {
+      "scene": "controls",
+      "scale": 1,
+      "backend": "vulkan",
+      "bytes": 2880000,
+      "byteExact": true,
+      "currentSha256": "71455acc2450a55d04a7083ea7fe8d1abc06d74fe3bc6f802f58f9a6eb32f26e",
+      "priorSha256": "71455acc2450a55d04a7083ea7fe8d1abc06d74fe3bc6f802f58f9a6eb32f26e"
+    },
+    {
+      "scene": "controls",
+      "scale": 1,
+      "backend": "direct2d",
+      "bytes": 2880000,
+      "byteExact": true,
+      "currentSha256": "002c0b0af06e5620f8ef84c70e8d7634ffe2bec4e22867b8be01bd1c3344cabf",
+      "priorSha256": "002c0b0af06e5620f8ef84c70e8d7634ffe2bec4e22867b8be01bd1c3344cabf"
+    },
+    {
+      "scene": "controls",
+      "scale": 1.5,
+      "backend": "cpu",
+      "bytes": 6480000,
+      "byteExact": true,
+      "currentSha256": "e22c71110e9e9db012a7714d201b22037fac09d22b17f3ef4e557be3f54369f9",
+      "priorSha256": "e22c71110e9e9db012a7714d201b22037fac09d22b17f3ef4e557be3f54369f9"
+    },
+    {
+      "scene": "controls",
+      "scale": 1.5,
+      "backend": "vulkan",
+      "bytes": 6480000,
+      "byteExact": true,
+      "currentSha256": "039ab0ac5216129d19acc10e1f99717cd877c5e0e8499a4f3f35776424cea43c",
+      "priorSha256": "039ab0ac5216129d19acc10e1f99717cd877c5e0e8499a4f3f35776424cea43c"
+    },
+    {
+      "scene": "controls",
+      "scale": 1.5,
+      "backend": "direct2d",
+      "bytes": 6480000,
+      "byteExact": true,
+      "currentSha256": "9a4d9b2bf81c81e0470a74c65e3d899913c9760a0f9473a3b665387b2c8901ac",
+      "priorSha256": "9a4d9b2bf81c81e0470a74c65e3d899913c9760a0f9473a3b665387b2c8901ac"
+    },
+    {
+      "scene": "scroll",
+      "scale": 1,
+      "backend": "cpu",
+      "bytes": 2880000,
+      "byteExact": true,
+      "currentSha256": "410c194f5e6160708557def3868a99b2a2c1b2ac34e0b499b674aad2ee7aa9c6",
+      "priorSha256": "410c194f5e6160708557def3868a99b2a2c1b2ac34e0b499b674aad2ee7aa9c6"
+    },
+    {
+      "scene": "scroll",
+      "scale": 1,
+      "backend": "vulkan",
+      "bytes": 2880000,
+      "byteExact": true,
+      "currentSha256": "f0ba64a0100c574131066dbeca82d4763fbb16acda803d050a86b82130de9ec9",
+      "priorSha256": "f0ba64a0100c574131066dbeca82d4763fbb16acda803d050a86b82130de9ec9"
+    },
+    {
+      "scene": "scroll",
+      "scale": 1,
+      "backend": "direct2d",
+      "bytes": 2880000,
+      "byteExact": true,
+      "currentSha256": "410c194f5e6160708557def3868a99b2a2c1b2ac34e0b499b674aad2ee7aa9c6",
+      "priorSha256": "410c194f5e6160708557def3868a99b2a2c1b2ac34e0b499b674aad2ee7aa9c6"
+    }
+  ],
+  "passed": true
+}

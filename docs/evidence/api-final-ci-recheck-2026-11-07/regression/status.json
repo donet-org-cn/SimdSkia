@@ -1,0 +1,206 @@
+[
+  {
+    "suite": "basic",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/SimdSkia.Tests",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "startedUtc": "2026-11-06T22:38:07.535233+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "pixels",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/PixelCompatibility/Managed",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "artifacts\\api-final-2026-11-07\\ci-fix-regression-1\\regression\\pixels-data"
+    ],
+    "startedUtc": "2026-11-06T22:38:08.883910+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "codecs",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/CodecIntegration",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "startedUtc": "2026-11-06T22:38:10.738995+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "pdf",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Pdf",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "startedUtc": "2026-11-06T22:38:12.591271+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "features",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Features",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "baseline/fonts/ZenOldMincho-Regular.ttf"
+    ],
+    "startedUtc": "2026-11-06T22:38:14.586051+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "platform-fonts",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/PlatformFonts",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "startedUtc": "2026-11-06T22:38:16.367792+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "optimization",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Optimization",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "baseline/fonts/ZenOldMincho-Regular.ttf"
+    ],
+    "startedUtc": "2026-11-06T22:38:18.246790+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "avalonia",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Avalonia",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "baseline/fonts/ZenOldMincho-Regular.ttf",
+      "artifacts\\api-final-2026-11-07\\ci-fix-regression-1\\regression\\avalonia-data"
+    ],
+    "startedUtc": "2026-11-06T22:38:24.222729+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "controls",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/AvaloniaControls",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "--frames",
+      "5",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\ci-fix-regression-1\\regression\\controls-data"
+    ],
+    "startedUtc": "2026-11-06T22:38:25.827715+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "direct2d",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Direct2D",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "startedUtc": "2026-11-06T22:38:33.060757+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "vulkan",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Gpu",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "startedUtc": "2026-11-06T22:38:35.122421+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "gpu-sampling",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/GpuSampling",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "startedUtc": "2026-11-06T22:38:37.366931+00:00",
+    "exitCode": 0
+  },
+  {
+    "suite": "jpeg-known-failure",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Imaging",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "startedUtc": "2026-11-06T22:38:39.918483+00:00",
+    "exitCode": 3762504530
+  }
+]

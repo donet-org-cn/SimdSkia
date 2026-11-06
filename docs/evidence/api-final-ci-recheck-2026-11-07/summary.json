@@ -1,0 +1,96 @@
+{
+  "recordedUtc": "2026-11-06T22:40:42.137901+00:00",
+  "version": "0.1.2-preview.2",
+  "failedCandidate": {
+    "version": "0.1.2-preview.1",
+    "commit": "48cd18050c913cadc22b0b028abcbc1eccf6ad72",
+    "ci": "https://github.com/donet-org-cn/SimdSkia/actions/runs/42304106503",
+    "nugetUploaded": false
+  },
+  "geometry": {
+    "cases": 300,
+    "valueChecks": 4636,
+    "numericTolerance": {
+      "absolute": 0.0001,
+      "relative": 2e-06
+    },
+    "pixelThreshold": {
+      "maximum": 32,
+      "rmse": 2
+    },
+    "images": [
+      {
+        "scene": "clone-gradient",
+        "maxError": 1,
+        "rmse": 0.31868871959954903,
+        "passed": true
+      },
+      {
+        "scene": "layer-bounds-hint",
+        "maxError": 1,
+        "rmse": 0.02209708691207961,
+        "passed": true
+      },
+      {
+        "scene": "path-fill",
+        "maxError": 1,
+        "rmse": 0.33829117335329634,
+        "passed": true
+      },
+      {
+        "scene": "transformed-fill",
+        "maxError": 1,
+        "rmse": 0.29646353064078557,
+        "passed": true
+      }
+    ],
+    "failures": [],
+    "knownBehavioralDifferences": [],
+    "fullBehavioralCompatibility": false,
+    "scopedChecksPassed": true,
+    "circleRepresentationMatches": true,
+    "passed": true
+  },
+  "layerBounds": {
+    "cases": 464,
+    "passedCases": 464,
+    "comparedBytes": 2375680,
+    "threshold": "byte exact",
+    "passed": true
+  },
+  "qualityRecheck": [
+    {
+      "suite": "final-raster",
+      "unchangedFrom": "api-final-2026-11-07/final-validation-1/final-raster",
+      "passedCases": 28,
+      "total": 28,
+      "comparisonSha256": "2e76e389e500b432758ae35bc50017c77f9cea1eda786940427041d02be3fb3b",
+      "metadataDifferences": 0
+    },
+    {
+      "suite": "final-paint",
+      "unchangedFrom": "api-final-2026-11-07/final-validation-1/final-paint",
+      "passedCases": 25,
+      "total": 29,
+      "comparisonSha256": "fdf010500bfe748b3f287fb0619b50806c2501a75fc9bb68fe193b360b9f8c5c",
+      "metadataDifferences": 0
+    },
+    {
+      "suite": "skp-documents",
+      "unchangedFrom": "api-final-2026-11-07/final-validation-1/skp-documents",
+      "passedCases": 14,
+      "total": 35,
+      "comparisonSha256": "b72bf8eedc1bc20f4564d89c8d49618fb4bd854a175c369faca6571d60fede72",
+      "metadataDifferences": 0
+    }
+  ],
+  "uiCapturesByteExact": true,
+  "nativeAot": {
+    "actualPeWithoutClrHeader": true,
+    "sha256": "2d22526ad8cadc44f78eb06e5e77144f062656ace2d70d73938fc68cbd41eb56",
+    "checks": 38
+  },
+  "fullBehavioralCompatibility": false,
+  "metalHardware": "unverified-no-Mac-GPU",
+  "publication": "pending CI; consult docs/NUGET-PREVIEW.md"
+}

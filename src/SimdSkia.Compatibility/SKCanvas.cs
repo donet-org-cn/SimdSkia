@@ -177,8 +177,9 @@ public partial class SKCanvas : SKObject
         if(recording is not null)return RecordLayer(new(){Bounds=limit,Paint=paint});
         if(!limit.ToCore().IsFinite)throw new ArgumentException("Layer bounds must be finite.",nameof(limit));
         int count=SaveLayer(paint);
-        // The raster baseline limits the layer's allocation for every blend
-        // mode, including transparent Src/Clear pixels inside that allocation.
+        // A bounds hint cannot trim operations for which transparent source
+        // changes the parent. The baseline expands these layers to its clip.
+        if(paint?.BlendMode is SKBlendMode.Clear or SKBlendMode.Src or SKBlendMode.SrcIn or SKBlendMode.DstIn or SKBlendMode.SrcOut or SKBlendMode.DstATop or SKBlendMode.Modulate)return count;
         var transform=matrix;
         var a=matrix.Map(limit.Left,limit.Top);var b=matrix.Map(limit.Right,limit.Top);var c=matrix.Map(limit.Left,limit.Bottom);var d=matrix.Map(limit.Right,limit.Bottom);
         var device=new SKRect(MathF.Floor(MathF.Min(MathF.Min(a.X,b.X),MathF.Min(c.X,d.X))),MathF.Floor(MathF.Min(MathF.Min(a.Y,b.Y),MathF.Min(c.Y,d.Y))),MathF.Ceiling(MathF.Max(MathF.Max(a.X,b.X),MathF.Max(c.X,d.X))),MathF.Ceiling(MathF.Max(MathF.Max(a.Y,b.Y),MathF.Max(c.Y,d.Y))));

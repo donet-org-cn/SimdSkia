@@ -1,8 +1,10 @@
 # 补齐94项API之后，纯C#的SimdSkia离替代SkiaSharp还有多远？
 
+CI复核补充：修复连续MoveTo点序列及特殊混合SaveLayer范围，300组/4636值几何对照、464组图层逐字节对照通过。preview.1候选CI失败且未上传NuGet，修复使用preview.2；Metal没有Mac GPU验证，严格画质与性能差距仍按下文披露。
+
 SimdSkia是独立的C# 2D渲染引擎，CPU光栅化、字体和基础排版由C#执行，不调用Google Skia原生绘图库；提供SkiaSharp命名空间的源码兼容外观，也提供Avalonia平台渲染适配器。PNG/TIFF允许.NET系统压缩，macOS窗口使用允许的官方宿主；GPU调用操作系统/驱动。这些边界与“任何环节都没有原生代码”有区别。
 
-这次预览版为 **0.1.2-preview.1**。先说结果：固定SkiaSharp3.119.4的3235项公共清单，已匹配**3230项**，从99项缺口补入94项，另5项真实原生句柄/版本合同按约定保留。**签名覆盖不等于全面兼容；整页严格画质仍未过门槛，内存与部分速度也有差距。**
+这次预览版为 **0.1.2-preview.2**。先说结果：固定SkiaSharp3.119.4的3235项公共清单，已匹配**3230项**，从99项缺口补入94项，另5项真实原生句柄/版本合同按约定保留。**签名覆盖不等于全面兼容；整页严格画质仍未过门槛，内存与部分速度也有差距。**
 
 源码：[donet-org-cn/SimdSkia](https://github.com/donet-org-cn/SimdSkia)。[完整测试与性能报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PUBLIC-API-FINAL-2026-11-07.md)、[发布状态](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/NUGET-PREVIEW.md)包含每个fork、CPU/内存采样、原始像素、门槛和失败。
 
@@ -82,8 +84,8 @@ Native AOT已实际运行：新增CPU链路正常/标量各41检查通过，系�
 桌面应用首先安装 `SimdSkia.Avalonia.Desktop`，它带入 `SimdSkia.Avalonia` 渲染适配器和引擎依赖；GPU为可选包。NuGet界面勾选“包含预发行版”：
 
 ```sh
-dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.2-preview.1
-dotnet add package SimdSkia.Avalonia.Gpu --version 0.1.2-preview.1
+dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.2-preview.2
+dotnet add package SimdSkia.Avalonia.Gpu --version 0.1.2-preview.2
 ```
 
 Avalonia家族包使用同一版本。适配器接受>=12.1.0且<13.0.0，宿主矩阵为12.1.0–12.1.5，未知未来补丁需要补宿主并回归。现有程序保留App/XAML/MVVM，将启动链改为：

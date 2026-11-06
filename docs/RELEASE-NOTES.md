@@ -1,6 +1,13 @@
 # SimdSkia 更新日志 / Release notes
 
-## 0.1.2-preview.1 — 公共API与GPU优化预览
+## 0.1.2-preview.2 — CI复核修正
+
+- CI复核新增修正：连续MoveTo保留空轮廓/点；Src/Clear/SrcIn/DstIn/SrcOut/DstATop/Modulate的SaveLayer bounds按原版扩展到父裁剪。原版几何300组/4636值、464组图层组合（2,375,680字节精确比较）和兼容扩展均通过。preview.1标签的CI失败，未上传NuGet；本次使用preview.2保留追溯。
+- 包含下方preview.1候选的公共API、GPU互操作、SIMD/分配优化与全部已披露限制，固定基线仍3230/3235。Metal没有Mac GPU，未实机验证；JPEG和整页画质仍失败，性能/内存差距保留。
+- 十二包统一0.1.2-preview.2，Avalonia接受>=12.1.0且<13.0.0，已验证宿主12.1.0–12.1.5；Sdcb.SimdCodecs 1.4.0保持。完整性能、CPU/GPU/内存与源快照范围见[最终报告](PUBLIC-API-FINAL-2026-11-07.md)。
+
+
+## 0.1.2-preview.1 — CI失败候选，未上传NuGet
 
 - 固定3.119.4基线匹配3230/3235，201公开类型，额外0；从99项内部快照补入94项。5项原生句柄/版本接口按用户决定保留，不伪造native Skia对象。
 - 汇入此前未发布的路径/混合/滤镜/文字/Picture/RuntimeEffect子集、Perlin、网格/Atlas/曲面、Lattice、PDF注释及资源回调实现；仍有明确参数/格式/语义限制。

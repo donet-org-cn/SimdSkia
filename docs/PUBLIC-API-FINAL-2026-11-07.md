@@ -1,6 +1,10 @@
-# SimdSkia 0.1.2-preview.1：公共 API、测试与性能报告
+# SimdSkia 0.1.2-preview.2：公共 API、测试与性能报告
 
-实际NuGet包消费也已验证：独立缓存下1417项编解码断言、22项PDF检查、真实Avalonia桌面窗口与真实Native AOT窗口通过。最终本地重打包只更新使用说明，十二包全部runtime资产与已消费包逐字节相同。[包消费证据](evidence/api-final-package-consumption-2026-11-07/)保留两份manifest与比对；最终tag仍由CI重新构建、测试和公开下载验证，状态见[发布记录](NUGET-PREVIEW.md)。
+CI复核新增修正：连续MoveTo保留空轮廓/点；Src/Clear/SrcIn/DstIn/SrcOut/DstATop/Modulate的SaveLayer bounds按原版扩展到父裁剪。原版几何300组/4636值、464组图层组合和兼容扩展均通过。preview.1标签的CI失败，未上传NuGet；本次使用preview.2保留追溯。
+
+修复后再次完整构建零警告/错误，36项基础、474413项精确优化和十二组核心回归通过；真实Native AOT兼容扩展38检查通过，PE无CLR头。图层覆盖29混合模式×2像素格式×2颜色空间标记×4种场景，2,375,680字节全部一致。九幅CPU/Vulkan/Direct2D控件页与正式性能采集输出逐字节相同；此次短采集仅验证输出，没有冒充新的性能结果。Picture/WebP仍28/28、浮点仍25/29、SKP仍14/35，比较JSON完全不变，JPEG非零失败也保留。[修复后的独立证据](evidence/api-final-ci-recheck-2026-11-07/)与[汇总](evidence/api-final-ci-recheck-2026-11-07/summary.json)单独冻结，未覆盖旧证据。
+
+此前preview.1候选的本地NuGet包消费已验证：独立缓存下1417项编解码断言、22项PDF检查、真实Avalonia桌面窗口与真实Native AOT窗口通过；其文档重打包runtime资产与已消费包逐字节相同，[旧候选证据](evidence/api-final-package-consumption-2026-11-07/)保持冻结。随后CI发现本页开头两项行为回归，preview.1未上传NuGet；修复后的preview.2必须重新打包、消费和验证，不能沿用旧包证明，最终状态见[发布记录](NUGET-PREVIEW.md)。
 
 固定源码基线 **SkiaSharp 3.119.4 / 3235 项**。最终匹配 **3230 项、201 公开类型、5 缺口、0 额外签名**；从99项冻结快照补入94项。基线SHA256仍为 `03A164AC1097F84793632DF806DA91E2829F0FCA65D8F2B922E45554AB083296`。这五项按用户要求保留，不提供替代句柄或虚构原生版本。
 
@@ -184,6 +188,7 @@ A8的标量参考/优化输出在324幅用例及计时帧逐字节相等；空�
 ```powershell
 dotnet build SimdSkia.sln -c Release
 dotnet run --project examples/Compatibility99 -c Release
+python tools/check-layer-bounds.py --output artifacts/reproduce/layer-bounds
 python tools/run-api-completion-regressions.py --output artifacts/reproduce/regression
 python tools/check-api99-batch.py --output artifacts/reproduce/api99
 python tools/run-final-compatibility.py --output artifacts/reproduce/final-api

@@ -25,7 +25,7 @@ public partial class SKPath : SKObject
             if(segments.Count==0)segments.Add(new(PathVerb.Move,default));
             else if(segments[^1].Verb==PathVerb.Close)segments.Add(new(PathVerb.Move,CurrentPoint()));
         }
-        if(s.Verb==PathVerb.Move&&segments.Count>0&&segments[^1].Verb==PathVerb.Move)segments[^1]=s;else segments.Add(s);Invalidate();}
+        segments.Add(s);Invalidate();}
     public void MoveTo(float x,float y)=>Add(new(PathVerb.Move,new(x,y)));
     public void MoveTo(SKPoint point)=>MoveTo(point.X,point.Y);
     public void LineTo(float x,float y)=>Add(new(PathVerb.Line,new(x,y)));

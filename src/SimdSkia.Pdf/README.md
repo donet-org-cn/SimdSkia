@@ -1,20 +1,22 @@
-# 0.1.2-preview.1 更新
+# 0.1.2-preview.2 更新
+
+CI复核新增修正：连续MoveTo保留空轮廓/点；Src/Clear/SrcIn/DstIn/SrcOut/DstATop/Modulate的SaveLayer bounds按原版扩展到父裁剪。原版几何300组/4636值、464组图层组合和兼容扩展均通过。preview.1标签的CI失败，未上传NuGet；本次使用preview.2保留追溯。
 
 3230/3235项固定基线，保留5项原生合同缺口；实际SVG/XPS/SKP、Alpha8、浮点颜色与GPU资源互操作。Vulkan合批/设备复制/完成读回优化；Metal无Mac GPU，尚未实机验证。Avalonia接受>=12.1.0且<13.0.0，已验证宿主12.1.0–12.1.5。JPEG、文字/曲线/整页画质及性能/内存仍有差距。Sdcb.SimdCodecs保持1.4.0；.NET系统压缩与macOS官方窗口宿主是已允许的原生例外。完整测试、CPU/GPU/内存性能及兼容限制见包内CHANGELOG.md和[本版报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PUBLIC-API-FINAL-2026-11-07.md)。
 
 
-# SimdSkia.Pdf 0.1.2-preview.1
+# SimdSkia.Pdf 0.1.2-preview.2
 
 Requires .NET 10.
 
-Optional C# PDF parsing and page rendering, using PdfPig **0.1.2-preview.16** (Apache-2.0)
+Optional C# PDF parsing and page rendering, using PdfPig **0.1.2-preview.26** (Apache-2.0)
 for PDF structure/fonts and SimdSkia for rasterization. No Skia, PDFium, MuPDF,
 native font library is used for PDF rendering. PDF Flate streams use the managed implementation; image codecs may use the explicitly permitted .NET native compression.
 
 The optional parser is not pulled in by ordinary Avalonia or compatibility users. Keep all direct SimdSkia package versions aligned.
 
 ```shell
-dotnet add package SimdSkia.Pdf --version 0.1.2-preview.1
+dotnet add package SimdSkia.Pdf --version 0.1.2-preview.2
 ```
 
 Every package includes `CHANGELOG.md` and NuGet release notes. This release is a

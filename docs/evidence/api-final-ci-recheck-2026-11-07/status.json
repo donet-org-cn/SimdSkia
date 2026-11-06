@@ -1,0 +1,127 @@
+[
+  {
+    "name": "geometry",
+    "command": [
+      "python",
+      "tools/check-geometry-compatibility.py",
+      "--no-build",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\ci-fix-regression-1\\geometry"
+    ],
+    "startedUtc": "2026-11-06T22:37:44.554017+00:00",
+    "exitCode": 0
+  },
+  {
+    "name": "expansion-Original",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/CompatibilityExpansion/Original",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "artifacts\\api-final-2026-11-07\\ci-fix-regression-1\\expansion-Original"
+    ],
+    "startedUtc": "2026-11-06T22:37:46.591039+00:00",
+    "exitCode": 0
+  },
+  {
+    "name": "expansion-Managed",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/CompatibilityExpansion/Managed",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "artifacts\\api-final-2026-11-07\\ci-fix-regression-1\\expansion-Managed"
+    ],
+    "startedUtc": "2026-11-06T22:37:47.436934+00:00",
+    "exitCode": 0
+  },
+  {
+    "name": "final-raster",
+    "command": [
+      "python",
+      "tools/check-final-raster.py",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\ci-fix-regression-1\\final-raster"
+    ],
+    "startedUtc": "2026-11-06T22:37:49.432028+00:00",
+    "exitCode": 0
+  },
+  {
+    "name": "final-paint",
+    "command": [
+      "python",
+      "tools/check-final-paint.py",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\ci-fix-regression-1\\final-paint"
+    ],
+    "startedUtc": "2026-11-06T22:37:55.250035+00:00",
+    "exitCode": 2
+  },
+  {
+    "name": "skp-documents",
+    "command": [
+      "python",
+      "tools/check-skp-documents.py",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\ci-fix-regression-1\\skp-documents"
+    ],
+    "startedUtc": "2026-11-06T22:38:00.206493+00:00",
+    "exitCode": 2
+  },
+  {
+    "name": "regression",
+    "command": [
+      "python",
+      "tools/run-api-completion-regressions.py",
+      "--output",
+      "artifacts\\api-final-2026-11-07\\ci-fix-regression-1\\regression"
+    ],
+    "startedUtc": "2026-11-06T22:38:07.467645+00:00",
+    "exitCode": 2
+  },
+  {
+    "name": "aot-publish",
+    "command": [
+      "dotnet",
+      "publish",
+      "tests/CompatibilityExpansion/Managed",
+      "-c",
+      "Release",
+      "-r",
+      "win-x64",
+      "-p:NativeAotTest=true",
+      "-o",
+      "artifacts\\api-final-2026-11-07\\ci-fix-regression-1\\aot"
+    ],
+    "startedUtc": "2026-11-06T22:38:43.715981+00:00",
+    "exitCode": 0
+  },
+  {
+    "name": "aot-run",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\api-final-2026-11-07\\ci-fix-regression-1\\aot\\Managed.exe",
+      "artifacts\\api-final-2026-11-07\\ci-fix-regression-1\\aot-results"
+    ],
+    "startedUtc": "2026-11-06T22:39:00.586561+00:00",
+    "exitCode": 0
+  },
+  {
+    "name": "dependency-isolation",
+    "command": [
+      "pwsh",
+      "-NoProfile",
+      "-File",
+      "tools/check-production-dependencies.ps1"
+    ],
+    "startedUtc": "2026-11-06T22:39:00.814389+00:00",
+    "exitCode": 0
+  }
+]
