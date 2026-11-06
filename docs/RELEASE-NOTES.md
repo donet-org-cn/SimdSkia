@@ -2,6 +2,9 @@
 
 ## 0.1.2-preview.3 — 公共API/GPU预览与发布说明修正
 
+- 发布后仓库补充验证：十二包CI/本机独立公开下载核对通过；同一适配器三平台18组实际窗口、6组最低/最新AOT，以及NuGet.org-only新缓存的真实AOT窗口通过。包内冻结说明保持原样。
+- [最终源码63进程复测](PERFORMANCE-PREVIEW3-2026-11-07.md)：CPU/Vulkan/Direct2D综合耗时比0.778/0.682/0.575，controls×1 CPU工作集91.00→110.75MiB；整页画质仍0/18，不宣称同画质整体持平。
+
 - 汇集下方94项API补充、GPU互操作/Vulkan/SIMD优化以及连续MoveTo、特殊混合SaveLayer修复；固定SkiaSharp 3.119.4基线3230/3235，保留5项约定原生合同缺口。
 - 修正包内PDF依赖说明和版本更新脚本：仅更新SimdSkia版本，不再把PdfPig 0.1.16的子串误替换；实际第三方依赖始终为PdfPig 0.1.16 / Sdcb.SimdCodecs 1.4.0。本版新增README依赖版本与nuspec一致性校验。
 - preview.1因CI发现行为回归未上传NuGet；preview.2在上传前因说明错误被取消。保留两个候选标签，本版使用独立新标签；不能把候选本地包消费称为公开发布。

@@ -1,0 +1,304 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net10.0": {
+      "Avalonia": {
+        "type": "Direct",
+        "requested": "[12.1.5, 12.1.5]",
+        "resolved": "12.1.5",
+        "contentHash": "Vw+gNvv4RXK5hLeVI9PfalhxPai6hrQjIElfoCDQK1fXTpk+vRyfhuhprrh+EIeuJtoYCy+AsSrqR1wgU28zeQ==",
+        "dependencies": {
+          "Avalonia.BuildServices": "11.3.2",
+          "Avalonia.Remote.Protocol": "12.1.5",
+          "MicroCom.Runtime": "0.11.6"
+        }
+      },
+      "Avalonia.Themes.Fluent": {
+        "type": "Direct",
+        "requested": "[12.1.5, 12.1.5]",
+        "resolved": "12.1.5",
+        "contentHash": "FGjtJEpeVIbth+u4r507c9nbm1NQWLTvT3RC4e/yqDceRC4crAl37zVUloElA6rexDz69y0WvDfMLGX+t12yBQ==",
+        "dependencies": {
+          "Avalonia": "12.1.5"
+        }
+      },
+      "Microsoft.DotNet.ILCompiler": {
+        "type": "Direct",
+        "requested": "[10.0.14, )",
+        "resolved": "10.0.14",
+        "contentHash": "CDQ/+XRT1JT/0u87j9exR1AociehKUzxae4KCOWxCQ1PIKbYS0F8ovxaCrqRlkylGmbhywKxV/zbbrEhWa5NXg=="
+      },
+      "Microsoft.NET.ILLink.Tasks": {
+        "type": "Direct",
+        "requested": "[10.0.14, )",
+        "resolved": "10.0.14",
+        "contentHash": "YlTamXppEQls6DYWt7RdUuwWDb0lyw/vXCaGeQpLCpsLmfwGuCkOz/vIGgMTV7ECsJcavkCOkxZXv9s8rdAHkQ=="
+      },
+      "SimdSkia.Avalonia.Desktop": {
+        "type": "Direct",
+        "requested": "[0.1.2-preview.3, )",
+        "resolved": "0.1.2-preview.3",
+        "contentHash": "AH9xepW88WaUvtkGdra9MkiWgvfz5AnTWTwlVft8osFvOxLv5i9bKQzECRJaseXzwYbCmZY/63+0Vai5W4Q0ZQ==",
+        "dependencies": {
+          "Avalonia": "[12.1.0, 13.0.0)",
+          "SimdSkia.Avalonia": "0.1.2-preview.3",
+          "Tmds.DBus.Protocol": "[0.94.1]"
+        }
+      },
+      "SimdSkia.Avalonia.Gpu": {
+        "type": "Direct",
+        "requested": "[0.1.2-preview.3, )",
+        "resolved": "0.1.2-preview.3",
+        "contentHash": "31mEWwyf+hjbEVaKQzbmqvz3owaQI86YZWC5rwePAqGfJrD3eu/pp6goorR8NO2pFWl0B+3LXzwIMWhghFo9wA==",
+        "dependencies": {
+          "Avalonia": "[12.1.0, 13.0.0)",
+          "SimdSkia.Avalonia": "0.1.2-preview.3",
+          "SimdSkia.Gpu": "0.1.2-preview.3",
+          "SimdSkia.Gpu.Direct2D": "0.1.2-preview.3"
+        }
+      },
+      "Avalonia.BuildServices": {
+        "type": "Transitive",
+        "resolved": "11.3.2",
+        "contentHash": "qHDToxto1e3hci5YqbG9n0Ty8mlp3zBUN5wT66wKqaDVzXyQ0do3EnRILd4Ke9jpvsktaPpgE0YjEk7hornryQ=="
+      },
+      "Avalonia.Remote.Protocol": {
+        "type": "Transitive",
+        "resolved": "12.1.5",
+        "contentHash": "yNSke7MNKxJrgcTOQJk70QhPU568dxwRMeQCSmq9N7IGbpPS4zpbr4o6e8rLF/8UfASBQN/yuTgqUfa2nwf6Iw=="
+      },
+      "Clipper2": {
+        "type": "Transitive",
+        "resolved": "2.0.0",
+        "contentHash": "2X23RZxJrjRjOSZc20aqXY9jpmHLekDRy4PIMfrsi2LPNzxFYlnuqzX/nLdk77fbURHUeX+gMhUn2a1z9/wMTQ=="
+      },
+      "MicroCom.Runtime": {
+        "type": "Transitive",
+        "resolved": "0.11.6",
+        "contentHash": "NdNWGDiZ6eS/Mf/9+QHR91cj1K7Hy+PX9yrHI/zM7xFYuj9IWT2uxtB6sCHjrnxAeLV9fut1R6zHDUGKX6f9lQ=="
+      },
+      "Sdcb.SimdCodecs": {
+        "type": "Transitive",
+        "resolved": "1.4.0",
+        "contentHash": "wS6qDIR0hP24rn9zcau8PqPhQ2NulJCXMXEa2XnQ77OkfA6sA28CIgNqpSPcUfHCZ7cW92bN5FbnUOKD1zExRw==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.4.0",
+          "Sdcb.SimdCodecs.Bmp": "1.4.0",
+          "Sdcb.SimdCodecs.Gif": "1.4.0",
+          "Sdcb.SimdCodecs.Ico": "1.4.0",
+          "Sdcb.SimdCodecs.Jbig2": "1.4.0",
+          "Sdcb.SimdCodecs.Jpeg": "1.4.0",
+          "Sdcb.SimdCodecs.Jpeg.GainMap": "1.4.0",
+          "Sdcb.SimdCodecs.Jpeg2000": "1.4.0",
+          "Sdcb.SimdCodecs.Png": "1.4.0",
+          "Sdcb.SimdCodecs.Pnm": "1.4.0",
+          "Sdcb.SimdCodecs.Qoi": "1.4.0",
+          "Sdcb.SimdCodecs.Tiff": "1.4.0",
+          "Sdcb.SimdCodecs.Webp": "1.4.0"
+        }
+      },
+      "Sdcb.SimdCodecs.Abstractions": {
+        "type": "Transitive",
+        "resolved": "1.4.0",
+        "contentHash": "ZK1HwIQx01CiOEArVUmXsPwuUkGztgGJGaqfK/mU5B7oC+gsK+FTrVxz6T+Qnb5dxWIHcA/U0XG6hwm6mJe3ag=="
+      },
+      "Sdcb.SimdCodecs.Bmp": {
+        "type": "Transitive",
+        "resolved": "1.4.0",
+        "contentHash": "feAUj/BS80ST/4pDsBPSZTmPtWGDd8EsQyZ2XoymMOwITi56JyCRYzTZdPvJuLD+bawj543x8ox8qJrvq36DNg==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.4.0",
+          "Sdcb.SimdCodecs.Png": "1.4.0"
+        }
+      },
+      "Sdcb.SimdCodecs.Color.Icc": {
+        "type": "Transitive",
+        "resolved": "1.4.0",
+        "contentHash": "7dXgjYTwf3ZpqqUfkwoFMUOwnP4SFLfQp7zWCTv03Oh+syC6hBZiu/Gvp2JfaO+GTtJjCXVcELVWhPQlMDSyPQ==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.4.0"
+        }
+      },
+      "Sdcb.SimdCodecs.Gif": {
+        "type": "Transitive",
+        "resolved": "1.4.0",
+        "contentHash": "Rx+Mx0cERJk65LwbIL3ZiwIYyEzGf1aQbsjTrO58bzvj/a+3cHsahmQ7TOWSq2elYVLKkFkTfsXT9cb+m6OQxA==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.4.0"
+        }
+      },
+      "Sdcb.SimdCodecs.Ico": {
+        "type": "Transitive",
+        "resolved": "1.4.0",
+        "contentHash": "D4oG6BFOVv6UFgStUjSWuQBn8TAxjtYdcc7kKgVoEX1WvDCQp0mc9zJMbOvTi43wawEQtrHe5mGoyPCjNVFKXg==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.4.0",
+          "Sdcb.SimdCodecs.Bmp": "1.4.0",
+          "Sdcb.SimdCodecs.Png": "1.4.0"
+        }
+      },
+      "Sdcb.SimdCodecs.Jbig2": {
+        "type": "Transitive",
+        "resolved": "1.4.0",
+        "contentHash": "XSbCPeUwPqewgr67+KN31sAX6vtnLGIZ2SqlrKgHN6AQ3mhp//rebhkdPCChWBcoNkld5eKzKiqsLsA4lmDFVg==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.4.0"
+        }
+      },
+      "Sdcb.SimdCodecs.Jpeg": {
+        "type": "Transitive",
+        "resolved": "1.4.0",
+        "contentHash": "Ge27xg9hh0+NKeiJAUbUWDgvy7BEmlCMR+eUs430yLQXx1RP6x2N63qEm2mvJC8kcV43P9MrIhx2Kc+46RoXxg==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.4.0"
+        }
+      },
+      "Sdcb.SimdCodecs.Jpeg.GainMap": {
+        "type": "Transitive",
+        "resolved": "1.4.0",
+        "contentHash": "w+AKYwAjoSNiO2gRRwJa/IQlH8GWu+5uAKr7CitZUdfXw6nPHeZ7t4krxqMDfQp1dOuPT7Ll646q4yLotNyweg==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.4.0",
+          "Sdcb.SimdCodecs.Color.Icc": "1.4.0",
+          "Sdcb.SimdCodecs.Jpeg": "1.4.0"
+        }
+      },
+      "Sdcb.SimdCodecs.Jpeg2000": {
+        "type": "Transitive",
+        "resolved": "1.4.0",
+        "contentHash": "RMWUdIwszt65H8ADqRPgnvKnbk53KGmFvliWycxSuhJUlAL/4M7YKZRWxXhhFzbczWVFag2/M+XQWIWbaEhsqQ==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.4.0"
+        }
+      },
+      "Sdcb.SimdCodecs.Png": {
+        "type": "Transitive",
+        "resolved": "1.4.0",
+        "contentHash": "WmOjrDKQs6eo+X/wtRmLLxwUwKKbqe6KDdb1mK4pDSGPy+o69pmF31SkNfA6o3ctwhWhnc4eGsuD2y8yVcV9eA==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.4.0",
+          "Sdcb.SimdCodecs.Color.Icc": "1.4.0"
+        }
+      },
+      "Sdcb.SimdCodecs.Pnm": {
+        "type": "Transitive",
+        "resolved": "1.4.0",
+        "contentHash": "I4zy5YZGfTvA+V4WyKZ8whvk4HZOBh8Ists6zGGG0PIRUnHDILuGw12ufQ2mD3f6xSvrzSVY4GF46cELSTuhOg==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.4.0"
+        }
+      },
+      "Sdcb.SimdCodecs.Qoi": {
+        "type": "Transitive",
+        "resolved": "1.4.0",
+        "contentHash": "zU5LUBplONeL53BpIisnnLWH7BMSAqw/7NuI/tO3zTspIxE1yAoL/urEyl+Iob4LBpcxAqLpe0GNwgSu7Ym3Vg==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.4.0"
+        }
+      },
+      "Sdcb.SimdCodecs.Tiff": {
+        "type": "Transitive",
+        "resolved": "1.4.0",
+        "contentHash": "YQTspguloZSIgCTrZVzFeCZ4+aAQixnD+kQERDLaudyPi0/V/sEpvbgR4lKVgOS0pqYQjvx1AyCTcWlZtmAyKA==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.4.0",
+          "Sdcb.SimdCodecs.Png": "1.4.0"
+        }
+      },
+      "Sdcb.SimdCodecs.Webp": {
+        "type": "Transitive",
+        "resolved": "1.4.0",
+        "contentHash": "l5sJAp3n1l6k1Yijaa4luBdZqf2rBRiGqwJ7A3VwysA+YFMVOXG8r9LwtTozgNgtOs+PvqqrKQ5w8fKDkvRyGw==",
+        "dependencies": {
+          "Sdcb.SimdCodecs.Abstractions": "1.4.0"
+        }
+      },
+      "SimdSkia.Avalonia": {
+        "type": "Transitive",
+        "resolved": "0.1.2-preview.3",
+        "contentHash": "WxEKCT8ENpdM33GkxKl7k7ovnlySJgK+E0D1VC6doFGc+xFxfPrie5KsoqLsTdWwdpY29qVzLz0Uyix1hp/BMg==",
+        "dependencies": {
+          "Avalonia": "[12.1.0, 13.0.0)",
+          "Clipper2": "[2.0.0]",
+          "SimdSkia.Core": "0.1.2-preview.3",
+          "SimdSkia.Cpu": "0.1.2-preview.3",
+          "SimdSkia.Imaging": "0.1.2-preview.3",
+          "SimdSkia.Text": "0.1.2-preview.3"
+        }
+      },
+      "SimdSkia.Core": {
+        "type": "Transitive",
+        "resolved": "0.1.2-preview.3",
+        "contentHash": "C0dYtpanPM3oukiDCHIda5cX89+acAO9bzPkbLFOhjPEFhOHzM2aCvI5DtWJb0YK/yc2RmPQONMZtKVsWqeHRw==",
+        "dependencies": {
+          "Clipper2": "[2.0.0]"
+        }
+      },
+      "SimdSkia.Cpu": {
+        "type": "Transitive",
+        "resolved": "0.1.2-preview.3",
+        "contentHash": "xoNlS6TQ4SmDKVQegF+m1iJW+UUUFA/L+5dwU+Rm/hVDnmiTl5p0TCzX710ys+WJv9YPtCveKeMqRVb0wK6e1Q==",
+        "dependencies": {
+          "SimdSkia.Core": "0.1.2-preview.3"
+        }
+      },
+      "SimdSkia.Gpu": {
+        "type": "Transitive",
+        "resolved": "0.1.2-preview.3",
+        "contentHash": "7lJrbv01xPbPtp2C+Em1W0TU8CHXShDDy1SKbJJioTH7whXKUetIzuXjP+sWNLgeBixnzwHKE2TzMcn5ud24tg==",
+        "dependencies": {
+          "SimdSkia.Core": "0.1.2-preview.3",
+          "SimdSkia.Cpu": "0.1.2-preview.3"
+        }
+      },
+      "SimdSkia.Gpu.Direct2D": {
+        "type": "Transitive",
+        "resolved": "0.1.2-preview.3",
+        "contentHash": "vIITTEjdDzOwbZR8ne1XTadJ90KIdlY95ERbGU2J3JGcqoaTC4ObUHVIEMdwHt61c9Otnyn+OlK/WHe4sc4ccw==",
+        "dependencies": {
+          "SimdSkia.Core": "0.1.2-preview.3",
+          "SimdSkia.Cpu": "0.1.2-preview.3",
+          "SimdSkia.Gpu": "0.1.2-preview.3"
+        }
+      },
+      "SimdSkia.Imaging": {
+        "type": "Transitive",
+        "resolved": "0.1.2-preview.3",
+        "contentHash": "83fTl0tZz+LjRlJhf5imwL82qlyFSe+emiL7tS23RTUK/KHVeNQaQcTIJLF7HgnyvaRt74YlgOOPK6/9sZiAyg==",
+        "dependencies": {
+          "Sdcb.SimdCodecs": "[1.4.0]",
+          "SimdSkia.Core": "0.1.2-preview.3"
+        }
+      },
+      "SimdSkia.Text": {
+        "type": "Transitive",
+        "resolved": "0.1.2-preview.3",
+        "contentHash": "Ic+QhxOGHrr5MyscXs/HJAMXrwNJFTiGlLAbun+U7BlPJ2PX0131XvU83K/nG0uK4EIKAxGbXJ4R89MhddQ6rA==",
+        "dependencies": {
+          "SimdSkia.Core": "0.1.2-preview.3"
+        }
+      },
+      "Tmds.DBus.Protocol": {
+        "type": "Transitive",
+        "resolved": "0.94.1",
+        "contentHash": "11YMr7FnAbL83bQmVxlhbIKHvSLxjO81D12Ej0QMSGXMDTxNA9MTOa4MQxx43nv5el/efuPHwzyrj6a5ha2gug=="
+      }
+    },
+    "net10.0/win-x64": {
+      "Microsoft.DotNet.ILCompiler": {
+        "type": "Direct",
+        "requested": "[10.0.14, )",
+        "resolved": "10.0.14",
+        "contentHash": "CDQ/+XRT1JT/0u87j9exR1AociehKUzxae4KCOWxCQ1PIKbYS0F8ovxaCrqRlkylGmbhywKxV/zbbrEhWa5NXg==",
+        "dependencies": {
+          "runtime.win-x64.Microsoft.DotNet.ILCompiler": "10.0.14"
+        }
+      },
+      "runtime.win-x64.Microsoft.DotNet.ILCompiler": {
+        "type": "Transitive",
+        "resolved": "10.0.14",
+        "contentHash": "B28xsyrO3PRFGL9yd1lLWdX3/wATFkaxPFM3VmGOFG8pfx7jDeb1Yz09v6n+z0jNEPAlQLqOx2noOXw8aytYNw=="
+      }
+    }
+  }
+}

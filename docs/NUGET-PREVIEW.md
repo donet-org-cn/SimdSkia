@@ -1,14 +1,20 @@
 # NuGet 发布记录
 
-## 0.1.2-preview.3 — 修正候选，待CI与公开下载验证
+## 0.1.2-preview.3 — 已公开，十二包独立核对通过
 
-继承94项API/GPU与行为修复；修正包内PdfPig依赖说明的版本替换问题，实际依赖保持0.1.16。preview.2发布作业在上传前取消，未上传NuGet；本次保留旧标签并使用preview.3。完整测试/性能/限制见[报告](PUBLIC-API-FINAL-2026-11-07.md)。待本版CI和全部十二包公开下载核对后补充真实发布状态。
+十二包已公开下载，全部DLL、nuspec、宿主/buildTransitive资产和包内README/CHANGELOG/LICENSE与冻结CI包一致；GitHub CI及本机独立下载两次验证结果一致。[发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/42308006858)和关联三平台核心/桌面、几何、Windows AOT均成功，标签`v0.1.2-preview.3`固定在`82e9575971aff578762e879aea8afdbbdf9c811d`。[GitHub预发行](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.2-preview.3)。
+
+同一适配器SHA256覆盖Windows x64/Linux X11 x64/macOS ARM64的Avalonia 12.1.0–12.1.5：18组控件/实际窗口与最低/最新共6组Native AOT通过。本机另以仅NuGet.org源、全新私有缓存恢复并AOT发布实际窗口，系统默认Microsoft YaHei UI字体、真实呈现帧和无CLR/JIT检查通过。[完整发布证据](evidence/nuget-0.1.2-preview.3-2026-11-07/)与[汇总](evidence/nuget-0.1.2-preview.3-2026-11-07/release.json)保留数据。macOS的CPU窗口通过不等于Metal GPU通过，后者没有Mac GPU实机验证。
+
+固定API仍3230/3235，5项原生合同缺口按要求保留。连续MoveTo/特殊混合SaveLayer修复及464组逐字节原版对照已进入发布门槛。最终源码另重建并跑完63进程控件页：CPU/Vulkan/Direct2D综合耗时比分别0.778/0.682/0.575；controls×1 CPU工作集原版91.00/本库110.75MiB。**整页画质仍0/18，JPEG及部分GPU/API速度仍有差距，不代表全面行为兼容或整体同画质持平。** [最终源码性能/CPU/内存报告](PERFORMANCE-PREVIEW3-2026-11-07.md)、[完整测试与限制](PUBLIC-API-FINAL-2026-11-07.md)。
+
+十二包统一0.1.2-preview.3 / .NET10；Sdcb.SimdCodecs1.4.0、可选PdfPig0.1.16保持。修正文档版本同步脚本，不再改写第三方依赖号。两个未发布候选和失败/取消记录保留如下。
 
 ```sh
 dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.2-preview.3
 dotnet add package SimdSkia.Avalonia.Gpu --version 0.1.2-preview.3
+dotnet add package SimdSkia.Pdf --version 0.1.2-preview.3
 ```
-
 
 ## 0.1.2-preview.2 — 上传前取消，未发布
 

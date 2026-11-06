@@ -6,9 +6,11 @@
 
 固定 SkiaSharp **3.119.4 / 3235 项**，当前匹配 **3230 项、201 公开类型、5 缺口、0 额外签名**。从99项冻结快照补入94项；五项原生句柄/版本合同按用户要求保留，不伪造替代语义。新增真实Alpha8、浮点颜色/Blender/抖动、LCD/中文点阵、SVG/XPS、原生v103 SKP子集与GL/D3D12/Metal GPU资源链路。Vulkan增加非重叠矩形合批、设备内复制、直接完成读回与去分配；Metal没有Mac GPU实机验证。**JPEG、部分文字/曲线、整页画质及性能/内存差距仍存在，不代表全面行为或二进制兼容。**
 
+十二个预览包已公开，并与CI内容独立核对。三平台18组Avalonia版本/窗口与6组AOT通过，另有NuGet.org-only真实AOT窗口验证。[最终源码63进程性能与CPU/内存复测](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PERFORMANCE-PREVIEW3-2026-11-07.md)已更新；严格画质与内存差距仍保留。
+
 [完整测试、CPU/GPU和内存报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PUBLIC-API-FINAL-2026-11-07.md) · [发布状态](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/NUGET-PREVIEW.md) · [更新日志](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-NOTES.md)
 
-[带性能图、兼容范围与安装方法的文章](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/blog/2026-11-07-simdskia-api-and-gpu.md)。正式旧版保持0.1.1；本预览公开下载验证状态单独记录。
+[带性能图、兼容范围与安装方法的文章](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/blog/2026-11-07-simdskia-api-and-gpu.md)。正式旧版保持0.1.1；本预览十二包公开下载验证已通过。
 
 独立 C# 2D 引擎，内部使用 `SimdSkia`，源码兼容层保留 `SkiaSharp.SK*`。不使用 Google Skia 绘图；字体、基础排版及图片编解码均由 C# 实现。通过 `SimdSkia.Avalonia` 可以接入 Avalonia，无需重新编译 Avalonia。
 

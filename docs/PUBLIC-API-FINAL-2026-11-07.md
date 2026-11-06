@@ -1,12 +1,10 @@
 # SimdSkia 0.1.2-preview.3：公共 API、测试与性能报告
 
-发布说明复核：preview.2在上传前因PDF依赖说明的版本替换错误取消；实际依赖始终为PdfPig 0.1.16，已修正脚本并增加包校验。本次使用preview.3，旧候选与原始测量证据保留。
+**已公开发布十二包，并经CI和本机独立下载核对。** [发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/42308006858)、三平台核心/桌面、几何与Windows AOT均成功。同一适配器覆盖12.1.0–12.1.5的18组平台/版本窗口与6组最低/最新AOT；本机仅NuGet.org源、新缓存、系统字体的真实AOT窗口另通过。[发布证据](evidence/nuget-0.1.2-preview.3-2026-11-07/)与[发布记录](NUGET-PREVIEW.md)保留来源与结果。
 
-CI复核新增修正：连续MoveTo保留空轮廓/点；Src/Clear/SrcIn/DstIn/SrcOut/DstATop/Modulate的SaveLayer bounds按原版扩展到父裁剪。原版几何300组/4636值、464组图层组合和兼容扩展均通过。preview.1标签的CI失败，未上传NuGet；修复先进入preview.2候选；当前发布状态见发布记录。
+本轮99项签名缺口补入94项，5项原生合同按要求保留。CI发现并修复连续MoveTo丢点、七种特殊混合SaveLayer范围：300组/4636值几何、464图层组合、2,375,680字节原版逐字节一致；完整构建零警告/错误，36基础与474413精确优化检查通过。修复后的真实AOT兼容扩展38检查通过。旧候选标签与所有失败保留，[修复证据](evidence/api-final-ci-recheck-2026-11-07/)单独冻结。
 
-修复后再次完整构建零警告/错误，36项基础、474413项精确优化和十二组核心回归通过；真实Native AOT兼容扩展38检查通过，PE无CLR头。图层覆盖29混合模式×2像素格式×2颜色空间标记×4种场景，2,375,680字节全部一致。九幅CPU/Vulkan/Direct2D控件页与正式性能采集输出逐字节相同；此次短采集仅验证输出，没有冒充新的性能结果。Picture/WebP仍28/28、浮点仍25/29、SKP仍14/35，比较JSON完全不变，JPEG非零失败也保留。[修复后的独立证据](evidence/api-final-ci-recheck-2026-11-07/)与[汇总](evidence/api-final-ci-recheck-2026-11-07/summary.json)单独冻结，未覆盖旧证据。
-
-此前preview.1候选的本地NuGet包消费已验证：独立缓存下1417项编解码断言、22项PDF检查、真实Avalonia桌面窗口与真实Native AOT窗口通过；其文档重打包runtime资产与已消费包逐字节相同，[旧候选证据](evidence/api-final-package-consumption-2026-11-07/)保持冻结。随后CI发现本页开头两项行为回归，preview.1未上传NuGet；修复后的preview.2必须重新打包、消费和验证，不能沿用旧包证明，最终状态见[发布记录](NUGET-PREVIEW.md)。
+**最新控件页已在最终源码上全量重建并重新测量63进程**，不再只依赖输出一致推断性能：[最终源码CPU/GPU/CPU占用/内存报告](PERFORMANCE-PREVIEW3-2026-11-07.md)。CPU/Vulkan/Direct2D综合耗时比0.778/0.682/0.575；整页严格画质仍0/18，CPU内存仍较高。下方早期控件页和GPU微场景保留各自快照，不能混成同一二进制成绩。
 
 固定源码基线 **SkiaSharp 3.119.4 / 3235 项**。最终匹配 **3230 项、201 公开类型、5 缺口、0 额外签名**；从99项冻结快照补入94项。基线SHA256仍为 `03A164AC1097F84793632DF806DA91E2829F0FCA65D8F2B922E45554AB083296`。这五项按用户要求保留，不提供替代句柄或虚构原生版本。
 
@@ -73,9 +71,9 @@ Windows x64、i7-8700K（6核12线程）、GTX1050Ti，.NET10.0.14 / SDK10.0.403
 
 UI使用真实Avalonia12.1.5控件与同一固定字体：3秒预热、5秒测量、25ms进程采样，离屏/JIT，不是窗口呈现FPS。GPU微场景640×480：1秒预热、2秒测量、10ms采样；Vulkan双方使用同一外部设备测试宿主，进程内存含宿主，不能等同默认原版应用内存。CPU局部场景为端点WS/private，不能冒充采样峰值。驱动显存没有可靠采集，不提供伪造数字。
 
-CPU/UI/Vulkan测量快照早于最后GL回调及D3D12 Adapter修正，相关光栅/控件/Vulkan计时代码未变；保留原始二进制及源哈希，不冒充相同编译产物。差异文件和适用路径记录在post-timing-source-delta.json；发生变化的GL/D3D12路径已重新测试并采集性能。AOT也在这些修正后重新编译运行。
+下方早期控件页与GPU微场景来自各自冻结快照，保留二进制与源文件的SHA256，不冒充同一编译产物。旧阶段差异记录在post-timing-source-delta.json；GL/D3D12已在生命周期/Adapter修正后重采集。随后新增的MoveTo/SaveLayer修复后，最终源码控件页已另行完整重建和63进程重测，见本页开头链接与新证据。
 
-## 完整Avalonia控件页：耗时、CPU与内存
+## 早期控件页快照：耗时、CPU与内存（最终源码复测见上方）
 
 下表原版CPU给出默认/强制灰度两条真实结果。GPU分别列原版Vulkan/ANGLE，与本实现Vulkan/Direct2D；Direct2D对ANGLE是同硬件不同API，不冒充同后端。
 

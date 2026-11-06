@@ -1,6 +1,4 @@
-# 补齐94项API之后，纯C#的SimdSkia离替代SkiaSharp还有多远？
-
-CI复核补充：修复连续MoveTo点序列及特殊混合SaveLayer范围，300组/4636值几何对照、464组图层逐字节对照通过。preview.1候选CI失败且未上传NuGet，修复从preview.2候选开始，最终公开版本见仓库发布记录；Metal没有Mac GPU验证，严格画质与性能差距仍按下文披露。
+# 用纯C#替换SkiaSharp，真的划算吗？94项API、CPU/GPU与内存实测
 
 SimdSkia是独立的C# 2D渲染引擎，CPU光栅化、字体和基础排版由C#执行，不调用Google Skia原生绘图库；提供SkiaSharp命名空间的源码兼容外观，也提供Avalonia平台渲染适配器。PNG/TIFF允许.NET系统压缩，macOS窗口使用允许的官方宿主；GPU调用操作系统/驱动。这些边界与“任何环节都没有原生代码”有区别。
 
@@ -16,25 +14,39 @@ Vulkan将外部表面CPU回传后再上传改为设备内复制，非重叠矩�
 
 本轮也修正了一项测试错误：早期D3D12描述符漏传Adapter，误判原版工厂不可用。完整描述符下，双方10/10基础画面、346/346互操作画面通过，现在使用真实的同D3D12对照。旧错误记录保留并作废，不能拿它作为原版不支持的依据。
 
+CI还发现连续MoveTo丢点与特殊混合SaveLayer范围回归，修复后原版300组/4636值几何、464组图层/2,375,680字节精确比较通过。以下完整页性能已在最终preview.3源码上全量重建、重新采集；旧快照保留，不把像素一致直接当作性能不变。
+
 ## 真实Avalonia控件页
 
-Windows x64 / i7-8700K / GTX1050Ti，Avalonia12.1.5、SkiaSharp3.119.4、.NET10.0.14 JIT。相同场景、字体、DPI，3秒预热、5秒测量、3个独立进程。GPU等待实际完成并读回；这是离屏完整帧，不是显示器FPS，也不是AOT速度。
+Windows x64 / i7-8700K / GTX1050Ti，Avalonia12.1.5、SkiaSharp3.119.4、.NET10.0.14 JIT。相同场景、字体、DPI，3秒预热、5秒测量，每组3个独立进程，共63个。GPU等待实际完成并读回；这是离屏完整帧，不是显示器FPS，也不是AOT速度。
 
 | 场景 | 原版CPU较快值ms | SimdSkia CPU ms | 原版/本实现WS MiB |
 |---|---:|---:|---:|
-| controls ×1 | 0.8582 | 0.5292 | 91.01/110.50 |
-| controls ×1.5 | 1.6969 | 1.2875 | 94.63/114.18 |
-| scroll ×1 | 0.3517 | 0.3370 | 83.54/99.04 |
+| controls ×1 | 0.8687 | 0.5369 | 91.00/110.75 |
+| controls ×1.5 | 1.6152 | 1.2745 | 94.76/112.57 |
+| scroll ×1 | 0.3527 | 0.3410 | 83.59/98.88 |
 
-CPU综合耗时约为较快原版CPU的76.5%，最慢场景约95.8%；但CPU工作集仍较高。字体缓存预算不是进程总内存，WS还包括运行时、JIT和映射页面。
+CPU综合耗时约为较快原版CPU的77.8%，最慢场景约96.7%；但CPU工作集仍较高。字体缓存预算不是进程总内存，WS还包括运行时、JIT和映射页面。
 
-![Avalonia完成帧耗时](../assets/api-final-2026-11-07/ui-time.png)
+完整页GPU对照如下。Vulkan为同API；Direct2D对ANGLE是同GPU不同API。所有计时GPU运行的命令回退数为0，路径/字形覆盖仍可由CPU生成后由GPU合成。
 
-![进程内存](../assets/api-final-2026-11-07/ui-memory.png)
+| 场景 | 原版Vulkan ms | SimdSkia Vulkan ms | 原版ANGLE ms | SimdSkia Direct2D ms |
+|---|---:|---:|---:|---:|
+| controls ×1 | 2.4206 | 1.4886 | 2.2244 | 1.5110 |
+| controls ×1.5 | 4.0604 | 2.6002 | 4.1408 | 2.7124 |
+| scroll ×1 | 2.4310 | 1.3972 | 1.8912 | 0.7943 |
+
+![Avalonia完成帧耗时](../assets/ui-preview3-2026-11-07/ui-time.png)
+
+![进程CPU](../assets/ui-preview3-2026-11-07/ui-cpu.png)
+
+![进程内存](../assets/ui-preview3-2026-11-07/ui-memory.png)
+
+逐组CPU百分比、CPU时间/帧、P95、WS/私有内存、物理RAM占比和托管分配见[最终源码复测](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PERFORMANCE-PREVIEW3-2026-11-07.md)。**整页严格画质仍0/18，不能把更低耗时宣传为同画质全面领先。**
 
 ## GPU不能只报提交时间
 
-下表为640×480微场景，双方同一GPU、同一图形API、每帧真实完成RGBA读回。D3D12路径中本实现使用C# Direct2D驱动和系统D3D11On12。每个独立进程1秒预热/2秒测量、取3个进程中位数；表中的速度不应外推到所有窗口。
+下表保留本轮较早冻结的640×480微场景，并非刚才完整页的重复测量。双方同一GPU、同一图形API、每帧真实完成RGBA读回。D3D12路径中本实现使用C# Direct2D驱动和系统D3D11On12。每个独立进程1秒预热/2秒测量、取3个进程中位数；表中的速度不应外推到所有窗口。
 
 | 后端/场景 | 原版ms | SimdSkia ms | 本实现/原版耗时比 | 计时帧画质 |
 |---|---:|---:|---:|---|
