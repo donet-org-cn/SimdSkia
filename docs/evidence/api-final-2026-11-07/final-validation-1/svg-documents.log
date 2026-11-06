@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "F:\SimdSkia\tools\check-svg-documents.py", line 19, in <module>
+    with (file.with_suffix('.browser.log')).open('w',encoding='utf-8') as f:subprocess.run(command,stdout=f,stderr=subprocess.STDOUT,timeout=45,check=True,creationflags=creation)
+                                                                            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Program Files\Python\Python313\Lib\subprocess.py", line 556, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Program Files\Python\Python313\Lib\subprocess.py", line 1241, in communicate
+    sts = self.wait(timeout=self._remaining_time(endtime))
+  File "D:\Program Files\Python\Python313\Lib\subprocess.py", line 1280, in wait
+    return self._wait(timeout=timeout)
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\Program Files\Python\Python313\Lib\subprocess.py", line 1609, in _wait
+    raise TimeoutExpired(self.args, timeout)
+subprocess.TimeoutExpired: Command '['C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe', '--headless', '--disable-gpu', '--disable-background-networking', '--no-first-run', '--no-default-browser-check', '--hide-scrollbars', '--force-color-profile=srgb', '--force-device-scale-factor=1', '--window-size=80,64', '--user-data-dir=F:\\SimdSkia\\artifacts\\api-final-2026-11-07\\final-validation-1\\svg-documents\\browser-profile', '--screenshot=F:\\SimdSkia\\artifacts\\api-final-2026-11-07\\final-validation-1\\svg-documents\\Managed\\scene-5.png', 'file:///F:/SimdSkia/artifacts/api-final-2026-11-07/final-validation-1/svg-documents/Managed/scene-5.html']' timed out after 45 seconds

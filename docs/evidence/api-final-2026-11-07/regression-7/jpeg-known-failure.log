@@ -1,0 +1,12 @@
+PASS 12410 independent image/colour/corruption/compression assertions before the original JPEG encode gate.
+Unhandled exception. System.Exception: JPEG default physical RGB/alpha differs from original {
+    "alpha": "Opaque",
+    "a": 32,
+    "storage": "erase",
+    "r": 22,
+    "g": 11,
+    "b": 7,
+    "outAlpha": 255
+  }
+   at Program.<<Main>$>g__Check|0_0(Boolean condition, String name, <>c__DisplayClass0_0&) in F:\SimdSkia\tests\Imaging\Program.cs:line 9
+   at Program.<Main>$(String[] args) in F:\SimdSkia\tests\Imaging\Program.cs:line 78
