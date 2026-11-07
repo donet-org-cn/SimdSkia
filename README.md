@@ -10,6 +10,8 @@
 
 [完整测试、CPU/GPU和内存报告](docs/PUBLIC-API-FINAL-2026-11-07.md) · [发布状态](docs/NUGET-PREVIEW.md) · [更新日志](docs/RELEASE-NOTES.md)
 
+**正式公开包新补测**：[preview.8→0.1.2博客园续文（8张图）](docs/blog/2026-11-07-simdskia-preview8-to-012-cnblogs.md)、[AOT/CPU/内存与体积报告](docs/PERFORMANCE-STABLE-0.1.2-AOT-2026-11-07.md)。默认Avalonia AOT运行文件36.55→24.02MiB，减少34.27%；通用x64 AOT三项吞吐综合耗时比0.968，但限帧滚动达到原版7.528倍、约3.21MiB/次托管分配，五项综合1.437，严格画质0/10。这个新发现的短板尚未修复，不能只引用较好的JIT/离屏结果宣称整体持平；[原始45进程与包证据](docs/evidence/blog-preview8-to-012-2026-11-07/)保留。
+
 [带性能图、兼容范围与安装方法的文章](docs/blog/2026-11-07-simdskia-api-and-gpu.md)。本正式版汇集0.1.1以后各开发/预览批次，正式与预览的原始发布记录分别保留。
 
 独立 C# 2D 引擎，内部使用 `SimdSkia`，源码兼容层保留 `SkiaSharp.SK*`。不使用 Google Skia 绘图；字体、基础排版及图片编解码均由 C# 实现。通过 `SimdSkia.Avalonia` 可以接入 Avalonia，无需重新编译 Avalonia。

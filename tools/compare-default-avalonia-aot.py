@@ -150,6 +150,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output',type=Path,default=ROOT/'artifacts/default-avalonia-aot-2026-10-26')
     parser.add_argument('--skip-publish',action='store_true')
+    parser.add_argument('--avalonia-version',default='12.1.5')
+    parser.add_argument('--simdskia-version',default='0.1.2')
     args = parser.parse_args()
     assert sys.platform == 'win32', 'Windows x64 verification only'
     output = args.output.resolve()
@@ -162,14 +164,14 @@ def main():
         props.append({x.tag:x.text for g in tree.findall('PropertyGroup') for x in g})
         assert '.WithInterFont()' in (EXAMPLES/variant/'Program.cs').read_text()
     assert props[0] == props[1], 'Mismatching AOT properties'
-    report = dict(measuredAtUtc=datetime.now(timezone.utc).isoformat(), platform=platform.platform(), sdk=subprocess.check_output(['dotnet','--version'],cwd=ROOT,text=True).strip(), template=dict(package='Avalonia.Templates',version='12.0.0',shortName='avalonia.app',avaloniaVersionOption='12.1.4',framework='net10.0'), properties=props[0], verificationHarnessSha256=digest(Path(__file__).read_bytes()), globalJsonSha256=digest((ROOT/'global.json').read_bytes()), sourceFiles={}, variants={})
+    report = dict(measuredAtUtc=datetime.now(timezone.utc).isoformat(), platform=platform.platform(), sdk=subprocess.check_output(['dotnet','--version'],cwd=ROOT,text=True).strip(), template=dict(package='Avalonia.Templates',version='12.0.0',shortName='avalonia.app',originalAvaloniaVersionOption='12.1.4',updatedAvaloniaVersion=args.avalonia_version,simdSkiaVersion=args.simdskia_version,framework='net10.0'), properties=props[0], verificationHarnessSha256=digest(Path(__file__).read_bytes()), globalJsonSha256=digest((ROOT/'global.json').read_bytes()), sourceFiles={}, variants={})
     for p in sorted(EXAMPLES.rglob('*')):
         if p.is_file() and not set(p.relative_to(EXAMPLES).parts).intersection({'bin','obj'}):
             report['sourceFiles'][p.relative_to(ROOT).as_posix()] = digest(p.read_bytes())
     for label,variant in [('original','Original'),('simdskia','SimdSkia')]:
         publish = output/'publish'/label
         project = EXAMPLES/variant/'DefaultAvalonia.csproj'
-        command = ['dotnet','publish',str(project),'-c','Release','-r','win-x64','-o',str(publish)]
+        command = ['dotnet','publish',str(project),'-c','Release','-r','win-x64',f'-p:AvaloniaVersion={args.avalonia_version}',f'-p:SimdSkiaPackageVersion={args.simdskia_version}','-o',str(publish)]
         if not args.skip_publish:
             assert not publish.exists() or not any(publish.iterdir()), 'Choose a fresh output directory to exclude stale files'
             print('Publishing '+label,flush=True)
@@ -185,9 +187,9 @@ def main():
                 assert found, ('Missing cached NuGet origin', name)
                 origins[name] = json.loads(found.read_text())['source']
                 assert origins[name].rstrip('/') == 'https://api.nuget.org/v3/index.json', (name,origins[name])
-        assert packages.get('Avalonia/12.1.4') == 'package' and packages.get('Avalonia.Fonts.Inter/12.1.4') == 'package'
+        assert packages.get('Avalonia/'+args.avalonia_version) == 'package' and packages.get('Avalonia.Fonts.Inter/'+args.avalonia_version) == 'package'
         if label == 'simdskia':
-            assert packages.get('SimdSkia.Avalonia.Desktop/0.1.0-preview.7') == 'package'
+            assert packages.get('SimdSkia.Avalonia.Desktop/'+args.simdskia_version) == 'package'
             assert not any(v=='project' or 'skiasharp' in k.lower() or 'harfbuzz' in k.lower() for k,v in packages.items()), packages
         data = inventory(publish)
         data['command'] = command

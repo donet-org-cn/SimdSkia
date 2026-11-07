@@ -181,6 +181,7 @@ def main():
     parser.add_argument("--seconds", type=float, default=5)
     parser.add_argument("--warmup", type=float, default=2)
     parser.add_argument("--isa", choices=("portable", "v3"), default="portable")
+    parser.add_argument("--package-version", help="Use this exact public SimdSkia NuGet version instead of source references")
     options = parser.parse_args()
     if sys.platform != "win32": raise RuntimeError("Windows x64 is required for this desktop AOT comparison")
     if options.forks < 1 or not math.isfinite(options.seconds) or not .1 <= options.seconds <= 120:
@@ -191,6 +192,8 @@ def main():
     if not options.no_build:
         for variant, project in (("simd", "SimdSkia"), ("original", "Original")):
             command = ["dotnet", "publish", f"examples/AvaloniaAot/{project}/AvaloniaAot.{project}.csproj", "-c", "Release", f"-p:ComparisonIsa={options.isa}", "-o", str(publish / variant)]
+            if options.package_version:
+                command += ['-p:UsePackedSimdSkia=true',f'-p:SimdSkiaPackageVersion={options.package_version}']
             with (output / f"publish-{variant}.txt").open("w", encoding="utf-8") as log:
                 subprocess.run(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT, check=True)
     binaries = {"simd": publish / "simd/AvaloniaAot.SimdSkia.exe", "original": publish / "original/AvaloniaAot.Original.exe"}
@@ -198,6 +201,7 @@ def main():
     manifest = {"utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "os": platform.platform(),
         "processors": os.cpu_count(), "physicalMemoryBytes": ram, "forks": options.forks,
         "seconds": options.seconds, "warmupSeconds": options.warmup, "resourceSamplingIntervalMs": 25, "instructionSet": options.isa,
+        "simdSkiaPublicPackageVersion": options.package_version,
         "sdk": subprocess.check_output(["dotnet", "--version"], cwd=ROOT, text=True).strip(),
         "sourceCommit": subprocess.check_output(["git", "-c", f"safe.directory={ROOT.as_posix()}", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
         "sourceStatus": subprocess.check_output(["git", "-c", f"safe.directory={ROOT.as_posix()}", "status", "--porcelain"], cwd=ROOT, text=True).splitlines(),

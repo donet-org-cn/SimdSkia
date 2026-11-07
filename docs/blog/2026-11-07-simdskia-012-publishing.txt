@@ -1,0 +1,17 @@
+SimdSkia 0.1.2 博客园新文章发布说明
+
+这是接续preview.8的新文章，不覆盖已发布的旧文章。
+推荐标题取Markdown第一行；博客园标题框填标题，正文可删除重复的第一行。
+
+方法A：在线图片版
+1. 在博客园新建随笔，选择Markdown编辑器。
+2. 粘贴2026-11-07-simdskia-012-online.md内容。图为GitHub原始图片URL；GitHub推送完成后可用。
+3. 预览八张图。若读者网络无法访问raw.githubusercontent.com，改用方法B。
+
+方法B：上传图片（更适合博客园读者）
+1. 使用2026-11-07-simdskia-preview8-to-012-cnblogs.md，保持原文章不动。
+2. 将2026-11-07-simdskia-012-assets目录的八张PNG上传博客园，替换正文同名图片的相对URL。
+3. SVG用于高清备用，不必同时上传；data.json和manifest.json用于复查，正文无需粘贴。
+4. 预览表格、代码和图。保持AOT/JIT/GPU口径、0/10与0/18失败和滚动热点说明。
+
+文章、图、数据、使用示例、优劣势与新旧口径已准备好。没有自动发布到博客园。

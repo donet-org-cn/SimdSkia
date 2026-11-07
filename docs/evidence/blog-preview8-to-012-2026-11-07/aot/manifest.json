@@ -1,0 +1,36 @@
+{
+  "utc": "2026-11-07T02:14:53Z",
+  "os": "Windows-11-10.0.26300-SP0",
+  "processors": 12,
+  "physicalMemoryBytes": 34286309376,
+  "forks": 3,
+  "seconds": 5.0,
+  "warmupSeconds": 2.0,
+  "resourceSamplingIntervalMs": 25,
+  "instructionSet": "portable",
+  "simdSkiaPublicPackageVersion": "0.1.2",
+  "sdk": "10.0.403",
+  "sourceCommit": "3b93413af59a848ae86bb8aaae363fc649454f9c",
+  "sourceStatus": [
+    " M examples/AvaloniaAot/Original/packages.lock.json",
+    " M examples/AvaloniaAot/SimdSkia/AvaloniaAot.SimdSkia.csproj",
+    " M examples/AvaloniaAot/SimdSkia/packages.lock.json",
+    " M examples/DefaultAvaloniaAot/Original/DefaultAvalonia.csproj",
+    " M examples/DefaultAvaloniaAot/Original/packages.lock.json",
+    " M examples/DefaultAvaloniaAot/SimdSkia/DefaultAvalonia.csproj",
+    " M examples/DefaultAvaloniaAot/SimdSkia/packages.lock.json",
+    " M tools/compare-default-avalonia-aot.py",
+    " M tools/run-avalonia-aot.py"
+  ],
+  "binaries": {
+    "simd": {
+      "path": "F:\\SimdSkia\\artifacts\\blog-preview8-to-012-2026-11-07\\aot-publish\\simd\\AvaloniaAot.SimdSkia.exe",
+      "sha256": "767f826d4d07efbd90005cb4bea8eb7f4d9b94dd422e374546a440229aefa736"
+    },
+    "original": {
+      "path": "F:\\SimdSkia\\artifacts\\blog-preview8-to-012-2026-11-07\\aot-publish\\original\\AvaloniaAot.Original.exe",
+      "sha256": "93677d7de96b07a581d24929a473dbce827e6e2075ba9a8b510d9fd09ffee7c0"
+    }
+  },
+  "sourceSnapshotSha256": "10f5d3582ccf0627af87d0420f5f7679ec8ce64dcacd92cc3b3dd3ec64a5d2fe"
+}
