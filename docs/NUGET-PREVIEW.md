@@ -1,9 +1,20 @@
 # NuGet 发布记录
 
-## 0.1.2 正式版 — 待CI与公开下载验证
+## 0.1.2 正式版 — 十二包已公开并独立验证
 
-汇集0.1.1以来2338项新增公共元数据、GPU/CPU/SIMD/内存优化、行为修复及全部已披露限制。[累计更新和升级说明](RELEASE-0.1.2.md)。十二包统一0.1.2，正式化不改preview.3绘图算法；正式包的CI和公开下载结果完成后单独记录，不把旧预览通过结果当作本版已发布。
+0.1.2十二个正式包已公开，CI与本机独立下载对DLL、nuspec、宿主/buildTransitive资产、README/CHANGELOG/LICENSE逐项核对一致。[发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/42324944145)及关联三平台核心/桌面、几何、Windows AOT均成功；标签`v0.1.2`固定在`de2ec4e55e9d888364f0d7ea95ce28701d97b8da`，[GitHub正式发行](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.2)。
 
+同一适配器覆盖Windows x64/Linux X11 x64/macOS ARM64的Avalonia12.1.0–12.1.5：18组控件/实际窗口和6组最低/最新Native AOT通过。本机另以仅NuGet.org源、禁用HTTP缓存与全新私有包缓存AOT发布并运行窗口，自动使用Microsoft YaHei UI系统字体，捕获真实呈现帧，PE无CLR头且未加载CLR/JIT。[完整证据](evidence/nuget-stable-0.1.2-2026-11-07/)和[汇总](evidence/nuget-stable-0.1.2-2026-11-07/release.json)。
+
+全部十二包均包含从0.1.1以来的完整累计CHANGELOG和NuGet更新说明；正式程序集确认892→3230/3235、累计2338项新增元数据，保留5项原生合同缺口。性能继承preview.3同一绘图代码的测量，没有以正式版本号改写JPEG21/24、整页0/18或Metal未验证状态。
+
+[0.1.1以来完整累计更新与升级说明](RELEASE-0.1.2.md)。正式NuGet版本为0.1.2，无需勾选预发行。
+
+```sh
+dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.2
+dotnet add package SimdSkia.Avalonia.Gpu --version 0.1.2
+dotnet add package SimdSkia.Pdf --version 0.1.2
+```
 
 ## 0.1.2-preview.3 — 已公开，十二包独立核对通过
 

@@ -1,0 +1,18 @@
+{
+  "Baseline": "SkiaSharp, Version=3.119.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756",
+  "Replacement": "SimdSkia.Compatibility, Version=0.1.2.0, Culture=neutral, PublicKeyToken=null",
+  "BaselineHash": "03A164AC1097F84793632DF806DA91E2829F0FCA65D8F2B922E45554AB083296",
+  "ReplacementHash": "E98566654D1ADDEDFEF0FB04C0F187FF22C9B563BAC4AC804CD710494A5C17D8",
+  "BaselineEntries": 3235,
+  "MatchingEntries": 3230,
+  "MissingOrDifferent": [
+    "method SkiaSharp.SkiaSharpVersion.CheckNativeLibraryCompatible\u003C\u003E(throwIfIncompatible:System.Boolean:in=False:out=False:optional=True:default=False:requiredmods=):System.Boolean;static=True;virtual=False;abstract=False;constraints=",
+    "property SkiaSharp.SKObject.Handle[]:System.IntPtr;get=public,static=False,virtual=True;set=protected,static=False,virtual=True",
+    "property SkiaSharp.SkiaSharpVersion.NativeMinimum[]:System.Version;get=public,static=True,virtual=False;set=-",
+    "property SkiaSharp.SkiaSharpVersion.Native[]:System.Version;get=public,static=True,virtual=False;set=-",
+    "type SkiaSharp.SkiaSharpVersion;kind=class;base=System.Object;abstract=True;sealed=True;interfaces=;layout=Auto,size=0,pack=0;constraints="
+  ],
+  "AddedOrDifferent": [],
+  "BinaryCompatibility": "Not established: assembly identity and strong-name signing differ; signature matches alone do not prove binary compatibility.",
+  "Limitations": "Public metadata only; protected APIs, attributes not listed by this tool, nullable annotations, and behavioral contracts require additional review."
+}

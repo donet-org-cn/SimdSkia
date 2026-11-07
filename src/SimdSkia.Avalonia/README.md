@@ -6,7 +6,7 @@
 
 固定 SkiaSharp **3.119.4 / 3235 项**，当前匹配 **3230 项、201 公开类型、5 缺口、0 额外签名**。相对0.1.1的892项累计新增2338项元数据签名（63→201公开类型），其中最后99项快照补入94项；五项原生句柄/版本合同按用户要求保留，不伪造替代语义。新增真实Alpha8、浮点颜色/Blender/抖动、LCD/中文点阵、SVG/XPS、原生v103 SKP子集与GL/D3D12/Metal GPU资源链路。Vulkan增加非重叠矩形合批、设备内复制、直接完成读回与去分配；Metal没有Mac GPU实机验证。**JPEG、部分文字/曲线、整页画质及性能/内存差距仍存在，不代表全面行为或二进制兼容。**
 
-十二个正式包统一0.1.2。[0.1.1以来完整累计更新与升级说明](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-0.1.2.md)。此前preview.3的三平台18组窗口/6组AOT及NuGet.org-only AOT验证保留为历史结果，本次正式包的CI/公开验证见发布记录。[最终源码63进程性能与CPU/内存复测](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PERFORMANCE-PREVIEW3-2026-11-07.md)已更新；严格画质与内存差距仍保留。
+十二个0.1.2正式包已公开，并经CI和本机独立下载核对。正式包三平台18组版本/窗口、6组AOT与NuGet.org-only新缓存的真实AOT窗口均通过。[0.1.1以来完整累计更新与升级说明](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-0.1.2.md)。[最终源码63进程性能与CPU/内存复测](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PERFORMANCE-PREVIEW3-2026-11-07.md)已更新；严格画质与内存差距仍保留。
 
 [完整测试、CPU/GPU和内存报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PUBLIC-API-FINAL-2026-11-07.md) · [发布状态](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/NUGET-PREVIEW.md) · [更新日志](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-NOTES.md)
 
