@@ -4,6 +4,8 @@
 
 十二包统一0.1.3，纳入0.1.2之后的GPU优先、Direct2D完成队列和文字/Vulkan缓存优化。更新说明、默认行为变化、UseCpu迁移和未达标项见[发行说明](RELEASE-0.1.3.md)。本机已保留[热点性能与回归证据](PERFORMANCE-HOTSPOTS-2026-11-07.md)；本版本CI、三平台实际包和NuGet公开下载结果将在此处记录，尚不把上传/验收中状态写成公开成功。
 
+本地十二包内容/依赖/更新说明检查、独立缓存SK*及Avalonia Native AOT消费、桌面Auto Direct2D与显式CPU两个真实AOT窗口、3230/3235公共元数据检查已通过。[0.1.3预发布验收证据](evidence/stable-0.1.3-preflight-2026-11-07/)。公开发布以CI构建的另一套包进行独立核对。
+
 ## 0.1.2 正式版 — 十二包已公开并独立验证
 
 0.1.2十二个正式包已公开，CI与本机独立下载对DLL、nuspec、宿主/buildTransitive资产、README/CHANGELOG/LICENSE逐项核对一致。[发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/42324944145)及关联三平台核心/桌面、几何、Windows AOT均成功；标签`v0.1.2`固定在`de2ec4e55e9d888364f0d7ea95ce28701d97b8da`，[GitHub正式发行](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.2)。

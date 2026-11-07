@@ -3,7 +3,7 @@ param(
  [string]$AvaloniaVersion='12.1.5',
  [string]$Packages='artifacts/nuget-preview',
  [string]$Output='artifacts/desktop-package-consumer',
- [ValidateSet('cpu','direct2d','vulkan')][string]$Backend='cpu',
+ [ValidateSet('auto','cpu','direct2d','vulkan')][string]$Backend='auto',
  [switch]$NativeAot,
  [switch]$SystemFonts
 )
@@ -32,7 +32,7 @@ try{
  }
  if(Test-Path "$outPath/bin/hosts"){throw 'Unused host variants leaked into application output.'}
  $runArgs=@("$outPath/bin/CrossPlatform.dll",'--smoke','--controls','--output',"$outPath/results")
- if($Backend -ne 'cpu'){$runArgs+=@('--gpu',$Backend)}
+ if($Backend -eq 'cpu'){$runArgs+='--cpu'}elseif($Backend -ne 'auto'){$runArgs+=@('--gpu',$Backend)}
  if(!$SystemFonts){$runArgs+=@('--font',(Resolve-Path baseline/fonts/ZCOOLXiaoWei-Regular.ttf).Path)}
  & dotnet @runArgs *> "$outPath/run.log"
  if($LASTEXITCODE -ne 0){Get-Content "$outPath/run.log";throw 'Packed desktop window failed.'}
@@ -44,6 +44,7 @@ try{
   if($LASTEXITCODE -ne 0){Get-Content "$outPath/aot-build.log";throw 'Packed desktop Native AOT publish failed.'}
   $exe=Join-Path $outPath ('aot/CrossPlatform'+$(if($IsWindows){'.exe'}else{''}))
   $aotArgs=@('--smoke','--controls','--font',(Resolve-Path baseline/fonts/ZCOOLXiaoWei-Regular.ttf).Path,'--output',"$outPath/aot-results")
+  if($Backend -eq 'cpu'){$aotArgs+='--cpu'}elseif($Backend -ne 'auto'){$aotArgs+=@('--gpu',$Backend)}
   if($IsWindows){$p=Start-Process -FilePath $exe -ArgumentList ($aotArgs|ForEach-Object{'"'+$_+'"'}) -PassThru -Wait -WindowStyle Hidden;if($p.ExitCode -ne 0){throw 'Native AOT window failed.'}}
   else{& $exe @aotArgs;if($LASTEXITCODE -ne 0){throw 'Native AOT window failed.'}}
   if((Get-Content "$outPath/aot-results/runtime.txt" -Raw) -notmatch 'NativeAot=True'){throw 'Consumer did not run as Native AOT.'}
