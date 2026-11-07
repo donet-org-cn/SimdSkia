@@ -1,5 +1,11 @@
 # SimdSkia.Avalonia
 
+## 未发布源码：桌面默认 GPU 优先
+
+工作区的 `UseSimdSkiaDesktop()` 已改为 Windows 优先 Direct2D 交换链、Linux 优先硬件 Vulkan，设备/表面不适用时有诊断地回退 CPU；macOS 窗口仍使用 CPU。桌面包将传递引入 GPU 适配器，可用 `options.UseCpu()` 显式选择 CPU。已补初始化失败/设备丢失路径、Vulkan 管线提前准备与有界字形 LRU，借鉴 Impeller 的可预测帧时间思路。[实现、合同与测试](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/GPU-PREFERRED-2026-11-07.md)。**这些是未发布源码变化，NuGet 0.1.2 仍默认 CPU；下文正式包的历史性能/体积不代表 GPU 默认的新测量。**
+
+[最终18进程真实窗口对照](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PERFORMANCE-GPU-PREFERRED-2026-11-07.md)：Auto实际使用Direct2D，相对同轮显式CPU绘制耗时低约6.4%，CPU占用高约24.9%、采样峰值WS增加30.51MiB；相对原有Direct2D耗时基本持平。40项新检查、12174项GPU集成、566项GPU检查及实际Auto/CPU AOT窗口通过。原版画质及内存差距仍存在，没有上传新NuGet。
+
 本版修复连续MoveTo点序列和特殊混合模式的SaveLayer范围；原版几何300组/4636值、464组图层/2,375,680字节精确对照通过。PDF依赖说明与项目保持一致，固定使用 PdfPig 0.1.16。
 
 ## 0.1.2 正式版：0.1.1以来累计更新
@@ -9,6 +15,8 @@
 十二个0.1.2正式包已公开，并经CI和本机独立下载核对。正式包三平台18组版本/窗口、6组AOT与NuGet.org-only新缓存的真实AOT窗口均通过。[0.1.1以来完整累计更新与升级说明](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-0.1.2.md)。[最终源码63进程性能与CPU/内存复测](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PERFORMANCE-PREVIEW3-2026-11-07.md)已更新；严格画质与内存差距仍保留。
 
 [完整测试、CPU/GPU和内存报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PUBLIC-API-FINAL-2026-11-07.md) · [发布状态](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/NUGET-PREVIEW.md) · [更新日志](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-NOTES.md)
+
+**正式公开包新补测**：[preview.8→0.1.2博客园续文（8张图）](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/blog/2026-11-07-simdskia-preview8-to-012-cnblogs.md)、[AOT/CPU/内存与体积报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PERFORMANCE-STABLE-0.1.2-AOT-2026-11-07.md)。默认Avalonia AOT运行文件36.55→24.02MiB，减少34.27%；通用x64 AOT三项吞吐综合耗时比0.968，但限帧滚动达到原版7.528倍、约3.21MiB/次托管分配，五项综合1.437，严格画质0/10。这个新发现的短板尚未修复，不能只引用较好的JIT/离屏结果宣称整体持平；[原始45进程与包证据](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/evidence/blog-preview8-to-012-2026-11-07/)保留。
 
 [带性能图、兼容范围与安装方法的文章](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/blog/2026-11-07-simdskia-api-and-gpu.md)。本正式版汇集0.1.1以后各开发/预览批次，正式与预览的原始发布记录分别保留。
 

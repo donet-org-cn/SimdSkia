@@ -15,6 +15,7 @@ jobs:
             8.0.x
       - run: dotnet build SimdSkia.sln -c Release
       - run: dotnet run --project tests/SimdSkia.Tests -c Release --no-build
+      - run: dotnet run --project tests/GpuPreferred -c Release --no-build
       - run: dotnet run --project examples/Rectangle -c Release --no-build
       - name: Fetch licensed CJK fixture
         shell: pwsh

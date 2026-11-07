@@ -1,0 +1,48 @@
+[
+  {
+    "name": "preference",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "run",
+      "--project",
+      "tests/GpuPreferred/GpuPreferred.csproj",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "--hardware"
+    ],
+    "exitCode": 0,
+    "seconds": 2.3420190811157227
+  },
+  {
+    "name": "avalonia-gpu",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "run",
+      "--project",
+      "tests/AvaloniaGpu/AvaloniaGpu.csproj",
+      "-c",
+      "Release",
+      "--no-build"
+    ],
+    "exitCode": 0,
+    "seconds": 2.9755215644836426
+  },
+  {
+    "name": "gpu-optimization",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "run",
+      "--project",
+      "tests/GpuOptimization/GpuOptimization.csproj",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "baseline/fonts/ZCOOLXiaoWei-Regular.ttf"
+    ],
+    "exitCode": 0,
+    "seconds": 23.6135516166687
+  }
+]

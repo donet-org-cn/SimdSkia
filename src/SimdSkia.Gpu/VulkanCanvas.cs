@@ -14,6 +14,8 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
     private readonly PixelBuffer target;
     private readonly SimdSkia.Cpu.GlyphMaskCommands glyphMasks=new();
     private readonly bool optimizedCoverage;
+    private readonly bool rectangleBatchesEnabled;
+    private readonly bool requireHardware;
     private IntPtr instance,physical,device,queue,command;
     private readonly BorrowedVulkanContext? borrowedContext;
     private uint queueFamily;
@@ -56,6 +58,8 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
     public long PathMaskHits{get;private set;}
     public long DrawDispatches{get;private set;}
     public long DrawDependencyBarriers{get;private set;}
+    /// <summary>Pipeline objects created during device initialization; drawing creates none.</summary>
+    public int PreparedPipelineCount {get;private set;}
     public int CachedPathMasks=>maskCache.Values.Count(e=>e.Buffer is not null);
     public long PathMaskBytes=>maskBytes;
     public double LastSubmitMilliseconds {get;private set;}
@@ -90,11 +94,14 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
     }
 
     public VulkanCanvas(PixelBuffer target):this(target,true) { }
+    internal static VulkanCanvas CreateHardware(PixelBuffer target)=>new(target,true,null,true);
     internal VulkanCanvas(PixelBuffer target,bool optimizedCoverage):this(target,optimizedCoverage,null) { }
-    internal VulkanCanvas(PixelBuffer target,bool optimizedCoverage,BorrowedVulkanContext? borrowedContext)
+    internal VulkanCanvas(PixelBuffer target,bool optimizedCoverage,BorrowedVulkanContext? borrowedContext,bool requireHardware=false)
     {
+        this.requireHardware=requireHardware;
         this.borrowedContext=borrowedContext;
         this.optimizedCoverage=optimizedCoverage;
+        rectangleBatchesEnabled=optimizedCoverage&&!(AppContext.TryGetSwitch("SimdSkia.Vulkan.DisableRectangleBatches",out bool disabledBatches)&&disabledBatches);
         ArgumentNullException.ThrowIfNull(target);
         // Opaque targets use the same premultiplied storage operations (Src/Clear
         // may write physical alpha). This preserves the former window staging path.
@@ -139,6 +146,7 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
             }
         }
         if(physical==IntPtr.Zero)throw new InvalidOperationException("No Vulkan compute queue is available.");
+        if(requireHardware&&IsSoftwareDevice)throw new NotSupportedException("A software Vulkan device is not hardware acceleration; use managed CPU rendering.");
         float priority=1;var q=new Vk.QueueInfo {Type=2,Family=family,Count=1,Priorities=&priority};var d=new Vk.DeviceInfo {Type=3,QueueCount=1,Queues=&q};
         Check(Vk.vkCreateDevice(physical,&d,null,&created));device=created;Vk.vkGetDeviceQueue(device,family,0,&created);queue=created;
         }
@@ -148,27 +156,27 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
         var bindings=stackalloc Vk.LayoutBinding[5];for(uint i=0;i<5;i++)bindings[i]=new(){Binding=i,DescriptorType=i==3?1u:i==2?6u:7u,Count=1,Stages=32};
         var layoutInfo=new Vk.DescriptorLayoutInfo {Type=32,Count=5,Bindings=bindings};ulong handle=0;Check(Vk.vkCreateDescriptorSetLayout(device,&layoutInfo,null,&handle));descriptorLayout=handle;
         ulong descriptorHandle=descriptorLayout;var pLayout=new Vk.PipelineLayoutInfo {Type=30,Count=1,Layouts=&descriptorHandle};Check(Vk.vkCreatePipelineLayout(device,&pLayout,null,&handle));pipelineLayout=handle;
-        using var stream=typeof(VulkanCanvas).Assembly.GetManifestResourceStream("SimdSkia.Gpu.Shaders.renderer.spv")??throw new InvalidOperationException("SPIR-V resource missing.");
-        using var copy=new MemoryStream();stream.CopyTo(copy);byte[] code=copy.ToArray();if(code.Length%4!=0)throw new InvalidDataException("Invalid SPIR-V alignment.");
+        byte[] code=VulkanShaderCode.Renderer;
         ulong module=0;
         fixed(byte* bytes=code){var shaderInfo=new Vk.ShaderInfo {Type=16,CodeSize=(nuint)code.Length,Code=(uint*)bytes};Check(Vk.vkCreateShaderModule(device,&shaderInfo,null,&module));}
         try
         {
             byte* name=stackalloc byte[5]{(byte)'m',(byte)'a',(byte)'i',(byte)'n',0};
             var pipelineInfo=new Vk.ComputePipelineInfo {Type=29,Stage=new(){Type=18,Stage=32,Module=module,Name=name},Layout=pipelineLayout,BaseIndex=-1};
-            if(!optimizedCoverage){Check(Vk.vkCreateComputePipelines(device,0,1,&pipelineInfo,null,&handle));pipeline=handle;}
+            if(!optimizedCoverage){Check(Vk.vkCreateComputePipelines(device,0,1,&pipelineInfo,null,&handle));pipeline=handle;PreparedPipelineCount++;}
             if(optimizedCoverage)
             {
                 var entry=new Vk.SpecializationEntry{Size=4};uint drawKind=0;
                 var specialization=new Vk.SpecializationInfo{Count=1,Entries=&entry,Size=4,Data=&drawKind};pipelineInfo.Stage.Specialization=&specialization;
-                for(drawKind=0;drawKind<4;drawKind++){Check(Vk.vkCreateComputePipelines(device,0,1,&pipelineInfo,null,&handle));specializedPipelines[drawKind]=handle;}
+                for(drawKind=0;drawKind<4;drawKind++){Check(Vk.vkCreateComputePipelines(device,0,1,&pipelineInfo,null,&handle));specializedPipelines[drawKind]=handle;PreparedPipelineCount++;}
                 var entries=stackalloc Vk.SpecializationEntry[2];entries[0]=entry;entries[1]=new(){Constant=1,Offset=4,Size=4};
                 uint* values=stackalloc uint[2]{2,1};specialization.Count=2;specialization.Entries=entries;specialization.Size=8;specialization.Data=values;
-                Check(Vk.vkCreateComputePipelines(device,0,1,&pipelineInfo,null,&handle));coveragePipeline=handle;
-                values[1]=2;Check(Vk.vkCreateComputePipelines(device,0,1,&pipelineInfo,null,&handle));cachedPathPipeline=handle;
+                Check(Vk.vkCreateComputePipelines(device,0,1,&pipelineInfo,null,&handle));coveragePipeline=handle;PreparedPipelineCount++;
+                values[1]=2;Check(Vk.vkCreateComputePipelines(device,0,1,&pipelineInfo,null,&handle));cachedPathPipeline=handle;PreparedPipelineCount++;
             }
         }
         finally{Vk.vkDestroyShaderModule(device,module,null);}
+        if(rectangleBatchesEnabled)EnsureRectangleBatchPipeline();
         var samplerInfo=new Vk.SamplerInfo {Type=31,AddressU=2,AddressV=2,AddressW=2};Check(Vk.vkCreateSampler(device,&samplerInfo,null,&handle));sampler=handle;
         var commandInfo=new Vk.CommandPoolInfo {Type=39,Flags=2,Family=family};Check(Vk.vkCreateCommandPool(device,&commandInfo,null,&handle));commandPool=handle;
         var allocation=new Vk.CommandAllocateInfo {Type=40,Pool=commandPool,Count=1};Check(Vk.vkAllocateCommandBuffers(device,&allocation,&created));command=created;

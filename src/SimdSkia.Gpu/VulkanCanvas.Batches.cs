@@ -18,14 +18,14 @@ public sealed unsafe partial class VulkanCanvas
     private void EnsureRectangleBatchPipeline()
     {
         if(rectangleBatchPipeline!=0)return;
-        using var stream=typeof(VulkanCanvas).Assembly.GetManifestResourceStream("SimdSkia.Gpu.Shaders.renderer-batch.spv")??throw new InvalidOperationException("Rectangle batch SPIR-V resource missing.");using var copy=new MemoryStream();stream.CopyTo(copy);var bytes=copy.ToArray();ulong module=0;
+        var bytes=VulkanShaderCode.RectangleBatch;ulong module=0;
         fixed(byte* code=bytes){var shader=new Vk.ShaderInfo{Type=16,CodeSize=(nuint)bytes.Length,Code=(uint*)code};Check(Vk.vkCreateShaderModule(device,&shader,null,&module));}
-        try{byte* name=stackalloc byte[5]{(byte)'m',(byte)'a',(byte)'i',(byte)'n',0};uint kind=1;var entry=new Vk.SpecializationEntry{Size=4};var specialization=new Vk.SpecializationInfo{Count=1,Entries=&entry,Size=4,Data=&kind};var info=new Vk.ComputePipelineInfo{Type=29,Stage=new(){Type=18,Stage=32,Module=module,Name=name,Specialization=&specialization},Layout=pipelineLayout,BaseIndex=-1};ulong result=0;Check(Vk.vkCreateComputePipelines(device,0,1,&info,null,&result));rectangleBatchPipeline=result;}
+        try{byte* name=stackalloc byte[5]{(byte)'m',(byte)'a',(byte)'i',(byte)'n',0};uint kind=1;var entry=new Vk.SpecializationEntry{Size=4};var specialization=new Vk.SpecializationInfo{Count=1,Entries=&entry,Size=4,Data=&kind};var info=new Vk.ComputePipelineInfo{Type=29,Stage=new(){Type=18,Stage=32,Module=module,Name=name,Specialization=&specialization},Layout=pipelineLayout,BaseIndex=-1};ulong result=0;Check(Vk.vkCreateComputePipelines(device,0,1,&info,null,&result));rectangleBatchPipeline=result;PreparedPipelineCount++;}
         finally{Vk.vkDestroyShaderModule(device,module,null);}
     }
     private int RectangleBatch(int start,ref int paramOffset,ref int setIndex,Span<RectF> unbarriered,ref int unbarrieredCount,ref ulong boundPipeline)
     {
-        if(!optimizedCoverage||AppContext.TryGetSwitch("SimdSkia.Vulkan.DisableRectangleBatches",out bool disabled)&&disabled)return 0;
+        if(!rectangleBatchesEnabled)return 0;
         Span<uint> words=stackalloc uint[160];Span<RectF> bounds=stackalloc RectF[RectangleBatchSize];int count=0;uint maximumWidth=0,maximumHeight=0;
         for(int i=start;i<pending.Count&&count<RectangleBatchSize;i++)
         {

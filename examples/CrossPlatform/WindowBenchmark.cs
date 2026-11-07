@@ -42,10 +42,11 @@ internal static class WindowBenchmark
                 Directory.CreateDirectory(Program.Output);
                 using var output=File.Create(Path.Combine(Program.Output,"benchmark.json"));using(var json=new Utf8JsonWriter(output,new(){Indented=true}))
                 {
-                    json.WriteStartObject();json.WriteString("backend",Program.Gpu?.ToString()??"Cpu");json.WriteBoolean("nativeAot",!RuntimeFeature.IsDynamicCodeSupported);
+                    json.WriteStartObject();json.WriteString("backend",Program.Gpu?.ToString()??(Program.Cpu?"Cpu":"Auto"));json.WriteString("selectedRenderer",Program.SelectedBackend);json.WriteBoolean("nativeAot",!RuntimeFeature.IsDynamicCodeSupported);
                     json.WriteString("os",RuntimeInformation.OSDescription);json.WriteString("architecture",RuntimeInformation.ProcessArchitecture.ToString());
                     json.WriteString("scene",Program.Controls?"controls":"simple");json.WriteNumber("width",window.ClientSize.Width);json.WriteNumber("height",window.ClientSize.Height);json.WriteNumber("scaling",window.RenderScaling);
-                    json.WriteString("presentation",Program.Gpu==SimdSkiaGpuBackend.Direct2D?"native DXGI sequential swapchain; GPU event completion":Program.Gpu==SimdSkiaGpuBackend.Vulkan?"Vulkan fence and pixel readback; OS framebuffer":"CPU OS framebuffer");
+                    json.WriteString("presentation",SimdSkiaGpuDiagnostics.NativeSwapchainPresents>0?"native DXGI sequential swapchain; GPU event completion":gpu.GpuCommands>0?"GPU fence and pixel readback; OS framebuffer":"CPU OS framebuffer");
+                    json.WriteNumber("initializationFailures",SimdSkiaGpuDiagnostics.InitializationFailures);json.WriteString("lastInitializationFailure",SimdSkiaGpuDiagnostics.LastInitializationFailure);
                     json.WriteBoolean("diagnosticCaptureDuringMeasurement",false);json.WriteNumber("warmupSeconds",warmup);json.WriteNumber("measurementSeconds",elapsed);
                     json.WriteBoolean("gpuTimestampProfilingEnabled",SimdSkiaGpuDiagnostics.CaptureVulkanProfiles);
                     json.WriteBoolean("sampleCountSufficient",times.Length>=60);
@@ -61,7 +62,7 @@ internal static class WindowBenchmark
                     json.WriteNumber("vulkanPathMaskPeakBytes",SimdSkiaGpuDiagnostics.VulkanPathMaskPeakBytes);json.WriteNumber("vulkanDrawDispatchesTotal",SimdSkiaGpuDiagnostics.VulkanDrawDispatches);json.WriteNumber("vulkanDrawDependencyBarriersTotal",SimdSkiaGpuDiagnostics.VulkanDrawDependencyBarriers);
                     json.WriteStartArray("frameMilliseconds");foreach(double t in times)json.WriteNumberValue(t);json.WriteEndArray();json.WriteEndObject();
                 }
-                Console.WriteLine($"PASS benchmark {Program.Gpu?.ToString()??"CPU"}; completed frames={times.Length}; P50={times[times.Length/2]:F3}ms; workset={peakWorking/1048576d:F1}MiB");
+                Console.WriteLine($"PASS benchmark {Program.SelectedBackend}; completed frames={times.Length}; P50={times[times.Length/2]:F3}ms; workset={peakWorking/1048576d:F1}MiB");
                 if(SimdSkiaGpuDiagnostics.LastVulkanProfile is {} profile)
                     File.WriteAllText(Path.Combine(Program.Output,"vulkan-profile.json"),JsonSerializer.Serialize(profile,VulkanProfileJsonContext.Default.VulkanProfile));
                 process.Dispose();desktop.Shutdown();

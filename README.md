@@ -1,5 +1,11 @@
 # SimdSkia
 
+## 未发布源码：桌面默认 GPU 优先
+
+工作区的 `UseSimdSkiaDesktop()` 已改为 Windows 优先 Direct2D 交换链、Linux 优先硬件 Vulkan，设备/表面不适用时有诊断地回退 CPU；macOS 窗口仍使用 CPU。桌面包将传递引入 GPU 适配器，可用 `options.UseCpu()` 显式选择 CPU。已补初始化失败/设备丢失路径、Vulkan 管线提前准备与有界字形 LRU，借鉴 Impeller 的可预测帧时间思路。[实现、合同与测试](docs/GPU-PREFERRED-2026-11-07.md)。**这些是未发布源码变化，NuGet 0.1.2 仍默认 CPU；下文正式包的历史性能/体积不代表 GPU 默认的新测量。**
+
+[最终18进程真实窗口对照](docs/PERFORMANCE-GPU-PREFERRED-2026-11-07.md)：Auto实际使用Direct2D，相对同轮显式CPU绘制耗时低约6.4%，CPU占用高约24.9%、采样峰值WS增加30.51MiB；相对原有Direct2D耗时基本持平。40项新检查、12174项GPU集成、566项GPU检查及实际Auto/CPU AOT窗口通过。原版画质及内存差距仍存在，没有上传新NuGet。
+
 本版修复连续MoveTo点序列和特殊混合模式的SaveLayer范围；原版几何300组/4636值、464组图层/2,375,680字节精确对照通过。PDF依赖说明与项目保持一致，固定使用 PdfPig 0.1.16。
 
 ## 0.1.2 正式版：0.1.1以来累计更新

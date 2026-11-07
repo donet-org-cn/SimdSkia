@@ -4,3 +4,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("SimdSkia.Compatibility")]
 [assembly: InternalsVisibleTo("SimdSkia.GpuContext.Tests")]
 [assembly: InternalsVisibleTo("SimdSkia.Gpu.Direct2D")]
+[assembly: InternalsVisibleTo("SimdSkia.Avalonia.Gpu")]

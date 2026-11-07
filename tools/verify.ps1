@@ -8,6 +8,8 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Build failed.' }
     dotnet run --project tests/SimdSkia.Tests -c Release --no-build
     if ($LASTEXITCODE -ne 0) { throw 'Behavior tests failed.' }
+    dotnet run --project tests/GpuPreferred -c Release --no-build
+    if($LASTEXITCODE -ne 0){throw 'GPU preference and initialization recovery checks failed.'}
     dotnet run --project tests/PixelCompatibility/Managed -c Release --no-build -- artifacts/pixel-compatibility/verify-managed
     if ($LASTEXITCODE -ne 0) { throw 'Pixel transfer, scalar/SIMD and lease checks failed.' }
     dotnet run --project tests/CodecIntegration -c Release --no-build
@@ -78,6 +80,10 @@ try {
         elseif($LASTEXITCODE -ne 0){throw 'Pixel comparison failed to execute.'}
     }
     if($Gpu){
+        if($IsWindows){
+            dotnet run --project tests/GpuPreferred -c Release --no-build -- --hardware
+            if($LASTEXITCODE -ne 0){throw 'GPU LRU lifetime and upfront pipeline checks failed.'}
+        }
         dotnet run --project tests/GpuSampling -c Release --no-build
         if($LASTEXITCODE -ne 0){throw 'Vulkan sampled image/coverage checks failed.'}
         dotnet run --project tests/Gpu -c Release --no-build;if($LASTEXITCODE -ne 0){throw 'Vulkan device tests failed.'}

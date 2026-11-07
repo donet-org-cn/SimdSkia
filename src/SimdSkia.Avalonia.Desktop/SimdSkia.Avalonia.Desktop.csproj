@@ -4,11 +4,12 @@
     <!-- Versioned host DLLs are deliberately selected by buildTransitive, rather
          than all being unconditional lib/ references (which causes ABI failures). -->
     <NoWarn>$(NoWarn);NU5100</NoWarn>
-    <Description>Windows, Linux X11 and macOS software window hosts for SimdSkia. macOS uses the official MIT Avalonia native window bridge; drawing and fonts remain managed.</Description>
+    <Description>Windows, Linux X11 and macOS window hosts with GPU-preferred rendering and diagnosed CPU fallback. macOS currently uses managed CPU rendering and the official MIT Avalonia window bridge.</Description>
   </PropertyGroup>
   <ItemGroup>
     <None Include="../SimdSkia.Avalonia/README.md" Pack="true" PackagePath="/README.md" />
     <ProjectReference Include="../SimdSkia.Avalonia/SimdSkia.Avalonia.csproj" />
+    <ProjectReference Include="../SimdSkia.Avalonia.Gpu/SimdSkia.Avalonia.Gpu.csproj" />
     <PackageReference Include="Avalonia" Version="[12.1.0,13.0.0)" GeneratePathProperty="true" ExcludeAssets="compile" />
     <Reference Include="$(PkgAvalonia)/lib/net8.0/*.dll" />
     <PackageReference Include="Tmds.DBus.Protocol" Version="[0.94.1]" />

@@ -5,11 +5,12 @@ using Avalonia.Platform.Surfaces;
 
 namespace SimdSkia.Avalonia;
 
-internal sealed partial class NativeWindowTarget(INativePlatformHandleSurface surface, bool fallback,SimdSkiaGpuTextMode textMode) : IRenderTarget
+internal sealed partial class NativeWindowTarget(INativePlatformHandleSurface surface, bool fallback,SimdSkiaGpuTextMode textMode) : IRenderTarget,IDeviceFaultSource
 {
     private PixelBuffer? pixels;
     private WindowGpuCanvas? canvas;
     private bool disposed,active,retained;
+    public bool IsDeviceFaulted=>canvas?.IsFaulted==true;
     // The sequential blit-model swapchain preserves its backbuffer across Present.
     // This lets Avalonia draw controls directly instead of inserting a CPU raster bitmap.
     public RenderTargetProperties Properties => new(){RetainsPreviousFrameContents=true,IsSuitableForDirectRendering=true};

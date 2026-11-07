@@ -11,7 +11,7 @@ using AAlpha=Avalonia.Platform.AlphaFormat;
 
 namespace SimdSkia.Avalonia;
 
-internal sealed class RenderInterface(Func<PixelBuffer,ICanvasBackend>? backendFactory=null,Func<INativePlatformHandleSurface,IRenderTarget>? nativeFactory=null):IPlatformRenderInterface
+internal sealed class RenderInterface(Func<PixelBuffer,ICanvasBackend>? backendFactory=null,Func<INativePlatformHandleSurface,IRenderTarget>? nativeFactory=null,Func<IReadOnlyList<IPlatformRenderSurface>,IRenderTarget>? preferredFactory=null):IPlatformRenderInterface
 {
     public bool SupportsIndividualRoundRects=>true;
     public bool SupportsRegions=>true;
@@ -66,10 +66,10 @@ internal sealed class RenderInterface(Func<PixelBuffer,ICanvasBackend>? backendF
         catch{pixels.Dispose();throw;}
     }
     public IPlatformRenderInterfaceContext CreateBackendContext(IPlatformGraphicsContext? graphics)
-    {if(graphics is not null)throw new NotSupportedException("Configure the OS host for framebuffer presentation; optional GPU drawing is selected by SimdSkia options.");return new RenderContext(backendFactory,nativeFactory);}
+    {if(graphics is not null)throw new NotSupportedException("Configure the OS host for framebuffer presentation; GPU drawing is selected by SimdSkia options.");return new RenderContext(backendFactory,nativeFactory,preferredFactory);}
 }
 
-internal sealed class RenderContext(Func<PixelBuffer,ICanvasBackend>? backendFactory=null,Func<INativePlatformHandleSurface,IRenderTarget>? nativeFactory=null):IPlatformRenderInterfaceContext
+internal sealed class RenderContext(Func<PixelBuffer,ICanvasBackend>? backendFactory=null,Func<INativePlatformHandleSurface,IRenderTarget>? nativeFactory=null,Func<IReadOnlyList<IPlatformRenderSurface>,IRenderTarget>? preferredFactory=null):IPlatformRenderInterfaceContext
 {
     private bool disposed;
     public bool IsLost=>disposed;
@@ -79,6 +79,7 @@ internal sealed class RenderContext(Func<PixelBuffer,ICanvasBackend>? backendFac
     public IRenderTarget CreateRenderTarget(IEnumerable<IPlatformRenderSurface> surfaces)
     {
         ObjectDisposedException.ThrowIf(disposed,this);var available=surfaces.ToArray();
+        if(preferredFactory is not null)return preferredFactory(available);
         if(nativeFactory is not null)return nativeFactory(available.OfType<INativePlatformHandleSurface>().FirstOrDefault()??throw new NotSupportedException("Direct GPU presentation requires a native window surface."));
         var framebuffer=available.OfType<IFramebufferPlatformSurface>().FirstOrDefault()??throw new NotSupportedException("No software framebuffer surface was provided.");return new FramebufferTarget(framebuffer.CreateFramebufferRenderTarget(),backendFactory);
     }
@@ -87,12 +88,15 @@ internal sealed class RenderContext(Func<PixelBuffer,ICanvasBackend>? backendFac
     public void Dispose()=>disposed=true;
 }
 
-internal sealed class FramebufferTarget(IFramebufferRenderTarget surface,Func<PixelBuffer,ICanvasBackend>? backendFactory=null):IRenderTarget
+internal interface IDeviceFaultSource { bool IsDeviceFaulted {get;} }
+
+internal sealed class FramebufferTarget(IFramebufferRenderTarget surface,Func<PixelBuffer,ICanvasBackend>? backendFactory=null):IRenderTarget,IDeviceFaultSource
 {
     private IFramebufferRenderTarget? surface=surface;
     private PixelBuffer? buffer;
     private ICanvasBackend? backend;
     private bool retained,active;
+    public bool IsDeviceFaulted=>backend?.IsFaulted==true;
     public RenderTargetProperties Properties=>new(){RetainsPreviousFrameContents=true,IsSuitableForDirectRendering=true};
     public PlatformRenderTargetState PlatformRenderTargetState=>backend?.IsFaulted==true?new(){IsCorrupted=true}:surface?.State??PlatformRenderTargetState.Disposed;
     public IDrawingContextImpl CreateDrawingContext(IRenderTarget.RenderTargetSceneInfo scene,out RenderTargetDrawingContextProperties properties)

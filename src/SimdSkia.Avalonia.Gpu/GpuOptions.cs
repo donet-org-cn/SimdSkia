@@ -9,6 +9,15 @@ public enum SimdSkiaGpuTextMode { ManagedGlyphAtlas, GpuOutlines }
 
 public static class SimdSkiaGpuOptions
 {
+    /// <summary>Prefers Direct2D native presentation on Windows, Vulkan on Linux, then managed CPU.
+    /// Initialization failures and selected targets are reported in SimdSkiaGpuDiagnostics.
+    /// macOS currently uses CPU until a window Metal backend is implemented and verified.</summary>
+    public static void UseGpuPreferred(this SimdSkiaOptions options)
+    {
+        ArgumentNullException.ThrowIfNull(options);options.UseCpu();
+        var preference=new GpuPreference();
+        options.PreferredRenderTargetFactory=surfaces=>GpuPreferredTarget.Create(surfaces,preference);
+    }
     /// <summary>Enables hardware drawing. Direct2D defaults to a native swapchain; Vulkan uses completed-pixel framebuffer readback.</summary>
     public static void UseGpu(this SimdSkiaOptions options, SimdSkiaGpuBackend backend, bool allowCpuFallback = false, SimdSkiaGpuPresentation? presentation = null, SimdSkiaGpuTextMode textMode=SimdSkiaGpuTextMode.ManagedGlyphAtlas)
     {
@@ -20,6 +29,7 @@ public static class SimdSkiaGpuOptions
         if (backend == SimdSkiaGpuBackend.Vulkan && !OperatingSystem.IsWindows() && !OperatingSystem.IsLinux()) throw new PlatformNotSupportedException("This Vulkan backend supports Windows/Linux. macOS GPU/Metal is not implemented.");
         var selected=presentation??(backend==SimdSkiaGpuBackend.Direct2D?SimdSkiaGpuPresentation.NativeSwapchain:SimdSkiaGpuPresentation.FramebufferReadback);
         if(selected==SimdSkiaGpuPresentation.NativeSwapchain&&backend!=SimdSkiaGpuBackend.Direct2D)throw new NotSupportedException("Native swapchain presentation is currently implemented only by Direct2D on Windows.");
+        options.PreferredRenderTargetFactory=null;
         if(selected==SimdSkiaGpuPresentation.NativeSwapchain){options.NativeRenderTargetFactory=surface=>new NativeWindowTarget(surface,allowCpuFallback,textMode);options.CanvasBackendFactory=null;}
         else{options.NativeRenderTargetFactory=null;options.CanvasBackendFactory = target => new WindowGpuCanvas(target, backend, allowCpuFallback,textMode:textMode);}
     }
@@ -29,6 +39,20 @@ public sealed record SimdSkiaGpuStatistics(string Device, long GpuCommands, long
 
 public static class SimdSkiaGpuDiagnostics
 {
+    private static long initializationFailures,atlasEvictions;
+    private static string selectedRenderer="Not initialized",lastInitializationFailure="";
+    public static string SelectedRenderer=>Volatile.Read(ref selectedRenderer);
+    public static string LastInitializationFailure=>Volatile.Read(ref lastInitializationFailure);
+    public static long InitializationFailures=>Interlocked.Read(ref initializationFailures);
+    public static long ManagedGlyphAtlasEvictions=>Interlocked.Read(ref atlasEvictions);
+    internal static void Selected(string renderer)=>Volatile.Write(ref selectedRenderer,renderer);
+    internal static void InitializationFailed(string renderer,Exception error)
+    {
+        string message=$"{renderer}: {error.GetType().Name}: {error.Message}";
+        Volatile.Write(ref lastInitializationFailure,message);Interlocked.Increment(ref initializationFailures);
+        Trace.TraceWarning("SimdSkia GPU selection: {0}",message);
+    }
+    internal static void AtlasEvicted()=>Interlocked.Increment(ref atlasEvictions);
     /// <summary>Opt-in, serializing GPU diagnostics. Leave disabled for performance measurements.</summary>
     public static bool CaptureVulkanProfiles {get;set;}
     private static global::SimdSkia.Gpu.VulkanProfile? lastVulkanProfile;

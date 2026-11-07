@@ -174,10 +174,10 @@
         "dependencies": {
           "Avalonia": "[12.1.0, 13.0.0)",
           "Clipper2": "[2.0.0, 2.0.0]",
-          "SimdSkia.Core": "[0.1.1, )",
-          "SimdSkia.Cpu": "[0.1.1, )",
-          "SimdSkia.Imaging": "[0.1.1, )",
-          "SimdSkia.Text": "[0.1.1, )"
+          "SimdSkia.Core": "[0.1.2, )",
+          "SimdSkia.Cpu": "[0.1.2, )",
+          "SimdSkia.Imaging": "[0.1.2, )",
+          "SimdSkia.Text": "[0.1.2, )"
         }
       },
       "simdskia.core": {
@@ -189,35 +189,35 @@
       "simdskia.cpu": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.1, )"
+          "SimdSkia.Core": "[0.1.2, )"
         }
       },
       "simdskia.gpu": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.1, )",
-          "SimdSkia.Cpu": "[0.1.1, )"
+          "SimdSkia.Core": "[0.1.2, )",
+          "SimdSkia.Cpu": "[0.1.2, )"
         }
       },
       "simdskia.gpu.direct2d": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.1, )",
-          "SimdSkia.Cpu": "[0.1.1, )",
-          "SimdSkia.Gpu": "[0.1.1, )"
+          "SimdSkia.Core": "[0.1.2, )",
+          "SimdSkia.Cpu": "[0.1.2, )",
+          "SimdSkia.Gpu": "[0.1.2, )"
         }
       },
       "simdskia.imaging": {
         "type": "Project",
         "dependencies": {
           "Sdcb.SimdCodecs": "[1.4.0, 1.4.0]",
-          "SimdSkia.Core": "[0.1.1, )"
+          "SimdSkia.Core": "[0.1.2, )"
         }
       },
       "simdskia.text": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.1, )"
+          "SimdSkia.Core": "[0.1.2, )"
         }
       }
     }

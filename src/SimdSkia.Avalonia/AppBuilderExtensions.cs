@@ -14,10 +14,17 @@ public sealed class SimdSkiaOptions
     public Func<SimdSkia.PixelBuffer,SimdSkia.ICanvasBackend>? CanvasBackendFactory {get;set;}
     /// <summary>Optional direct native-window GPU target. The drawing and lifetime contracts remain version-specific.</summary>
     public Func<INativePlatformHandleSurface,IRenderTarget>? NativeRenderTargetFactory {get;set;}
+    internal Func<IReadOnlyList<IPlatformRenderSurface>,IRenderTarget>? PreferredRenderTargetFactory {get;set;}
 }
 
 public static class AppBuilderExtensions
 {
+    /// <summary>Explicitly selects managed CPU/SIMD rendering, including when the desktop host prefers GPU.</summary>
+    public static void UseCpu(this SimdSkiaOptions options)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        options.CanvasBackendFactory=null;options.NativeRenderTargetFactory=null;options.PreferredRenderTargetFactory=null;
+    }
     /// <summary>Uses installed static TrueType fonts on Windows, Linux and macOS, without bundled font files.</summary>
     public static AppBuilder UseSimdSkia(this AppBuilder builder)=>UseSimdSkia(builder,static _=>{});
 
@@ -26,10 +33,10 @@ public static class AppBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);ArgumentNullException.ThrowIfNull(configure);
         AvaloniaCompatibility.Validate();
-        var options=new SimdSkiaOptions();configure(options);var paths=options.FontFiles.ToArray();var factory=options.CanvasBackendFactory;var nativeFactory=options.NativeRenderTargetFactory;bool prepare=options.EnableStartupPreparation;
+        var options=new SimdSkiaOptions();configure(options);var paths=options.FontFiles.ToArray();var factory=options.CanvasBackendFactory;var nativeFactory=options.NativeRenderTargetFactory;var preferredFactory=options.PreferredRenderTargetFactory;bool prepare=options.EnableStartupPreparation;
         return builder.UseRenderingSubsystem(()=>
         {
-            AvaloniaLocator.CurrentMutable.Bind<IPlatformRenderInterface>().ToConstant(new RenderInterface(factory,nativeFactory));
+            AvaloniaLocator.CurrentMutable.Bind<IPlatformRenderInterface>().ToConstant(new RenderInterface(factory,nativeFactory,preferredFactory));
             FontManager fontManager;
             if(paths.Length!=0)fontManager=new FontManager(paths);
             else
@@ -38,7 +45,7 @@ public static class AppBuilderExtensions
                 fontManager=new FontManager(system.Files,system.DefaultFamily,supportedFacesOnly:true);
             }
             AvaloniaLocator.CurrentMutable.Bind<IFontManagerImpl>().ToConstant(fontManager);
-        },"SimdSkia.Cpu").UseTextShapingSubsystem(()=>AvaloniaLocator.CurrentMutable.Bind<ITextShaperImpl>().ToConstant(new TextShaper()),"SimdSkia.ManagedText")
+        },"SimdSkia").UseTextShapingSubsystem(()=>AvaloniaLocator.CurrentMutable.Bind<ITextShaperImpl>().ToConstant(new TextShaper()),"SimdSkia.ManagedText")
             .AfterSetup(app=>
             {
                 // Lifetime is assigned after platform services are initialized.
