@@ -1,0 +1,37 @@
+PASS Bitmap -> canvas -> clear -> rect -> every pixel
+PASS Rgba8888 and Bgra8888 byte order
+PASS Padded rows and last row byte count
+PASS Half-pixel edges follow baseline rounding
+PASS Opaque metadata preserves Src and Clear physical alpha
+PASS Premultiplied storage and unpremultiply
+PASS Alpha zero storage is canonical black
+PASS SourceOver on opaque destination
+PASS Source replaces alpha
+PASS Clear blend replaces pixels with transparent
+PASS Transparent source leaves destination
+PASS Straight alpha SourceOver
+PASS Device bounds clip rectangle
+PASS Huge offscreen coordinates safely clipped
+PASS Empty geometry has no coverage
+PASS Save returns previous count and restore restores matrix
+PASS Clear ignores transform
+PASS Affine translate-scale renders
+PASS Singular affine matrix has empty coverage
+PASS Matrix inverse round trip
+PASS Bitmap survives canvas disposal
+PASS Canvas retains pixel storage after bitmap disposal
+PASS Surface owns canvas lifetime
+PASS Surface snapshot owns independent pixels after disposal
+PASS Image conversion rejects disposed images and null
+PASS Bitmap copy packs rows and owns independent pixels
+PASS Disposed paint rejects drawing
+PASS Coordinate validation
+PASS Invalid allocation and checked overflow
+PASS Unsupported features throw before mutation
+PASS Unknown formats and native handles fail explicitly
+PASS Perspective and nonfinite matrices rejected atomically
+PASS Static color spaces survive Dispose; owned profiles retain independently
+PASS Color packing and value equality
+PASS Backend unknown command fails explicitly
+PASS Warm drawing loop has zero thread allocations
+36/36 tests passed.

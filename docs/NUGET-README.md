@@ -1,9 +1,10 @@
-# 0.1.2-preview.3 更新
+# SimdSkia 0.1.2 正式版：0.1.1以来累计更新
 
-本版修复连续MoveTo点序列和特殊混合模式的SaveLayer范围；原版几何300组/4636值、464组图层/2,375,680字节精确对照通过。PDF依赖说明与项目保持一致，固定使用 PdfPig 0.1.16。
+固定SkiaSharp3.119.4基线，892→3230/3235项、累计新增2338项公共元数据签名，63→201类型；按约定保留5项原生合同缺口。扩展路径/描边/渐变/采样/滤镜/Blender/RuntimeEffect子集、Picture/网格、真实Alpha8/浮点颜色、LCD/中文点阵、SVG/XPS/SKP与PDF注释。增加GL/GLES/D3D12/Metal核心及GPU资源互操作，优化Vulkan设备复制/矩形合批/完成读回、SIMD/有界缓存/分配；修复MoveTo、SaveLayer混合范围和纹理生命周期。
 
-3230/3235项固定基线，保留5项原生合同缺口；实际SVG/XPS/SKP、Alpha8、浮点颜色与GPU资源互操作。Vulkan合批/设备复制/完成读回优化；Metal无Mac GPU，尚未实机验证。Avalonia接受>=12.1.0且<13.0.0，已验证宿主12.1.0–12.1.5。JPEG、文字/曲线/整页画质及性能/内存仍有差距。Sdcb.SimdCodecs保持1.4.0；.NET系统压缩与macOS官方窗口宿主是已允许的原生例外。完整测试、CPU/GPU/内存性能及兼容限制见包内CHANGELOG.md和[本版报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PUBLIC-API-FINAL-2026-11-07.md)。
+Avalonia接受>=12.1.0且<13.0.0，已验证宿主12.1.0–12.1.5。默认SK*解码校正为N32/预乘，直接读取像素的应用应检查ColorType/AlphaType/RowBytes。依赖保持Sdcb.SimdCodecs1.4.0/Clipper2 2.0.0/可选 PdfPig 0.1.16。Metal无Mac GPU实机验证；JPEG、曲线/文字/整页画质、内存及部分GPU/API性能仍有差距。正式版按已实现子集发布，不是全面行为或二进制替换保证；GPU对象要求创建线程显式Dispose。
 
+完整累计更新、性能记录、限制与升级方法见包内CHANGELOG.md和[0.1.2发行说明](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-0.1.2.md)。原始测量按快照保留，不以正式版本号改写画质结果。
 
 Packages target .NET 10 or later:
 
@@ -23,7 +24,7 @@ Packages target .NET 10 or later:
 | SimdSkia.Pdf | Optional managed PDF parsing/rendering; subset only, pinned PdfPig 0.1.16 |
 
 ```shell
-dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.2-preview.3
+dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.2
 ```
 
 An existing Avalonia 12.1.5 application selects the adapter explicitly:
@@ -38,7 +39,7 @@ AppBuilder.Configure<App>()
 
 Windows uses its current message font; Linux/macOS discover supported installed static TrueType families. Explicit `options.FontFiles.Add(path)` overrides automatic selection. Parsing, shaping, glyph coverage and codecs remain C#. Chinese text needs a supported installed Chinese font. Complex shaping, CFF/variable/color fonts and hinting have gaps.
 
-Startup preparation is enabled by default. To disable it for diagnosis, use `.UseSimdSkiaDesktop(options => options.EnableStartupPreparation = false)`. It does not hide the window or add a placeholder frame. Keep all directly referenced SimdSkia packages on version `0.1.2-preview.3` and all Avalonia packages on `12.1.5`.
+Startup preparation is enabled by default. To disable it for diagnosis, use `.UseSimdSkiaDesktop(options => options.EnableStartupPreparation = false)`. It does not hide the window or add a placeholder frame. Keep all directly referenced SimdSkia packages on version `0.1.2` and all Avalonia packages on `12.1.5`.
 
 The base adapter provides rendering/font services. The Desktop package supplies OS host selection without Skia/HarfBuzz/ANGLE packages. macOS uses the official MIT libAvaloniaNative window bridge, an explicit window-host exception; application drawing/fonts are managed. The optional GPU adapter defaults Direct2D to a native Windows swapchain; Vulkan currently waits for completion and reads back to the OS framebuffer. The Metal core is unverified and is not wired into Avalonia presentation. GPU glyphs normally use a managed atlas, and CPU layers/fallbacks are reported. See the [complete quick start](https://github.com/donet-org-cn/SimdSkia#readme).
 
@@ -48,7 +49,7 @@ MIT licensed. Third-party components retain their own licenses and notices, incl
 ## Standalone SkiaSharp namespace usage
 
 ```shell
-dotnet add package SimdSkia --version 0.1.2-preview.3
+dotnet add package SimdSkia --version 0.1.2
 ```
 
 ```csharp

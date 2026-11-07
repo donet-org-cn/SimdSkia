@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <SimdSkiaPackageVersion Condition="'$(SimdSkiaPackageVersion)' == ''">0.1.0</SimdSkiaPackageVersion>
+    <SimdSkiaPackageVersion Condition="'$(SimdSkiaPackageVersion)' == ''">0.1.2</SimdSkiaPackageVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="SimdSkia.Pdf" Version="$(SimdSkiaPackageVersion)" />

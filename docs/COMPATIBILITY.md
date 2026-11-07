@@ -1,5 +1,7 @@
 # 兼容报告：SkiaSharp 3.119.4
 
+当前发行准备：0.1.2正式版，累计0.1.1以来892→3230/3235、新增2338公共元数据；5项原生合同保留，Metal未实机验证。见[累计更新](RELEASE-0.1.2.md)及[本版发布状态](NUGET-PREVIEW.md)。以下preview.3测试/性能和更早记录保留原始范围。
+
 0.1.2-preview.3十二包已公开、CI与本机独立内容核对通过；同一适配器三平台18组JIT/实际窗口和6组Native AOT通过。仅NuGet.org源的新缓存真实AOT窗口也通过。[发布证据](evidence/nuget-0.1.2-preview.3-2026-11-07/)、[最终源码63进程性能与CPU/内存](PERFORMANCE-PREVIEW3-2026-11-07.md)。API匹配仍3230/3235，5项约定缺口保留；Metal未实机验证，整页画质0/18与内存/部分性能差距仍保留。
 
 CI复核新增修正：连续MoveTo保留空轮廓/点；Src/Clear/SrcIn/DstIn/SrcOut/DstATop/Modulate的SaveLayer bounds按原版扩展到父裁剪。原版几何300组/4636值、464组图层组合和兼容扩展均通过。preview.1标签的CI失败，未上传NuGet；修复先进入preview.2候选；当前发布状态见发布记录。

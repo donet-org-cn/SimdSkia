@@ -2,15 +2,15 @@ name: NuGet release
 
 on:
   push:
-    tags: ['v*-preview.*', 'v0.1.0', 'v0.1.1']
+    tags: ['v*-preview.*', 'v0.1.0', 'v0.1.1', 'v0.1.2']
   workflow_dispatch:
     inputs:
       version:
         description: 'Approved release version'
         required: true
-        default: '0.1.2-preview.3'
+        default: '0.1.2'
       publish:
-        description: 'Publish verified packages to NuGet.org using trusted publishing'
+        description: 'Publish verified stable/preview packages to NuGet.org using trusted publishing'
         type: boolean
         default: true
 
@@ -39,7 +39,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
-      - name: Validate preview version
+      - name: Validate release version
         id: version
         shell: pwsh
         env:
@@ -49,7 +49,7 @@ jobs:
           if ($version -notmatch '^\d+\.\d+\.\d+(-preview\.\d+)?$') { throw 'Invalid stable/preview SemVer.' }
           "version=$version" >> $env:GITHUB_OUTPUT
       - name: Verify archived test and performance evidence bytes in Git
-        run: python tools/verify-evidence-git.py docs/evidence/api-final-2026-11-07 docs/evidence/api-final-package-consumption-2026-11-07 docs/evidence/api-final-ci-recheck-2026-11-07
+        run: python tools/verify-evidence-git.py docs/evidence/api-final-2026-11-07 docs/evidence/api-final-package-consumption-2026-11-07 docs/evidence/api-final-ci-recheck-2026-11-07 docs/evidence/ui-preview3-2026-11-07 docs/evidence/nuget-0.1.2-preview.3-2026-11-07 docs/evidence/stable-0.1.2-preflight-2026-11-07
       - name: Fetch pinned licensed test fonts
         shell: pwsh
         run: |

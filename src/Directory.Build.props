@@ -1,7 +1,7 @@
 <Project>
   <Import Project="../Directory.Build.props" />
   <PropertyGroup>
-    <Version Condition="'$(Version)' == ''">0.1.2-preview.3</Version>
+    <Version Condition="'$(Version)' == ''">0.1.2</Version>
     <Authors>hnlyf168</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/donet-org-cn/SimdSkia</PackageProjectUrl>
@@ -11,7 +11,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Description>Managed C# 2D rendering components. Version 0.1 supports the documented subset; SkiaSharp source and rendering equivalence remain incomplete. No Google Skia rendering dependency.</Description>
     <PackageTags>SimdSkia;graphics;rendering;managed;2d</PackageTags>
-    <PackageReleaseNotes>0.1.2-preview.3：固定SkiaSharp 3.119.4基线匹配3230/3235项；5项原生句柄/版本合同按约定保留。补充RuntimeEffect子集、Picture/Lattice/网格/滤镜、真实Alpha8、浮点颜色/Blender/抖动、LCD/中文嵌入点阵、SVG/XPS与原生v103 SKP子集。新增系统GL/GLES、D3D12及外部GPU纹理互操作；Vulkan矩形合批、设备复制、直接完成读回和去分配优化；Metal实现尚无Mac GPU验证。Avalonia接受>=12.1.0且&lt;13.0.0，已验证宿主为12.1.0–12.1.5。Sdcb.SimdCodecs 1.4.0保持。仍有JPEG、曲线/文字/整页画质及GPU性能差距，不代表全面行为或二进制兼容。修复连续MoveTo与特殊混合SaveLayer范围回归；修正文档依赖版本更新脚本，PdfPig保持0.1.16。完整测试、性能、CPU/内存及限制见CHANGELOG.md和README.md。</PackageReleaseNotes>
+    <PackageReleaseNotes>0.1.2正式版，汇集0.1.1以来累计更新：固定SkiaSharp3.119.4基线892→3230/3235，新增2338项公共元数据，63→201类型；5项原生合同缺口按约定保留。扩展路径/描边/渐变/采样/滤镜/Blender/RuntimeEffect子集、Picture/网格、真实Alpha8/浮点颜色/LCD中文点阵、SVG/XPS/SKP和PDF注释。增加GL/GLES/D3D12/Metal核心及GPU资源互操作，优化Vulkan设备复制/矩形合批/读回和SIMD/有界缓存/分配。修复MoveTo、SaveLayer混合范围、纹理生命周期和默认N32预乘解码。Avalonia>=12.1.0且&lt;13.0.0，宿主12.1.0–12.1.5。依赖保持Sdcb.SimdCodecs1.4.0/Clipper2 2.0.0/可选PdfPig0.1.16。JPEG/整页画质、内存和部分性能仍有差距，Metal无Mac GPU验证；不是全面行为或二进制兼容保证。完整累计更新、升级注意事项和性能记录见CHANGELOG.md、README.md。</PackageReleaseNotes>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>

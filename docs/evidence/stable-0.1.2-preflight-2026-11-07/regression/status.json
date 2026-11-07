@@ -1,0 +1,241 @@
+[
+  {
+    "name": "basic",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/SimdSkia.Tests",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "startedUtc": "2026-11-07T01:32:02.653604+00:00",
+    "exitCode": 0
+  },
+  {
+    "name": "optimization",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Optimization",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "baseline/fonts/ZenOldMincho-Regular.ttf"
+    ],
+    "startedUtc": "2026-11-07T01:32:04.053856+00:00",
+    "exitCode": 0
+  },
+  {
+    "name": "codec",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/CodecIntegration",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "startedUtc": "2026-11-07T01:32:11.351644+00:00",
+    "exitCode": 0
+  },
+  {
+    "name": "pdf",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Pdf",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "startedUtc": "2026-11-07T01:32:14.676074+00:00",
+    "exitCode": 0
+  },
+  {
+    "name": "fonts",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/PlatformFonts",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "startedUtc": "2026-11-07T01:32:17.419437+00:00",
+    "exitCode": 0
+  },
+  {
+    "name": "compatibility",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/CompatibilityExpansion/Managed",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "artifacts\\stable-0.1.2-2026-11-07\\regression\\compatibility"
+    ],
+    "startedUtc": "2026-11-07T01:32:19.415649+00:00",
+    "exitCode": 0
+  },
+  {
+    "name": "direct2d",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Direct2D",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "startedUtc": "2026-11-07T01:32:22.778531+00:00",
+    "exitCode": 0
+  },
+  {
+    "name": "vulkan",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Gpu",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "startedUtc": "2026-11-07T01:32:24.627054+00:00",
+    "exitCode": 0
+  },
+  {
+    "name": "gpu-sampling",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/GpuSampling",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "startedUtc": "2026-11-07T01:32:28.198920+00:00",
+    "exitCode": 0
+  },
+  {
+    "name": "gpu-optimization",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/GpuOptimization",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "baseline/fonts/ZenOldMincho-Regular.ttf"
+    ],
+    "startedUtc": "2026-11-07T01:32:30.449496+00:00",
+    "exitCode": 0
+  },
+  {
+    "name": "float-simd",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/FloatPaintSimd",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "artifacts\\stable-0.1.2-2026-11-07\\regression\\float-simd"
+    ],
+    "startedUtc": "2026-11-07T01:32:54.004496+00:00",
+    "exitCode": 0
+  },
+  {
+    "name": "layer-bounds",
+    "command": [
+      "python",
+      "tools/check-layer-bounds.py",
+      "--no-build",
+      "--output",
+      "artifacts\\stable-0.1.2-2026-11-07\\regression\\layer-bounds"
+    ],
+    "startedUtc": "2026-11-07T01:32:55.193430+00:00",
+    "exitCode": 0
+  },
+  {
+    "name": "geometry",
+    "command": [
+      "python",
+      "tools/check-geometry-compatibility.py",
+      "--no-build",
+      "--output",
+      "artifacts\\stable-0.1.2-2026-11-07\\regression\\geometry"
+    ],
+    "startedUtc": "2026-11-07T01:32:58.310271+00:00",
+    "exitCode": 0
+  },
+  {
+    "name": "jpeg-documented",
+    "command": [
+      "python",
+      "tools/check-jpeg-parity.py",
+      "--output",
+      "artifacts\\stable-0.1.2-2026-11-07\\regression\\jpeg",
+      "--check-documented-differences"
+    ],
+    "startedUtc": "2026-11-07T01:33:01.562764+00:00",
+    "exitCode": 0
+  },
+  {
+    "name": "api-extract",
+    "command": [
+      "dotnet",
+      "tools/ApiAudit/bin/Release/net10.0/ApiAudit.dll",
+      "extract",
+      "src/SimdSkia.Compatibility/bin/Release/net10.0/SimdSkia.Compatibility.dll",
+      "artifacts\\stable-0.1.2-2026-11-07\\regression\\implemented.json"
+    ],
+    "startedUtc": "2026-11-07T01:33:03.673067+00:00",
+    "exitCode": 0
+  },
+  {
+    "name": "api-scope",
+    "command": [
+      "python",
+      "tools/check-final-api-baseline.py",
+      "--comparison",
+      "artifacts\\stable-0.1.2-2026-11-07\\regression\\comparison.json"
+    ],
+    "startedUtc": "2026-11-07T01:33:04.241529+00:00",
+    "exitCode": 0
+  },
+  {
+    "name": "dependency-isolation",
+    "command": [
+      "pwsh",
+      "-NoProfile",
+      "-File",
+      "tools/check-production-dependencies.ps1"
+    ],
+    "startedUtc": "2026-11-07T01:33:04.306182+00:00",
+    "exitCode": 0
+  }
+]

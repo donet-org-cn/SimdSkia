@@ -17,7 +17,7 @@ for name in ['docs/NUGET-README.md','src/SimdSkia.Pdf/README.md']:
     # A substring replacement of 0.1.1 also changes PdfPig 0.1.16.
     content=re.sub(r'(dotnet add package SimdSkia(?:\.[\w.]+)? --version )'+pattern,
                    lambda m:m[1]+version,content)
-    content=re.sub(r'(?m)^(# (?:SimdSkia\.Pdf )?)'+pattern+r'(?= 更新|$)',
+    content=re.sub(r'(?m)^(#{1,2} (?:SimdSkia(?:\.Pdf)? )?)'+pattern+r'(?= 正式| 更新|$)',
                    lambda m:m[1]+version,content)
     content=re.sub(r'(SimdSkia packages on version `)'+pattern+r'`',
                    lambda m:m[1]+version+'`',content)

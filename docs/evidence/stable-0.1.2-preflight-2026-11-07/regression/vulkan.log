@@ -1,0 +1,16 @@
+Vulkan device: NVIDIA GeForce GTX 1050 Ti; software=False
+PASS rectangle: maximum channel error 0
+PASS path-AA: maximum channel error 0
+PASS texture-cache-clip-source-disposed: maximum channel error 0
+PASS gradient: maximum channel error 0
+PASS multi-gradient-Clamp: maximum channel error 0
+PASS multi-gradient-Repeat: maximum channel error 0
+PASS multi-gradient-Mirror: maximum channel error 0
+PASS multi-gradient-local-matrix: maximum channel error 0
+PASS explicit Vulkan rejection of radial/sweep/decal; CPU implementation remains available
+PASS miter-stroke-AA: maximum channel error 0
+PASS texture content invalidation and queued snapshots
+PASS Chinese/Latin glyph paths: maximum channel error 0
+PASS automatic submission across 128-command batch boundary: maximum channel error 0
+PASS completed-frame texture eviction
+{"Backend":"Vulkan compute (device coverage and composition)","DeviceName":"NVIDIA GeForce GTX 1050 Ti","IsSoftwareDevice":false,"CompletedBatches":16,"CachedTextures":256,"LastSubmitMilliseconds":0.0514,"LastCompletionMilliseconds":0.1796,"ThreadConstraintVerified":true,"ChineseVerified":true,"TextureVkImageVerified":true}

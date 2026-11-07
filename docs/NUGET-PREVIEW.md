@@ -1,5 +1,10 @@
 # NuGet 发布记录
 
+## 0.1.2 正式版 — 待CI与公开下载验证
+
+汇集0.1.1以来2338项新增公共元数据、GPU/CPU/SIMD/内存优化、行为修复及全部已披露限制。[累计更新和升级说明](RELEASE-0.1.2.md)。十二包统一0.1.2，正式化不改preview.3绘图算法；正式包的CI和公开下载结果完成后单独记录，不把旧预览通过结果当作本版已发布。
+
+
 ## 0.1.2-preview.3 — 已公开，十二包独立核对通过
 
 十二包已公开下载，全部DLL、nuspec、宿主/buildTransitive资产和包内README/CHANGELOG/LICENSE与冻结CI包一致；GitHub CI及本机独立下载两次验证结果一致。[发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/42308006858)和关联三平台核心/桌面、几何、Windows AOT均成功，标签`v0.1.2-preview.3`固定在`82e9575971aff578762e879aea8afdbbdf9c811d`。[GitHub预发行](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.2-preview.3)。

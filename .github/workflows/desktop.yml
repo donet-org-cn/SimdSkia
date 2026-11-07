@@ -10,7 +10,7 @@ permissions:
 jobs:
   desktop:
     env:
-      RELEASE_VERSION: 0.1.2-preview.3
+      RELEASE_VERSION: 0.1.2
     strategy:
       fail-fast: false
       matrix:
@@ -71,9 +71,14 @@ jobs:
         run: |
           $p=Start-Process artifacts/desktop-aot/CrossPlatform.exe -ArgumentList '--smoke --font baseline/fonts/ZCOOLXiaoWei-Regular.ttf --output artifacts/cross-platform/aot' -PassThru -Wait -WindowStyle Hidden
           exit $p.ExitCode
-      - name: Pack and validate all preview modules
+      - name: Pack and validate all release modules
         shell: pwsh
-        run: ./tools/pack-preview.ps1 -Version $env:RELEASE_VERSION -Output artifacts/desktop-packages
+        run: |
+          if ($env:RELEASE_VERSION -match '-preview\.') {
+            ./tools/pack-preview.ps1 -Version $env:RELEASE_VERSION -Output artifacts/desktop-packages
+          } else {
+            ./tools/pack-release.ps1 -Version $env:RELEASE_VERSION -Output artifacts/desktop-packages
+          }
       - name: Consume optional PDF nupkg on the current OS
         shell: pwsh
         run: ./tools/test-pdf-package.ps1 -Version $env:RELEASE_VERSION -Packages artifacts/desktop-packages

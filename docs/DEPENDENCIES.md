@@ -1,5 +1,9 @@
 # 依赖与许可证
 
+## 0.1.2 正式版累计发行
+
+依赖版本沿用0.1.1/preview.3：Sdcb.SimdCodecs1.4.0、Clipper2 2.0.0、可选PdfPig0.1.16，未因正式化升级第三方依赖。Core复用纯托管Clipper2；C#系统GPU调用及已允许的压缩/macOS窗口宿主例外、许可证和Metal未验证状态保持。详见[累计说明](RELEASE-0.1.2.md)。下方保留历史时点。
+
 ## 0.1.2-preview.1 的依赖边界
 
 本轮未新增生产NuGet/原生绘图组件。路径使用纯托管Clipper2 2.0.0（BSL-1.0）；编解码固定Sdcb.SimdCodecs十五包1.4.0（MIT），可选PDF读取使用PdfPig0.1.16（Apache-2.0）。CPU几何/光栅/字体/基本排版为C#，PNG/TIFF允许.NET系统压缩的原生实现，macOS官方窗口宿主为经允许的另一例外。
