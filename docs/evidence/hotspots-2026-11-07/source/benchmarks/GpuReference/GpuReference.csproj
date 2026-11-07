@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><AssemblyName>SimdSkia.Benchmark.GpuReference</AssemblyName><DefineConstants>$(DefineConstants);ORIGINAL</DefineConstants><AllowUnsafeBlocks>true</AllowUnsafeBlocks></PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="SkiaSharp" Version="[3.119.4]" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="[3.119.4]" />
+    <Compile Include="../GpuShared/*.cs" LinkBase="GpuShared" />
+    <Compile Include="../Shared/Contracts.cs" Link="Contracts.cs" />
+  </ItemGroup>
+</Project>

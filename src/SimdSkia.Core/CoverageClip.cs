@@ -15,6 +15,14 @@ public sealed class CoverageClip
         _=checked(left+width);_=checked(top+height);
         Left=left;Top=top;Width=width;Height=height;data=coverage.ToArray();
     }
+    // Internal immutable raster masks have no caller-owned writable aliases.
+    // Integer translations can retain their bytes without copying full masks.
+    internal static CoverageClip BorrowImmutable(int left,int top,int width,int height,byte[] coverage)=>new(left,top,width,height,coverage,true);
+    private CoverageClip(int left,int top,int width,int height,byte[] coverage,bool immutable)
+    {
+        if(width<0||height<0||coverage.Length!=checked(width*height))throw new ArgumentException("Clip dimensions do not match coverage.");
+        _=checked(left+width);_=checked(top+height);Left=left;Top=top;Width=width;Height=height;data=coverage;
+    }
     public ReadOnlySpan<byte> GetRow(int y)=>y<Top||y>=Top+Height?ReadOnlySpan<byte>.Empty:data.AsSpan((y-Top)*Width,Width);
     public byte At(int x,int y)=>x<Left||y<Top||x>=Left+Width||y>=Top+Height?(byte)0:data[(y-Top)*Width+x-Left];
     public static CoverageClip Intersect(CoverageClip a,CoverageClip b)

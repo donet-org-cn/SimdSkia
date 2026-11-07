@@ -1,0 +1,607 @@
+{
+  "micro": [
+    {
+      "scene": "blend",
+      "width": 256,
+      "height": 256,
+      "original": {
+        "milliseconds": 0.23275195046439628,
+        "cpuMilliseconds": 0.14489953632148378,
+        "allocation": 0.0,
+        "workingSetMiB": 90.54296875,
+        "privateMiB": 101.1484375
+      },
+      "disabled": {
+        "milliseconds": 0.4459814193548387,
+        "cpuMilliseconds": 0.15120967741935484,
+        "allocation": 0.5452229299363057,
+        "workingSetMiB": 91.82421875,
+        "privateMiB": 92.9765625
+      },
+      "ordered": {
+        "milliseconds": 0.3236861403508772,
+        "cpuMilliseconds": 0.10732323232323232,
+        "allocation": 0.3581589958158996,
+        "workingSetMiB": 90.67578125,
+        "privateMiB": 90.8671875
+      },
+      "before": {
+        "milliseconds": 0.4461535185185185,
+        "cpuMilliseconds": 0.14003537735849056,
+        "allocation": 0.4037735849056604,
+        "workingSetMiB": 94.25,
+        "privateMiB": 97.16015625
+      },
+      "maximumError": 0,
+      "allowedError": 1,
+      "nativeQualityPassed": true,
+      "orderedOverDisabled": 0.725783914538693,
+      "orderedOverOriginal": 1.3906914193631688
+    },
+    {
+      "scene": "blend",
+      "width": 1024,
+      "height": 768,
+      "original": {
+        "milliseconds": 2.191001194029851,
+        "cpuMilliseconds": 1.632462686567164,
+        "allocation": 0.0,
+        "workingSetMiB": 93.5390625,
+        "privateMiB": 104.1484375
+      },
+      "disabled": {
+        "milliseconds": 1.974765641025641,
+        "cpuMilliseconds": 0.45230263157894735,
+        "allocation": 2.2526315789473683,
+        "workingSetMiB": 96.65234375,
+        "privateMiB": 96.37109375
+      },
+      "ordered": {
+        "milliseconds": 1.6241843956043958,
+        "cpuMilliseconds": 0.39893617021276595,
+        "allocation": 1.8608695652173912,
+        "workingSetMiB": 94.84375,
+        "privateMiB": 94.95703125
+      },
+      "before": {
+        "milliseconds": 1.9787081578947368,
+        "cpuMilliseconds": 0.4296875,
+        "allocation": 2.2526315789473683,
+        "workingSetMiB": 101.125,
+        "privateMiB": 100.19140625
+      },
+      "maximumError": 0,
+      "allowedError": 1,
+      "nativeQualityPassed": true,
+      "orderedOverDisabled": 0.8224694423794195,
+      "orderedOverOriginal": 0.7412978139993964
+    },
+    {
+      "scene": "curve-changing",
+      "width": 256,
+      "height": 256,
+      "original": {
+        "milliseconds": 0.20432341333333334,
+        "cpuMilliseconds": 0.14331210191082802,
+        "allocation": 0.0,
+        "workingSetMiB": 87.58984375,
+        "privateMiB": 91.0234375
+      },
+      "disabled": {
+        "milliseconds": 0.22721603603603605,
+        "cpuMilliseconds": 0.09259259259259259,
+        "allocation": 232.25705705705707,
+        "workingSetMiB": 85.84765625,
+        "privateMiB": 87.3984375
+      },
+      "ordered": {
+        "milliseconds": 0.22764284457478007,
+        "cpuMilliseconds": 0.07893759286775631,
+        "allocation": 232.2540059347181,
+        "workingSetMiB": 85.8984375,
+        "privateMiB": 87.4609375
+      },
+      "before": {
+        "milliseconds": 0.32225503731343286,
+        "cpuMilliseconds": 0.12243470149253731,
+        "allocation": 32658.2,
+        "workingSetMiB": 92.44140625,
+        "privateMiB": 94.0390625
+      },
+      "maximumError": 45,
+      "allowedError": 32,
+      "nativeQualityPassed": false,
+      "orderedOverDisabled": 1.0018784261277947,
+      "orderedOverOriginal": 1.114130000380345
+    },
+    {
+      "scene": "curve-changing",
+      "width": 1024,
+      "height": 768,
+      "original": {
+        "milliseconds": 2.150354722222222,
+        "cpuMilliseconds": 1.6059027777777777,
+        "allocation": 0.0,
+        "workingSetMiB": 97.56640625,
+        "privateMiB": 107.7421875
+      },
+      "disabled": {
+        "milliseconds": 1.4030785321100916,
+        "cpuMilliseconds": 0.573394495412844,
+        "allocation": 192817.58532110092,
+        "workingSetMiB": 116.734375,
+        "privateMiB": 119.56640625
+      },
+      "ordered": {
+        "milliseconds": 1.3941489719626168,
+        "cpuMilliseconds": 0.5912162162162162,
+        "allocation": 192821.7945945946,
+        "workingSetMiB": 115.01171875,
+        "privateMiB": 116.51953125
+      },
+      "before": {
+        "milliseconds": 1.4021654205607477,
+        "cpuMilliseconds": 0.6020642201834863,
+        "allocation": 201147.13962264152,
+        "workingSetMiB": 118.20703125,
+        "privateMiB": 121.44140625
+      },
+      "maximumError": 44,
+      "allowedError": 32,
+      "nativeQualityPassed": false,
+      "orderedOverDisabled": 0.993635737456516,
+      "orderedOverOriginal": 0.648334415506049
+    },
+    {
+      "scene": "chinese-changing",
+      "width": 256,
+      "height": 256,
+      "original": {
+        "milliseconds": 0.24064208201892742,
+        "cpuMilliseconds": 0.16,
+        "allocation": 640.0,
+        "workingSetMiB": 92.01953125,
+        "privateMiB": 102.48046875
+      },
+      "disabled": {
+        "milliseconds": 0.1560436037934668,
+        "cpuMilliseconds": 0.08100697906281157,
+        "allocation": 168.2326659641728,
+        "workingSetMiB": 95.5546875,
+        "privateMiB": 98.578125
+      },
+      "ordered": {
+        "milliseconds": 0.1554007476635514,
+        "cpuMilliseconds": 0.08761682242990654,
+        "allocation": 168.22928348909656,
+        "workingSetMiB": 95.04296875,
+        "privateMiB": 95.3203125
+      },
+      "before": {
+        "milliseconds": 2.3582974193548387,
+        "cpuMilliseconds": 2.2681451612903225,
+        "allocation": 743850.6322580645,
+        "workingSetMiB": 97.22265625,
+        "privateMiB": 98.38671875
+      },
+      "maximumError": 188,
+      "allowedError": 32,
+      "nativeQualityPassed": false,
+      "orderedOverDisabled": 0.9958802788817523,
+      "orderedOverOriginal": 0.6457754452578602
+    },
+    {
+      "scene": "chinese-changing",
+      "width": 1024,
+      "height": 768,
+      "original": {
+        "milliseconds": 2.2840605970149253,
+        "cpuMilliseconds": 1.3644366197183098,
+        "allocation": 640.0,
+        "workingSetMiB": 97.56640625,
+        "privateMiB": 108.56640625
+      },
+      "disabled": {
+        "milliseconds": 0.7258516161616162,
+        "cpuMilliseconds": 0.27525906735751293,
+        "allocation": 169.11515151515152,
+        "workingSetMiB": 97.53125,
+        "privateMiB": 99.78515625
+      },
+      "ordered": {
+        "milliseconds": 0.7706617435897436,
+        "cpuMilliseconds": 0.30448717948717946,
+        "allocation": 169.1323076923077,
+        "workingSetMiB": 96.9140625,
+        "privateMiB": 99.5234375
+      },
+      "before": {
+        "milliseconds": 3.998512222222222,
+        "cpuMilliseconds": 3.90625,
+        "allocation": 1099815.1804878048,
+        "workingSetMiB": 105.06640625,
+        "privateMiB": 109.8203125
+      },
+      "maximumError": 185,
+      "allowedError": 32,
+      "nativeQualityPassed": false,
+      "orderedOverDisabled": 1.0617345562514393,
+      "orderedOverOriginal": 0.33740862418314715
+    }
+  ],
+  "scroll": {
+    "original-full": {
+      "drawMsPerFrame": 0.9370343333333339,
+      "p95Ms": 1.2731,
+      "cpuMsPerFrame": 1.1979166666666667,
+      "cpuPercentMachine": 0.5971498768742173,
+      "allocatedBytesPerFrame": 14908.746666666666,
+      "sampledMedianWorkingSetMiB": 55.625,
+      "sampledMedianPrivateMiB": 30.01171875,
+      "gc0": 0,
+      "gc1": 0,
+      "gc2": 0,
+      "missedDeadlines": 0
+    },
+    "stable-0.1.2": {
+      "drawMsPerFrame": 0.7188483333333335,
+      "p95Ms": 1.0559,
+      "cpuMsPerFrame": 0.8854166666666666,
+      "cpuPercentMachine": 0.4421168075718107,
+      "allocatedBytesPerFrame": 6450.826666666667,
+      "sampledMedianWorkingSetMiB": 68.09375,
+      "sampledMedianPrivateMiB": 46.5,
+      "gc0": 0,
+      "gc1": 0,
+      "gc2": 0,
+      "missedDeadlines": 2
+    },
+    "before": {
+      "drawMsPerFrame": 0.7430486666666668,
+      "p95Ms": 1.0382,
+      "cpuMsPerFrame": 0.9895833333333334,
+      "cpuPercentMachine": 0.4934251159395697,
+      "allocatedBytesPerFrame": 6420.266666666666,
+      "sampledMedianWorkingSetMiB": 68.16015625,
+      "sampledMedianPrivateMiB": 46.55859375,
+      "gc0": 0,
+      "gc1": 0,
+      "gc2": 0,
+      "missedDeadlines": 0
+    },
+    "after": {
+      "drawMsPerFrame": 0.7288823333333332,
+      "p95Ms": 1.0485,
+      "cpuMsPerFrame": 0.9375,
+      "cpuPercentMachine": 0.46854515205951963,
+      "allocatedBytesPerFrame": 6426.8,
+      "sampledMedianWorkingSetMiB": 68.19921875,
+      "sampledMedianPrivateMiB": 46.48828125,
+      "gc0": 0,
+      "gc1": 0,
+      "gc2": 0,
+      "missedDeadlines": 3
+    }
+  },
+  "pages": [
+    {
+      "scene": "controls",
+      "scale": 1,
+      "original-vulkan": {
+        "meanMs": 2.3886053511705683,
+        "recordingMs": 0.24591428571428575,
+        "completionMs": 2.1426910654562827,
+        "p95Ms": 2.9557,
+        "cpuMsPerFrame": 1.7319636884854277,
+        "cpuPercentMachine": 6.039769575043146,
+        "sampledMedianWorkingSetMiB": 151.546875,
+        "sampledMedianPrivateMiB": 149.0625,
+        "allocatedBytesPerFrame": 5256.01911132346
+      },
+      "original-angle": {
+        "meanMs": 2.0164272287212586,
+        "recordingMs": 0.25677414279951594,
+        "completionMs": 1.7596530859217427,
+        "p95Ms": 2.5965,
+        "cpuMsPerFrame": 2.332089552238806,
+        "cpuPercentMachine": 9.632523249333032,
+        "sampledMedianWorkingSetMiB": 143.34375,
+        "sampledMedianPrivateMiB": 121.828125,
+        "allocatedBytesPerFrame": 5256.0161355385235
+      },
+      "vulkan": {
+        "meanMs": 1.3802400718033692,
+        "recordingMs": 0.25020949489373445,
+        "completionMs": 1.1294367927132212,
+        "p95Ms": 1.6595,
+        "cpuMsPerFrame": 0.6210322936792714,
+        "cpuPercentMachine": 3.7495669250201598,
+        "sampledMedianWorkingSetMiB": 150.4921875,
+        "sampledMedianPrivateMiB": 144.2421875,
+        "allocatedBytesPerFrame": 5849.570836785419
+      },
+      "direct2d": {
+        "meanMs": 1.364023744541485,
+        "recordingMs": 0.284342245508982,
+        "completionMs": 1.07940990720524,
+        "p95Ms": 1.7638,
+        "cpuMsPerFrame": 1.8575465425531914,
+        "cpuPercentMachine": 11.430244967002874,
+        "sampledMedianWorkingSetMiB": 145.84375,
+        "sampledMedianPrivateMiB": 125.265625,
+        "allocatedBytesPerFrame": 5849.552401746725
+      },
+      "vulkanRatioToVulkan": 0.5778434981429493,
+      "vulkanRatioToAngle": 0.6844978346571252,
+      "direct2dRatioToVulkan": 0.5710544623342766,
+      "direct2dRatioToAngle": 0.6764557258069248
+    },
+    {
+      "scene": "controls",
+      "scale": 1.5,
+      "original-vulkan": {
+        "meanMs": 3.6758978676470586,
+        "recordingMs": 0.29840941176470587,
+        "completionMs": 3.377488455882353,
+        "p95Ms": 4.2533,
+        "cpuMsPerFrame": 2.8722426470588234,
+        "cpuPercentMachine": 6.508245776205555,
+        "sampledMedianWorkingSetMiB": 163.546875,
+        "sampledMedianPrivateMiB": 166.5390625,
+        "allocatedBytesPerFrame": 5256.029411764706
+      },
+      "original-angle": {
+        "meanMs": 3.79059613343442,
+        "recordingMs": 0.3592778620166793,
+        "completionMs": 3.431318271417741,
+        "p95Ms": 4.6795,
+        "cpuMsPerFrame": 4.063210765731615,
+        "cpuPercentMachine": 8.926430037118491,
+        "sampledMedianWorkingSetMiB": 156.23828125,
+        "sampledMedianPrivateMiB": 137.41796875,
+        "allocatedBytesPerFrame": 5256.030326004549
+      },
+      "vulkan": {
+        "meanMs": 2.4776205649157585,
+        "recordingMs": 0.4030639742319128,
+        "completionMs": 2.0772601581809194,
+        "p95Ms": 2.9574,
+        "cpuMsPerFrame": 1.0453070394408388,
+        "cpuPercentMachine": 3.4887391282390823,
+        "sampledMedianWorkingSetMiB": 165.3984375,
+        "sampledMedianPrivateMiB": 167.1484375,
+        "allocatedBytesPerFrame": 5849.466798810704
+      },
+      "direct2d": {
+        "meanMs": 2.4390563414634143,
+        "recordingMs": 0.4348852884615385,
+        "completionMs": 2.0103603902439025,
+        "p95Ms": 3.0194,
+        "cpuMsPerFrame": 2.942073170731707,
+        "cpuPercentMachine": 10.047497856261693,
+        "sampledMedianWorkingSetMiB": 153.7421875,
+        "sampledMedianPrivateMiB": 142.2109375,
+        "allocatedBytesPerFrame": 5849.443902439024
+      },
+      "vulkanRatioToVulkan": 0.6740177921487472,
+      "vulkanRatioToAngle": 0.653622933623093,
+      "direct2dRatioToVulkan": 0.6635266890656714,
+      "direct2dRatioToAngle": 0.6434492770015938
+    },
+    {
+      "scene": "scroll",
+      "scale": 1,
+      "original-vulkan": {
+        "meanMs": 2.3670578672985783,
+        "recordingMs": 0.18395053908355796,
+        "completionMs": 2.175707203791469,
+        "p95Ms": 2.9696,
+        "cpuMsPerFrame": 1.7106042654028435,
+        "cpuPercentMachine": 6.014792071593925,
+        "sampledMedianWorkingSetMiB": 142.15625,
+        "sampledMedianPrivateMiB": 144.14453125,
+        "allocatedBytesPerFrame": 4272.018957345972
+      },
+      "original-angle": {
+        "meanMs": 1.7392079038997215,
+        "recordingMs": 0.17978561026352288,
+        "completionMs": 1.558949860724234,
+        "p95Ms": 2.2316,
+        "cpuMsPerFrame": 2.0456128133704734,
+        "cpuPercentMachine": 9.686319043982158,
+        "sampledMedianWorkingSetMiB": 128.62109375,
+        "sampledMedianPrivateMiB": 110.78125,
+        "allocatedBytesPerFrame": 4272.013927576601
+      },
+      "vulkan": {
+        "meanMs": 1.3419624395486298,
+        "recordingMs": 0.1143939082278481,
+        "completionMs": 1.2279298547606239,
+        "p95Ms": 1.5251,
+        "cpuMsPerFrame": 0.4038106540084388,
+        "cpuPercentMachine": 2.5514811837739626,
+        "sampledMedianWorkingSetMiB": 145.0546875,
+        "sampledMedianPrivateMiB": 146.78125,
+        "allocatedBytesPerFrame": 2504.5287479849544
+      },
+      "direct2d": {
+        "meanMs": 0.80462356924069,
+        "recordingMs": 0.13456683862647106,
+        "completionMs": 0.6700567306142189,
+        "p95Ms": 1.0472,
+        "cpuMsPerFrame": 1.1864218926325971,
+        "cpuPercentMachine": 12.158937056145371,
+        "sampledMedianWorkingSetMiB": 133.76171875,
+        "sampledMedianPrivateMiB": 123.1640625,
+        "allocatedBytesPerFrame": 2504.4591326777368
+      },
+      "vulkanRatioToVulkan": 0.5669326711814419,
+      "vulkanRatioToAngle": 0.7715940322831031,
+      "direct2dRatioToVulkan": 0.3399256014636315,
+      "direct2dRatioToAngle": 0.4626379442253746
+    }
+  ],
+  "quality": [
+    {
+      "scene": "controls",
+      "scale": 1,
+      "variant": "vulkan",
+      "reference": "original-vulkan",
+      "maximumChannelError": 96,
+      "rmse": 2.435374215484028,
+      "differentChannels": 97867,
+      "maximumGate": 32,
+      "rmseGate": 2,
+      "passed": false
+    },
+    {
+      "scene": "controls",
+      "scale": 1,
+      "variant": "vulkan",
+      "reference": "original-angle",
+      "maximumChannelError": 96,
+      "rmse": 2.435374215484028,
+      "differentChannels": 97867,
+      "maximumGate": 32,
+      "rmseGate": 2,
+      "passed": false
+    },
+    {
+      "scene": "controls",
+      "scale": 1,
+      "variant": "direct2d",
+      "reference": "original-vulkan",
+      "maximumChannelError": 96,
+      "rmse": 2.4332985157326394,
+      "differentChannels": 92711,
+      "maximumGate": 32,
+      "rmseGate": 2,
+      "passed": false
+    },
+    {
+      "scene": "controls",
+      "scale": 1,
+      "variant": "direct2d",
+      "reference": "original-angle",
+      "maximumChannelError": 96,
+      "rmse": 2.4332985157326394,
+      "differentChannels": 92711,
+      "maximumGate": 32,
+      "rmseGate": 2,
+      "passed": false
+    },
+    {
+      "scene": "controls",
+      "scale": 1.5,
+      "variant": "vulkan",
+      "reference": "original-vulkan",
+      "maximumChannelError": 127,
+      "rmse": 2.3764936823442686,
+      "differentChannels": 170669,
+      "maximumGate": 32,
+      "rmseGate": 2,
+      "passed": false
+    },
+    {
+      "scene": "controls",
+      "scale": 1.5,
+      "variant": "vulkan",
+      "reference": "original-angle",
+      "maximumChannelError": 127,
+      "rmse": 2.3764936823442686,
+      "differentChannels": 170669,
+      "maximumGate": 32,
+      "rmseGate": 2,
+      "passed": false
+    },
+    {
+      "scene": "controls",
+      "scale": 1.5,
+      "variant": "direct2d",
+      "reference": "original-vulkan",
+      "maximumChannelError": 127,
+      "rmse": 2.3787751996809794,
+      "differentChannels": 155158,
+      "maximumGate": 32,
+      "rmseGate": 2,
+      "passed": false
+    },
+    {
+      "scene": "controls",
+      "scale": 1.5,
+      "variant": "direct2d",
+      "reference": "original-angle",
+      "maximumChannelError": 127,
+      "rmse": 2.3787751996809794,
+      "differentChannels": 155158,
+      "maximumGate": 32,
+      "rmseGate": 2,
+      "passed": false
+    },
+    {
+      "scene": "scroll",
+      "scale": 1,
+      "variant": "vulkan",
+      "reference": "original-vulkan",
+      "maximumChannelError": 75,
+      "rmse": 2.5876082908096167,
+      "differentChannels": 87531,
+      "maximumGate": 32,
+      "rmseGate": 2,
+      "passed": false
+    },
+    {
+      "scene": "scroll",
+      "scale": 1,
+      "variant": "vulkan",
+      "reference": "original-angle",
+      "maximumChannelError": 75,
+      "rmse": 2.5876082908096167,
+      "differentChannels": 87531,
+      "maximumGate": 32,
+      "rmseGate": 2,
+      "passed": false
+    },
+    {
+      "scene": "scroll",
+      "scale": 1,
+      "variant": "direct2d",
+      "reference": "original-vulkan",
+      "maximumChannelError": 75,
+      "rmse": 2.58798680337525,
+      "differentChannels": 86934,
+      "maximumGate": 32,
+      "rmseGate": 2,
+      "passed": false
+    },
+    {
+      "scene": "scroll",
+      "scale": 1,
+      "variant": "direct2d",
+      "reference": "original-angle",
+      "maximumChannelError": 75,
+      "rmse": 2.58798680337525,
+      "differentChannels": 86934,
+      "maximumGate": 32,
+      "rmseGate": 2,
+      "passed": false
+    }
+  ],
+  "churn": {
+    "before": {
+      "msPerFrame": 0.019344099479005467,
+      "cpuMsPerFrame": 0.01934385639121015,
+      "allocatedBytesPerFrame": 6648.637919098012,
+      "workingSetMiB": 54.24609375,
+      "privateMiB": 32.06640625
+    },
+    "after": {
+      "msPerFrame": 0.0060693810086427345,
+      "cpuMsPerFrame": 0.0060693360955556275,
+      "allocatedBytesPerFrame": 0.0012138672191111255,
+      "workingSetMiB": 37.58984375,
+      "privateMiB": 19.51171875
+    }
+  },
+  "wholePageBeforeAfterExact": true
+}

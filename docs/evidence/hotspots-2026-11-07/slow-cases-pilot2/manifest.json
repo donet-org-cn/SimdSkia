@@ -1,0 +1,53 @@
+{
+  "method": "Same-GPU Vulkan completed draw + fence + host-readback slow-case regression.\n\nJIT, original SkiaSharp 3.119.4, ordered batches on/off in the same SimdSkia\nworker. Changing glyph/path timings are diagnostic when native pixels fail.\n",
+  "forks": 1,
+  "hashes": {
+    "F:\\SimdSkia\\benchmarks\\GpuReference\\bin\\Release\\net10.0\\SimdSkia.Benchmark.GpuReference.deps.json": "b96e71bf8e0bb7bb168a72bfb9de28304bd410b4916030cd9870f7fe5ebaa06a",
+    "F:\\SimdSkia\\benchmarks\\GpuReference\\bin\\Release\\net10.0\\SimdSkia.Benchmark.GpuReference.dll": "e88eb8f53d74ce4dffda921993ccbbf6523ed9d88261aa5600ed96f32f1a6547",
+    "F:\\SimdSkia\\benchmarks\\GpuReference\\bin\\Release\\net10.0\\SimdSkia.Benchmark.GpuReference.runtimeconfig.json": "c230a317a54dd960bcbeb5f347f52e18dc665a26f7efda2159fced9a5ac7e097",
+    "F:\\SimdSkia\\benchmarks\\GpuReference\\bin\\Release\\net10.0\\SkiaSharp.dll": "aaaaa18c68ba1f3a3408b00dff28b11d5705198e17ba9d3aa59222bfd35407c8",
+    "F:\\SimdSkia\\benchmarks\\GpuManaged\\bin\\Release\\net10.0\\Clipper2Lib.dll": "e9bf01e01f494ef6072cd46c792ed4f3004288a92b1e98c1f44931e558b8a5d0",
+    "F:\\SimdSkia\\benchmarks\\GpuManaged\\bin\\Release\\net10.0\\Sdcb.SimdCodecs.Abstractions.dll": "8af8f31f5eace79a513702d13b95fa545bd84d5af6a03720d2b05150707fb5e7",
+    "F:\\SimdSkia\\benchmarks\\GpuManaged\\bin\\Release\\net10.0\\Sdcb.SimdCodecs.Bmp.dll": "b1c45d4f7af564ab20d64cc60618ced08dbf52cd4437ba5af62735fc9909bc78",
+    "F:\\SimdSkia\\benchmarks\\GpuManaged\\bin\\Release\\net10.0\\Sdcb.SimdCodecs.Color.Icc.dll": "3a0eef94e25c594625c14059708d6d0423cf3dfa01fb4204c726d110d4c023ca",
+    "F:\\SimdSkia\\benchmarks\\GpuManaged\\bin\\Release\\net10.0\\Sdcb.SimdCodecs.dll": "813c771b779d078797f7f60def1af7739eb256bf31aa772b9740e513f542252f",
+    "F:\\SimdSkia\\benchmarks\\GpuManaged\\bin\\Release\\net10.0\\Sdcb.SimdCodecs.Gif.dll": "eb0762656e78f03eecbc21b4fc22ae4ca0fe4bb3aef9cda8e564b583b242703c",
+    "F:\\SimdSkia\\benchmarks\\GpuManaged\\bin\\Release\\net10.0\\Sdcb.SimdCodecs.Ico.dll": "8f00123c474e97fdfe4a9c1c4de2deee57f287190d33515472015a98dfe06198",
+    "F:\\SimdSkia\\benchmarks\\GpuManaged\\bin\\Release\\net10.0\\Sdcb.SimdCodecs.Jbig2.dll": "d2b10c70db5873eda151b179a9a6e612787ae2dac6aa1eac1f49f179b491dcea",
+    "F:\\SimdSkia\\benchmarks\\GpuManaged\\bin\\Release\\net10.0\\Sdcb.SimdCodecs.Jpeg.dll": "33849c3d7beb85406738fcf2b8f742656d06446c40f97de818bd6a6eb00a0a08",
+    "F:\\SimdSkia\\benchmarks\\GpuManaged\\bin\\Release\\net10.0\\Sdcb.SimdCodecs.Jpeg.GainMap.dll": "a5646ea28ae0af3e6b6ddb8b9fb6250307dd4b561bf3947777da3ea7aec38061",
+    "F:\\SimdSkia\\benchmarks\\GpuManaged\\bin\\Release\\net10.0\\Sdcb.SimdCodecs.Jpeg2000.dll": "7a4e6a6caceb8721b3f70e777692d1a72ec1ec3ac8dfba22d59f0f41b800f6b3",
+    "F:\\SimdSkia\\benchmarks\\GpuManaged\\bin\\Release\\net10.0\\Sdcb.SimdCodecs.Png.dll": "2267b5ca67becfe3a7d520c5f13321c71d2dd32c13d442c297df23d89fd0cd6f",
+    "F:\\SimdSkia\\benchmarks\\GpuManaged\\bin\\Release\\net10.0\\Sdcb.SimdCodecs.Pnm.dll": "fd13f2d2ba6908c5ce2f5e7da783c94ef3ceb3cfdff65153b94271f7558e3804",
+    "F:\\SimdSkia\\benchmarks\\GpuManaged\\bin\\Release\\net10.0\\Sdcb.SimdCodecs.Qoi.dll": "b3a94dccd81bf477393259a948850d02e7841454dff0ef98f5896e42424f0420",
+    "F:\\SimdSkia\\benchmarks\\GpuManaged\\bin\\Release\\net10.0\\Sdcb.SimdCodecs.Tiff.dll": "63e8f3bc8dfe72c40b6f29cca212728722446b6023cfa1c5019ee4c4e0621390",
+    "F:\\SimdSkia\\benchmarks\\GpuManaged\\bin\\Release\\net10.0\\Sdcb.SimdCodecs.Webp.dll": "0a3548d7cf19a086699ce2b01f315889d6a95e1e139c970d3da5eb21417e5770",
+    "F:\\SimdSkia\\benchmarks\\GpuManaged\\bin\\Release\\net10.0\\SimdSkia.Benchmark.GpuManaged.deps.json": "c9e633e6a8eda3f2ba8779a0094f231111419cb7d7d4bf1d08d361508e40a722",
+    "F:\\SimdSkia\\benchmarks\\GpuManaged\\bin\\Release\\net10.0\\SimdSkia.Benchmark.GpuManaged.dll": "4abaa07599dad120cc0b71c6ed8ab0394f1f8206287913f1fea2429f84e1d200",
+    "F:\\SimdSkia\\benchmarks\\GpuManaged\\bin\\Release\\net10.0\\SimdSkia.Benchmark.GpuManaged.runtimeconfig.json": "c230a317a54dd960bcbeb5f347f52e18dc665a26f7efda2159fced9a5ac7e097",
+    "F:\\SimdSkia\\benchmarks\\GpuManaged\\bin\\Release\\net10.0\\SimdSkia.Compatibility.dll": "cc6bd5a652f888a1d0cd43e92d84839fa5eacb4e8bf7e75b4d10a4765803891e",
+    "F:\\SimdSkia\\benchmarks\\GpuManaged\\bin\\Release\\net10.0\\SimdSkia.Core.dll": "a5b52bdae768b81a821a5d24dcdad2b5ffccfbcf9ace164b95cc003175bf2f97",
+    "F:\\SimdSkia\\benchmarks\\GpuManaged\\bin\\Release\\net10.0\\SimdSkia.Cpu.dll": "093cebe0514f8e770314a2a51e6107ea4f71ef04b9521cbbca69f7e070dac3d3",
+    "F:\\SimdSkia\\benchmarks\\GpuManaged\\bin\\Release\\net10.0\\SimdSkia.Gpu.Direct2D.dll": "f28025013970876293670fcda1724b8d3de634a7e110875caa3fc9cde80d5431",
+    "F:\\SimdSkia\\benchmarks\\GpuManaged\\bin\\Release\\net10.0\\SimdSkia.Gpu.dll": "757c8dd0a4d698dd47e29082dc49ab944dfbec69af5ea5c03ddb5aa2be99db73",
+    "F:\\SimdSkia\\benchmarks\\GpuManaged\\bin\\Release\\net10.0\\SimdSkia.Imaging.dll": "3c77f5b19122c51c043e995a295249dfbdfb5deef67ed636e376fa03524383c8",
+    "F:\\SimdSkia\\benchmarks\\GpuManaged\\bin\\Release\\net10.0\\SimdSkia.Text.dll": "5581a6694ac951ca7e8f360f061930c361235bcff2dbbf55274bc05ce72ac70c"
+  },
+  "complete": true,
+  "settings": {
+    "samples": 5,
+    "sampleMs": 150,
+    "warmupMs": 500,
+    "scenes": [
+      "blend",
+      "curve-changing",
+      "chinese-changing"
+    ],
+    "sizes": [
+      "256x256",
+      "1024x768"
+    ],
+    "tieredCompilation": false,
+    "readyToRun": false
+  }
+}

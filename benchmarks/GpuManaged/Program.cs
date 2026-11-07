@@ -3,6 +3,11 @@ using SimdSkia;
 using SimdSkia.Benchmarks;
 
 // Managed GPU worker: SimdSkia Vulkan compute path vs original SkiaSharp GPU dispatch.
+if(args.Contains("--disable-ordered"))
+{
+    AppContext.SetSwitch("SimdSkia.Vulkan.DisableOrderedRectangleBatches",true);
+    args=args.Where(a=>a!="--disable-ordered").ToArray();
+}
 int engineIndex = Array.IndexOf(args, "--engine");
 if (engineIndex >= 0 && engineIndex + 1 < args.Length && args[engineIndex + 1] != "simd")
     throw new ArgumentException("Managed GPU worker needs --engine simd.");

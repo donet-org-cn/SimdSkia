@@ -84,6 +84,24 @@ foreach(Exception error in new Exception[]{new ArgumentException("bad scene"),ne
 if(args.Contains("--hardware"))
 {
     if(!OperatingSystem.IsWindows())throw new PlatformNotSupportedException("This hardware test uses the current Windows Direct2D/Vulkan devices.");
+    AppContext.SetSwitch("SimdSkia.Direct2D.ValidateCompletionEvent",true);
+    AppContext.SetSwitch("SimdSkia.Direct2D.BlockingReadback",true);
+    foreach(var format in new[]{PixelFormat.Bgra8888,PixelFormat.Rgba8888})
+    {
+        using var readbackPixels=new PixelBuffer(64,48,format,AlphaFormat.Premultiplied,64*4+12);
+        using var offscreen=new Direct2DCanvas(readbackPixels);
+        Check(offscreen.UsesBlockingCompletion,"Hardware test requires D3D11.3 event completion.");
+        for(int frame=0;frame<12;frame++)
+        {
+            offscreen.Execute(DrawingCommand.Clear(new((byte)(frame*17),39,211,255)));
+            offscreen.Flush();
+            Check(readbackPixels.ReadPixel(23,31)==new Rgba32((byte)(frame*17),39,211,255),"Offscreen event exposed stale or incorrectly ordered pixels.");
+            Check(readbackPixels.GetRowSpan(31)[(64*4)..].IndexOfAnyExcept((byte)0)<0,"Offscreen readback changed stride padding.");
+        }
+        Check(offscreen.CompletionChecks==12&&offscreen.BlockingCompletionWaits==12&&offscreen.CompletionPolls==0,"Every readback must await an independently checked GPU event without polling.");
+    }
+    AppContext.SetSwitch("SimdSkia.Direct2D.ValidateCompletionEvent",false);
+    AppContext.SetSwitch("SimdSkia.Direct2D.BlockingReadback",false);
     using(var originalPixels=new PixelBuffer(64,48,PixelFormat.Bgra8888,AlphaFormat.Premultiplied))
     using(var cachedPixels=new PixelBuffer(64,48,PixelFormat.Bgra8888,AlphaFormat.Premultiplied))
     {
@@ -183,7 +201,7 @@ if(args.Contains("--hardware"))
         Check(actual.GetPixelSpan().SequenceEqual(expected.GetPixelSpan()),"Eviction preserves in-flight command order and exact pixels.");
     }
     using var pixels=new PixelBuffer(32,20,PixelFormat.Bgra8888,AlphaFormat.Premultiplied);using var vk=new VulkanCanvas(pixels);
-    int count=vk.PreparedPipelineCount;Check(count==7,"All seven Vulkan pipelines are ready before drawing.");
+    int count=vk.PreparedPipelineCount;Check(count==8,"All eight Vulkan pipelines are ready before drawing.");
     vk.Execute(DrawingCommand.Clear(new(1,2,3,255)));
     for(int i=0;i<4;i++)vk.Execute(DrawingCommand.FillRectangle(new(i*8,2,i*8+3,8),Matrix3.Identity,new(new(255,0,0,255),CompositeMode.SourceOver)));
     vk.Flush();Check(vk.RectangleBatchDispatches>0&&vk.PreparedPipelineCount==count,"First rectangle batch creates no pipeline during drawing.");

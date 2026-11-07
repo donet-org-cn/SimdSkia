@@ -37,6 +37,7 @@ internal static class Bench
     {
         string Value(string key,string fallback){int i=Array.IndexOf(args,key);return i<0?fallback:i+1<args.Length?args[i+1]:throw new ArgumentException(key);}
 #if MANAGED
+        if(args.Contains("--blocking-readback"))AppContext.SetSwitch("SimdSkia.Direct2D.BlockingReadback",true);
         // JIT-only profiling knobs; no production cache policy is changed by
         // the harness unless an explicit command-line override is supplied.
         void Budget(Type anchor,string type,string field,string option)

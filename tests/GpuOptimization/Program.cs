@@ -192,6 +192,7 @@ if(TiledEdges.Create(contours,values.ToArray(),4096,4096) is not null)throw new 
 Compare("supported glyph mask command",DrawingCommand.Clear(new(255,255,255,255)),new(CommandKind.DrawGlyphRun,default,Matrix3.Identity,new(new(0,0,0,255),CompositeMode.SourceOver)){GlyphRun=new([new(PathGeometry.Rectangle(new(1,1,5,5)),default)],Matrix3.Identity)});
 if(actual.ReadPixel(2,2)!=new Rgba32(0,0,0,255))throw new Exception("The supported glyph command did not draw its interior.");checks++;
 long batchesBefore=optimized.RectangleBatchDispatches;
+long orderedBefore=optimized.OrderedRectangleDispatches;
 for(int iteration=0;iteration<24;iteration++)
 {
     var commands=new List<DrawingCommand>{DrawingCommand.Clear(Color())};
@@ -207,6 +208,26 @@ for(int iteration=0;iteration<24;iteration++)
     Compare("disjoint rectangle batch and overlap order "+iteration,commands.ToArray());
 }
 if(optimized.RectangleBatchDispatches-batchesBefore<24)throw new Exception("The disjoint rectangle workload never used real batch dispatches.");checks++;
+// Multiple dense batches, mixed coverage/composite/gradients, a non-multiple of
+// 16 tail, mirrored/sheared transforms and clipped/partly offscreen origins.
+for(int trial=0;trial<16;trial++)
+{
+    var draws=new List<DrawingCommand>{DrawingCommand.Clear(Color())};
+    for(int n=0;n<70;n++)
+    {
+        var matrix=n%2==0?new Matrix3(-1,.125f,width-8,.25f,1,-5,0,0,1):Matrix3.Identity;
+        IColorShader? shader=n%4==0?new LinearGradient(new(0,0),new(width,height),Color(),Color()):null;
+        draws.Add(DrawingCommand.FillRectangle(new(Next(-10,35),Next(-10,25),Next(55,110),Next(45,85)),matrix,new(Color(),(CompositeMode)(n%3),n%3!=0,shader)) with{Clip=n%3==0?new RectF(2.25f,1.75f,width-3.125f,height-4.375f):null});
+    }
+    Compare("ordered rectangle batch randomized "+trial,draws.ToArray());
+}
+for(int trial=0;trial<16;trial++)
+{
+    var draws=new List<DrawingCommand>{DrawingCommand.Clear(Color())};
+    for(int n=0;n<70;n++)draws.Add(DrawingCommand.FillRectangle(new(Next(-5,20),Next(-5,15),Next(45,110),Next(40,85)),n%2==0?new Matrix3(-1,0,width-4,0,1,-3,0,0,1):Matrix3.Identity,new(Color(),(CompositeMode)(n%3))) with{Clip=n%3==0?new RectF(2.25f,1.75f,width-3.125f,height-4.375f):null});
+    Compare("ordered solid overlap "+trial,draws.ToArray());
+}
+if(optimized.OrderedRectangleDispatches==orderedBefore)throw new Exception("Overlapping rectangles never used the ordered per-pixel batch.");checks++;
 Directory.CreateDirectory("artifacts/optimization-2026-10-21");
 File.WriteAllText("artifacts/optimization-2026-10-21/gpu-kernel-tests.json",JsonSerializer.Serialize(new{Checks=checks,Comparisons=comparisons,BinningChecks=checks-comparisons-cacheChecks-profilingChecks-2,CacheChecks=cacheChecks,ProfilingChecks=profilingChecks,SupportedGlyphChecks=1,RectangleBatchDispatches=optimized.RectangleBatchDispatches,Passed=true,Device=optimized.DeviceName,MaximumChannelError=0,Reference="Unrestricted GPU edge scan and 16x16 samples",Font=fontPath},new JsonSerializerOptions{WriteIndented=true}));
 Console.WriteLine($"PASS {checks} GPU checks ({comparisons} exact-byte comparisons; {optimized.RectangleBatchDispatches} real rectangle batch dispatches; tiles, winding, AA, inverse fills, clipping, shaders, cache, stride, initialization, CJK).");

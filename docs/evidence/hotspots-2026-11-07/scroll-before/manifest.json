@@ -1,0 +1,12 @@
+{
+  "method": "Serial portable Native AOT paced-scroll regression against fixed binaries.\n\nIncludes actual UI/window work while yielding; draw timing excludes Task.Delay.\nThe 0.1.2 binary is an unchanged historical control, not a rebuilt substitute.\n",
+  "forks": 3,
+  "seconds": 5,
+  "warmup": 2,
+  "binaries": {
+    "F:\\SimdSkia\\artifacts\\blog-preview8-to-012-2026-11-07\\aot-publish\\original\\AvaloniaAot.Original.exe": "93677d7de96b07a581d24929a473dbce827e6e2075ba9a8b510d9fd09ffee7c0",
+    "F:\\SimdSkia\\artifacts\\blog-preview8-to-012-2026-11-07\\aot-publish\\simd\\AvaloniaAot.SimdSkia.exe": "767f826d4d07efbd90005cb4bea8eb7f4d9b94dd422e374546a440229aefa736",
+    "F:\\SimdSkia\\artifacts\\scroll-opt-2026-11-07\\before-aot\\AvaloniaAot.SimdSkia.exe": "cfd903b4482b94adc484e08183eee765de8b011859382fef0b3fa5d51ad974ea"
+  },
+  "complete": true
+}

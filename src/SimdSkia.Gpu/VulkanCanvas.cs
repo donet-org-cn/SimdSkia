@@ -314,8 +314,14 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
         var entry=new EdgeEntry{Geometry=geometry,Edges=edges,Tiles=optimizedCoverage?TiledEdges.Create(contours,edges,target.Width,target.Height):null,ClassifyTiles=optimizedCoverage&&edges.All(v=>float.IsFinite(v)&&MathF.Abs(v)<=65536),Used=++useCounter};
         edgeBytes+=entry.Bytes;
         edgeCache.Add((geometry,transform,tolerance),entry);
-        foreach(var victim in edgeCache.OrderBy(e=>e.Value.Used).ToArray())
-        {if(edgeCache.Count<=64&&edgeBytes<=16*1024*1024)break;edgeBytes-=victim.Value.Bytes;edgeCache.Remove(victim.Key);}
+        // A 97-position subpixel animation fits the unchanged 16 MiB budget on
+        // small targets. A 64-entry ceiling previously rebuilt it every cycle.
+        int entryLimit=entry.Bytes<=128*1024?128:64;
+        while(edgeCache.Count>entryLimit||edgeBytes>16*1024*1024)
+        {
+            var victim=edgeCache.MinBy(e=>e.Value.Used);
+            edgeBytes-=victim.Value.Bytes;edgeCache.Remove(victim.Key);
+        }
         return entry;
     }
     private static bool MatchesSnapshot(PixelBuffer image,byte[] snapshot)
@@ -345,7 +351,7 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
         uint query=0;
         bool submitted=false,completed=false;
         int edgeStride=256,paramStride=768;
-        int edgeBytesNeeded=edgeStride,paramBytesNeeded=pending.Count*paramStride+RectangleBatchUniformBytes;
+        int edgeBytesNeeded=edgeStride,paramBytesNeeded=pending.Count*(paramStride+256)+RectangleBatchUniformBytes;
         foreach(var item in pending)edgeBytesNeeded+=((EdgePayload(item)+255)&~255);
         try
         {
@@ -670,6 +676,7 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
             if(sampler!=0)Vk.vkDestroySampler(device,sampler,null);
             foreach(ulong specialized in specializedPipelines)if(specialized!=0)Vk.vkDestroyPipeline(device,specialized,null);
             if(rectangleBatchPipeline!=0)Vk.vkDestroyPipeline(device,rectangleBatchPipeline,null);
+            if(orderedRectanglePipeline!=0)Vk.vkDestroyPipeline(device,orderedRectanglePipeline,null);
             if(coveragePipeline!=0)Vk.vkDestroyPipeline(device,coveragePipeline,null);if(cachedPathPipeline!=0)Vk.vkDestroyPipeline(device,cachedPathPipeline,null);
             foreach(var mask in maskCache.Values)mask.Buffer?.Dispose();maskCache.Clear();maskBytes=0;
             if(pipeline!=0)Vk.vkDestroyPipeline(device,pipeline,null);if(pipelineLayout!=0)Vk.vkDestroyPipelineLayout(device,pipelineLayout,null);if(descriptorLayout!=0)Vk.vkDestroyDescriptorSetLayout(device,descriptorLayout,null);if(borrowedContext is null)Vk.vkDestroyDevice(device,null);device=IntPtr.Zero;

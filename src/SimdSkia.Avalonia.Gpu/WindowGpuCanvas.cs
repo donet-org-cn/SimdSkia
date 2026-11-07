@@ -136,10 +136,9 @@ internal sealed class WindowGpuCanvas : ICanvasBackend
     {
         var run=command.GlyphRun??throw new ArgumentException("Glyph outlines required.");var matrix=command.Transform;
         int ix=(int)MathF.Floor(matrix.M02),iy=(int)MathF.Floor(matrix.M12);var local=matrix with{M02=matrix.M02-ix,M12=matrix.M12-iy};
-        var hash=new HashCode();hash.Add(run.FontTransform);hash.Add(run.Positioning);foreach(var glyph in run.Glyphs)hash.Add(glyph);
-        var key=(hash.ToHashCode(),local,command.Paint,command.TextMaskPreblend,command.SnapGlyphBaseline,command.CurveTolerance,command.CoverageClip,command.CoverageClip is null?0:ix,command.CoverageClip is null?0:iy);
+        var key=(run.ContentHash,local,command.Paint,command.TextMaskPreblend,command.SnapGlyphBaseline,command.CurveTolerance,command.CoverageClip,command.CoverageClip is null?0:ix,command.CoverageClip is null?0:iy);
         bool found=atlas.TryGetValue(key,out var entry);
-        if(found&&!ReferenceEquals(run,entry!.Run)&&(run.FontTransform!=entry.Run.FontTransform||run.Positioning!=entry.Run.Positioning||!run.Glyphs.SequenceEqual(entry.Run.Glyphs)))
+        if(found&&!run.ContentEquals(entry!.Run))
         {Flush();atlas.Remove(key);atlasBytes-=entry.RetainedBytes;entry.Pixels.Dispose();found=false;}
         if(!found)
         {

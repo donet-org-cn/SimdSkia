@@ -6,6 +6,7 @@ internal static class VulkanShaderCode
 {
     internal static readonly byte[] Renderer=Read("renderer.spv");
     internal static readonly byte[] RectangleBatch=Read("renderer-batch.spv");
+    internal static readonly byte[] OrderedRectangles=Read("renderer-ordered.spv");
     private static byte[] Read(string name)
     {
         using var stream=typeof(VulkanCanvas).Assembly.GetManifestResourceStream("SimdSkia.Gpu.Shaders."+name)

@@ -3,7 +3,11 @@ namespace SimdSkia.Gpu;
 public sealed unsafe partial class VulkanCanvas
 {
     private const int RectangleBatchSize=16,RectangleBatchUniformBytes=RectangleBatchSize*768;
+    private const int OrderedRectangleBatchSize=64,OrderedRectangleUniformBytes=32+OrderedRectangleBatchSize*48;
     private ulong rectangleBatchPipeline;
+    private ulong orderedRectanglePipeline;
+    private readonly bool orderedRectanglesEnabled=!(AppContext.TryGetSwitch("SimdSkia.Vulkan.DisableOrderedRectangleBatches",out bool disabled)&&disabled);
+    public long OrderedRectangleDispatches {get;private set;}
     private int lastRectangleBatchWidth,lastRectangleBatchHeight;
     public long RectangleBatchDispatches {get;private set;}
     public long TransferClears {get;private set;}
@@ -18,31 +22,59 @@ public sealed unsafe partial class VulkanCanvas
     private void EnsureRectangleBatchPipeline()
     {
         if(rectangleBatchPipeline!=0)return;
-        var bytes=VulkanShaderCode.RectangleBatch;ulong module=0;
+        rectangleBatchPipeline=CreateRectanglePipeline(VulkanShaderCode.RectangleBatch);
+        if(orderedRectanglesEnabled)orderedRectanglePipeline=CreateRectanglePipeline(VulkanShaderCode.OrderedRectangles);
+    }
+    private ulong CreateRectanglePipeline(byte[] bytes)
+    {
+        ulong module=0;
         fixed(byte* code=bytes){var shader=new Vk.ShaderInfo{Type=16,CodeSize=(nuint)bytes.Length,Code=(uint*)code};Check(Vk.vkCreateShaderModule(device,&shader,null,&module));}
-        try{byte* name=stackalloc byte[5]{(byte)'m',(byte)'a',(byte)'i',(byte)'n',0};uint kind=1;var entry=new Vk.SpecializationEntry{Size=4};var specialization=new Vk.SpecializationInfo{Count=1,Entries=&entry,Size=4,Data=&kind};var info=new Vk.ComputePipelineInfo{Type=29,Stage=new(){Type=18,Stage=32,Module=module,Name=name,Specialization=&specialization},Layout=pipelineLayout,BaseIndex=-1};ulong result=0;Check(Vk.vkCreateComputePipelines(device,0,1,&info,null,&result));rectangleBatchPipeline=result;PreparedPipelineCount++;}
+        try{byte* name=stackalloc byte[5]{(byte)'m',(byte)'a',(byte)'i',(byte)'n',0};uint kind=1;var entry=new Vk.SpecializationEntry{Size=4};var specialization=new Vk.SpecializationInfo{Count=1,Entries=&entry,Size=4,Data=&kind};var info=new Vk.ComputePipelineInfo{Type=29,Stage=new(){Type=18,Stage=32,Module=module,Name=name,Specialization=&specialization},Layout=pipelineLayout,BaseIndex=-1};ulong result=0;Check(Vk.vkCreateComputePipelines(device,0,1,&info,null,&result));PreparedPipelineCount++;return result;}
         finally{Vk.vkDestroyShaderModule(device,module,null);}
     }
     private int RectangleBatch(int start,ref int paramOffset,ref int setIndex,Span<RectF> unbarriered,ref int unbarrieredCount,ref ulong boundPipeline)
     {
         if(!rectangleBatchesEnabled)return 0;
-        Span<uint> words=stackalloc uint[160];Span<RectF> bounds=stackalloc RectF[RectangleBatchSize];int count=0;uint maximumWidth=0,maximumHeight=0;
-        for(int i=start;i<pending.Count&&count<RectangleBatchSize;i++)
+        Span<uint> words=stackalloc uint[160];Span<RectF> bounds=stackalloc RectF[OrderedRectangleBatchSize];int count=0;uint maximumWidth=0,maximumHeight=0;bool ordered=false,allSimple=true;RectF union=default;double area=0;
+        for(int i=start;i<pending.Count&&count<OrderedRectangleBatchSize;i++)
         {
+            if(count>=RectangleBatchSize&&!ordered)break;
             var item=pending[i];var command=item.Command;
             if(command.Kind!=CommandKind.FillRectangle||command.CoverageClip is not null||!command.Transform.TryInvert(out _))break;
             Prepare(item,words);uint width=words[39],height=words[40];if(width==0||height==0)break;var candidate=new RectF(words[37],words[38],words[37]+width,words[38]+height);bool overlap=false;
-            foreach(var previous in bounds[..count])if(Intersects(previous,candidate)){overlap=true;break;}if(overlap)break;
+            foreach(var previous in bounds[..count])if(Intersects(previous,candidate)){overlap=true;break;}
+            bool simple=!command.Paint.Antialias&&command.Paint.Shader is null&&command.Transform.M01==0&&command.Transform.M10==0;
+            if(overlap&&(!orderedRectanglesEnabled||!allSimple||!simple)||ordered&&!simple)break;
+            var nextUnion=count==0?candidate:new RectF(Math.Min(union.Left,candidate.Left),Math.Min(union.Top,candidate.Top),Math.Max(union.Right,candidate.Right),Math.Max(union.Bottom,candidate.Bottom));
+            double nextArea=area+(double)width*height,nextUnionArea=(double)(nextUnion.Right-nextUnion.Left)*(nextUnion.Bottom-nextUnion.Top);
+            if((ordered||overlap)&&(nextUnionArea>128*1024||nextUnionArea>nextArea*2))break;
+            allSimple&=simple;
+            ordered|=overlap;area=nextArea;union=nextUnion;
             bounds[count++]=candidate;maximumWidth=Math.Max(maximumWidth,width);maximumHeight=Math.Max(maximumHeight,height);
         }
-        if(count<2)return 0;EnsureRectangleBatchPipeline();int paramBase=(paramOffset+255)&~255;
-        for(int i=0;i<count;i++){Prepare(pending[start+i],words);words.CopyTo(MemoryMarshal.Cast<byte,uint>(paramsArena!.Bytes.Slice(paramBase+i*768,640)));}paramOffset=paramBase+count*768;
+        if(count<2)return 0;
+        // Sparse unions would dispatch mostly empty pixels. Keep the ordinary
+        // path when sequential work per pixel cannot amortize that area.
+        double unionArea=(double)(union.Right-union.Left)*(union.Bottom-union.Top);
+        if(ordered&&(unionArea>area*2||unionArea>128*1024))return 0;
+        EnsureRectangleBatchPipeline();int paramBase=(paramOffset+255)&~255,header=ordered?32:0,stride=ordered?48:768;
+        if(ordered){var info=MemoryMarshal.Cast<byte,uint>(paramsArena!.Bytes.Slice(paramBase,32));info[0]=(uint)union.Left;info[1]=(uint)union.Top;info[2]=(uint)count;info[3]=target.Format==PixelFormat.Bgra8888?1u:0u;info[4]=(uint)target.Width;info[5]=(uint)target.Height;info[6]=(uint)(union.Right-union.Left);info[7]=(uint)(union.Bottom-union.Top);}
+        for(int i=0;i<count;i++)
+        {
+            Prepare(pending[start+i],words);var output=MemoryMarshal.Cast<byte,uint>(paramsArena!.Bytes.Slice(paramBase+header+i*stride,ordered?48:640));
+            if(ordered){words.Slice(33,4).CopyTo(output);words.Slice(8,4).CopyTo(output[4..]);output[8]=words[4];output[9]=words[3];output[10]=output[11]=0;}
+            else words.CopyTo(output);
+        }
+        paramOffset=paramBase+header+count*stride;
         bool dependent=false;foreach(var current in bounds[..count])foreach(var previous in unbarriered[..unbarrieredCount])if(Intersects(current,previous)){dependent=true;break;}
         if(dependent){var barrier=new Vk.BufferBarrier{Type=44,SourceAccess=64,DestinationAccess=32|64,SourceFamily=uint.MaxValue,DestinationFamily=uint.MaxValue,Buffer=output!.Handle,Size=(ulong)output.Size};Vk.vkCmdPipelineBarrier(command,2048,2048,0,0,null,1,&barrier,0,null);unbarrieredCount=0;DrawDependencyBarriers++;}
         foreach(var current in bounds[..count])unbarriered[unbarrieredCount++]=current;
-        ulong set=descriptorSets[setIndex++];var buffers=stackalloc Vk.DescriptorBuffer[5];buffers[0]=output!.Descriptor;buffers[1]=empty!.Descriptor;buffers[2]=new(){Buffer=deviceParamsArena!.Handle,Offset=(ulong)paramBase,Range=RectangleBatchUniformBytes};buffers[4]=empty.Descriptor;
+        ulong set=descriptorSets[setIndex++];var buffers=stackalloc Vk.DescriptorBuffer[5];buffers[0]=output!.Descriptor;buffers[1]=empty!.Descriptor;buffers[2]=new(){Buffer=deviceParamsArena!.Handle,Offset=(ulong)paramBase,Range=(ulong)(ordered?OrderedRectangleUniformBytes:RectangleBatchUniformBytes)};buffers[4]=empty.Descriptor;
         var writes=stackalloc Vk.WriteDescriptor[5];for(uint i=0;i<3;i++)writes[i]=new(){Type=35,Set=set,Binding=i,Count=1,DescriptorType=i==2?6u:7u,Buffer=buffers+i};var image=emptyTexture!.Descriptor(sampler);writes[3]=new(){Type=35,Set=set,Binding=3,Count=1,DescriptorType=1,Image=&image};writes[4]=new(){Type=35,Set=set,Binding=4,Count=1,DescriptorType=7,Buffer=buffers+4};Vk.vkUpdateDescriptorSets(device,5,writes,0,null);Vk.vkCmdBindDescriptorSets(command,1,pipelineLayout,0,1,&set,0,null);
-        if(boundPipeline!=rectangleBatchPipeline){Vk.vkCmdBindPipeline(command,1,rectangleBatchPipeline);boundPipeline=rectangleBatchPipeline;}Vk.vkCmdDispatch(command,(maximumWidth+7)/8,(maximumHeight+7)/8,(uint)count);lastRectangleBatchWidth=(int)maximumWidth;lastRectangleBatchHeight=(int)maximumHeight;DrawDispatches++;RectangleBatchDispatches++;return count;
+        ulong selected=ordered?orderedRectanglePipeline:rectangleBatchPipeline;
+        if(boundPipeline!=selected){Vk.vkCmdBindPipeline(command,1,selected);boundPipeline=selected;}
+        uint dispatchWidth=ordered?(uint)(union.Right-union.Left):maximumWidth,dispatchHeight=ordered?(uint)(union.Bottom-union.Top):maximumHeight;
+        Vk.vkCmdDispatch(command,(dispatchWidth+7)/8,(dispatchHeight+7)/8,ordered?1u:(uint)count);lastRectangleBatchWidth=(int)dispatchWidth;lastRectangleBatchHeight=(int)dispatchHeight;DrawDispatches++;RectangleBatchDispatches++;if(ordered)OrderedRectangleDispatches++;return count;
     }
     private static bool Intersects(RectF a,RectF b)=>a.Left<b.Right&&b.Left<a.Right&&a.Top<b.Bottom&&b.Top<a.Bottom;
 }

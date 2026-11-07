@@ -125,6 +125,53 @@ internal static class GlyphValidation
                 }
             }
         }
+        // UI layout may replace an immutable glyph-run wrapper without changing
+        // any shaped outline or position. Reuse its packed coverage while keeping
+        // the identity index bounded to the single resident owner.
+        GlyphCoverageCache.Clear();
+        var template=new GlyphRunGeometry([new(outline,new(0,0)),new(outline,new(16,0))],Matrix3.Identity,GlyphPositioning.QuarterPixel);
+        var firstBatch=GlyphCoverageCache.Resolve(template,Matrix3.Identity,true,.015625f,false,3,out _,out _);
+        for(int i=0;i<1000;i++)
+        {
+            var equivalent=new GlyphRunGeometry(template.Glyphs.ToArray(),template.FontTransform,template.Positioning);
+            var actual=GlyphCoverageCache.Resolve(equivalent,Matrix3.Identity,true,.015625f,false,3,out _,out _);
+            Check(ReferenceEquals(actual,firstBatch),"Equivalent shaped content rebuilt its packed mask.");
+        }
+        Check(GlyphCoverageCache.Statistics.Runs==1&&GlyphCoverageCache.RecentRunCount==1,"Equivalent wrappers escaped the cache/index budget.");
+        var changedPosition=new GlyphRunGeometry([new(outline,new(.25f,0)),new(outline,new(16,0))],Matrix3.Identity,template.Positioning);
+        var changedBatch=GlyphCoverageCache.Resolve(changedPosition,Matrix3.Identity,true,.015625f,false,3,out _,out _);
+        Check(!ReferenceEquals(changedBatch,firstBatch),"Distinct shaping reused stale coverage.");
+        var changedLuminance=GlyphCoverageCache.Resolve(template,Matrix3.Identity,true,.015625f,false,4,out _,out _);
+        Check(!ReferenceEquals(changedLuminance,firstBatch),"Content reuse ignored preblend luminance.");
+        var deviceMasks=new GlyphMaskCommands();
+        for(int i=0;i<1000;i++)
+        {
+            var draw=new DrawingCommand(CommandKind.DrawGlyphRun,default,Matrix3.Identity with{M02=i%97/16f},new(new(0,0,0,255),CompositeMode.SourceOver,true)){GlyphRun=template,TextMaskPreblend=true};
+            foreach(var mask in deviceMasks.Resolve(draw))Check(mask.Width>=0&&mask.Height>=0,"Translated mask dimensions were corrupted.");
+            Check(deviceMasks.Statistics.Count<=512&&deviceMasks.Statistics.Bytes<=4*1024*1024,"Translated device mask cache exceeded its budget.");
+            Check(GlyphCoverageCache.Statistics.RunBytes<=GlyphCoverageCache.RunByteLimit,"Shared run ownership escaped the font budget.");
+        }
+        var cacheBefore=deviceMasks.Statistics;deviceMasks.Clear();
+        Check(cacheBefore.Count>64&&deviceMasks.Statistics==(0,0),"Translated masks cleared their whole working set or retained source payloads after Clear.");
+        using(var expectedPixels=new PixelBuffer(64,36,PixelFormat.Bgra8888,AlphaFormat.Premultiplied))
+        using(var actualPixels=expectedPixels.Clone())
+        using(var expectedCanvas=new RasterCanvas(expectedPixels))
+        using(var actualCanvas=new RasterCanvas(actualPixels))
+        {
+            var overlapRun=new GlyphRunGeometry([new(outline,new(1,1)),new(outline,new(5,1))],Matrix3.Identity,GlyphPositioning.QuarterPixel);
+            for(int phase=0;phase<97;phase++)
+            {
+                var draw=new DrawingCommand(CommandKind.DrawGlyphRun,default,Matrix3.Identity with{M02=phase/16f},new(new(23,67,151,173),CompositeMode.SourceOver,true)){GlyphRun=overlapRun,TextMaskPreblend=true};
+                expectedCanvas.Execute(DrawingCommand.Clear(new(240,231,219,255)));actualCanvas.Execute(DrawingCommand.Clear(new(240,231,219,255)));
+                expectedCanvas.Execute(draw);
+                foreach(var mask in deviceMasks.Resolve(draw))actualCanvas.Execute(DrawingCommand.FillRectangle(mask.Bounds,Matrix3.Identity,draw.Paint with{Antialias=false}) with{CoverageClip=mask});
+                Check(expectedPixels.GetPixelSpan().SequenceEqual(actualPixels.GetPixelSpan()),"Shared device masks changed subpixel coverage or overlapping glyph order.");
+            }
+        }
+        for(int i=0;i<700;i++)deviceMasks.Resolve(new(CommandKind.DrawGlyphRun,default,Matrix3.Identity with{M02=i},new(new(0,0,0,255),CompositeMode.SourceOver)){GlyphRun=template});
+        Check(deviceMasks.Statistics.Count==512&&deviceMasks.Statistics.Bytes<=4*1024*1024,"Device mask LRU failed to retire individual translated entries.");
+        deviceMasks.Clear();Check(deviceMasks.Statistics==(0,0),"Device mask source accounting did not reset.");
+        GlyphCoverageCache.Clear();
         return count;
     }
 }

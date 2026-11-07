@@ -1,0 +1,814 @@
+diff --git a/benchmarks/AvaloniaGpuParity/Shared/Program.cs b/benchmarks/AvaloniaGpuParity/Shared/Program.cs
+index 02aaa8a..c1bcc04 100644
+--- a/benchmarks/AvaloniaGpuParity/Shared/Program.cs
++++ b/benchmarks/AvaloniaGpuParity/Shared/Program.cs
+@@ -37,6 +37,7 @@ internal static class Bench
+     {
+         string Value(string key,string fallback){int i=Array.IndexOf(args,key);return i<0?fallback:i+1<args.Length?args[i+1]:throw new ArgumentException(key);}
+ #if MANAGED
++        if(args.Contains("--blocking-readback"))AppContext.SetSwitch("SimdSkia.Direct2D.BlockingReadback",true);
+         // JIT-only profiling knobs; no production cache policy is changed by
+         // the harness unless an explicit command-line override is supplied.
+         void Budget(Type anchor,string type,string field,string option)
+diff --git a/benchmarks/GpuManaged/Program.cs b/benchmarks/GpuManaged/Program.cs
+index c7c4907..f8cb95f 100644
+--- a/benchmarks/GpuManaged/Program.cs
++++ b/benchmarks/GpuManaged/Program.cs
+@@ -3,6 +3,11 @@ using SimdSkia;
+ using SimdSkia.Benchmarks;
+ 
+ // Managed GPU worker: SimdSkia Vulkan compute path vs original SkiaSharp GPU dispatch.
++if(args.Contains("--disable-ordered"))
++{
++    AppContext.SetSwitch("SimdSkia.Vulkan.DisableOrderedRectangleBatches",true);
++    args=args.Where(a=>a!="--disable-ordered").ToArray();
++}
+ int engineIndex = Array.IndexOf(args, "--engine");
+ if (engineIndex >= 0 && engineIndex + 1 < args.Length && args[engineIndex + 1] != "simd")
+     throw new ArgumentException("Managed GPU worker needs --engine simd.");
+diff --git a/benchmarks/GpuReference/GpuReference.csproj b/benchmarks/GpuReference/GpuReference.csproj
+index 36b8251..2a29524 100644
+--- a/benchmarks/GpuReference/GpuReference.csproj
++++ b/benchmarks/GpuReference/GpuReference.csproj
+@@ -1,10 +1,8 @@
+ <Project Sdk="Microsoft.NET.Sdk">
+   <PropertyGroup><OutputType>Exe</OutputType><AssemblyName>SimdSkia.Benchmark.GpuReference</AssemblyName><DefineConstants>$(DefineConstants);ORIGINAL</DefineConstants><AllowUnsafeBlocks>true</AllowUnsafeBlocks></PropertyGroup>
+   <ItemGroup>
+-    <Reference Include="SkiaSharp"><HintPath>../../baseline/skiasharp.3.119.4/lib/net6.0/SkiaSharp.dll</HintPath></Reference>
+-    <Reference Include="SkiaSharp.Vulkan.SharpVk"><HintPath>../../baseline/skiasharp.vulkan.sharpvk.3.119.4/lib/net6.0/SkiaSharp.Vulkan.SharpVk.dll</HintPath></Reference>
+-    <PackageReference Include="SharpVk" Version="0.4.2" />
+-    <None Include="../../baseline/skiasharp.nativeassets.win32.3.119.4/runtimes/win-x64/native/libSkiaSharp.dll" Link="libSkiaSharp.dll" CopyToOutputDirectory="PreserveNewest" Condition="$([MSBuild]::IsOSPlatform('Windows')) and '$(NETCoreSdkRuntimeIdentifier)' == 'win-x64'" />
++    <PackageReference Include="SkiaSharp" Version="[3.119.4]" />
++    <PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="[3.119.4]" />
+     <Compile Include="../GpuShared/*.cs" LinkBase="GpuShared" />
+     <Compile Include="../Shared/Contracts.cs" Link="Contracts.cs" />
+   </ItemGroup>
+diff --git a/examples/AvaloniaAot/SimdSkia/AvaloniaAot.SimdSkia.csproj b/examples/AvaloniaAot/SimdSkia/AvaloniaAot.SimdSkia.csproj
+index 7e3aa2b..834e01b 100644
+--- a/examples/AvaloniaAot/SimdSkia/AvaloniaAot.SimdSkia.csproj
++++ b/examples/AvaloniaAot/SimdSkia/AvaloniaAot.SimdSkia.csproj
+@@ -2,7 +2,8 @@
+   <Import Project="../Aot.Common.props" />
+   <PropertyGroup><DefineConstants>$(DefineConstants);MANAGED</DefineConstants><SimdSkiaPackageVersion Condition="'$(SimdSkiaPackageVersion)' == ''">0.1.2</SimdSkiaPackageVersion></PropertyGroup>
+   <ItemGroup>
+-    <ProjectReference Include="../../../src/SimdSkia.Avalonia/SimdSkia.Avalonia.csproj" Condition="'$(UsePackedSimdSkia)' != 'true'" />
++    <ProjectReference Include="../../../src/SimdSkia.Avalonia/SimdSkia.Avalonia.csproj" Condition="'$(UsePackedSimdSkia)' != 'true' and '$(FrozenEngineDirectory)' == ''" />
++    <Reference Include="$(FrozenEngineDirectory)/SimdSkia*.dll;$(FrozenEngineDirectory)/Sdcb*.dll" Condition="'$(FrozenEngineDirectory)' != ''" />
+     <PackageReference Include="SimdSkia.Avalonia" Version="[$(SimdSkiaPackageVersion)]" Condition="'$(UsePackedSimdSkia)' == 'true'" />
+   </ItemGroup>
+ </Project>
+diff --git a/examples/AvaloniaAot/SimdSkia/packages.lock.json b/examples/AvaloniaAot/SimdSkia/packages.lock.json
+index abbdc65..82c7e11 100644
+--- a/examples/AvaloniaAot/SimdSkia/packages.lock.json
++++ b/examples/AvaloniaAot/SimdSkia/packages.lock.json
+@@ -23,20 +23,6 @@
+         "resolved": "10.0.14",
+         "contentHash": "YlTamXppEQls6DYWt7RdUuwWDb0lyw/vXCaGeQpLCpsLmfwGuCkOz/vIGgMTV7ECsJcavkCOkxZXv9s8rdAHkQ=="
+       },
+-      "SimdSkia.Avalonia": {
+-        "type": "Direct",
+-        "requested": "[0.1.2, 0.1.2]",
+-        "resolved": "0.1.2",
+-        "contentHash": "LMMA/+nYPb4losL6r4EfqyvjR3fmUhF72fiK5vNA3m5rwcQ6wBYvK21F+h8uArEr1sYTAXmAxRG22x1BR8wrSA==",
+-        "dependencies": {
+-          "Avalonia": "[12.1.0, 13.0.0)",
+-          "Clipper2": "[2.0.0]",
+-          "SimdSkia.Core": "0.1.2",
+-          "SimdSkia.Cpu": "0.1.2",
+-          "SimdSkia.Imaging": "0.1.2",
+-          "SimdSkia.Text": "0.1.2"
+-        }
+-      },
+       "Avalonia": {
+         "type": "Transitive",
+         "resolved": "12.1.5",
+@@ -203,37 +189,40 @@
+           "Sdcb.SimdCodecs.Abstractions": "1.4.0"
+         }
+       },
+-      "SimdSkia.Core": {
+-        "type": "Transitive",
+-        "resolved": "0.1.2",
+-        "contentHash": "iMsLl0tz8mfyHmw+Xt4Qkh+P9Wbcl+AX19oc0illptGHUddomwDzphu+AFuh9Jaun3eOwUNtdkmDYvEgozfmCg==",
++      "simdskia.avalonia": {
++        "type": "Project",
+         "dependencies": {
+-          "Clipper2": "[2.0.0]"
++          "Avalonia": "[12.1.0, 13.0.0)",
++          "Clipper2": "[2.0.0, 2.0.0]",
++          "SimdSkia.Core": "[0.1.2, )",
++          "SimdSkia.Cpu": "[0.1.2, )",
++          "SimdSkia.Imaging": "[0.1.2, )",
++          "SimdSkia.Text": "[0.1.2, )"
+         }
+       },
+-      "SimdSkia.Cpu": {
+-        "type": "Transitive",
+-        "resolved": "0.1.2",
+-        "contentHash": "gmt3ZzIhKBN1w0D9ahIWh4EtjWp9MmA6OmSIut0oNCmR6nY92uP9i0gglQgdarToZEFTCgqEdt7W4WEpxOrtbg==",
++      "simdskia.core": {
++        "type": "Project",
+         "dependencies": {
+-          "SimdSkia.Core": "0.1.2"
++          "Clipper2": "[2.0.0, 2.0.0]"
+         }
+       },
+-      "SimdSkia.Imaging": {
+-        "type": "Transitive",
+-        "resolved": "0.1.2",
+-        "contentHash": "uvD17pVVv8pvxL5ClOlMGakVzjNeZy06cjzxqJ4iDgzgDZft5muCxIyLAT0H9RNIMbWmWGvuUC4/J/vOoLLsqg==",
++      "simdskia.cpu": {
++        "type": "Project",
+         "dependencies": {
+-          "Sdcb.SimdCodecs": "[1.4.0]",
+-          "SimdSkia.Core": "0.1.2"
++          "SimdSkia.Core": "[0.1.2, )"
+         }
+       },
+-      "SimdSkia.Text": {
+-        "type": "Transitive",
+-        "resolved": "0.1.2",
+-        "contentHash": "QCB1SSdOQ7xEJ9gJ8/Q9HNRR+zHL4Oqe9K+PU5Fi5CBfbUd8kNA2bag1uxssoR0eUtL6aThQPEx6UKBwO2aLrg==",
++      "simdskia.imaging": {
++        "type": "Project",
++        "dependencies": {
++          "Sdcb.SimdCodecs": "[1.4.0, 1.4.0]",
++          "SimdSkia.Core": "[0.1.2, )"
++        }
++      },
++      "simdskia.text": {
++        "type": "Project",
+         "dependencies": {
+-          "SimdSkia.Core": "0.1.2"
++          "SimdSkia.Core": "[0.1.2, )"
+         }
+       }
+     },
+diff --git a/src/SimdSkia.Avalonia.Gpu/WindowGpuCanvas.cs b/src/SimdSkia.Avalonia.Gpu/WindowGpuCanvas.cs
+index 2b9b26c..4f4c5e6 100644
+--- a/src/SimdSkia.Avalonia.Gpu/WindowGpuCanvas.cs
++++ b/src/SimdSkia.Avalonia.Gpu/WindowGpuCanvas.cs
+@@ -136,10 +136,9 @@ internal sealed class WindowGpuCanvas : ICanvasBackend
+     {
+         var run=command.GlyphRun??throw new ArgumentException("Glyph outlines required.");var matrix=command.Transform;
+         int ix=(int)MathF.Floor(matrix.M02),iy=(int)MathF.Floor(matrix.M12);var local=matrix with{M02=matrix.M02-ix,M12=matrix.M12-iy};
+-        var hash=new HashCode();hash.Add(run.FontTransform);hash.Add(run.Positioning);foreach(var glyph in run.Glyphs)hash.Add(glyph);
+-        var key=(hash.ToHashCode(),local,command.Paint,command.TextMaskPreblend,command.SnapGlyphBaseline,command.CurveTolerance,command.CoverageClip,command.CoverageClip is null?0:ix,command.CoverageClip is null?0:iy);
++        var key=(run.ContentHash,local,command.Paint,command.TextMaskPreblend,command.SnapGlyphBaseline,command.CurveTolerance,command.CoverageClip,command.CoverageClip is null?0:ix,command.CoverageClip is null?0:iy);
+         bool found=atlas.TryGetValue(key,out var entry);
+-        if(found&&!ReferenceEquals(run,entry!.Run)&&(run.FontTransform!=entry.Run.FontTransform||run.Positioning!=entry.Run.Positioning||!run.Glyphs.SequenceEqual(entry.Run.Glyphs)))
++        if(found&&!run.ContentEquals(entry!.Run))
+         {Flush();atlas.Remove(key);atlasBytes-=entry.RetainedBytes;entry.Pixels.Dispose();found=false;}
+         if(!found)
+         {
+diff --git a/src/SimdSkia.Core/AssemblyInfo.cs b/src/SimdSkia.Core/AssemblyInfo.cs
+index ce218b5..1ee8f70 100644
+--- a/src/SimdSkia.Core/AssemblyInfo.cs
++++ b/src/SimdSkia.Core/AssemblyInfo.cs
+@@ -5,3 +5,4 @@ using System.Runtime.CompilerServices;
+ [assembly: InternalsVisibleTo("SimdSkia.Compatibility")]
+ [assembly: InternalsVisibleTo("SimdSkia.Cpu")]
+ [assembly: InternalsVisibleTo("SimdSkia.Gpu")]
++[assembly: InternalsVisibleTo("SimdSkia.Avalonia.Gpu")]
+diff --git a/src/SimdSkia.Core/CoverageClip.cs b/src/SimdSkia.Core/CoverageClip.cs
+index 2c14c9e..304f569 100644
+--- a/src/SimdSkia.Core/CoverageClip.cs
++++ b/src/SimdSkia.Core/CoverageClip.cs
+@@ -15,6 +15,14 @@ public sealed class CoverageClip
+         _=checked(left+width);_=checked(top+height);
+         Left=left;Top=top;Width=width;Height=height;data=coverage.ToArray();
+     }
++    // Internal immutable raster masks have no caller-owned writable aliases.
++    // Integer translations can retain their bytes without copying full masks.
++    internal static CoverageClip BorrowImmutable(int left,int top,int width,int height,byte[] coverage)=>new(left,top,width,height,coverage,true);
++    private CoverageClip(int left,int top,int width,int height,byte[] coverage,bool immutable)
++    {
++        if(width<0||height<0||coverage.Length!=checked(width*height))throw new ArgumentException("Clip dimensions do not match coverage.");
++        _=checked(left+width);_=checked(top+height);Left=left;Top=top;Width=width;Height=height;data=coverage;
++    }
+     public ReadOnlySpan<byte> GetRow(int y)=>y<Top||y>=Top+Height?ReadOnlySpan<byte>.Empty:data.AsSpan((y-Top)*Width,Width);
+     public byte At(int x,int y)=>x<Left||y<Top||x>=Left+Width||y>=Top+Height?(byte)0:data[(y-Top)*Width+x-Left];
+     public static CoverageClip Intersect(CoverageClip a,CoverageClip b)
+diff --git a/src/SimdSkia.Core/GlyphRunGeometry.cs b/src/SimdSkia.Core/GlyphRunGeometry.cs
+index 2c4b0ed..d535ac7 100644
+--- a/src/SimdSkia.Core/GlyphRunGeometry.cs
++++ b/src/SimdSkia.Core/GlyphRunGeometry.cs
+@@ -13,15 +13,21 @@ public sealed class GlyphRunGeometry
+     public Matrix3 FontTransform {get;}
+     public GlyphPositioning Positioning {get;}
+     public RectF Bounds {get;}
++    // Content is immutable. Cache this once instead of hashing every glyph on
++    // every GPU draw; equality still checks the full content after a hash hit.
++    internal int ContentHash {get;}
++    internal bool ContentEquals(GlyphRunGeometry other)=>ReferenceEquals(this,other)||
++        ContentHash==other.ContentHash&&FontTransform==other.FontTransform&&Positioning==other.Positioning&&glyphs.AsSpan().SequenceEqual(other.glyphs);
+     public GlyphRunGeometry(IEnumerable<PositionedGlyph> glyphs,Matrix3 fontTransform,GlyphPositioning positioning=GlyphPositioning.Exact)
+     {
+         ArgumentNullException.ThrowIfNull(glyphs);
+         if(!fontTransform.IsFinite||!fontTransform.IsAffine)throw new ArgumentException("A finite affine font transform is required.",nameof(fontTransform));
+         if(!Enum.IsDefined(positioning))throw new ArgumentOutOfRangeException(nameof(positioning));
+         this.glyphs=glyphs.ToArray();FontTransform=fontTransform;Positioning=positioning;
+-        RectF? bounds=null;
++        var hash=new HashCode();hash.Add(fontTransform);hash.Add(positioning);RectF? bounds=null;
+         foreach(var glyph in this.glyphs)
+         {
++            hash.Add(glyph);
+             ArgumentNullException.ThrowIfNull(glyph.Outline);
+             if(!float.IsFinite(glyph.Position.X)||!float.IsFinite(glyph.Position.Y))throw new ArgumentException("Glyph positions must be finite.",nameof(glyphs));
+             if(glyph.Outline.FillRule is FillRule.InverseEvenOdd or FillRule.InverseWinding)throw new NotSupportedException("Inverse glyph outlines are not supported.");
+@@ -30,6 +36,6 @@ public sealed class GlyphRunGeometry
+             b=new(b.Left+glyph.Position.X,b.Top+glyph.Position.Y,b.Right+glyph.Position.X,b.Bottom+glyph.Position.Y);
+             bounds=bounds is {} old?new(Math.Min(old.Left,b.Left),Math.Min(old.Top,b.Top),Math.Max(old.Right,b.Right),Math.Max(old.Bottom,b.Bottom)):b;
+         }
+-        Bounds=bounds??default;
++        Bounds=bounds??default;ContentHash=hash.ToHashCode();
+     }
+ }
+diff --git a/src/SimdSkia.Cpu/GlyphCoverageCache.cs b/src/SimdSkia.Cpu/GlyphCoverageCache.cs
+index daf7b8e..33069e2 100644
+--- a/src/SimdSkia.Cpu/GlyphCoverageCache.cs
++++ b/src/SimdSkia.Cpu/GlyphCoverageCache.cs
+@@ -8,12 +8,18 @@ internal static class GlyphCoverageCache
+     internal readonly record struct Placement(CoverageMask Mask,int X,int Y);
+     internal sealed record Batch(Placement[] Glyphs,long Bytes);
+     private readonly record struct GlyphKey(PathGeometry Outline,Matrix3 Matrix,bool Antialias,float Tolerance);
+-    private readonly record struct RunKey(GlyphRunGeometry Run,Matrix3 Matrix,bool Antialias,float Tolerance,bool SnapBaseline,int Luminance);
++    private readonly record struct RunKey(GlyphRunGeometry Run,Matrix3 Matrix,bool Antialias,float Tolerance,bool SnapBaseline,int Luminance)
++    {
++        public bool Equals(RunKey other)=>Matrix==other.Matrix&&Antialias==other.Antialias&&Tolerance==other.Tolerance&&
++            SnapBaseline==other.SnapBaseline&&Luminance==other.Luminance&&Run.ContentEquals(other.Run);
++        public override int GetHashCode()=>HashCode.Combine(Run.ContentHash,Matrix,Antialias,Tolerance,SnapBaseline,Luminance);
++    }
+     private sealed record GlyphEntry(GlyphKey Key,CoverageMask Mask,long Bytes);
+-    private sealed class RunEntry(RunKey key,Batch batch)
++    private sealed class RunEntry(RunKey key,Batch batch,long payloadBytes)
+     {
+         internal readonly RunKey Key=key;
+         internal readonly Batch Batch=batch;
++        internal readonly long PayloadBytes=payloadBytes;
+         // Clock/second-chance replacement avoids relinking managed references
+         // (and their GC write barriers) for every glyph on every rendered frame.
+         internal bool Referenced=true;
+@@ -39,6 +45,7 @@ internal static class GlyphCoverageCache
+     // frame. Eviction removes the index too, so it cannot retain evicted masks.
+     private static readonly Dictionary<GlyphRunGeometry,LinkedListNode<RunEntry>> recentRuns=[];
+     private static readonly LinkedList<RunEntry> runOrder=[];
++    private static readonly Dictionary<GlyphRunGeometry,(int Count,long Bytes)> runOwners=[];
+     private static long glyphBytes,runBytes;
+     internal const long MaximumGlyphBytes=8*1024*1024,MaximumRunBytes=4*1024*1024;
+     internal const int MaximumGlyphs=4096,MaximumRuns=512;
+@@ -50,7 +57,7 @@ internal static class GlyphCoverageCache
+     internal static bool Enabled=true;
+     internal static (int Glyphs,int Runs,long GlyphBytes,long RunBytes) Statistics{get{lock(gate)return(glyphs.Count,runs.Count,glyphBytes,runBytes);}}
+     internal static int RecentRunCount{get{lock(gate)return recentRuns.Count;}}
+-    internal static void Clear(){lock(gate){glyphs.Clear();glyphOrder.Clear();runs.Clear();recentRuns.Clear();runOrder.Clear();glyphBytes=runBytes=0;}}
++    internal static void Clear(){lock(gate){glyphs.Clear();glyphOrder.Clear();runs.Clear();recentRuns.Clear();runOrder.Clear();runOwners.Clear();glyphBytes=runBytes=0;}}
+     internal static void Configure(long glyphBudget,long runBudget,int count)
+     {lock(gate){GlyphByteLimit=Math.Min(MaximumGlyphBytes,Math.Max(0,glyphBudget));RunByteLimit=Math.Min(MaximumRunBytes,Math.Max(0,runBudget));GlyphCountLimit=count<=0?0:MaximumGlyphs;RunCountLimit=Math.Min(MaximumRuns,Math.Max(0,count));Clear();}}
+     internal static Batch Resolve(GlyphRunGeometry run,Matrix3 matrix,bool aa,float tolerance,bool snapBaseline,int luminance,out int x,out int y)
+@@ -76,7 +83,12 @@ internal static class GlyphCoverageCache
+         if(Enabled)lock(gate)
+         {
+             if(runs.TryGetValue(key,out var cached))
+-            {recentRuns[key.Run]=cached;cached.Value.Referenced=true;return cached.Value.Batch;}
++            {
++                // Do not retain every short-lived wrapper that has equal content.
++                // The identity index contains only the one resident run owner.
++                if(ReferenceEquals(key.Run,cached.Value.Key.Run))recentRuns[key.Run]=cached;
++                cached.Value.Referenced=true;return cached.Value.Batch;
++            }
+         }
+         return ResolveMiss(key);
+     }
+@@ -127,20 +139,29 @@ internal static class GlyphCoverageCache
+                 else placement=placement with{Mask=Correct(placement.Mask,table)};
+             }
+         }
+-        retained=batch.Bytes;
+-        if(Enabled&&RunCountLimit>0&&retained<=RunByteLimit)lock(gate)
++        // Different subpixel phases retain the SAME immutable shaped run. Count
++        // its geometry once, with a reference count, instead of evicting useful
++        // masks as though every phase owned another copy of every outline.
++        long payload=batch.Bytes-geometryBytes+96;
++        if(Enabled&&RunCountLimit>0&&payload+geometryBytes<=RunByteLimit)lock(gate)
+         {
+-            if(RunCountLimit<=0||retained>RunByteLimit)return batch;
++            if(RunCountLimit<=0||payload+geometryBytes>RunByteLimit)return batch;
+             if(runs.TryGetValue(key,out var existing)){existing.Value.Referenced=true;return existing.Value.Batch;}
+-            while(runs.Count>=RunCountLimit||runBytes+retained>RunByteLimit)
++            long Required()=>payload+(runOwners.ContainsKey(key.Run)?0:geometryBytes);
++            while(runs.Count>=RunCountLimit||runBytes+Required()>RunByteLimit)
+             {
+                 var first=runOrder.First!;
+                 if(first.Value.Referenced){first.Value.Referenced=false;runOrder.RemoveFirst();runOrder.AddLast(first);continue;}
+-                runBytes-=first.Value.Batch.Bytes;runs.Remove(first.Value.Key);
++                runBytes-=first.Value.PayloadBytes;runs.Remove(first.Value.Key);
++                var owner=runOwners[first.Value.Key.Run];
++                if(owner.Count==1){runOwners.Remove(first.Value.Key.Run);runBytes-=owner.Bytes;}
++                else runOwners[first.Value.Key.Run]=(owner.Count-1,owner.Bytes);
+                 if(recentRuns.TryGetValue(first.Value.Key.Run,out var recent)&&ReferenceEquals(recent,first))recentRuns.Remove(first.Value.Key.Run);
+                 runOrder.RemoveFirst();
+             }
+-            var node=runOrder.AddLast(new RunEntry(key,batch));runs.Add(key,node);recentRuns[run]=node;runBytes+=retained;
++            if(runOwners.TryGetValue(run,out var retainedOwner))runOwners[run]=(retainedOwner.Count+1,retainedOwner.Bytes);
++            else{runOwners.Add(run,(1,geometryBytes));runBytes+=geometryBytes;}
++            var node=runOrder.AddLast(new RunEntry(key,batch,payload));runs.Add(key,node);recentRuns[run]=node;runBytes+=payload;
+         }
+         return batch;
+     }
+diff --git a/src/SimdSkia.Cpu/GlyphMaskCommands.cs b/src/SimdSkia.Cpu/GlyphMaskCommands.cs
+index 16d112c..b94c389 100644
+--- a/src/SimdSkia.Cpu/GlyphMaskCommands.cs
++++ b/src/SimdSkia.Cpu/GlyphMaskCommands.cs
+@@ -4,31 +4,49 @@ namespace SimdSkia.Cpu;
+ public sealed class GlyphMaskCommands
+ {
+     private readonly record struct Key(GlyphCoverageCache.Batch Batch,int X,int Y,CoverageClip? Clip);
+-    private readonly Dictionary<Key,CoverageClip[]> cache=[];
++    private sealed record Entry(Key Key,CoverageClip[] Clips,long Bytes);
++    private readonly Dictionary<Key,LinkedListNode<Entry>> cache=[];
++    private readonly LinkedList<Entry> order=[];
++    private readonly Dictionary<GlyphCoverageCache.Batch,(int Count,long Bytes)> sources=[];
+     private long bytes;
++    private const long Budget=4*1024*1024;
++    internal (int Count,long Bytes) Statistics=>(cache.Count,bytes);
+     public ReadOnlySpan<CoverageClip> Resolve(in DrawingCommand command)
+     {
+         var run=command.GlyphRun??throw new ArgumentException("Glyph outlines required.");
+         int luminance=command.TextMaskPreblend&&command.Paint.Antialias?GlyphMaskGamma.Luminance(command.Paint):-1;
+         var batch=GlyphCoverageCache.Resolve(run,command.Transform,command.Paint.Antialias,command.CurveTolerance,command.SnapGlyphBaseline,luminance,out int x,out int y);
+-        var key=new Key(batch,x,y,command.CoverageClip);if(cache.TryGetValue(key,out var result))return result;
+-        result=new CoverageClip[batch.Glyphs.Length];long size=0;
++        var key=new Key(batch,x,y,command.CoverageClip);
++        if(cache.TryGetValue(key,out var found)){order.Remove(found);order.AddLast(found);return found.Value.Clips;}
++        var result=new CoverageClip[batch.Glyphs.Length];long size=128L+result.Length*96L+(long)(command.CoverageClip?.Width??0)*(command.CoverageClip?.Height??0),sourceBytes=128L+batch.Glyphs.Length*32L;
+         for(int i=0;i<result.Length;i++)
+         {
+-            var p=batch.Glyphs[i];var m=p.Mask;ReadOnlySpan<byte> coverage=m.Data;
++            var p=batch.Glyphs[i];var m=p.Mask;byte[] coverage=m.Data;
++            sourceBytes+=128L+m.Data.LongLength+m.Runs.LongLength*16;
+             if(coverage.Length!=checked(m.Width*m.Height))
+             {
+-                var dense=new byte[checked(m.Width*m.Height)];
+-                foreach(var r in m.Runs)dense.AsSpan(checked((r.Y-m.Top)*m.Width+r.X-m.Left),r.Length).Fill(r.Coverage);
+-                coverage=dense;
++                coverage=new byte[checked(m.Width*m.Height)];size+=coverage.Length;
++                foreach(var r in m.Runs)coverage.AsSpan(checked((r.Y-m.Top)*m.Width+r.X-m.Left),r.Length).Fill(r.Coverage);
+             }
+-            var clip=new CoverageClip(checked(x+p.X+m.Left),checked(y+p.Y+m.Top),m.Width,m.Height,coverage);
+-            if(command.CoverageClip is {} inherited)clip=CoverageClip.Intersect(clip,inherited);
+-            size+=128L+(long)clip.Width*clip.Height;result[i]=clip;
++            var clip=CoverageClip.BorrowImmutable(checked(x+p.X+m.Left),checked(y+p.Y+m.Top),m.Width,m.Height,coverage);
++            if(command.CoverageClip is {} inherited){clip=CoverageClip.Intersect(clip,inherited);size+=(long)clip.Width*clip.Height;}
++            result[i]=clip;
+         }
+-        if(size<=4*1024*1024)
+-        {if(cache.Count>=64||bytes+size>4*1024*1024)Clear();cache.Add(key,result);bytes+=size;}
++        // Source masks are shared by translated views. Account the real retained
++        // source bytes once; eviction removes the last source reference as well.
++        if(size+sourceBytes>Budget)return result;
++        long Required()=>size+(sources.ContainsKey(batch)?0:sourceBytes);
++        while(cache.Count>=512||bytes+Required()>Budget)
++        {
++            var oldest=order.First!;order.RemoveFirst();cache.Remove(oldest.Value.Key);bytes-=oldest.Value.Bytes;
++            var source=sources[oldest.Value.Key.Batch];
++            if(source.Count==1){sources.Remove(oldest.Value.Key.Batch);bytes-=source.Bytes;}
++            else sources[oldest.Value.Key.Batch]=(source.Count-1,source.Bytes);
++        }
++        if(sources.TryGetValue(batch,out var retained))sources[batch]=(retained.Count+1,retained.Bytes);
++        else{sources.Add(batch,(1,sourceBytes));bytes+=sourceBytes;}
++        cache.Add(key,order.AddLast(new Entry(key,result,size)));bytes+=size;
+         return result;
+     }
+-    public void Clear(){cache.Clear();bytes=0;}
++    public void Clear(){cache.Clear();order.Clear();sources.Clear();bytes=0;}
+ }
+diff --git a/src/SimdSkia.Gpu.Direct2D/Direct2DCanvas.cs b/src/SimdSkia.Gpu.Direct2D/Direct2DCanvas.cs
+index a92078c..9d0d51e 100644
+--- a/src/SimdSkia.Gpu.Direct2D/Direct2DCanvas.cs
++++ b/src/SimdSkia.Gpu.Direct2D/Direct2DCanvas.cs
+@@ -25,6 +25,9 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
+     private int nextFrame;
+     private bool validateCompletionEvent;
+     private bool legacyCompletionPolling;
++    // Opt-in power/CPU tradeoff for offscreen capture. Map is faster on some
++    // drivers, while completion events consume less CPU during long readbacks.
++    private readonly bool blockingReadback=AppContext.TryGetSwitch("SimdSkia.Direct2D.BlockingReadback",out bool blocking)&&blocking;
+     private bool drawing,disposed,faulted;
+     private bool shadowStale;
+     private readonly bool cacheDrawingState=!(AppContext.TryGetSwitch("SimdSkia.Direct2D.DisableStateCache",out bool disableStateCache)&&disableStateCache);
+@@ -90,22 +93,22 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
+                     presentationBuffer=D2DNative.Backbuffer(swapChain);texture=D2DNative.Texture(device,pixels.Width,pixels.Height,false);
+                 }
+                 else texture=D2DNative.Backbuffer(swapChain);
+-                legacyCompletionPolling=AppContext.TryGetSwitch("SimdSkia.Direct2D.LegacyCompletionPolling",out bool legacy)&&legacy;
+-                if(!legacyCompletionPolling)
+-                    completionContext=D2DNative.TryQuery(immediate,new Guid("b4e3c01d-e79e-4637-91b2-510e9f4c9b8f"));
+-                if(completionContext!=0)
++            }
++            legacyCompletionPolling=AppContext.TryGetSwitch("SimdSkia.Direct2D.LegacyCompletionPolling",out bool legacy)&&legacy;
++            if(!legacyCompletionPolling&&(windowHandle!=0||blockingReadback))
++                completionContext=D2DNative.TryQuery(immediate,new Guid("b4e3c01d-e79e-4637-91b2-510e9f4c9b8f"));
++            if(completionContext!=0)
++            {
++                completionEvent=new(false,EventResetMode.AutoReset);
++                validateCompletionEvent=AppContext.TryGetSwitch("SimdSkia.Direct2D.ValidateCompletionEvent",out bool verify)&&verify;
++                if(validateCompletionEvent)completion=D2DNative.QueryEvent(device);
++                for(int i=0;windowHandle!=0&&i<2;i++)
+                 {
+-                    completionEvent=new(false,EventResetMode.AutoReset);
+-                    validateCompletionEvent=AppContext.TryGetSwitch("SimdSkia.Direct2D.ValidateCompletionEvent",out bool verify)&&verify;
+-                    if(validateCompletionEvent)completion=D2DNative.QueryEvent(device);
+-                    for(int i=0;i<2;i++)
+-                    {
+-                        var frame=new PendingFrame();pendingFrames=[..pendingFrames,frame];
+-                        if(validateCompletionEvent)frame.Query=D2DNative.QueryEvent(device);
+-                    }
++                    var frame=new PendingFrame();pendingFrames=[..pendingFrames,frame];
++                    if(validateCompletionEvent)frame.Query=D2DNative.QueryEvent(device);
+                 }
+-                else completion=D2DNative.QueryEvent(device);
+             }
++            else if(windowHandle!=0)completion=D2DNative.QueryEvent(device);
+             if(windowHandle==0)staging=D2DNative.Texture(device,pixels.Width,pixels.Height,true);
+             surface=D2DNative.Query(texture,D2DNative.DxgiSurface);target=D2DNative.Target(context,surface);D2DNative.SetTarget(context,target);Upload();
+         }
+@@ -302,6 +305,24 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
+         foreach(nint item in frame.Resources){nint value=item;D2DNative.Release(ref value);}frame.Resources.Clear();frame.Pending=false;
+         CompletedFrames++;CompletedBatches++;return true;
+     }
++    private void WaitForSubmittedWork()
++    {
++        if(validateCompletionEvent)D2DNative.EndEvent(immediate,completion);
++        D2DNative.FlushWithEvent(completionContext,completionEvent!.SafeWaitHandle.DangerousGetHandle());
++        BlockingCompletionWaits++;long start=Stopwatch.GetTimestamp();
++        while(!completionEvent.WaitOne(100))
++        {
++            D2DNative.Check(D2DNative.DeviceRemovedReason(device));
++            if(Stopwatch.GetElapsedTime(start).TotalSeconds>10)throw new TimeoutException("Direct2D completion timed out.");
++        }
++        CompletionWaitMilliseconds+=Stopwatch.GetElapsedTime(start).TotalMilliseconds;
++        if(validateCompletionEvent)
++        {
++            int result=D2DNative.EventReady(immediate,completion);D2DNative.Check(result);
++            if(result!=0)throw new InvalidOperationException("The GPU completion event preceded its independent query.");
++            CompletionChecks++;
++        }
++    }
+     private unsafe void Finish(bool readback,bool present,bool queued=false)
+     {
+         Check();if(!drawing&&!present&&!(readback&&shadowStale)){WaitForIdle();return;}long start=Stopwatch.GetTimestamp();
+@@ -313,7 +334,11 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
+             if(readback)
+             {
+                 if(staging==0)staging=D2DNative.Texture(device,pixels.Width,pixels.Height,true);
+-                D2DNative.Copy(immediate,staging,texture);var mapped=D2DNative.Map(immediate,staging);
++                D2DNative.Copy(immediate,staging,texture);
++                // Blocking Map may spin inside the driver. Await the copy on an
++                // OS event first, retaining exactly the same completed pixels.
++                if(blockingReadback&&completionContext!=0)WaitForSubmittedWork();
++                var mapped=D2DNative.Map(immediate,staging);
+                 try
+                 {
+                     for(int y=0;y<pixels.Height;y++)
+@@ -341,22 +366,7 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
+                 }
+                 else if(completionContext!=0)
+                 {
+-                    if(validateCompletionEvent)D2DNative.EndEvent(immediate,completion);
+-                    D2DNative.FlushWithEvent(completionContext,completionEvent!.SafeWaitHandle.DangerousGetHandle());
+-                    BlockingCompletionWaits++;
+-                    long waitStart=Stopwatch.GetTimestamp();
+-                    while(!completionEvent.WaitOne(100))
+-                    {
+-                        D2DNative.Check(D2DNative.DeviceRemovedReason(device));
+-                        if(Stopwatch.GetElapsedTime(start).TotalSeconds>10)throw new TimeoutException("Direct2D completion timed out.");
+-                    }
+-                    CompletionWaitMilliseconds+=Stopwatch.GetElapsedTime(waitStart).TotalMilliseconds;
+-                    if(validateCompletionEvent)
+-                    {
+-                        int result=D2DNative.EventReady(immediate,completion);D2DNative.Check(result);
+-                        if(result!=0)throw new InvalidOperationException("The GPU completion event was signaled before its event query completed.");
+-                        CompletionChecks++;
+-                    }
++                    WaitForSubmittedWork();
+                 }
+                 else
+                 {
+diff --git a/src/SimdSkia.Gpu/SimdSkia.Gpu.csproj b/src/SimdSkia.Gpu/SimdSkia.Gpu.csproj
+index d6f10f7..d6a2a0c 100644
+--- a/src/SimdSkia.Gpu/SimdSkia.Gpu.csproj
++++ b/src/SimdSkia.Gpu/SimdSkia.Gpu.csproj
+@@ -1,4 +1,4 @@
+ <Project Sdk="Microsoft.NET.Sdk">
+   <PropertyGroup><AllowUnsafeBlocks>true</AllowUnsafeBlocks></PropertyGroup>
+-  <ItemGroup><ProjectReference Include="../SimdSkia.Core/SimdSkia.Core.csproj" /><ProjectReference Include="../SimdSkia.Cpu/SimdSkia.Cpu.csproj" /><EmbeddedResource Include="Shaders/renderer.spv" /><EmbeddedResource Include="Shaders/renderer-batch.spv" /></ItemGroup>
++  <ItemGroup><ProjectReference Include="../SimdSkia.Core/SimdSkia.Core.csproj" /><ProjectReference Include="../SimdSkia.Cpu/SimdSkia.Cpu.csproj" /><EmbeddedResource Include="Shaders/renderer.spv" /><EmbeddedResource Include="Shaders/renderer-batch.spv" /><EmbeddedResource Include="Shaders/renderer-ordered.spv" /></ItemGroup>
+ </Project>
+diff --git a/src/SimdSkia.Gpu/VulkanCanvas.Batches.cs b/src/SimdSkia.Gpu/VulkanCanvas.Batches.cs
+index 25b838b..c06fe01 100644
+--- a/src/SimdSkia.Gpu/VulkanCanvas.Batches.cs
++++ b/src/SimdSkia.Gpu/VulkanCanvas.Batches.cs
+@@ -3,7 +3,11 @@ namespace SimdSkia.Gpu;
+ public sealed unsafe partial class VulkanCanvas
+ {
+     private const int RectangleBatchSize=16,RectangleBatchUniformBytes=RectangleBatchSize*768;
++    private const int OrderedRectangleBatchSize=64,OrderedRectangleUniformBytes=32+OrderedRectangleBatchSize*48;
+     private ulong rectangleBatchPipeline;
++    private ulong orderedRectanglePipeline;
++    private readonly bool orderedRectanglesEnabled=!(AppContext.TryGetSwitch("SimdSkia.Vulkan.DisableOrderedRectangleBatches",out bool disabled)&&disabled);
++    public long OrderedRectangleDispatches {get;private set;}
+     private int lastRectangleBatchWidth,lastRectangleBatchHeight;
+     public long RectangleBatchDispatches {get;private set;}
+     public long TransferClears {get;private set;}
+@@ -18,31 +22,59 @@ public sealed unsafe partial class VulkanCanvas
+     private void EnsureRectangleBatchPipeline()
+     {
+         if(rectangleBatchPipeline!=0)return;
+-        var bytes=VulkanShaderCode.RectangleBatch;ulong module=0;
++        rectangleBatchPipeline=CreateRectanglePipeline(VulkanShaderCode.RectangleBatch);
++        if(orderedRectanglesEnabled)orderedRectanglePipeline=CreateRectanglePipeline(VulkanShaderCode.OrderedRectangles);
++    }
++    private ulong CreateRectanglePipeline(byte[] bytes)
++    {
++        ulong module=0;
+         fixed(byte* code=bytes){var shader=new Vk.ShaderInfo{Type=16,CodeSize=(nuint)bytes.Length,Code=(uint*)code};Check(Vk.vkCreateShaderModule(device,&shader,null,&module));}
+-        try{byte* name=stackalloc byte[5]{(byte)'m',(byte)'a',(byte)'i',(byte)'n',0};uint kind=1;var entry=new Vk.SpecializationEntry{Size=4};var specialization=new Vk.SpecializationInfo{Count=1,Entries=&entry,Size=4,Data=&kind};var info=new Vk.ComputePipelineInfo{Type=29,Stage=new(){Type=18,Stage=32,Module=module,Name=name,Specialization=&specialization},Layout=pipelineLayout,BaseIndex=-1};ulong result=0;Check(Vk.vkCreateComputePipelines(device,0,1,&info,null,&result));rectangleBatchPipeline=result;PreparedPipelineCount++;}
++        try{byte* name=stackalloc byte[5]{(byte)'m',(byte)'a',(byte)'i',(byte)'n',0};uint kind=1;var entry=new Vk.SpecializationEntry{Size=4};var specialization=new Vk.SpecializationInfo{Count=1,Entries=&entry,Size=4,Data=&kind};var info=new Vk.ComputePipelineInfo{Type=29,Stage=new(){Type=18,Stage=32,Module=module,Name=name,Specialization=&specialization},Layout=pipelineLayout,BaseIndex=-1};ulong result=0;Check(Vk.vkCreateComputePipelines(device,0,1,&info,null,&result));PreparedPipelineCount++;return result;}
+         finally{Vk.vkDestroyShaderModule(device,module,null);}
+     }
+     private int RectangleBatch(int start,ref int paramOffset,ref int setIndex,Span<RectF> unbarriered,ref int unbarrieredCount,ref ulong boundPipeline)
+     {
+         if(!rectangleBatchesEnabled)return 0;
+-        Span<uint> words=stackalloc uint[160];Span<RectF> bounds=stackalloc RectF[RectangleBatchSize];int count=0;uint maximumWidth=0,maximumHeight=0;
+-        for(int i=start;i<pending.Count&&count<RectangleBatchSize;i++)
++        Span<uint> words=stackalloc uint[160];Span<RectF> bounds=stackalloc RectF[OrderedRectangleBatchSize];int count=0;uint maximumWidth=0,maximumHeight=0;bool ordered=false,allSimple=true;RectF union=default;double area=0;
++        for(int i=start;i<pending.Count&&count<OrderedRectangleBatchSize;i++)
+         {
++            if(count>=RectangleBatchSize&&!ordered)break;
+             var item=pending[i];var command=item.Command;
+             if(command.Kind!=CommandKind.FillRectangle||command.CoverageClip is not null||!command.Transform.TryInvert(out _))break;
+             Prepare(item,words);uint width=words[39],height=words[40];if(width==0||height==0)break;var candidate=new RectF(words[37],words[38],words[37]+width,words[38]+height);bool overlap=false;
+-            foreach(var previous in bounds[..count])if(Intersects(previous,candidate)){overlap=true;break;}if(overlap)break;
++            foreach(var previous in bounds[..count])if(Intersects(previous,candidate)){overlap=true;break;}
++            bool simple=!command.Paint.Antialias&&command.Paint.Shader is null&&command.Transform.M01==0&&command.Transform.M10==0;
++            if(overlap&&(!orderedRectanglesEnabled||!allSimple||!simple)||ordered&&!simple)break;
++            var nextUnion=count==0?candidate:new RectF(Math.Min(union.Left,candidate.Left),Math.Min(union.Top,candidate.Top),Math.Max(union.Right,candidate.Right),Math.Max(union.Bottom,candidate.Bottom));
++            double nextArea=area+(double)width*height,nextUnionArea=(double)(nextUnion.Right-nextUnion.Left)*(nextUnion.Bottom-nextUnion.Top);
++            if((ordered||overlap)&&(nextUnionArea>128*1024||nextUnionArea>nextArea*2))break;
++            allSimple&=simple;
++            ordered|=overlap;area=nextArea;union=nextUnion;
+             bounds[count++]=candidate;maximumWidth=Math.Max(maximumWidth,width);maximumHeight=Math.Max(maximumHeight,height);
+         }
+-        if(count<2)return 0;EnsureRectangleBatchPipeline();int paramBase=(paramOffset+255)&~255;
+-        for(int i=0;i<count;i++){Prepare(pending[start+i],words);words.CopyTo(MemoryMarshal.Cast<byte,uint>(paramsArena!.Bytes.Slice(paramBase+i*768,640)));}paramOffset=paramBase+count*768;
++        if(count<2)return 0;
++        // Sparse unions would dispatch mostly empty pixels. Keep the ordinary
++        // path when sequential work per pixel cannot amortize that area.
++        double unionArea=(double)(union.Right-union.Left)*(union.Bottom-union.Top);
++        if(ordered&&(unionArea>area*2||unionArea>128*1024))return 0;
++        EnsureRectangleBatchPipeline();int paramBase=(paramOffset+255)&~255,header=ordered?32:0,stride=ordered?48:768;
++        if(ordered){var info=MemoryMarshal.Cast<byte,uint>(paramsArena!.Bytes.Slice(paramBase,32));info[0]=(uint)union.Left;info[1]=(uint)union.Top;info[2]=(uint)count;info[3]=target.Format==PixelFormat.Bgra8888?1u:0u;info[4]=(uint)target.Width;info[5]=(uint)target.Height;info[6]=(uint)(union.Right-union.Left);info[7]=(uint)(union.Bottom-union.Top);}
++        for(int i=0;i<count;i++)
++        {
++            Prepare(pending[start+i],words);var output=MemoryMarshal.Cast<byte,uint>(paramsArena!.Bytes.Slice(paramBase+header+i*stride,ordered?48:640));
++            if(ordered){words.Slice(33,4).CopyTo(output);words.Slice(8,4).CopyTo(output[4..]);output[8]=words[4];output[9]=words[3];output[10]=output[11]=0;}
++            else words.CopyTo(output);
++        }
++        paramOffset=paramBase+header+count*stride;
+         bool dependent=false;foreach(var current in bounds[..count])foreach(var previous in unbarriered[..unbarrieredCount])if(Intersects(current,previous)){dependent=true;break;}
+         if(dependent){var barrier=new Vk.BufferBarrier{Type=44,SourceAccess=64,DestinationAccess=32|64,SourceFamily=uint.MaxValue,DestinationFamily=uint.MaxValue,Buffer=output!.Handle,Size=(ulong)output.Size};Vk.vkCmdPipelineBarrier(command,2048,2048,0,0,null,1,&barrier,0,null);unbarrieredCount=0;DrawDependencyBarriers++;}
+         foreach(var current in bounds[..count])unbarriered[unbarrieredCount++]=current;
+-        ulong set=descriptorSets[setIndex++];var buffers=stackalloc Vk.DescriptorBuffer[5];buffers[0]=output!.Descriptor;buffers[1]=empty!.Descriptor;buffers[2]=new(){Buffer=deviceParamsArena!.Handle,Offset=(ulong)paramBase,Range=RectangleBatchUniformBytes};buffers[4]=empty.Descriptor;
++        ulong set=descriptorSets[setIndex++];var buffers=stackalloc Vk.DescriptorBuffer[5];buffers[0]=output!.Descriptor;buffers[1]=empty!.Descriptor;buffers[2]=new(){Buffer=deviceParamsArena!.Handle,Offset=(ulong)paramBase,Range=(ulong)(ordered?OrderedRectangleUniformBytes:RectangleBatchUniformBytes)};buffers[4]=empty.Descriptor;
+         var writes=stackalloc Vk.WriteDescriptor[5];for(uint i=0;i<3;i++)writes[i]=new(){Type=35,Set=set,Binding=i,Count=1,DescriptorType=i==2?6u:7u,Buffer=buffers+i};var image=emptyTexture!.Descriptor(sampler);writes[3]=new(){Type=35,Set=set,Binding=3,Count=1,DescriptorType=1,Image=&image};writes[4]=new(){Type=35,Set=set,Binding=4,Count=1,DescriptorType=7,Buffer=buffers+4};Vk.vkUpdateDescriptorSets(device,5,writes,0,null);Vk.vkCmdBindDescriptorSets(command,1,pipelineLayout,0,1,&set,0,null);
+-        if(boundPipeline!=rectangleBatchPipeline){Vk.vkCmdBindPipeline(command,1,rectangleBatchPipeline);boundPipeline=rectangleBatchPipeline;}Vk.vkCmdDispatch(command,(maximumWidth+7)/8,(maximumHeight+7)/8,(uint)count);lastRectangleBatchWidth=(int)maximumWidth;lastRectangleBatchHeight=(int)maximumHeight;DrawDispatches++;RectangleBatchDispatches++;return count;
++        ulong selected=ordered?orderedRectanglePipeline:rectangleBatchPipeline;
++        if(boundPipeline!=selected){Vk.vkCmdBindPipeline(command,1,selected);boundPipeline=selected;}
++        uint dispatchWidth=ordered?(uint)(union.Right-union.Left):maximumWidth,dispatchHeight=ordered?(uint)(union.Bottom-union.Top):maximumHeight;
++        Vk.vkCmdDispatch(command,(dispatchWidth+7)/8,(dispatchHeight+7)/8,ordered?1u:(uint)count);lastRectangleBatchWidth=(int)dispatchWidth;lastRectangleBatchHeight=(int)dispatchHeight;DrawDispatches++;RectangleBatchDispatches++;if(ordered)OrderedRectangleDispatches++;return count;
+     }
+     private static bool Intersects(RectF a,RectF b)=>a.Left<b.Right&&b.Left<a.Right&&a.Top<b.Bottom&&b.Top<a.Bottom;
+ }
+diff --git a/src/SimdSkia.Gpu/VulkanCanvas.cs b/src/SimdSkia.Gpu/VulkanCanvas.cs
+index a6b462f..09e6138 100644
+--- a/src/SimdSkia.Gpu/VulkanCanvas.cs
++++ b/src/SimdSkia.Gpu/VulkanCanvas.cs
+@@ -314,8 +314,14 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
+         var entry=new EdgeEntry{Geometry=geometry,Edges=edges,Tiles=optimizedCoverage?TiledEdges.Create(contours,edges,target.Width,target.Height):null,ClassifyTiles=optimizedCoverage&&edges.All(v=>float.IsFinite(v)&&MathF.Abs(v)<=65536),Used=++useCounter};
+         edgeBytes+=entry.Bytes;
+         edgeCache.Add((geometry,transform,tolerance),entry);
+-        foreach(var victim in edgeCache.OrderBy(e=>e.Value.Used).ToArray())
+-        {if(edgeCache.Count<=64&&edgeBytes<=16*1024*1024)break;edgeBytes-=victim.Value.Bytes;edgeCache.Remove(victim.Key);}
++        // A 97-position subpixel animation fits the unchanged 16 MiB budget on
++        // small targets. A 64-entry ceiling previously rebuilt it every cycle.
++        int entryLimit=entry.Bytes<=128*1024?128:64;
++        while(edgeCache.Count>entryLimit||edgeBytes>16*1024*1024)
++        {
++            var victim=edgeCache.MinBy(e=>e.Value.Used);
++            edgeBytes-=victim.Value.Bytes;edgeCache.Remove(victim.Key);
++        }
+         return entry;
+     }
+     private static bool MatchesSnapshot(PixelBuffer image,byte[] snapshot)
+@@ -345,7 +351,7 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
+         uint query=0;
+         bool submitted=false,completed=false;
+         int edgeStride=256,paramStride=768;
+-        int edgeBytesNeeded=edgeStride,paramBytesNeeded=pending.Count*paramStride+RectangleBatchUniformBytes;
++        int edgeBytesNeeded=edgeStride,paramBytesNeeded=pending.Count*(paramStride+256)+RectangleBatchUniformBytes;
+         foreach(var item in pending)edgeBytesNeeded+=((EdgePayload(item)+255)&~255);
+         try
+         {
+@@ -670,6 +676,7 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
+             if(sampler!=0)Vk.vkDestroySampler(device,sampler,null);
+             foreach(ulong specialized in specializedPipelines)if(specialized!=0)Vk.vkDestroyPipeline(device,specialized,null);
+             if(rectangleBatchPipeline!=0)Vk.vkDestroyPipeline(device,rectangleBatchPipeline,null);
++            if(orderedRectanglePipeline!=0)Vk.vkDestroyPipeline(device,orderedRectanglePipeline,null);
+             if(coveragePipeline!=0)Vk.vkDestroyPipeline(device,coveragePipeline,null);if(cachedPathPipeline!=0)Vk.vkDestroyPipeline(device,cachedPathPipeline,null);
+             foreach(var mask in maskCache.Values)mask.Buffer?.Dispose();maskCache.Clear();maskBytes=0;
+             if(pipeline!=0)Vk.vkDestroyPipeline(device,pipeline,null);if(pipelineLayout!=0)Vk.vkDestroyPipelineLayout(device,pipelineLayout,null);if(descriptorLayout!=0)Vk.vkDestroyDescriptorSetLayout(device,descriptorLayout,null);if(borrowedContext is null)Vk.vkDestroyDevice(device,null);device=IntPtr.Zero;
+diff --git a/src/SimdSkia.Gpu/VulkanShaderCode.cs b/src/SimdSkia.Gpu/VulkanShaderCode.cs
+index f7832a7..8f6b4d6 100644
+--- a/src/SimdSkia.Gpu/VulkanShaderCode.cs
++++ b/src/SimdSkia.Gpu/VulkanShaderCode.cs
+@@ -6,6 +6,7 @@ internal static class VulkanShaderCode
+ {
+     internal static readonly byte[] Renderer=Read("renderer.spv");
+     internal static readonly byte[] RectangleBatch=Read("renderer-batch.spv");
++    internal static readonly byte[] OrderedRectangles=Read("renderer-ordered.spv");
+     private static byte[] Read(string name)
+     {
+         using var stream=typeof(VulkanCanvas).Assembly.GetManifestResourceStream("SimdSkia.Gpu.Shaders."+name)
+diff --git a/tests/AvaloniaControls/GlyphValidation.cs b/tests/AvaloniaControls/GlyphValidation.cs
+index c9f616e..5d4df40 100644
+--- a/tests/AvaloniaControls/GlyphValidation.cs
++++ b/tests/AvaloniaControls/GlyphValidation.cs
+@@ -125,6 +125,53 @@ internal static class GlyphValidation
+                 }
+             }
+         }
++        // UI layout may replace an immutable glyph-run wrapper without changing
++        // any shaped outline or position. Reuse its packed coverage while keeping
++        // the identity index bounded to the single resident owner.
++        GlyphCoverageCache.Clear();
++        var template=new GlyphRunGeometry([new(outline,new(0,0)),new(outline,new(16,0))],Matrix3.Identity,GlyphPositioning.QuarterPixel);
++        var firstBatch=GlyphCoverageCache.Resolve(template,Matrix3.Identity,true,.015625f,false,3,out _,out _);
++        for(int i=0;i<1000;i++)
++        {
++            var equivalent=new GlyphRunGeometry(template.Glyphs.ToArray(),template.FontTransform,template.Positioning);
++            var actual=GlyphCoverageCache.Resolve(equivalent,Matrix3.Identity,true,.015625f,false,3,out _,out _);
++            Check(ReferenceEquals(actual,firstBatch),"Equivalent shaped content rebuilt its packed mask.");
++        }
++        Check(GlyphCoverageCache.Statistics.Runs==1&&GlyphCoverageCache.RecentRunCount==1,"Equivalent wrappers escaped the cache/index budget.");
++        var changedPosition=new GlyphRunGeometry([new(outline,new(.25f,0)),new(outline,new(16,0))],Matrix3.Identity,template.Positioning);
++        var changedBatch=GlyphCoverageCache.Resolve(changedPosition,Matrix3.Identity,true,.015625f,false,3,out _,out _);
++        Check(!ReferenceEquals(changedBatch,firstBatch),"Distinct shaping reused stale coverage.");
++        var changedLuminance=GlyphCoverageCache.Resolve(template,Matrix3.Identity,true,.015625f,false,4,out _,out _);
++        Check(!ReferenceEquals(changedLuminance,firstBatch),"Content reuse ignored preblend luminance.");
++        var deviceMasks=new GlyphMaskCommands();
++        for(int i=0;i<1000;i++)
++        {
++            var draw=new DrawingCommand(CommandKind.DrawGlyphRun,default,Matrix3.Identity with{M02=i%97/16f},new(new(0,0,0,255),CompositeMode.SourceOver,true)){GlyphRun=template,TextMaskPreblend=true};
++            foreach(var mask in deviceMasks.Resolve(draw))Check(mask.Width>=0&&mask.Height>=0,"Translated mask dimensions were corrupted.");
++            Check(deviceMasks.Statistics.Count<=512&&deviceMasks.Statistics.Bytes<=4*1024*1024,"Translated device mask cache exceeded its budget.");
++            Check(GlyphCoverageCache.Statistics.RunBytes<=GlyphCoverageCache.RunByteLimit,"Shared run ownership escaped the font budget.");
++        }
++        var cacheBefore=deviceMasks.Statistics;deviceMasks.Clear();
++        Check(cacheBefore.Count>64&&deviceMasks.Statistics==(0,0),"Translated masks cleared their whole working set or retained source payloads after Clear.");
++        using(var expectedPixels=new PixelBuffer(64,36,PixelFormat.Bgra8888,AlphaFormat.Premultiplied))
++        using(var actualPixels=expectedPixels.Clone())
++        using(var expectedCanvas=new RasterCanvas(expectedPixels))
++        using(var actualCanvas=new RasterCanvas(actualPixels))
++        {
++            var overlapRun=new GlyphRunGeometry([new(outline,new(1,1)),new(outline,new(5,1))],Matrix3.Identity,GlyphPositioning.QuarterPixel);
++            for(int phase=0;phase<97;phase++)
++            {
++                var draw=new DrawingCommand(CommandKind.DrawGlyphRun,default,Matrix3.Identity with{M02=phase/16f},new(new(23,67,151,173),CompositeMode.SourceOver,true)){GlyphRun=overlapRun,TextMaskPreblend=true};
++                expectedCanvas.Execute(DrawingCommand.Clear(new(240,231,219,255)));actualCanvas.Execute(DrawingCommand.Clear(new(240,231,219,255)));
++                expectedCanvas.Execute(draw);
++                foreach(var mask in deviceMasks.Resolve(draw))actualCanvas.Execute(DrawingCommand.FillRectangle(mask.Bounds,Matrix3.Identity,draw.Paint with{Antialias=false}) with{CoverageClip=mask});
++                Check(expectedPixels.GetPixelSpan().SequenceEqual(actualPixels.GetPixelSpan()),"Shared device masks changed subpixel coverage or overlapping glyph order.");
++            }
++        }
++        for(int i=0;i<700;i++)deviceMasks.Resolve(new(CommandKind.DrawGlyphRun,default,Matrix3.Identity with{M02=i},new(new(0,0,0,255),CompositeMode.SourceOver)){GlyphRun=template});
++        Check(deviceMasks.Statistics.Count==512&&deviceMasks.Statistics.Bytes<=4*1024*1024,"Device mask LRU failed to retire individual translated entries.");
++        deviceMasks.Clear();Check(deviceMasks.Statistics==(0,0),"Device mask source accounting did not reset.");
++        GlyphCoverageCache.Clear();
+         return count;
+     }
+ }
+diff --git a/tests/GpuOptimization/Program.cs b/tests/GpuOptimization/Program.cs
+index 987976a..2f96492 100644
+--- a/tests/GpuOptimization/Program.cs
++++ b/tests/GpuOptimization/Program.cs
+@@ -192,6 +192,7 @@ if(TiledEdges.Create(contours,values.ToArray(),4096,4096) is not null)throw new
+ Compare("supported glyph mask command",DrawingCommand.Clear(new(255,255,255,255)),new(CommandKind.DrawGlyphRun,default,Matrix3.Identity,new(new(0,0,0,255),CompositeMode.SourceOver)){GlyphRun=new([new(PathGeometry.Rectangle(new(1,1,5,5)),default)],Matrix3.Identity)});
+ if(actual.ReadPixel(2,2)!=new Rgba32(0,0,0,255))throw new Exception("The supported glyph command did not draw its interior.");checks++;
+ long batchesBefore=optimized.RectangleBatchDispatches;
++long orderedBefore=optimized.OrderedRectangleDispatches;
+ for(int iteration=0;iteration<24;iteration++)
+ {
+     var commands=new List<DrawingCommand>{DrawingCommand.Clear(Color())};
+@@ -207,6 +208,26 @@ for(int iteration=0;iteration<24;iteration++)
+     Compare("disjoint rectangle batch and overlap order "+iteration,commands.ToArray());
+ }
+ if(optimized.RectangleBatchDispatches-batchesBefore<24)throw new Exception("The disjoint rectangle workload never used real batch dispatches.");checks++;
++// Multiple dense batches, mixed coverage/composite/gradients, a non-multiple of
++// 16 tail, mirrored/sheared transforms and clipped/partly offscreen origins.
++for(int trial=0;trial<16;trial++)
++{
++    var draws=new List<DrawingCommand>{DrawingCommand.Clear(Color())};
++    for(int n=0;n<70;n++)
++    {
++        var matrix=n%2==0?new Matrix3(-1,.125f,width-8,.25f,1,-5,0,0,1):Matrix3.Identity;
++        IColorShader? shader=n%4==0?new LinearGradient(new(0,0),new(width,height),Color(),Color()):null;
++        draws.Add(DrawingCommand.FillRectangle(new(Next(-10,35),Next(-10,25),Next(55,110),Next(45,85)),matrix,new(Color(),(CompositeMode)(n%3),n%3!=0,shader)) with{Clip=n%3==0?new RectF(2.25f,1.75f,width-3.125f,height-4.375f):null});
++    }
++    Compare("ordered rectangle batch randomized "+trial,draws.ToArray());
++}
++for(int trial=0;trial<16;trial++)
++{
++    var draws=new List<DrawingCommand>{DrawingCommand.Clear(Color())};
++    for(int n=0;n<70;n++)draws.Add(DrawingCommand.FillRectangle(new(Next(-5,20),Next(-5,15),Next(45,110),Next(40,85)),n%2==0?new Matrix3(-1,0,width-4,0,1,-3,0,0,1):Matrix3.Identity,new(Color(),(CompositeMode)(n%3))) with{Clip=n%3==0?new RectF(2.25f,1.75f,width-3.125f,height-4.375f):null});
++    Compare("ordered solid overlap "+trial,draws.ToArray());
++}
++if(optimized.OrderedRectangleDispatches==orderedBefore)throw new Exception("Overlapping rectangles never used the ordered per-pixel batch.");checks++;
+ Directory.CreateDirectory("artifacts/optimization-2026-10-21");
+ File.WriteAllText("artifacts/optimization-2026-10-21/gpu-kernel-tests.json",JsonSerializer.Serialize(new{Checks=checks,Comparisons=comparisons,BinningChecks=checks-comparisons-cacheChecks-profilingChecks-2,CacheChecks=cacheChecks,ProfilingChecks=profilingChecks,SupportedGlyphChecks=1,RectangleBatchDispatches=optimized.RectangleBatchDispatches,Passed=true,Device=optimized.DeviceName,MaximumChannelError=0,Reference="Unrestricted GPU edge scan and 16x16 samples",Font=fontPath},new JsonSerializerOptions{WriteIndented=true}));
+ Console.WriteLine($"PASS {checks} GPU checks ({comparisons} exact-byte comparisons; {optimized.RectangleBatchDispatches} real rectangle batch dispatches; tiles, winding, AA, inverse fills, clipping, shaders, cache, stride, initialization, CJK).");
+diff --git a/tests/GpuPreferred/Program.cs b/tests/GpuPreferred/Program.cs
+index e1e473a..7ed2109 100644
+--- a/tests/GpuPreferred/Program.cs
++++ b/tests/GpuPreferred/Program.cs
+@@ -84,6 +84,24 @@ foreach(Exception error in new Exception[]{new ArgumentException("bad scene"),ne
+ if(args.Contains("--hardware"))
+ {
+     if(!OperatingSystem.IsWindows())throw new PlatformNotSupportedException("This hardware test uses the current Windows Direct2D/Vulkan devices.");
++    AppContext.SetSwitch("SimdSkia.Direct2D.ValidateCompletionEvent",true);
++    AppContext.SetSwitch("SimdSkia.Direct2D.BlockingReadback",true);
++    foreach(var format in new[]{PixelFormat.Bgra8888,PixelFormat.Rgba8888})
++    {
++        using var readbackPixels=new PixelBuffer(64,48,format,AlphaFormat.Premultiplied,64*4+12);
++        using var offscreen=new Direct2DCanvas(readbackPixels);
++        Check(offscreen.UsesBlockingCompletion,"Hardware test requires D3D11.3 event completion.");
++        for(int frame=0;frame<12;frame++)
++        {
++            offscreen.Execute(DrawingCommand.Clear(new((byte)(frame*17),39,211,255)));
++            offscreen.Flush();
++            Check(readbackPixels.ReadPixel(23,31)==new Rgba32((byte)(frame*17),39,211,255),"Offscreen event exposed stale or incorrectly ordered pixels.");
++            Check(readbackPixels.GetRowSpan(31)[(64*4)..].IndexOfAnyExcept((byte)0)<0,"Offscreen readback changed stride padding.");
++        }
++        Check(offscreen.CompletionChecks==12&&offscreen.BlockingCompletionWaits==12&&offscreen.CompletionPolls==0,"Every readback must await an independently checked GPU event without polling.");
++    }
++    AppContext.SetSwitch("SimdSkia.Direct2D.ValidateCompletionEvent",false);
++    AppContext.SetSwitch("SimdSkia.Direct2D.BlockingReadback",false);
+     using(var originalPixels=new PixelBuffer(64,48,PixelFormat.Bgra8888,AlphaFormat.Premultiplied))
+     using(var cachedPixels=new PixelBuffer(64,48,PixelFormat.Bgra8888,AlphaFormat.Premultiplied))
+     {
+@@ -183,7 +201,7 @@ if(args.Contains("--hardware"))
+         Check(actual.GetPixelSpan().SequenceEqual(expected.GetPixelSpan()),"Eviction preserves in-flight command order and exact pixels.");
+     }
+     using var pixels=new PixelBuffer(32,20,PixelFormat.Bgra8888,AlphaFormat.Premultiplied);using var vk=new VulkanCanvas(pixels);
+-    int count=vk.PreparedPipelineCount;Check(count==7,"All seven Vulkan pipelines are ready before drawing.");
++    int count=vk.PreparedPipelineCount;Check(count==8,"All eight Vulkan pipelines are ready before drawing.");
+     vk.Execute(DrawingCommand.Clear(new(1,2,3,255)));
+     for(int i=0;i<4;i++)vk.Execute(DrawingCommand.FillRectangle(new(i*8,2,i*8+3,8),Matrix3.Identity,new(new(255,0,0,255),CompositeMode.SourceOver)));
+     vk.Flush();Check(vk.RectangleBatchDispatches>0&&vk.PreparedPipelineCount==count,"First rectangle batch creates no pipeline during drawing.");
+diff --git a/tools/run-gpu-cache-pair.py b/tools/run-gpu-cache-pair.py
+index 270a093..e1dbd6a 100644
+--- a/tools/run-gpu-cache-pair.py
++++ b/tools/run-gpu-cache-pair.py
+@@ -10,12 +10,16 @@ ROOT=Path(__file__).resolve().parents[1]
+ spec=importlib.util.spec_from_file_location('parent',ROOT/'tools/run-avalonia-aot.py');parent=importlib.util.module_from_spec(spec);spec.loader.exec_module(parent)
+ p=argparse.ArgumentParser()
+ for name in ['before','after','output']:p.add_argument('--'+name,type=Path,required=True)
++p.add_argument('--forks',type=int,default=3)
++p.add_argument('--warmup',type=float,default=3)
++p.add_argument('--seconds',type=float,default=5)
+ a=p.parse_args()
++if not 1<=a.forks<=20 or not .1<=a.seconds<=60 or not 0<=a.warmup<=30:raise ValueError('Invalid measurement settings')
+ if a.output.exists():raise SystemExit('Use a fresh directory.')
+ a.output.mkdir(parents=True)
+ workers={name:getattr(a,name).resolve() for name in ['before','after']}
+ hashes={str(f):hashlib.sha256(f.read_bytes()).hexdigest() for worker in workers.values() for f in worker.parent.rglob('*') if f.is_file() and f.suffix in ['.exe','.dll','.json']}
+-manifest=dict(method=__doc__,files=hashes,forks=3,warmupSeconds=3,measurementSeconds=5,complete=False)
++manifest=dict(method=__doc__,files=hashes,forks=a.forks,warmupSeconds=a.warmup,measurementSeconds=a.seconds,complete=False)
+ parent.save_json(a.output/'manifest.json',manifest)
+ ram=parent.physical_memory();rows=[];device=None
+ def validate(r):
+@@ -24,12 +28,12 @@ def validate(r):
+     gpu=r['device'].split(':')[-1].strip()
+     if device is None:device=gpu
+     if gpu!=device:raise ValueError('GPU changed')
+-for fork in range(3):
++for fork in range(a.forks):
+     for scene,scale in [('controls',1),('controls',1.5),('scroll',1)]:
+         order=[(version,backend) for version in workers for backend in ['vulkan','direct2d']];order=order[fork%4:]+order[:fork%4]
+         for version,backend in order:
+             dest=(a.output/f'{version}-{backend}-{scene}-{scale}-{fork}').resolve();dest.mkdir()
+-            row=parent.measure_process(workers[version],['--backend',backend,'--scene',scene,'--scale',str(scale),'--warmup','3','--seconds','5','--output',str(dest)],dest,ram,validator=validate)
++            row=parent.measure_process(workers[version],['--backend',backend,'--scene',scene,'--scale',str(scale),'--warmup',str(a.warmup),'--seconds',str(a.seconds),'--output',str(dest)],dest,ram,validator=validate)
+             row.update(version=version,fork=fork,output=str(dest));rows.append(row);parent.save_json(a.output/'runs.json',rows)
+             print(f'{version} {backend} {scene}/{scale} #{fork}: {row["meanMs"]:.4f} ms; WS {row["sampledMedianWorkingSetMiB"]:.2f}',flush=True)
+ summary=[]

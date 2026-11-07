@@ -1,5 +1,5 @@
 param(
-    [Parameter(Mandatory=$true)][ValidatePattern('^0\.1\.[012]$')][string]$Version,
+    [Parameter(Mandatory=$true)][ValidatePattern('^0\.1\.[0123]$')][string]$Version,
     [string]$Output='artifacts/nuget-stable'
 )
 $ErrorActionPreference='Stop'

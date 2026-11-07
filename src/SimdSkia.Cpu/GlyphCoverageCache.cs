@@ -8,12 +8,18 @@ internal static class GlyphCoverageCache
     internal readonly record struct Placement(CoverageMask Mask,int X,int Y);
     internal sealed record Batch(Placement[] Glyphs,long Bytes);
     private readonly record struct GlyphKey(PathGeometry Outline,Matrix3 Matrix,bool Antialias,float Tolerance);
-    private readonly record struct RunKey(GlyphRunGeometry Run,Matrix3 Matrix,bool Antialias,float Tolerance,bool SnapBaseline,int Luminance);
+    private readonly record struct RunKey(GlyphRunGeometry Run,Matrix3 Matrix,bool Antialias,float Tolerance,bool SnapBaseline,int Luminance)
+    {
+        public bool Equals(RunKey other)=>Matrix==other.Matrix&&Antialias==other.Antialias&&Tolerance==other.Tolerance&&
+            SnapBaseline==other.SnapBaseline&&Luminance==other.Luminance&&Run.ContentEquals(other.Run);
+        public override int GetHashCode()=>HashCode.Combine(Run.ContentHash,Matrix,Antialias,Tolerance,SnapBaseline,Luminance);
+    }
     private sealed record GlyphEntry(GlyphKey Key,CoverageMask Mask,long Bytes);
-    private sealed class RunEntry(RunKey key,Batch batch)
+    private sealed class RunEntry(RunKey key,Batch batch,long payloadBytes)
     {
         internal readonly RunKey Key=key;
         internal readonly Batch Batch=batch;
+        internal readonly long PayloadBytes=payloadBytes;
         // Clock/second-chance replacement avoids relinking managed references
         // (and their GC write barriers) for every glyph on every rendered frame.
         internal bool Referenced=true;
@@ -39,6 +45,7 @@ internal static class GlyphCoverageCache
     // frame. Eviction removes the index too, so it cannot retain evicted masks.
     private static readonly Dictionary<GlyphRunGeometry,LinkedListNode<RunEntry>> recentRuns=[];
     private static readonly LinkedList<RunEntry> runOrder=[];
+    private static readonly Dictionary<GlyphRunGeometry,(int Count,long Bytes)> runOwners=[];
     private static long glyphBytes,runBytes;
     internal const long MaximumGlyphBytes=8*1024*1024,MaximumRunBytes=4*1024*1024;
     internal const int MaximumGlyphs=4096,MaximumRuns=512;
@@ -50,7 +57,7 @@ internal static class GlyphCoverageCache
     internal static bool Enabled=true;
     internal static (int Glyphs,int Runs,long GlyphBytes,long RunBytes) Statistics{get{lock(gate)return(glyphs.Count,runs.Count,glyphBytes,runBytes);}}
     internal static int RecentRunCount{get{lock(gate)return recentRuns.Count;}}
-    internal static void Clear(){lock(gate){glyphs.Clear();glyphOrder.Clear();runs.Clear();recentRuns.Clear();runOrder.Clear();glyphBytes=runBytes=0;}}
+    internal static void Clear(){lock(gate){glyphs.Clear();glyphOrder.Clear();runs.Clear();recentRuns.Clear();runOrder.Clear();runOwners.Clear();glyphBytes=runBytes=0;}}
     internal static void Configure(long glyphBudget,long runBudget,int count)
     {lock(gate){GlyphByteLimit=Math.Min(MaximumGlyphBytes,Math.Max(0,glyphBudget));RunByteLimit=Math.Min(MaximumRunBytes,Math.Max(0,runBudget));GlyphCountLimit=count<=0?0:MaximumGlyphs;RunCountLimit=Math.Min(MaximumRuns,Math.Max(0,count));Clear();}}
     internal static Batch Resolve(GlyphRunGeometry run,Matrix3 matrix,bool aa,float tolerance,bool snapBaseline,int luminance,out int x,out int y)
@@ -76,7 +83,12 @@ internal static class GlyphCoverageCache
         if(Enabled)lock(gate)
         {
             if(runs.TryGetValue(key,out var cached))
-            {recentRuns[key.Run]=cached;cached.Value.Referenced=true;return cached.Value.Batch;}
+            {
+                // Do not retain every short-lived wrapper that has equal content.
+                // The identity index contains only the one resident run owner.
+                if(ReferenceEquals(key.Run,cached.Value.Key.Run))recentRuns[key.Run]=cached;
+                cached.Value.Referenced=true;return cached.Value.Batch;
+            }
         }
         return ResolveMiss(key);
     }
@@ -127,20 +139,29 @@ internal static class GlyphCoverageCache
                 else placement=placement with{Mask=Correct(placement.Mask,table)};
             }
         }
-        retained=batch.Bytes;
-        if(Enabled&&RunCountLimit>0&&retained<=RunByteLimit)lock(gate)
+        // Different subpixel phases retain the SAME immutable shaped run. Count
+        // its geometry once, with a reference count, instead of evicting useful
+        // masks as though every phase owned another copy of every outline.
+        long payload=batch.Bytes-geometryBytes+96;
+        if(Enabled&&RunCountLimit>0&&payload+geometryBytes<=RunByteLimit)lock(gate)
         {
-            if(RunCountLimit<=0||retained>RunByteLimit)return batch;
+            if(RunCountLimit<=0||payload+geometryBytes>RunByteLimit)return batch;
             if(runs.TryGetValue(key,out var existing)){existing.Value.Referenced=true;return existing.Value.Batch;}
-            while(runs.Count>=RunCountLimit||runBytes+retained>RunByteLimit)
+            long Required()=>payload+(runOwners.ContainsKey(key.Run)?0:geometryBytes);
+            while(runs.Count>=RunCountLimit||runBytes+Required()>RunByteLimit)
             {
                 var first=runOrder.First!;
                 if(first.Value.Referenced){first.Value.Referenced=false;runOrder.RemoveFirst();runOrder.AddLast(first);continue;}
-                runBytes-=first.Value.Batch.Bytes;runs.Remove(first.Value.Key);
+                runBytes-=first.Value.PayloadBytes;runs.Remove(first.Value.Key);
+                var owner=runOwners[first.Value.Key.Run];
+                if(owner.Count==1){runOwners.Remove(first.Value.Key.Run);runBytes-=owner.Bytes;}
+                else runOwners[first.Value.Key.Run]=(owner.Count-1,owner.Bytes);
                 if(recentRuns.TryGetValue(first.Value.Key.Run,out var recent)&&ReferenceEquals(recent,first))recentRuns.Remove(first.Value.Key.Run);
                 runOrder.RemoveFirst();
             }
-            var node=runOrder.AddLast(new RunEntry(key,batch));runs.Add(key,node);recentRuns[run]=node;runBytes+=retained;
+            if(runOwners.TryGetValue(run,out var retainedOwner))runOwners[run]=(retainedOwner.Count+1,retainedOwner.Bytes);
+            else{runOwners.Add(run,(1,geometryBytes));runBytes+=geometryBytes;}
+            var node=runOrder.AddLast(new RunEntry(key,batch,payload));runs.Add(key,node);recentRuns[run]=node;runBytes+=payload;
         }
         return batch;
     }

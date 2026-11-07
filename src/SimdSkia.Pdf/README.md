@@ -1,4 +1,8 @@
-# SimdSkia 0.1.2 正式版：0.1.1以来累计更新
+# SimdSkia 0.1.3 正式版：GPU 优先与文字缓存优化
+
+从0.1.2升级：桌面默认GPU优先，Windows Direct2D原生呈现、Linux Vulkan、诊断后回退CPU；macOS窗口仍CPU。`.UseSimdSkiaDesktop(options => options.UseCpu())` 可保留CPU。新增两帧完成队列、状态缓存、跨帧回退像素修复、文字缓存共享计费/不可变遮罩/LRU及Vulkan有序合批。动态中文自身GPU耗时下降81%–93%，分配降至约168–169B/帧，详细CPU/内存和画质限制见[0.1.3发行说明](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-0.1.3.md)及包内CHANGELOG.md。Avalonia仍>=12.1.0且<13.0.0；原版文字/曲线/整页画质、JPEG及部分性能/内存差距保留，整体目标未全部达到。第三方依赖保持可选 PdfPig 0.1.16、Sdcb.SimdCodecs1.4.0与Clipper2 2.0.0，公开状态以发布记录为准。
+
+## 0.1.2 历史累计功能
 
 固定SkiaSharp3.119.4基线，892→3230/3235项、累计新增2338项公共元数据签名，63→201类型；按约定保留5项原生合同缺口。扩展路径/描边/渐变/采样/滤镜/Blender/RuntimeEffect子集、Picture/网格、真实Alpha8/浮点颜色、LCD/中文点阵、SVG/XPS/SKP与PDF注释。增加GL/GLES/D3D12/Metal核心及GPU资源互操作，优化Vulkan设备复制/矩形合批/完成读回、SIMD/有界缓存/分配；修复MoveTo、SaveLayer混合范围和纹理生命周期。
 
@@ -6,7 +10,7 @@ Avalonia接受>=12.1.0且<13.0.0，已验证宿主12.1.0–12.1.5。默认SK*解
 
 完整累计更新、性能记录、限制与升级方法见包内CHANGELOG.md和[0.1.2发行说明](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-0.1.2.md)。原始测量按快照保留，不以正式版本号改写画质结果。
 
-## SimdSkia.Pdf 0.1.2
+## SimdSkia.Pdf 0.1.3
 
 Requires .NET 10.
 
@@ -17,7 +21,7 @@ native font library is used for PDF rendering. PDF Flate streams use the managed
 The optional parser is not pulled in by ordinary Avalonia or compatibility users. Keep all direct SimdSkia package versions aligned.
 
 ```shell
-dotnet add package SimdSkia.Pdf --version 0.1.2
+dotnet add package SimdSkia.Pdf --version 0.1.3
 ```
 
 Every package includes `CHANGELOG.md` and NuGet release notes. This release is a

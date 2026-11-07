@@ -1,0 +1,25 @@
+{
+  "stableVersion": "0.1.2",
+  "published": false,
+  "baselineCommit": "a1e5aaaeeedce0104b5c3c18f0390c8b4be55a1e",
+  "selectedStages": [
+    "scroll-final",
+    "slow-verified",
+    "gpu-pages-final"
+  ],
+  "intermediateStages": {
+    "event-pair": "one-fork event-always candidate: CPU lower, latency higher; final opt-in only",
+    "slow-cases-pilot2": "rejected general ordered shader, not selected",
+    "compact-pilot": "16-command compact shader before final area restriction",
+    "slow-final": "three-fork checkpoint before large-edge count restriction; higher 1024 curve memory; not final",
+    "scroll-before": "initial --no-restore accidentally reused 0.1.2 package assets; before exe equals stable exe; excluded from source before/after attribution"
+  },
+  "aotInputs": "Explicit restored frozen source-before assemblies versus current source-after project references; exact ILC inputs retained",
+  "limitations": [
+    "one Windows GPU only",
+    "no new native-swapchain original comparison",
+    "full-page/text/curve native quality gates still fail",
+    "memory is whole process, not VRAM"
+  ],
+  "harnessRetry": "one incorrect Optimization test DLL path returned 1 before the corrected path passed; retained in validation-final.json"
+}

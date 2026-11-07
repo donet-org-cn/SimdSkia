@@ -2,7 +2,8 @@
   <Import Project="../Aot.Common.props" />
   <PropertyGroup><DefineConstants>$(DefineConstants);MANAGED</DefineConstants><SimdSkiaPackageVersion Condition="'$(SimdSkiaPackageVersion)' == ''">0.1.2</SimdSkiaPackageVersion></PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../../../src/SimdSkia.Avalonia/SimdSkia.Avalonia.csproj" Condition="'$(UsePackedSimdSkia)' != 'true'" />
+    <ProjectReference Include="../../../src/SimdSkia.Avalonia/SimdSkia.Avalonia.csproj" Condition="'$(UsePackedSimdSkia)' != 'true' and '$(FrozenEngineDirectory)' == ''" />
+    <Reference Include="$(FrozenEngineDirectory)/SimdSkia*.dll;$(FrozenEngineDirectory)/Sdcb*.dll" Condition="'$(FrozenEngineDirectory)' != ''" />
     <PackageReference Include="SimdSkia.Avalonia" Version="[$(SimdSkiaPackageVersion)]" Condition="'$(UsePackedSimdSkia)' == 'true'" />
   </ItemGroup>
 </Project>

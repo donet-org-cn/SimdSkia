@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup Condition="'$(FrozenEngineDirectory)' == ''">
+    <ProjectReference Include="../../src/SimdSkia.Cpu/SimdSkia.Cpu.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(FrozenEngineDirectory)' != ''">
+    <Reference Include="SimdSkia.Core"><HintPath>$(FrozenEngineDirectory)/SimdSkia.Core.dll</HintPath></Reference>
+    <Reference Include="SimdSkia.Cpu"><HintPath>$(FrozenEngineDirectory)/SimdSkia.Cpu.dll</HintPath></Reference>
+  </ItemGroup>
+</Project>

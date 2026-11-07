@@ -1,7 +1,7 @@
 <Project>
   <Import Project="../Directory.Build.props" />
   <PropertyGroup>
-    <Version Condition="'$(Version)' == ''">0.1.2</Version>
+    <Version Condition="'$(Version)' == ''">0.1.3</Version>
     <Authors>hnlyf168</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/donet-org-cn/SimdSkia</PackageProjectUrl>
@@ -11,7 +11,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Description>Managed C# 2D rendering components. Version 0.1 supports the documented subset; SkiaSharp source and rendering equivalence remain incomplete. No Google Skia rendering dependency.</Description>
     <PackageTags>SimdSkia;graphics;rendering;managed;2d</PackageTags>
-    <PackageReleaseNotes>0.1.2正式版，汇集0.1.1以来累计更新：固定SkiaSharp3.119.4基线892→3230/3235，新增2338项公共元数据，63→201类型；5项原生合同缺口按约定保留。扩展路径/描边/渐变/采样/滤镜/Blender/RuntimeEffect子集、Picture/网格、真实Alpha8/浮点颜色/LCD中文点阵、SVG/XPS/SKP和PDF注释。增加GL/GLES/D3D12/Metal核心及GPU资源互操作，优化Vulkan设备复制/矩形合批/读回和SIMD/有界缓存/分配。修复MoveTo、SaveLayer混合范围、纹理生命周期和默认N32预乘解码。Avalonia>=12.1.0且&lt;13.0.0，宿主12.1.0–12.1.5。依赖保持Sdcb.SimdCodecs1.4.0/Clipper2 2.0.0/可选PdfPig0.1.16。JPEG/整页画质、内存和部分性能仍有差距，Metal无Mac GPU验证；不是全面行为或二进制兼容保证。完整累计更新、升级注意事项和性能记录见CHANGELOG.md、README.md。</PackageReleaseNotes>
+    <PackageReleaseNotes>0.1.3正式版：桌面默认GPU优先（Windows Direct2D、Linux Vulkan，诊断后回退CPU；macOS窗口仍CPU）；UseCpu可显式保留CPU。Direct2D完成事件、两帧队列、flip呈现、原生状态缓存及跨帧CPU回退像素同步修复。文字缓存共享轮廓计费/不可变遮罩/LRU、重复内容复用；动态中文自身GPU耗时下降81%–93%，分配降至约168–169B/帧。Vulkan有序小面积纯色矩形合批及边数据缓存优化。Avalonia>=12.1.0且&lt;13.0.0，发布矩阵12.1.0–12.1.5；固定3230/3235 API、5个原生合同缺口。小混合仍慢约39%，JPEG/文字/曲线/整页画质及内存仍有差距，Metal未实机；旧滚动异常同一0.1.2未重现，根因未知，不宣称整体同画质持平。依赖保持Sdcb.SimdCodecs1.4.0、Clipper2 2.0.0、PdfPig0.1.16。完整更新和性能记录见CHANGELOG.md与README.md。</PackageReleaseNotes>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>

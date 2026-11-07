@@ -25,6 +25,9 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
     private int nextFrame;
     private bool validateCompletionEvent;
     private bool legacyCompletionPolling;
+    // Opt-in power/CPU tradeoff for offscreen capture. Map is faster on some
+    // drivers, while completion events consume less CPU during long readbacks.
+    private readonly bool blockingReadback=AppContext.TryGetSwitch("SimdSkia.Direct2D.BlockingReadback",out bool blocking)&&blocking;
     private bool drawing,disposed,faulted;
     private bool shadowStale;
     private readonly bool cacheDrawingState=!(AppContext.TryGetSwitch("SimdSkia.Direct2D.DisableStateCache",out bool disableStateCache)&&disableStateCache);
@@ -90,22 +93,22 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
                     presentationBuffer=D2DNative.Backbuffer(swapChain);texture=D2DNative.Texture(device,pixels.Width,pixels.Height,false);
                 }
                 else texture=D2DNative.Backbuffer(swapChain);
-                legacyCompletionPolling=AppContext.TryGetSwitch("SimdSkia.Direct2D.LegacyCompletionPolling",out bool legacy)&&legacy;
-                if(!legacyCompletionPolling)
-                    completionContext=D2DNative.TryQuery(immediate,new Guid("b4e3c01d-e79e-4637-91b2-510e9f4c9b8f"));
-                if(completionContext!=0)
-                {
-                    completionEvent=new(false,EventResetMode.AutoReset);
-                    validateCompletionEvent=AppContext.TryGetSwitch("SimdSkia.Direct2D.ValidateCompletionEvent",out bool verify)&&verify;
-                    if(validateCompletionEvent)completion=D2DNative.QueryEvent(device);
-                    for(int i=0;i<2;i++)
-                    {
-                        var frame=new PendingFrame();pendingFrames=[..pendingFrames,frame];
-                        if(validateCompletionEvent)frame.Query=D2DNative.QueryEvent(device);
-                    }
-                }
-                else completion=D2DNative.QueryEvent(device);
             }
+            legacyCompletionPolling=AppContext.TryGetSwitch("SimdSkia.Direct2D.LegacyCompletionPolling",out bool legacy)&&legacy;
+            if(!legacyCompletionPolling&&(windowHandle!=0||blockingReadback))
+                completionContext=D2DNative.TryQuery(immediate,new Guid("b4e3c01d-e79e-4637-91b2-510e9f4c9b8f"));
+            if(completionContext!=0)
+            {
+                completionEvent=new(false,EventResetMode.AutoReset);
+                validateCompletionEvent=AppContext.TryGetSwitch("SimdSkia.Direct2D.ValidateCompletionEvent",out bool verify)&&verify;
+                if(validateCompletionEvent)completion=D2DNative.QueryEvent(device);
+                for(int i=0;windowHandle!=0&&i<2;i++)
+                {
+                    var frame=new PendingFrame();pendingFrames=[..pendingFrames,frame];
+                    if(validateCompletionEvent)frame.Query=D2DNative.QueryEvent(device);
+                }
+            }
+            else if(windowHandle!=0)completion=D2DNative.QueryEvent(device);
             if(windowHandle==0)staging=D2DNative.Texture(device,pixels.Width,pixels.Height,true);
             surface=D2DNative.Query(texture,D2DNative.DxgiSurface);target=D2DNative.Target(context,surface);D2DNative.SetTarget(context,target);Upload();
         }
@@ -302,6 +305,24 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
         foreach(nint item in frame.Resources){nint value=item;D2DNative.Release(ref value);}frame.Resources.Clear();frame.Pending=false;
         CompletedFrames++;CompletedBatches++;return true;
     }
+    private void WaitForSubmittedWork()
+    {
+        if(validateCompletionEvent)D2DNative.EndEvent(immediate,completion);
+        D2DNative.FlushWithEvent(completionContext,completionEvent!.SafeWaitHandle.DangerousGetHandle());
+        BlockingCompletionWaits++;long start=Stopwatch.GetTimestamp();
+        while(!completionEvent.WaitOne(100))
+        {
+            D2DNative.Check(D2DNative.DeviceRemovedReason(device));
+            if(Stopwatch.GetElapsedTime(start).TotalSeconds>10)throw new TimeoutException("Direct2D completion timed out.");
+        }
+        CompletionWaitMilliseconds+=Stopwatch.GetElapsedTime(start).TotalMilliseconds;
+        if(validateCompletionEvent)
+        {
+            int result=D2DNative.EventReady(immediate,completion);D2DNative.Check(result);
+            if(result!=0)throw new InvalidOperationException("The GPU completion event preceded its independent query.");
+            CompletionChecks++;
+        }
+    }
     private unsafe void Finish(bool readback,bool present,bool queued=false)
     {
         Check();if(!drawing&&!present&&!(readback&&shadowStale)){WaitForIdle();return;}long start=Stopwatch.GetTimestamp();
@@ -313,7 +334,11 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
             if(readback)
             {
                 if(staging==0)staging=D2DNative.Texture(device,pixels.Width,pixels.Height,true);
-                D2DNative.Copy(immediate,staging,texture);var mapped=D2DNative.Map(immediate,staging);
+                D2DNative.Copy(immediate,staging,texture);
+                // Blocking Map may spin inside the driver. Await the copy on an
+                // OS event first, retaining exactly the same completed pixels.
+                if(blockingReadback&&completionContext!=0)WaitForSubmittedWork();
+                var mapped=D2DNative.Map(immediate,staging);
                 try
                 {
                     for(int y=0;y<pixels.Height;y++)
@@ -341,22 +366,7 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
                 }
                 else if(completionContext!=0)
                 {
-                    if(validateCompletionEvent)D2DNative.EndEvent(immediate,completion);
-                    D2DNative.FlushWithEvent(completionContext,completionEvent!.SafeWaitHandle.DangerousGetHandle());
-                    BlockingCompletionWaits++;
-                    long waitStart=Stopwatch.GetTimestamp();
-                    while(!completionEvent.WaitOne(100))
-                    {
-                        D2DNative.Check(D2DNative.DeviceRemovedReason(device));
-                        if(Stopwatch.GetElapsedTime(start).TotalSeconds>10)throw new TimeoutException("Direct2D completion timed out.");
-                    }
-                    CompletionWaitMilliseconds+=Stopwatch.GetElapsedTime(waitStart).TotalMilliseconds;
-                    if(validateCompletionEvent)
-                    {
-                        int result=D2DNative.EventReady(immediate,completion);D2DNative.Check(result);
-                        if(result!=0)throw new InvalidOperationException("The GPU completion event was signaled before its event query completed.");
-                        CompletionChecks++;
-                    }
+                    WaitForSubmittedWork();
                 }
                 else
                 {

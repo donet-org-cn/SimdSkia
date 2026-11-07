@@ -1,0 +1,230 @@
+[
+  {
+    "name": "build-final-verified",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "build",
+      "SimdSkia.sln",
+      "-c",
+      "Release",
+      "-m:1"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "build-verified-micro",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "build",
+      "benchmarks/GpuManaged",
+      "-c",
+      "Release",
+      "--no-restore",
+      "-m:1"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "build-verified-gpu-page",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "build",
+      "benchmarks/AvaloniaGpuParity/Managed",
+      "-c",
+      "Release",
+      "--no-restore",
+      "-m:1"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "build-verified-gpu-reference-page",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "build",
+      "benchmarks/AvaloniaGpuParity/Original",
+      "-c",
+      "Release",
+      "--no-restore",
+      "-m:1"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "build-verified-churn",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "build",
+      "benchmarks/GlyphRunChurn",
+      "-c",
+      "Release",
+      "--no-restore",
+      "-m:1"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "verify-core",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "tests/SimdSkia.Tests/bin/Release/net10.0/SimdSkia.Tests.dll"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "verify-optimization",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "tests/Optimization/bin/Release/net10.0/SimdSkia.Optimization.Tests.dll",
+      "baseline/fonts/ZCOOLXiaoWei-Regular.ttf"
+    ],
+    "exitCode": 1
+  },
+  {
+    "name": "verify-optimization",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "tests/Optimization/bin/Release/net10.0/Optimization.dll",
+      "baseline/fonts/ZCOOLXiaoWei-Regular.ttf"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "verify-controls",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "tests/AvaloniaControls/bin/Release/net10.0/SimdSkia.Avalonia.Controls.Tests.dll",
+      "--frames",
+      "5",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\scroll-opt-2026-11-07\\controls-verified"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "verify-gpu",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "tests/GpuOptimization/bin/Release/net10.0/SimdSkia.GpuOptimization.Tests.dll",
+      "baseline/fonts/ZCOOLXiaoWei-Regular.ttf"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "verify-gpu-integration",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "tests/AvaloniaGpu/bin/Release/net10.0/AvaloniaGpu.dll"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "verify-gpu-preference",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "tests/GpuPreferred/bin/Release/net10.0/SimdSkia.GpuPreferred.Tests.dll",
+      "--hardware"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "formal-scroll",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/run-scroll-regression.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\scroll-opt-2026-11-07\\scroll-final",
+      "--before",
+      "F:\\SimdSkia\\artifacts\\scroll-opt-2026-11-07\\source-before-aot\\AvaloniaAot.SimdSkia.exe",
+      "--after",
+      "F:\\SimdSkia\\artifacts\\scroll-opt-2026-11-07\\source-after-aot\\AvaloniaAot.SimdSkia.exe",
+      "--stable",
+      "F:\\SimdSkia\\artifacts\\blog-preview8-to-012-2026-11-07\\aot-publish\\simd\\AvaloniaAot.SimdSkia.exe",
+      "--original",
+      "F:\\SimdSkia\\artifacts\\blog-preview8-to-012-2026-11-07\\aot-publish\\original\\AvaloniaAot.Original.exe"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "formal-micro",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/run-gpu-slow-cases.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\scroll-opt-2026-11-07\\slow-verified",
+      "--before",
+      "F:\\SimdSkia\\artifacts\\scroll-opt-2026-11-07\\gpu-micro-before-binary\\SimdSkia.Benchmark.GpuManaged.dll"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "formal-pages",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/run-gpu-parity.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\scroll-opt-2026-11-07\\gpu-pages-final",
+      "--forks",
+      "3",
+      "--seconds",
+      "5",
+      "--warmup",
+      "3"
+    ],
+    "exitCode": 2
+  },
+  {
+    "name": "churn-verified-before-0",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "F:\\SimdSkia\\artifacts\\scroll-opt-2026-11-07\\churn-before\\GlyphRunChurn.dll",
+      "F:\\SimdSkia\\artifacts\\scroll-opt-2026-11-07\\churn-verified-before-0.json"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "churn-verified-after-0",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "F:\\SimdSkia\\benchmarks\\GlyphRunChurn\\bin\\Release\\net10.0\\GlyphRunChurn.dll",
+      "F:\\SimdSkia\\artifacts\\scroll-opt-2026-11-07\\churn-verified-after-0.json"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "churn-verified-after-1",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "F:\\SimdSkia\\benchmarks\\GlyphRunChurn\\bin\\Release\\net10.0\\GlyphRunChurn.dll",
+      "F:\\SimdSkia\\artifacts\\scroll-opt-2026-11-07\\churn-verified-after-1.json"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "churn-verified-before-1",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "F:\\SimdSkia\\artifacts\\scroll-opt-2026-11-07\\churn-before\\GlyphRunChurn.dll",
+      "F:\\SimdSkia\\artifacts\\scroll-opt-2026-11-07\\churn-verified-before-1.json"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "churn-verified-before-2",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "F:\\SimdSkia\\artifacts\\scroll-opt-2026-11-07\\churn-before\\GlyphRunChurn.dll",
+      "F:\\SimdSkia\\artifacts\\scroll-opt-2026-11-07\\churn-verified-before-2.json"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "churn-verified-after-2",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "F:\\SimdSkia\\benchmarks\\GlyphRunChurn\\bin\\Release\\net10.0\\GlyphRunChurn.dll",
+      "F:\\SimdSkia\\artifacts\\scroll-opt-2026-11-07\\churn-verified-after-2.json"
+    ],
+    "exitCode": 0
+  }
+]
