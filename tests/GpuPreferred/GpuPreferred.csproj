@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup><OutputType>Exe</OutputType><AssemblyName>SimdSkia.GpuPreferred.Tests</AssemblyName></PropertyGroup>
+  <PropertyGroup><OutputType>Exe</OutputType><AssemblyName>SimdSkia.GpuPreferred.Tests</AssemblyName><AllowUnsafeBlocks>true</AllowUnsafeBlocks></PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/SimdSkia.Avalonia.Desktop/SimdSkia.Avalonia.Desktop.csproj" />
     <PackageReference Include="Avalonia" Version="[12.1.5]" GeneratePathProperty="true" ExcludeAssets="compile" />

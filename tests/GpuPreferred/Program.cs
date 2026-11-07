@@ -6,8 +6,15 @@ using SimdSkia;
 using SimdSkia.Avalonia;
 using SimdSkia.Cpu;
 using SimdSkia.Gpu;
+using SimdSkia.Gpu.Direct2D;
 using PixelFormat=SimdSkia.PixelFormat;
 using AlphaFormat=SimdSkia.AlphaFormat;
+
+if(args.Length==4&&args[0]=="--native-throughput")
+{
+    if(!OperatingSystem.IsWindows())throw new PlatformNotSupportedException("Native Direct2D throughput requires Windows hardware.");
+    NativeThroughput.Run(args[1],int.Parse(args[2],System.Globalization.CultureInfo.InvariantCulture),args[3]);return;
+}
 
 int checks=0;
 void Check(bool value,string message){if(!value)throw new Exception(message);checks++;}
@@ -77,6 +84,82 @@ foreach(Exception error in new Exception[]{new ArgumentException("bad scene"),ne
 if(args.Contains("--hardware"))
 {
     if(!OperatingSystem.IsWindows())throw new PlatformNotSupportedException("This hardware test uses the current Windows Direct2D/Vulkan devices.");
+    using(var originalPixels=new PixelBuffer(64,48,PixelFormat.Bgra8888,AlphaFormat.Premultiplied))
+    using(var cachedPixels=new PixelBuffer(64,48,PixelFormat.Bgra8888,AlphaFormat.Premultiplied))
+    {
+        AppContext.SetSwitch("SimdSkia.Direct2D.DisableStateCache",true);
+        using var original=new Direct2DCanvas(originalPixels);
+        AppContext.SetSwitch("SimdSkia.Direct2D.DisableStateCache",false);
+        using var cached=new Direct2DCanvas(cachedPixels);
+        void Both(DrawingCommand command){original.Execute(command);cached.Execute(command);}
+        Both(DrawingCommand.Clear(new(22,44,66,255)));
+        var mask=new CoverageClip(3,4,20,18,Enumerable.Range(0,360).Select(i=>(byte)(i%4*85)).ToArray());
+        for(int i=0;i<48;i++)
+        {
+            var mode=(CompositeMode)(i%3);
+            var matrix=i%2==0?Matrix3.Identity:new Matrix3(1,.2f,2,-.1f,1,3,0,0,1);
+            var command=DrawingCommand.FillRectangle(new(i%12,2,32+i%8,35),matrix,new(new((byte)(i*17),110,190,160),mode,i%2==0)) with{Clip=i%7==0?null:new(2.25f,3.75f,54.5f,42.5f),CoverageClip=mode==CompositeMode.SourceOver&&i%2==0?mask:null};
+            Both(command);
+            if(i%11==0){original.Flush();cached.Flush();}
+        }
+        original.Flush();cached.Flush();
+        Check(originalPixels.GetPixelSpan().SequenceEqual(cachedPixels.GetPixelSpan()),"Cached native state preserves exact transformed clips/layers/blends across EndDraw.");
+        long a=original.NativeStateChanges,b=cached.NativeStateChanges;
+        for(int i=0;i<20;i++)Both(DrawingCommand.FillRectangle(new(1,1,10,10),Matrix3.Identity,new(new(120,140,160,255),CompositeMode.SourceOver,true)) with{Clip=new(0,0,64,48)});
+        original.Flush();cached.Flush();
+        Check(cached.NativeStateChanges-b<(original.NativeStateChanges-a)/2&&originalPixels.GetPixelSpan().SequenceEqual(cachedPixels.GetPixelSpan()),"Repeated native state calls fall by over half without changing pixels.");
+    }
+    nint hwnd=NativeWindow.CreateWindowEx(0,"STATIC","SimdSkia GPU completion regression",0,0,0,64,48,0,0,0,0);
+    if(hwnd==0)throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
+    try
+    {
+        AppContext.SetSwitch("SimdSkia.Direct2D.ValidateCompletionEvent",true);
+        foreach(bool legacy in new[]{false,true})
+        foreach(var format in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})
+        {
+            AppContext.SetSwitch("SimdSkia.Direct2D.LegacySwapchain",legacy);
+            using var actual=new PixelBuffer(64,48,format,AlphaFormat.Premultiplied,64*4+12);
+            using var expected=new PixelBuffer(64,48,format,AlphaFormat.Premultiplied,64*4+12);
+            for(int y=0;y<48;y++){actual.GetRowSpan(y)[256..].Fill(0xa5);expected.GetRowSpan(y)[256..].Fill(0xa5);}
+            using var gpu=new WindowGpuCanvas(actual,SimdSkiaGpuBackend.Direct2D,true,hwnd);
+            using var cpu=new RasterCanvas(expected);
+            void Both(DrawingCommand command){gpu.Execute(command);cpu.Execute(command);}
+            Both(DrawingCommand.Clear(new(22,44,66,255)));
+            Both(DrawingCommand.FillRectangle(new(2,3,15,19),Matrix3.Identity,new(new(235,56,78,255),CompositeMode.SourceOver)));
+            gpu.Present();
+            // A second partial frame must retain the first, despite flip rotation.
+            Both(DrawingCommand.FillRectangle(new(31,21,44,36),Matrix3.Identity,new(new(56,210,78,255),CompositeMode.SourceOver)));
+            gpu.Present();
+            // The first command of the next frame falls back to CPU. It must
+            // read GPU pixels even though the preceding Present cleared gpuDirty.
+            Both(DrawingCommand.FillRectangle(new(0,0,25,24),Matrix3.Identity,new(new(125,180,210,128),CompositeMode.Multiply)));
+            gpu.Present();gpu.Flush();
+            Check(actual.GetPixelSpan().SequenceEqual(expected.GetPixelSpan()),"Native partial frames + cross-frame CPU fallback preserve exact pixels and stride: "+format+" legacy="+legacy);
+            Check(SimdSkiaGpuDiagnostics.NativePendingFrames==0,"Flush drains all submitted native GPU work.");
+        }
+        AppContext.SetSwitch("SimdSkia.Direct2D.LegacySwapchain",false);
+        using var queuedPixels=new PixelBuffer(64,48,PixelFormat.Bgra8888,AlphaFormat.Premultiplied);
+        using var queued=new Direct2DCanvas(queuedPixels,hwnd);
+        Check((queued.NativeDeviceCreationFlags&1)==0,"The device keeps the thread-safe flag policy after the single-threaded experiment.");
+        queued.ConfigureCache(0,false); // Every image is a transient GPU resource.
+        queued.Execute(DrawingCommand.Clear(new(22,44,66,255)));
+        for(int i=0;i<24;i++)
+        {
+            using var image=new PixelBuffer(2,2,PixelFormat.Bgra8888,AlphaFormat.Premultiplied);
+            for(int y=0;y<2;y++)for(int x=0;x<2;x++)image.WritePixel(x,y,new((byte)(i*10),80,120,255));
+            queued.Execute(new DrawingCommand(CommandKind.DrawImage,new(i*2,1,i*2+2,40),Matrix3.Identity,new(new(255,255,255,255),CompositeMode.SourceOver)){Image=image,ImageIsImmutable=true,Sampling=ImageSampling.Nearest});
+            // Dispose the CPU source immediately; its uploaded GPU bitmap must
+            // stay alive until this frame's completion event actually signals.
+            queued.QueuePresent();Check(queued.PendingFrames<=2,"At most two frames/resources are in flight.");
+        }
+        queued.WaitForIdle();
+        Check(queued.CompletedFrames==24&&queued.SubmittedFrames==24&&queued.PendingFrames==0,"Idle waits for actual completion of every queued frame.");
+        Check(queued.CompletionChecks==24&&queued.CompletionPolls==0,"Every queued completion event is verified by an independent GPU query without polling.");
+        queued.Flush();
+        Check(queuedPixels.ReadPixel(1,2)==new Rgba32(0,80,120,255)&&queuedPixels.ReadPixel(47,2)==new Rgba32(230,80,120,255),"GPU texture retains all 24 partial frames.");
+        Throws<InvalidOperationException>(()=>Task.Run(()=>{if(OperatingSystem.IsWindows())queued.WaitForIdle();}).GetAwaiter().GetResult());
+    }
+    finally{AppContext.SetSwitch("SimdSkia.Direct2D.ValidateCompletionEvent",false);AppContext.SetSwitch("SimdSkia.Direct2D.LegacySwapchain",false);NativeWindow.DestroyWindow(hwnd);}
     var glyph=new PositionedGlyph(PathGeometry.Rectangle(new(0,0,5,8)),new(0,0));
     var run=new GlyphRunGeometry([glyph],Matrix3.Identity);
     foreach(var backend in Enum.GetValues<SimdSkiaGpuBackend>())
@@ -121,4 +204,13 @@ sealed class TestTarget(Exception? error=null):IRenderTarget,IDeviceFaultSource
         Contexts++;properties=new(){PreviousFrameIsRetained=Contexts>1};return new DrawingContext(Pixels,new Vector(96,96));
     }
     public void Dispose(){if(Disposals!=0)return;Disposals++;Pixels.Dispose();}
+}
+
+internal static partial class NativeWindow
+{
+    [LibraryImport("user32.dll",EntryPoint="CreateWindowExW",StringMarshalling=StringMarshalling.Utf16,SetLastError=true)]
+    internal static partial nint CreateWindowEx(uint extendedStyle,string className,string title,uint style,int x,int y,int width,int height,nint parent,nint menu,nint instance,nint parameter);
+    [LibraryImport("user32.dll")]
+    [return:MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool DestroyWindow(nint hwnd);
 }

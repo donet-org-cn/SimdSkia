@@ -3,7 +3,14 @@ public sealed partial class Direct2DCanvas
 {
     // Texture payload accounting; excludes opaque driver bookkeeping and native
     // path/brush allocation sizes, which Direct2D does not expose here.
-    internal (int Count,long Bytes,long Purgeable) ResourceUsage=>(2+images.Count+clips.Count*2+paths.Count+solids.Count+gradients.Count,(long)pixels.Width*pixels.Height*8+imageBytes+clipBytes,imageBytes+clipBytes);
+    internal (int Count,long Bytes,long Purgeable) ResourceUsage
+    {
+        get
+        {
+            int buffers=(texture!=0?1:0)+(staging!=0?1:0)+(UsesFlipPresentation?2:0);
+            return(buffers+images.Count+clips.Count*2+paths.Count+solids.Count+gradients.Count,(long)pixels.Width*pixels.Height*4*buffers+imageBytes+clipBytes,imageBytes+clipBytes);
+        }
+    }
     internal void ConfigureCache(long bytes,bool pathMasks)
     {Check();resourceLimit=bytes;cachePathMasks=pathMasks;if(imageBytes+clipBytes>bytes||!pathMasks)PurgeCachePayloads();}
     private void PurgeCachePayloads(bool scratchOnly=false)

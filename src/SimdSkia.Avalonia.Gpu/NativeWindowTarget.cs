@@ -11,8 +11,8 @@ internal sealed partial class NativeWindowTarget(INativePlatformHandleSurface su
     private WindowGpuCanvas? canvas;
     private bool disposed,active,retained;
     public bool IsDeviceFaulted=>canvas?.IsFaulted==true;
-    // The sequential blit-model swapchain preserves its backbuffer across Present.
-    // This lets Avalonia draw controls directly instead of inserting a CPU raster bitmap.
+    // The GPU render texture retains contents independently of the flip buffers.
+    // Avalonia can draw directly without inserting a CPU raster bitmap.
     public RenderTargetProperties Properties => new(){RetainsPreviousFrameContents=true,IsSuitableForDirectRendering=true};
     public PlatformRenderTargetState PlatformRenderTargetState=>disposed?PlatformRenderTargetState.Disposed:canvas?.IsFaulted==true?new(){IsCorrupted=true}:surface.IsReady?PlatformRenderTargetState.Ready:new(){IsReady=false};
     public IDrawingContextImpl CreateDrawingContext(IRenderTarget.RenderTargetSceneInfo scene,out RenderTargetDrawingContextProperties properties)

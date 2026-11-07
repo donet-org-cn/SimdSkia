@@ -25,6 +25,11 @@ internal static class Program
         Smoke = args.Contains("--smoke");
         Benchmark=args.Contains("--benchmark");Controls=args.Contains("--controls");
         Cpu=args.Contains("--cpu");
+        AppContext.SetSwitch("SimdSkia.Direct2D.LegacyCompletionPolling",args.Contains("--legacy-gpu-polling"));
+        AppContext.SetSwitch("SimdSkia.Direct2D.ValidateCompletionEvent",args.Contains("--verify-gpu-completion"));
+        AppContext.SetSwitch("SimdSkia.Direct2D.LegacySwapchain",args.Contains("--legacy-gpu-swapchain"));
+        SimdSkiaGpuDiagnostics.SynchronizeNativeFrames=args.Contains("--synchronous-gpu");
+        AppContext.SetSwitch("SimdSkia.Direct2D.DisableStateCache",args.Contains("--uncached-gpu-state"));
         Transparent=args.Contains("--transparent");
         SimdSkiaGpuDiagnostics.CaptureVulkanProfiles=args.Contains("--vulkan-profile");
         int output = Array.IndexOf(args, "--output"); if (output >= 0) Output = args[output + 1];
@@ -103,7 +108,7 @@ internal sealed class DemoApp : Application
             desktop.MainWindow = window;
             if(Program.Benchmark)
             {
-                if(OperatingSystem.IsWindows()){window.Position=new PixelPoint(-20000,-20000);window.ShowInTaskbar=false;}
+                if(OperatingSystem.IsWindows()&&!Environment.GetCommandLineArgs().Contains("--visible-benchmark")){window.Position=new PixelPoint(-20000,-20000);window.ShowInTaskbar=false;}
                 window.Opened+=(_,_)=>WindowBenchmark.Start(window,button,desktop);
             }
             if (Program.Smoke)

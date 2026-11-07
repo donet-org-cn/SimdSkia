@@ -1,5 +1,7 @@
 # 验证记录：0.1.2
 
+最新未发布 Direct2D 队列批次：79 项策略/实际 HWND/局部帧保留/跨帧 CPU 回退/格式与 stride/两帧队列/24 个独立 GPU 查询核验/设备创建标志/原生状态缓存精确像素通过；既有 Avalonia GPU 12174 项、Vulkan 566 项（556 精确字节，含真实中文轮廓）通过。Native AOT Auto/CPU 窗口实际运行，无 CLR/JIT。计时结束排空在途 GPU 工作，异步提交耗时和完成吞吐分别报告，见[本轮报告与证据](PERFORMANCE-GPU-COMPLETION-2026-11-07.md)。单线程设备及硬件 fence 无稳定CPU收益的候选已撤回，保留实验数据；最终源码23文件与选定测量阶段SHA完全一致。不改变原版严格整页画质失败状态。
+
 未发布 GPU 优先批次：新增无硬件故障注入、设备/表面失效区分与清理检查；Windows硬件检查LRU预算、在途像素及7条初始化管线。真实Windows控件窗口CPU/Auto Direct2D/Vulkan与改动前三组呈现PNG相同；Native AOT的Auto/CPU均实际运行且无CLR/JIT。详见[本批合同与证据](GPU-PREFERRED-2026-11-07.md)。不将透明提示被宿主忽略当成真正分层窗口通过，不将同后端像素相同当成原版严格画质通过。
 
 2026-11-07正式包补测：新建输出目录，NuGet.org公开0.1.2，真实portable Native AOT无CLR/JIT、固定字体/尺寸、2秒预热/5秒/3fork；45进程全部保留原版default/full和本库、25ms外部采样。三个吞吐综合耗时比0.968，加入paced后1.437；限帧滚动7.528倍且分配偏高。画质0/10，脚本按合同退出2，未改门槛。默认模板AOT另验证同Fluent/Inter的两个真实窗口、来源与逐文件/完整ZIP，36.55/24.02MiB。[报告](PERFORMANCE-STABLE-0.1.2-AOT-2026-11-07.md)、[215文件哈希与45原始帧引用](evidence/blog-preview8-to-012-2026-11-07/)；既有JIT/GPU数据单独引用。报告与博客生成不修改渲染代码。

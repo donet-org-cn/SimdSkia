@@ -13,8 +13,12 @@ internal sealed class WindowGpuCanvas : ICanvasBackend
     private readonly SimdSkiaGpuBackend kind;
     private readonly bool fallback;
     private readonly int owner = Environment.CurrentManagedThreadId;
-    private bool cpuDirty, gpuDirty, disposed;
+    private bool cpuDirty, gpuDirty, gpuShadowStale, disposed;
     private long maskBuilds,maskHits,drawDispatches,drawBarriers;
+    private long blockingWaits,completionPolls;
+    private long nativeSubmitted,nativeCompleted,nativeOccluded,nativeStateChanges;
+    private int nativePending,completedBatches;
+    private double nativeWaitMs;
     private readonly Dictionary<(GlyphRunGeometry Run,Matrix3 Matrix,bool Aa,bool Snap),PathGeometry[]> glyphBatches=[];
     private long glyphBytes;
     private readonly SimdSkiaGpuTextMode textMode;
@@ -190,7 +194,7 @@ internal sealed class WindowGpuCanvas : ICanvasBackend
     }
     public void Flush()
     {
-        Check(); if (!gpuDirty) return;
+        Check(); if (!gpuDirty&&!gpuShadowStale) return;
         long start = Stopwatch.GetTimestamp(); hardware.Flush();
         if(hardware is VulkanCanvas vulkan)
         {
@@ -198,19 +202,45 @@ internal sealed class WindowGpuCanvas : ICanvasBackend
             SimdSkiaGpuDiagnostics.VulkanCounters(vulkan.BuiltPathMasks-maskBuilds,vulkan.PathMaskHits-maskHits,vulkan.PathMaskBytes,vulkan.DrawDispatches-drawDispatches,vulkan.DrawDependencyBarriers-drawBarriers);
             maskBuilds=vulkan.BuiltPathMasks;maskHits=vulkan.PathMaskHits;drawDispatches=vulkan.DrawDispatches;drawBarriers=vulkan.DrawDependencyBarriers;
         }
-        gpuDirty = false; SimdSkiaGpuDiagnostics.Completed(Stopwatch.GetTimestamp() - start);
+        gpuDirty = false;gpuShadowStale=false;
+        if(OperatingSystem.IsWindows()&&hardware is Direct2DCanvas d2d)RecordNativeCompletion(d2d,Stopwatch.GetTimestamp()-start);
+        else SimdSkiaGpuDiagnostics.Completed(Stopwatch.GetTimestamp() - start);
+    }
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+    private void RecordNativeCompletion(Direct2DCanvas canvas,long elapsed)
+    {
+        SimdSkiaGpuDiagnostics.CompletionMode(canvas.BlockingCompletionWaits-blockingWaits,canvas.CompletionPolls-completionPolls);
+        blockingWaits=canvas.BlockingCompletionWaits;completionPolls=canvas.CompletionPolls;
+        SimdSkiaGpuDiagnostics.NativeProgress(canvas.SubmittedFrames-nativeSubmitted,canvas.CompletedFrames-nativeCompleted,canvas.PendingFrames-nativePending,canvas.CompletionWaitMilliseconds-nativeWaitMs,canvas.OccludedPresents-nativeOccluded);
+        nativeSubmitted=canvas.SubmittedFrames;nativeCompleted=canvas.CompletedFrames;nativePending=canvas.PendingFrames;nativeWaitMs=canvas.CompletionWaitMilliseconds;
+        nativeOccluded=canvas.OccludedPresents;
+        SimdSkiaGpuDiagnostics.StateChanged(canvas.NativeStateChanges-nativeStateChanges);nativeStateChanges=canvas.NativeStateChanges;
+        SimdSkiaGpuDiagnostics.Completed(elapsed,canvas.CompletedBatches-completedBatches);completedBatches=canvas.CompletedBatches;
     }
     internal void Present()
     {
         Check();if(!OperatingSystem.IsWindows()||hardware is not Direct2DCanvas canvas)throw new PlatformNotSupportedException();
         if(cpuDirty){canvas.Upload();cpuDirty=false;SimdSkiaGpuDiagnostics.Uploaded();}
-        long start=Stopwatch.GetTimestamp();canvas.Present(SimdSkiaDiagnostics.CapturePresentedFrames);gpuDirty=false;
-        SimdSkiaGpuDiagnostics.Completed(Stopwatch.GetTimestamp()-start);SimdSkiaGpuDiagnostics.NativePresented();
+        long start=Stopwatch.GetTimestamp();
+        if(SimdSkiaDiagnostics.CapturePresentedFrames||SimdSkiaGpuDiagnostics.SynchronizeNativeFrames)canvas.Present(SimdSkiaDiagnostics.CapturePresentedFrames);
+        else canvas.QueuePresent();
+        gpuDirty=false;gpuShadowStale=!SimdSkiaDiagnostics.CapturePresentedFrames;
+        if(canvas.UsesFlipPresentation)SimdSkiaGpuDiagnostics.FlipPresented();
+        RecordNativeCompletion(canvas,Stopwatch.GetTimestamp()-start);SimdSkiaGpuDiagnostics.NativePresented();
     }
     public void Dispose()
     {
         if (disposed) return; Check();
         try { if(!IsFaulted)Flush(); }
-        finally { disposed = true;hardware.Dispose();software.Dispose();target.Dispose();glyphBatches.Clear();glyphBytes=0;foreach(var item in atlas.Values)item.Pixels.Dispose();atlas.Clear();atlasBytes=0; }
+        finally
+        {
+            disposed=true;
+            try{hardware.Dispose();}
+            finally
+            {
+                if(nativePending!=0){SimdSkiaGpuDiagnostics.NativeProgress(0,0,-nativePending,0,0);nativePending=0;}
+                software.Dispose();target.Dispose();glyphBatches.Clear();glyphBytes=0;foreach(var item in atlas.Values)item.Pixels.Dispose();atlas.Clear();atlasBytes=0;
+            }
+        }
     }
 }

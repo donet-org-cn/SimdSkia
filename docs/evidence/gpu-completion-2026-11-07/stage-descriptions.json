@@ -1,0 +1,13 @@
+{
+  "comparison": "Initial 18-process AOT matrix. Thread-safe device; actual a54485f before executable; GPU queued host timing differs from synchronized timing.",
+  "presentation-probe": "9-process AOT flip vs legacy blt investigation. Flip retained in final product.",
+  "threading-final": "Despite the historical folder name, a 9-process experimental SINGLETHREADED candidate and thread-safe control. Candidate was rejected.",
+  "throughput": "27 JIT processes from the rejected SINGLETHREADED candidate. Exploratory, not used in final throughput tables.",
+  "final-window": "Intermediate 9-process AOT check after removing the single-thread device candidate, before native state caching.",
+  "throughput-final": "Intermediate 27-process JIT check after removing the single-thread device candidate, before native state caching.",
+  "state-window": "Selected final 9-process AOT implementation: CPU, cached-state GPU queue, uncached-state GPU queue. Source exactness checked after rejecting timeline fences.",
+  "state-throughput": "Selected final 27-process JIT completed-throughput implementation with state cache and Flush1 completion events.",
+  "fence-window": "Rejected 9-process AOT timeline-fence experiment. Reduced explicit Flush calls did not give stable CPU reduction.",
+  "fence-throughput": "Rejected timeline-fence candidate, 27 JIT processes. Not used for final performance tables.",
+  "pilot-*": "Exploratory changing-harness tests. Retained for audit; not pooled with final measurements."
+}

@@ -10,6 +10,7 @@ internal static unsafe partial class D2DNative
     internal static nint Retain(nint obj){((delegate* unmanaged[Stdcall]<nint,uint>)Slot(obj,1))(obj);return obj;}
     internal static void Check(int hr){if(hr<0)Marshal.ThrowExceptionForHR(hr);}
     internal static nint Query(nint obj,Guid iid){nint result=0;Check(((delegate* unmanaged[Stdcall]<nint,Guid*,nint*,int>)Slot(obj,0))(obj,&iid,&result));return result;}
+    internal static nint TryQuery(nint obj,Guid iid){nint result=0;int hr=((delegate* unmanaged[Stdcall]<nint,Guid*,nint*,int>)Slot(obj,0))(obj,&iid,&result);if(hr==unchecked((int)0x80004002))return 0;Check(hr);return result;}
     internal static void Release(ref nint obj){nint value=Interlocked.Exchange(ref obj,0);if(value!=0)((delegate* unmanaged[Stdcall]<nint,uint>)Slot(value,2))(value);}
     internal static nint CreateDevice(){nint device=0,context=0;uint level=0xb000,actual=0;Check(D3D11CreateDevice(0,1,0,32,&level,1,7,&device,&actual,&context));Release(ref context);return device;}
     internal static nint Immediate(nint device){nint result=0;((delegate* unmanaged[Stdcall]<nint,nint*,void>)Slot(device,40))(device,&result);return result;}
@@ -25,13 +26,18 @@ internal static unsafe partial class D2DNative
     internal static nint DrawingDevice(nint factory,nint dxgi){nint result=0;Check(((delegate* unmanaged[Stdcall]<nint,nint,nint*,int>)Slot(factory,17))(factory,dxgi,&result));return result;}
     internal static nint DrawingContext(nint device){nint result=0;Check(((delegate* unmanaged[Stdcall]<nint,uint,nint*,int>)Slot(device,4))(device,0,&result));return result;}
     internal static nint Texture(nint device,int width,int height,bool staging,uint format=87){var d=new TextureDescription{Width=(uint)width,Height=(uint)height,Mips=1,Array=1,Format=format,SampleCount=1,Usage=staging?3u:0,Bind=staging?0u:40,Cpu=staging?0x20000u:0};nint r=0;Check(((delegate* unmanaged[Stdcall]<nint,TextureDescription*,void*,nint*,int>)Slot(device,5))(device,&d,null,&r));return r;}
-    internal static nint Swapchain(nint factory,nint device,nint hwnd,int width,int height){var d=new SwapDescription{Width=(uint)width,Height=(uint)height,Format=87,SampleCount=1,Usage=0x20,BufferCount=1,Effect=1,Alpha=3};nint r=0;Check(((delegate* unmanaged[Stdcall]<nint,nint,nint,SwapDescription*,void*,nint,nint*,int>)Slot(factory,15))(factory,device,hwnd,&d,null,0,&r));return r;}
+    internal static nint Swapchain(nint factory,nint device,nint hwnd,int width,int height,bool flip=false){var d=new SwapDescription{Width=(uint)width,Height=(uint)height,Format=87,SampleCount=1,Usage=0x20,BufferCount=flip?2u:1u,Effect=flip?4u:1u,Alpha=3};nint r=0;Check(((delegate* unmanaged[Stdcall]<nint,nint,nint,SwapDescription*,void*,nint,nint*,int>)Slot(factory,15))(factory,device,hwnd,&d,null,0,&r));return r;}
     internal static nint Backbuffer(nint swapchain){nint r=0;Guid iid=Texture2D;Check(((delegate* unmanaged[Stdcall]<nint,uint,Guid*,nint*,int>)Slot(swapchain,9))(swapchain,0,&iid,&r));return r;}
-    internal static void Present(nint swapchain)=>Check(((delegate* unmanaged[Stdcall]<nint,uint,uint,int>)Slot(swapchain,8))(swapchain,0,0));
+    internal static int Present(nint swapchain){int result=((delegate* unmanaged[Stdcall]<nint,uint,uint,int>)Slot(swapchain,8))(swapchain,0,0);Check(result);return result;}
     internal static nint QueryEvent(nint device){uint* d=stackalloc uint[2]{0,0};nint r=0;Check(((delegate* unmanaged[Stdcall]<nint,void*,nint*,int>)Slot(device,24))(device,d,&r));return r;}
     internal static void EndEvent(nint context,nint query)=>((delegate* unmanaged[Stdcall]<nint,nint,void>)Slot(context,28))(context,query);
     internal static int EventReady(nint context,nint query)=>((delegate* unmanaged[Stdcall]<nint,nint,nint,uint,uint,int>)Slot(context,29))(context,query,0,0,0);
     internal static void Flush(nint context)=>((delegate* unmanaged[Stdcall]<nint,void>)Slot(context,111))(context);
+    // ID3D11DeviceContext3::Flush1, Windows SDK d3d11_3.h, vtable slot 144.
+    // D3D11_CONTEXT_TYPE_ALL=0; the OS signals the event on GPU completion.
+    internal static void FlushWithEvent(nint context3,nint handle)=>((delegate* unmanaged[Stdcall]<nint,uint,nint,void>)Slot(context3,144))(context3,0,handle);
+    internal static int DeviceRemovedReason(nint device)=>((delegate* unmanaged[Stdcall]<nint,int>)Slot(device,39))(device);
+    internal static uint DeviceCreationFlags(nint device)=>((delegate* unmanaged[Stdcall]<nint,uint>)Slot(device,38))(device);
     internal static void ClearState(nint context)=>((delegate* unmanaged[Stdcall]<nint,void>)Slot(context,110))(context);
     internal static void Upload(nint context,nint texture,nint data,int stride)=>((delegate* unmanaged[Stdcall]<nint,nint,uint,void*,nint,uint,uint,void>)Slot(context,48))(context,texture,0,null,data,(uint)stride,0);
     internal static void Copy(nint context,nint destination,nint source)=>((delegate* unmanaged[Stdcall]<nint,nint,nint,void>)Slot(context,47))(context,destination,source);

@@ -14,6 +14,9 @@ public static class SimdSkiaDiagnostics
     private static bool capture;
     private static bool timing;
     private static readonly List<double> frameTimes=[];
+    /// <summary>Measures time spent in each render-target drawing session. For
+    /// asynchronous native GPU windows this is recording/submission and any
+    /// queue backpressure, not GPU execution latency or display completion.</summary>
     public static void BeginFrameTiming(){lock(gate){frameTimes.Clear();timing=true;}}
     public static double[] EndFrameTiming(){lock(gate){timing=false;return frameTimes.ToArray();}}
     internal static long FrameStarted()=>Volatile.Read(ref timing)?Stopwatch.GetTimestamp():0;
@@ -25,6 +28,8 @@ public static class SimdSkiaDiagnostics
         set {lock(gate){capture=value;if(!value){capturedFrame?.Dispose();capturedFrame=null;}}}
     }
     public static PixelBuffer? GetLastPresentedFrame(){lock(gate)return capturedFrame?.Clone();}
+    /// <summary>Successful OS framebuffer/native presentation submissions, not
+    /// monitor scanouts. Asynchronous GPU completion has separate counters.</summary>
     public static long FramesPresented=>Interlocked.Read(ref frames);
     public static long SoftwareLayerCommands=>Interlocked.Read(ref softwareLayerCommands);
     internal static void SoftwareLayerCommand()=>Interlocked.Increment(ref softwareLayerCommands);

@@ -1,0 +1,82 @@
+[
+  {
+    "name": "build-state",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "build",
+      "SimdSkia.sln",
+      "-c",
+      "Release",
+      "--nologo",
+      "-m:1",
+      "-nr:false",
+      "-v:quiet"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "preference-state",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "run",
+      "--project",
+      "tests/GpuPreferred",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "--hardware"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "avalonia-gpu-state",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "run",
+      "--project",
+      "tests/AvaloniaGpu",
+      "-c",
+      "Release",
+      "--no-build"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "gpu-optimization-state",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "run",
+      "--project",
+      "tests/GpuOptimization",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "F:\\SimdSkia\\baseline\\fonts\\ZCOOLXiaoWei-Regular.ttf"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "publish-state",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "publish",
+      "examples/CrossPlatform/CrossPlatform.csproj",
+      "-c",
+      "Release",
+      "-r",
+      "win-x64",
+      "-p:PublishAot=true",
+      "-p:IlcInstructionSet=x86-64",
+      "-p:TrimmerSingleWarn=false",
+      "-o",
+      "F:\\SimdSkia\\artifacts\\gpu-cpu-cost-2026-11-07\\aot-state-final",
+      "--nologo",
+      "-m:1",
+      "-nr:false",
+      "-v:quiet"
+    ],
+    "exitCode": 0
+  }
+]

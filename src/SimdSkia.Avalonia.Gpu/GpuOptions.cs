@@ -35,10 +35,29 @@ public static class SimdSkiaGpuOptions
     }
 }
 
+/// <summary>CompletedBatches counts retired GPU work. CompletionMilliseconds is
+/// cumulative host cost in flush/presentation calls, not GPU timestamp duration
+/// or display latency; native queued/completed/pending frame counters are separate.</summary>
 public sealed record SimdSkiaGpuStatistics(string Device, long GpuCommands, long CpuFallbackCommands, long CompletedBatches, long Uploads, double CompletionMilliseconds, IReadOnlyDictionary<string, long> FallbackReasons);
 
 public static class SimdSkiaGpuDiagnostics
 {
+    private static int synchronizeNativeFrames;
+    /// <summary>Diagnostic serialization of native frames. Normally false so CPU
+    /// recording overlaps GPU execution. Set true and render another frame to
+    /// drain pending work before reading completion statistics.</summary>
+    public static bool SynchronizeNativeFrames{get=>Volatile.Read(ref synchronizeNativeFrames)!=0;set=>Volatile.Write(ref synchronizeNativeFrames,value?1:0);}
+    private static long nativeSubmitted,nativeCompleted,nativePending,nativeWaitTicks,nativeOccluded;
+    public static long NativeSubmittedFrames=>Interlocked.Read(ref nativeSubmitted);
+    public static long NativeCompletedFrames=>Interlocked.Read(ref nativeCompleted);
+    public static long NativePendingFrames=>Interlocked.Read(ref nativePending);
+    public static double NativeCompletionWaitMilliseconds=>Interlocked.Read(ref nativeWaitTicks)/(double)TimeSpan.TicksPerMillisecond;
+    public static long NativeOccludedPresents=>Interlocked.Read(ref nativeOccluded);
+    private static long nativeStateChanges;
+    public static long NativeStateChanges=>Interlocked.Read(ref nativeStateChanges);
+    internal static void StateChanged(long count)=>Interlocked.Add(ref nativeStateChanges,count);
+    internal static void NativeProgress(long submitted,long completed,long pending,double waitMs,long occluded)
+    {Interlocked.Add(ref nativeSubmitted,submitted);Interlocked.Add(ref nativeCompleted,completed);Interlocked.Add(ref nativePending,pending);Interlocked.Add(ref nativeWaitTicks,(long)(waitMs*TimeSpan.TicksPerMillisecond));Interlocked.Add(ref nativeOccluded,occluded);}
     private static long initializationFailures,atlasEvictions;
     private static string selectedRenderer="Not initialized",lastInitializationFailure="";
     public static string SelectedRenderer=>Volatile.Read(ref selectedRenderer);
@@ -71,6 +90,13 @@ public static class SimdSkiaGpuDiagnostics
     private static string device = "";
     private static long gpu, cpu, batches, uploads, ticks;
     private static long nativePresents;
+    private static long blockingWaits,completionPolls;
+    private static long flipPresents;
+    public static long FlipSwapchainPresents=>Interlocked.Read(ref flipPresents);
+    internal static void FlipPresented()=>Interlocked.Increment(ref flipPresents);
+    public static long BlockingCompletionWaits=>Interlocked.Read(ref blockingWaits);
+    public static long CompletionPolls=>Interlocked.Read(ref completionPolls);
+    internal static void CompletionMode(long waits,long polls){Interlocked.Add(ref blockingWaits,waits);Interlocked.Add(ref completionPolls,polls);}
     private static long atlasBuilds,atlasHits;
     public static long ManagedGlyphAtlasBuilds=>Interlocked.Read(ref atlasBuilds);
     public static long ManagedGlyphAtlasHits=>Interlocked.Read(ref atlasHits);
@@ -83,6 +109,6 @@ public static class SimdSkiaGpuDiagnostics
     internal static void GpuCommand() => Interlocked.Increment(ref gpu);
     internal static void CpuCommand(string reason) { Interlocked.Increment(ref cpu); reasons.AddOrUpdate(reason, 1, static (_, n) => n + 1); }
     internal static void Uploaded() => Interlocked.Increment(ref uploads);
-    internal static void Completed(long elapsed) { Interlocked.Increment(ref batches); Interlocked.Add(ref ticks, elapsed); }
+    internal static void Completed(long elapsed,int count=1) { Interlocked.Add(ref batches,count); Interlocked.Add(ref ticks, elapsed); }
     public static SimdSkiaGpuStatistics GetStatistics() => new(Volatile.Read(ref device), Interlocked.Read(ref gpu), Interlocked.Read(ref cpu), Interlocked.Read(ref batches), Interlocked.Read(ref uploads), Interlocked.Read(ref ticks) * 1000d / Stopwatch.Frequency, new Dictionary<string, long>(reasons));
 }

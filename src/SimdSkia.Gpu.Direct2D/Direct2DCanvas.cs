@@ -10,7 +10,29 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
     private readonly PixelBuffer pixels;
     private readonly SimdSkia.Cpu.GlyphMaskCommands glyphMasks=new();
     private nint device,immediate,texture,staging,factory,drawingDevice,context,target,swapChain,completion;
+    private nint completionContext;
+    private nint presentationBuffer;
+    private EventWaitHandle? completionEvent;
+    private sealed class PendingFrame : IDisposable
+    {
+        internal readonly EventWaitHandle Event=new(false,EventResetMode.AutoReset);
+        internal nint Query;
+        internal bool Pending;
+        internal readonly List<nint> Resources=[];
+        public void Dispose(){foreach(nint item in Resources){nint value=item;D2DNative.Release(ref value);}Resources.Clear();D2DNative.Release(ref Query);Event.Dispose();}
+    }
+    private PendingFrame[] pendingFrames=[];
+    private int nextFrame;
+    private bool validateCompletionEvent;
+    private bool legacyCompletionPolling;
     private bool drawing,disposed,faulted;
+    private bool shadowStale;
+    private readonly bool cacheDrawingState=!(AppContext.TryGetSwitch("SimdSkia.Direct2D.DisableStateCache",out bool disableStateCache)&&disableStateCache);
+    private Matrix3 currentTransform;
+    private bool transformKnown,antialiasKnown,currentAntialias;
+    private int currentBlend=-1;
+    private RectF? currentClip;
+    public long NativeStateChanges{get;private set;}
     private readonly Dictionary<(PathGeometry Geometry,float Tolerance),nint> paths=[];
     private readonly Dictionary<Rgba32,nint> solids=[];
     private readonly Dictionary<(IColorShader Shader,byte Opacity),nint> gradients=[];
@@ -31,6 +53,17 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
     public long TextureCacheHits{get;private set;}
     public double LastCompletionMilliseconds{get;private set;}
     public bool IsFaulted=>faulted;
+    public bool UsesBlockingCompletion=>completionContext!=0;
+    public long BlockingCompletionWaits{get;private set;}
+    public long CompletionPolls{get;private set;}
+    public long CompletionChecks{get;private set;}
+    public bool UsesFlipPresentation{get;private set;}
+    public long SubmittedFrames{get;private set;}
+    public long CompletedFrames{get;private set;}
+    public int PendingFrames=>pendingFrames.Count(frame=>frame.Pending);
+    public double CompletionWaitMilliseconds{get;private set;}
+    public long OccludedPresents{get;private set;}
+    internal uint NativeDeviceCreationFlags{get{Check();return D2DNative.DeviceCreationFlags(device);}}
     public Direct2DCanvas(PixelBuffer pixels,nint windowHandle=0):this(pixels,windowHandle,0) { }
     internal static Direct2DCanvas FromBorrowedDevice(PixelBuffer pixels,nint device)=>new(pixels,0,device);
     private Direct2DCanvas(PixelBuffer pixels,nint windowHandle,nint borrowedDevice)
@@ -45,14 +78,42 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
             device=borrowedDevice==0?D2DNative.CreateDevice():D2DNative.Retain(borrowedDevice);immediate=D2DNative.Immediate(device);dxgi=D2DNative.Query(device,D2DNative.DxgiDevice);adapter=D2DNative.Adapter(dxgi);DeviceName=D2DNative.AdapterName(adapter);
             factory=D2DNative.CreateFactory();drawingDevice=D2DNative.DrawingDevice(factory,dxgi);context=D2DNative.DrawingContext(drawingDevice);
             if(windowHandle==0)texture=D2DNative.Texture(device,pixels.Width,pixels.Height,false);
-            else{dxgiFactory=D2DNative.Parent(adapter,D2DNative.DxgiFactory2);swapChain=D2DNative.Swapchain(dxgiFactory,device,windowHandle,pixels.Width,pixels.Height);texture=D2DNative.Backbuffer(swapChain);completion=D2DNative.QueryEvent(device);}
-            staging=D2DNative.Texture(device,pixels.Width,pixels.Height,true);surface=D2DNative.Query(texture,D2DNative.DxgiSurface);target=D2DNative.Target(context,surface);D2DNative.SetTarget(context,target);Upload();
+            else
+            {
+                dxgiFactory=D2DNative.Parent(adapter,D2DNative.DxgiFactory2);
+                UsesFlipPresentation=!(AppContext.TryGetSwitch("SimdSkia.Direct2D.LegacySwapchain",out bool blt)&&blt);
+                swapChain=D2DNative.Swapchain(dxgiFactory,device,windowHandle,pixels.Width,pixels.Height,UsesFlipPresentation);
+                if(UsesFlipPresentation)
+                {
+                    // Keep a persistent render texture, independent of rotating
+                    // flip buffers. Partial redraws still retain the last frame.
+                    presentationBuffer=D2DNative.Backbuffer(swapChain);texture=D2DNative.Texture(device,pixels.Width,pixels.Height,false);
+                }
+                else texture=D2DNative.Backbuffer(swapChain);
+                legacyCompletionPolling=AppContext.TryGetSwitch("SimdSkia.Direct2D.LegacyCompletionPolling",out bool legacy)&&legacy;
+                if(!legacyCompletionPolling)
+                    completionContext=D2DNative.TryQuery(immediate,new Guid("b4e3c01d-e79e-4637-91b2-510e9f4c9b8f"));
+                if(completionContext!=0)
+                {
+                    completionEvent=new(false,EventResetMode.AutoReset);
+                    validateCompletionEvent=AppContext.TryGetSwitch("SimdSkia.Direct2D.ValidateCompletionEvent",out bool verify)&&verify;
+                    if(validateCompletionEvent)completion=D2DNative.QueryEvent(device);
+                    for(int i=0;i<2;i++)
+                    {
+                        var frame=new PendingFrame();pendingFrames=[..pendingFrames,frame];
+                        if(validateCompletionEvent)frame.Query=D2DNative.QueryEvent(device);
+                    }
+                }
+                else completion=D2DNative.QueryEvent(device);
+            }
+            if(windowHandle==0)staging=D2DNative.Texture(device,pixels.Width,pixels.Height,true);
+            surface=D2DNative.Query(texture,D2DNative.DxgiSurface);target=D2DNative.Target(context,surface);D2DNative.SetTarget(context,target);Upload();
         }
         catch{DisposeResources();throw;}
         finally{D2DNative.Release(ref surface);D2DNative.Release(ref dxgiFactory);D2DNative.Release(ref adapter);D2DNative.Release(ref dxgi);}
     }
     private void Check(){ObjectDisposedException.ThrowIf(disposed,this);if(Environment.CurrentManagedThreadId!=owner)throw new InvalidOperationException("Direct2D operations require their creating thread.");if(faulted)throw new InvalidOperationException("Direct2D resources are invalid after a GPU error; recreate the canvas.");pixels.ThrowIfDisposed();}
-    public void Upload(){Check();if(drawing)throw new InvalidOperationException("Flush pending draws before uploading CPU pixels.");using var converted=pixels.Format==PixelFormat.Bgra8888?null:ConvertBgra(pixels);var source=converted??pixels;using var pin=source.Pin();D2DNative.Upload(immediate,texture,pin.Address,source.RowBytes);}
+    public void Upload(){Check();if(drawing)throw new InvalidOperationException("Flush pending draws before uploading CPU pixels.");using var converted=pixels.Format==PixelFormat.Bgra8888?null:ConvertBgra(pixels);var source=converted??pixels;using var pin=source.Pin();D2DNative.Upload(immediate,texture,pin.Address,source.RowBytes);shadowStale=false;}
     private static PixelBuffer ConvertBgra(PixelBuffer source)
     {
         var result=PixelBuffer.Rent(source.Width,source.Height);
@@ -91,22 +152,36 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
         if(command.Kind==CommandKind.FillPath&&command.Path is null)throw new ArgumentException("Path required.");
         if(command.Path?.FillRule is FillRule.InverseEvenOdd or FillRule.InverseWinding)throw new NotSupportedException("Inverse fill requires explicit CPU fallback.");
         if(command.Kind==CommandKind.DrawImage){var image=command.Image??throw new ArgumentException("Image required.");image.ThrowIfDisposed();var src=command.ImageSource??new RectF(0,0,image.Width,image.Height);if(!src.IsFinite||src.IsEmpty||src.Left<0||src.Top<0||src.Right>image.Width||src.Bottom>image.Height)throw new ArgumentOutOfRangeException(nameof(command.ImageSource));}
-        if(!drawing){D2DNative.Begin(context);drawing=true;}D2DNative.Transform(context,Matrix3.Identity);bool clipped=command.Clip.HasValue;if(clipped)D2DNative.PushClip(context,command.Clip!.Value);
+        if(!drawing){D2DNative.Begin(context);drawing=true;}shadowStale=true;SetClip(command.Clip);
         // PushLayer captures compositing state. A preceding Clear/Src leaves
         // primitive COPY active, which would erase the parent's transparent mask pixels.
-        D2DNative.Blend(context,command.Paint.Composite);
+        SetBlend(command.Paint.Composite);
         bool coverage=command.CoverageClip is not null;
-        if(coverage){var mask=command.CoverageClip!;D2DNative.PushCoverage(context,mask.Bounds,CoverageBrush(mask));}
+        if(coverage){SetTransform(Matrix3.Identity);var mask=command.CoverageClip!;D2DNative.PushCoverage(context,mask.Bounds,CoverageBrush(mask));currentBlend=-1;}
         try
         {
-            D2DNative.Blend(context,command.Paint.Composite);D2DNative.Antialias(context,command.Paint.Antialias);D2DNative.Transform(context,command.Transform);
+            SetBlend(command.Paint.Composite);SetAntialias(command.Paint.Antialias);SetTransform(command.Transform);
             if(command.Kind==CommandKind.Clear){D2DNative.Clear(context,command.Paint.Color);return;}
             if(command.Kind==CommandKind.DrawImage){nint bitmap=CachedBitmap(command.Image!,command.ImageIsImmutable);D2DNative.DrawBitmap(context,bitmap,command.Rectangle,command.ImageSource??new(0,0,command.Image!.Width,command.Image.Height),command.Paint.Color.A,command.Sampling);return;}
             nint brush=command.Paint.Shader is {} shader&&command.Paint.Composite!=CompositeMode.Clear?Gradient(shader,gradient,command.Paint.Color.A):Solid(command.Paint.Composite==CompositeMode.Clear?default:command.Paint.Color);
             if(command.Kind==CommandKind.FillRectangle)D2DNative.FillRect(context,command.Rectangle,brush);else D2DNative.FillPath(context,GetPath(command.Path!,command.Transform,command.CurveTolerance),brush);
         }
         catch{faulted=true;throw;}
-        finally{if(coverage)D2DNative.PopLayer(context);if(clipped){D2DNative.Transform(context,Matrix3.Identity);D2DNative.PopClip(context);}}
+        finally{if(coverage){D2DNative.PopLayer(context);currentBlend=-1;transformKnown=false;antialiasKnown=false;}}
+    }
+    private void SetTransform(Matrix3 value)
+    {if(cacheDrawingState&&transformKnown&&currentTransform==value)return;D2DNative.Transform(context,value);currentTransform=value;transformKnown=true;NativeStateChanges++;}
+    private void SetBlend(CompositeMode value)
+    {int native=value==CompositeMode.SourceOver?0:1;if(cacheDrawingState&&currentBlend==native)return;D2DNative.Blend(context,value);currentBlend=native;NativeStateChanges++;}
+    private void SetAntialias(bool value)
+    {if(cacheDrawingState&&antialiasKnown&&currentAntialias==value)return;D2DNative.Antialias(context,value);currentAntialias=value;antialiasKnown=true;NativeStateChanges++;}
+    private void SetClip(RectF? value)
+    {
+        if(cacheDrawingState&&currentClip==value)return;
+        SetTransform(Matrix3.Identity);
+        if(currentClip.HasValue){D2DNative.PopClip(context);NativeStateChanges++;}
+        if(value is {} rect){D2DNative.PushClip(context,rect);NativeStateChanges++;}
+        currentClip=value;
     }
     private nint Solid(Rgba32 color)
     {if(solids.TryGetValue(color,out nint brush))return brush;brush=D2DNative.Solid(context,color);if(solids.Count>=256){foreach(nint value in solids.Values){nint old=value;D2DNative.Release(ref old);}solids.Clear();}solids.Add(color,brush);return brush;}
@@ -199,15 +274,100 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
     }
     public void Flush()=>Finish(true,false);
     public void Present(bool capturePixels=false){if(swapChain==0)throw new InvalidOperationException("No native swapchain.");Finish(capturePixels,true);}
-    private unsafe void Finish(bool readback,bool present)
+    /// <summary>Queues native presentation with at most two GPU frames in flight.
+    /// Flush, Present and WaitForIdle still wait for actual completion.</summary>
+    internal void QueuePresent(){if(swapChain==0)throw new InvalidOperationException("No native swapchain.");Finish(false,true,true);}
+    internal void WaitForIdle(){Check();foreach(var frame in pendingFrames)Retire(frame,true);}
+    private bool Retire(PendingFrame frame,bool wait)
     {
-        Check();if(!drawing&&!present)return;long start=Stopwatch.GetTimestamp();
+        if(!frame.Pending)return true;
+        long start=Stopwatch.GetTimestamp();bool ready=frame.Event.WaitOne(0);
+        if(!ready&&wait)
+        {
+            BlockingCompletionWaits++;
+            while(!(ready=frame.Event.WaitOne(100)))
+            {
+                D2DNative.Check(D2DNative.DeviceRemovedReason(device));
+                if(Stopwatch.GetElapsedTime(start).TotalSeconds>10)throw new TimeoutException("Direct2D completion timed out.");
+            }
+            CompletionWaitMilliseconds+=Stopwatch.GetElapsedTime(start).TotalMilliseconds;
+        }
+        if(!ready)return false;
+        if(validateCompletionEvent)
+        {
+            int result=D2DNative.EventReady(immediate,frame.Query);D2DNative.Check(result);
+            if(result!=0)throw new InvalidOperationException("The GPU completion event preceded its independent query.");
+            CompletionChecks++;
+        }
+        foreach(nint item in frame.Resources){nint value=item;D2DNative.Release(ref value);}frame.Resources.Clear();frame.Pending=false;
+        CompletedFrames++;CompletedBatches++;return true;
+    }
+    private unsafe void Finish(bool readback,bool present,bool queued=false)
+    {
+        Check();if(!drawing&&!present&&!(readback&&shadowStale)){WaitForIdle();return;}long start=Stopwatch.GetTimestamp();
         try
         {
-            if(drawing){D2DNative.End(context);drawing=false;}
-            if(readback){D2DNative.Copy(immediate,staging,texture);var mapped=D2DNative.Map(immediate,staging);try{for(int y=0;y<pixels.Height;y++){var src=new ReadOnlySpan<byte>((byte*)mapped.Data+(long)y*mapped.RowPitch,pixels.Width*4);var dest=pixels.GetRowSpan(y);if(pixels.Format==PixelFormat.Bgra8888)src.CopyTo(dest);else for(int x=0;x<pixels.Width;x++){int p=x*4;dest[p]=src[p+2];dest[p+1]=src[p+1];dest[p+2]=src[p];dest[p+3]=src[p+3];}}}finally{D2DNative.Unmap(immediate,staging);}}
-            if(present){D2DNative.Present(swapChain);D2DNative.EndEvent(immediate,completion);D2DNative.Flush(immediate);while(true){int result=D2DNative.EventReady(immediate,completion);D2DNative.Check(result);if(result==0)break;if(Stopwatch.GetElapsedTime(start).TotalSeconds>10)throw new TimeoutException("Direct2D completion timed out.");Thread.Yield();}D2DNative.SetTarget(context,target);}
-            CompletedBatches++;LastCompletionMilliseconds=Stopwatch.GetElapsedTime(start).TotalMilliseconds;
+            if(readback||!queued)WaitForIdle();
+            else foreach(var frame in pendingFrames)Retire(frame,false);
+            if(drawing){SetClip(null);D2DNative.End(context);drawing=false;}
+            if(readback)
+            {
+                if(staging==0)staging=D2DNative.Texture(device,pixels.Width,pixels.Height,true);
+                D2DNative.Copy(immediate,staging,texture);var mapped=D2DNative.Map(immediate,staging);
+                try
+                {
+                    for(int y=0;y<pixels.Height;y++)
+                    {
+                        var src=new ReadOnlySpan<byte>((byte*)mapped.Data+(long)y*mapped.RowPitch,pixels.Width*4);var dest=pixels.GetRowSpan(y)[..(pixels.Width*4)];
+                        if(pixels.Format==PixelFormat.Bgra8888)src.CopyTo(dest);
+                        else SimdSkia.Cpu.PixelTransferKernel.SwapRedBlue(src,dest,SimdSkia.Cpu.CpuOptions.EnableSimd);
+                    }
+                    shadowStale=false;
+                }
+                finally{D2DNative.Unmap(immediate,staging);}
+            }
+            if(present)
+            {
+                if(UsesFlipPresentation)D2DNative.Copy(immediate,presentationBuffer,texture);
+                // Fence rendering/copy before Present. Normal windows queue up
+                // to two frames; explicit synchronization waits here. A fence
+                // behind Present would also serialize compositor work.
+                if(queued&&completionContext!=0)
+                {
+                    var frame=pendingFrames[nextFrame];Retire(frame,true);
+                    if(validateCompletionEvent)D2DNative.EndEvent(immediate,frame.Query);
+                    D2DNative.FlushWithEvent(completionContext,frame.Event.SafeWaitHandle.DangerousGetHandle());frame.Pending=true;
+                    frame.Resources.AddRange(transient);transient.Clear();SubmittedFrames++;nextFrame=(nextFrame+1)%pendingFrames.Length;
+                }
+                else if(completionContext!=0)
+                {
+                    if(validateCompletionEvent)D2DNative.EndEvent(immediate,completion);
+                    D2DNative.FlushWithEvent(completionContext,completionEvent!.SafeWaitHandle.DangerousGetHandle());
+                    BlockingCompletionWaits++;
+                    long waitStart=Stopwatch.GetTimestamp();
+                    while(!completionEvent.WaitOne(100))
+                    {
+                        D2DNative.Check(D2DNative.DeviceRemovedReason(device));
+                        if(Stopwatch.GetElapsedTime(start).TotalSeconds>10)throw new TimeoutException("Direct2D completion timed out.");
+                    }
+                    CompletionWaitMilliseconds+=Stopwatch.GetElapsedTime(waitStart).TotalMilliseconds;
+                    if(validateCompletionEvent)
+                    {
+                        int result=D2DNative.EventReady(immediate,completion);D2DNative.Check(result);
+                        if(result!=0)throw new InvalidOperationException("The GPU completion event was signaled before its event query completed.");
+                        CompletionChecks++;
+                    }
+                }
+                else
+                {
+                    D2DNative.EndEvent(immediate,completion);D2DNative.Flush(immediate);
+                    while(true){CompletionPolls++;int result=D2DNative.EventReady(immediate,completion);D2DNative.Check(result);if(result==0)break;if(Stopwatch.GetElapsedTime(start).TotalSeconds>10)throw new TimeoutException("Direct2D completion timed out.");if(legacyCompletionPolling)Thread.Yield();else Thread.Sleep(1);}
+                }
+                if(D2DNative.Present(swapChain)==0x087a0001)OccludedPresents++;
+                D2DNative.SetTarget(context,target);
+                if(!queued||completionContext==0){SubmittedFrames++;CompletedFrames++;}
+            }
+            if(!queued||completionContext==0)CompletedBatches++;LastCompletionMilliseconds=Stopwatch.GetElapsedTime(start).TotalMilliseconds;
             foreach(nint item in transient){nint value=item;D2DNative.Release(ref value);}transient.Clear();
         }
         catch{faulted=true;throw;}
@@ -215,13 +375,14 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
     private void DisposeResources()
     {
         glyphMasks.Clear();
+        foreach(var frame in pendingFrames)frame.Dispose();pendingFrames=[];
         foreach(nint item in transient){nint value=item;D2DNative.Release(ref value);}transient.Clear();
         foreach(var value in paths.Values){nint p=value;D2DNative.Release(ref p);}paths.Clear();
         foreach(var value in solids.Values){nint p=value;D2DNative.Release(ref p);}solids.Clear();
         foreach(var value in gradients.Values){nint p=value;D2DNative.Release(ref p);}gradients.Clear();
         foreach(var value in clips.Values){nint p=value.Brush,b=value.Bitmap;D2DNative.Release(ref p);D2DNative.Release(ref b);}clips.Clear();clipBytes=0;
         foreach(var value in images.Values){nint p=value.Bitmap;D2DNative.Release(ref p);}images.Clear();imageBytes=0;
-        D2DNative.Release(ref context);D2DNative.Release(ref target);D2DNative.Release(ref drawingDevice);D2DNative.Release(ref factory);D2DNative.Release(ref completion);D2DNative.Release(ref staging);D2DNative.Release(ref texture);D2DNative.Release(ref swapChain);if(immediate!=0){D2DNative.ClearState(immediate);D2DNative.Flush(immediate);}D2DNative.Release(ref immediate);D2DNative.Release(ref device);pixels.Dispose();
+        D2DNative.Release(ref context);D2DNative.Release(ref target);D2DNative.Release(ref drawingDevice);D2DNative.Release(ref factory);D2DNative.Release(ref completion);D2DNative.Release(ref staging);D2DNative.Release(ref texture);D2DNative.Release(ref presentationBuffer);D2DNative.Release(ref swapChain);if(immediate!=0){D2DNative.ClearState(immediate);D2DNative.Flush(immediate);}D2DNative.Release(ref completionContext);completionEvent?.Dispose();completionEvent=null;D2DNative.Release(ref immediate);D2DNative.Release(ref device);pixels.Dispose();
     }
-    public void Dispose(){if(disposed)return;if(owner!=Environment.CurrentManagedThreadId)throw new InvalidOperationException("Dispose Direct2D on its creating thread.");try{if(drawing&&!faulted)Flush();}finally{disposed=true;DisposeResources();}}
+    public void Dispose(){if(disposed)return;if(owner!=Environment.CurrentManagedThreadId)throw new InvalidOperationException("Dispose Direct2D on its creating thread.");try{if(!faulted){if(drawing)Flush();else WaitForIdle();}}finally{disposed=true;DisposeResources();}}
 }

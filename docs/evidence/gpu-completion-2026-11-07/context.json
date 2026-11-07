@@ -1,0 +1,30 @@
+{
+  "published": false,
+  "currentNuget": "0.1.2",
+  "currentNugetDefault": "CPU",
+  "hardware": "i7-8700K 6c/12t, NVIDIA GTX1050Ti, Windows11 26300, 31.93GiB",
+  "sdk": "10.0.403",
+  "runtime": "10.0.14",
+  "avalonia": "12.1.5",
+  "aotProcesses": 63,
+  "throughputJitProcesses": 108,
+  "baselineSource": "a54485f",
+  "nativeMaximumInFlight": 2,
+  "checks": {
+    "preferenceAndNative": 79,
+    "avaloniaGpu": 12174,
+    "vulkan": 566,
+    "vulkanExact": 556,
+    "aotWindows": 2
+  },
+  "sourceNote": "Selected final implementation is byte-for-byte identical to the state-window source snapshot; the later timeline-fence and single-thread-device candidates were rejected. All trials are retained, not pooled.",
+  "caveats": [
+    "AOT window measurements are timer-paced; not display FPS or peak throughput.",
+    "Frame host time in queued mode is recording/submission/backpressure, not GPU latency.",
+    "Completed native work is drained before process CPU/elapsed stop.",
+    "Throughput is a separate JIT synthetic rectangle workload, CPU raster only versus GPU render+native present.",
+    "Small own-engine pixel gates and same-backend PNG equality do not clear original-Skia full-page quality failures.",
+    "Vulkan window readback and macOS Metal presentation remain unresolved.",
+    "Sampled-thread-time profiles include waiting and were not treated as CPU utilization profiles."
+  ]
+}
