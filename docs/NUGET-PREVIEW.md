@@ -1,10 +1,18 @@
 # NuGet 发布记录
 
-## 0.1.3 正式版 — 发布验收中
+## 0.1.3 正式版 — 十二包已公开并独立验证
 
-十二包统一0.1.3，纳入0.1.2之后的GPU优先、Direct2D完成队列和文字/Vulkan缓存优化。更新说明、默认行为变化、UseCpu迁移和未达标项见[发行说明](RELEASE-0.1.3.md)。本机已保留[热点性能与回归证据](PERFORMANCE-HOTSPOTS-2026-11-07.md)；本版本CI、三平台实际包和NuGet公开下载结果将在此处记录，尚不把上传/验收中状态写成公开成功。
+十二包统一0.1.3，已公开下载；CI和本机两次独立核对全部DLL、nuspec、宿主/buildTransitive资产、README/CHANGELOG/LICENSE，与冻结CI产物一致。[发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/42362210475)及同一源码的三平台核心/桌面、几何、Windows AOT全部成功。标签`v0.1.3`固定在`819d0dc708a7b9f2afc22f40625314eb971cfbc1`，[GitHub正式发行](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.3)。
 
-本地十二包内容/依赖/更新说明检查、独立缓存SK*及Avalonia Native AOT消费、桌面Auto Direct2D与显式CPU两个真实AOT窗口、3230/3235公共元数据检查已通过。[0.1.3预发布验收证据](evidence/stable-0.1.3-preflight-2026-11-07/)。公开发布以CI构建的另一套包进行独立核对。
+同一适配器二进制覆盖Windows x64、Linux X11 x64、macOS ARM64的Avalonia12.1.0–12.1.5，18组控件/实际窗口与6组最低/最新Native AOT通过。本机另以仅NuGet.org源、禁用HTTP缓存、全新私有缓存恢复0.1.3，AOT编译并运行真实窗口；默认Direct2D原生交换链、初始化失败0、自动Microsoft YaHei UI系统字体，真实呈现帧和PE无CLR头/未加载CLR或JIT检查通过。[277文件发布证据](evidence/nuget-stable-0.1.3-2026-11-07/)与[汇总](evidence/nuget-stable-0.1.3-2026-11-07/release.json)保留结果；[本地预发布验收](evidence/stable-0.1.3-preflight-2026-11-07/)另保留显式CPU真实AOT窗口。
+
+纳入0.1.2之后的GPU优先、Direct2D完成队列和文字/Vulkan缓存优化。更新说明、默认行为变化、UseCpu迁移和未达标项见[发行说明](RELEASE-0.1.3.md)，实测见[热点性能与回归证据](PERFORMANCE-HOTSPOTS-2026-11-07.md)。API仍3230/3235、5项真实原生合同缺口；JPEG/文字/曲线及整页画质、部分性能/内存差距和Metal未实机验证状态保持。发布验收不代表整体同画质持平。
+
+```sh
+dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.3
+dotnet add package SimdSkia --version 0.1.3
+dotnet add package SimdSkia.Pdf --version 0.1.3
+```
 
 ## 0.1.2 正式版 — 十二包已公开并独立验证
 
