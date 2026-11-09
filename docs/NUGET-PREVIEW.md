@@ -1,8 +1,15 @@
 # NuGet 发布记录
 
-## 0.1.4 正式版 发布验收中
+## 0.1.4 正式版 十三包已公开并回复 issue
 
-本版新增SimdSkia.Avalonia.Android，十三包统一0.1.4。Android固定Avalonia12.1.5，CPU/通用SIMD，提供完整NuGet使用说明、主题与字体示例。按用户选择沿用已有Android16 ARM64源码真机记录，新增包做独立缓存Release/Mono AOT消费验证。当前CI和公开下载结果将在此记录。[发行说明](RELEASE-0.1.4.md)。
+十三个0.1.4正式包已公开下载，全部DLL、nuspec、宿主和发行文档与CI产物一致。[发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/42625109230)全部成功，代码及标签`v0.1.4`固定在`9804732bf5cfbde9764c014fe7cf1f46e5c65b56`。[GitHub正式发行](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.4)与[issue #1回复](https://github.com/donet-org-cn/SimdSkia/issues/1#issuecomment-6741702624)已发布。
+
+新增SimdSkia.Avalonia.Android，固定Avalonia12.1.5，CPU/通用SIMD，包内提供Application、Activity、AppCompat主题和字体使用说明。本机与CI的实际Android包独立缓存Release/Mono AOT构建通过。按用户选择沿用已有Android16 ARM64源码真机记录，额外的公开包安装测试按用户要求略过。三平台桌面12.1.0–12.1.5及最低/最新AOT矩阵全部通过。Android GPU与iOS呈现适配待完善。[发行说明](RELEASE-0.1.4.md)与[发布确认记录](evidence/nuget-stable-0.1.4-2026-11-09/summary.json)。
+
+```sh
+dotnet add package SimdSkia.Avalonia.Android --version 0.1.4
+dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.4
+```
 
 ## 0.1.3 正式版 — 十二包已公开并独立验证
 

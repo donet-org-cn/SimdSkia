@@ -1,6 +1,6 @@
 # 开发进度：0.1.4
 
-0.1.4新增Android NuGet包，正在执行十三包发布验收与独立缓存Android消费构建。[发行说明](RELEASE-0.1.4.md)与[公开发布状态](NUGET-PREVIEW.md)。
+0.1.4新增Android NuGet包，十三包已公开并核对内容，发布CI与Android独立缓存消费构建通过，GitHub发行和issue #1回复已完成。[发行说明](RELEASE-0.1.4.md)与[公开发布状态](NUGET-PREVIEW.md)。
 
 2026-11-09新增 Android 源码接入与示例，Avalonia12.1.5 / Android16 ARM64 USB真机的 Debug、裁剪/Mono AOT Release、中文、输入、按钮、动画及前后台恢复通过。43项字体、36项核心回归通过，APK约14.57MiB。Android首批CPU/通用SIMD，iOS呈现适配待实现。[使用方法](../examples/Mobile.Android/README.md)与[本轮测试范围](ANDROID-2026-11-09.md)。
 

@@ -1,0 +1,6 @@
+{
+  "id": 6741702624,
+  "html_url": "https://github.com/donet-org-cn/SimdSkia/issues/1#issuecomment-6741702624",
+  "created_at": "2026-11-09T13:50:48Z",
+  "body": "已在 **0.1.4** 中新增 Android NuGet 接入和可运行示例。\n\nAndroid 启动项目安装以下包，Avalonia 家族包统一为 **12.1.5**，目标框架使用 `net10.0-android36.0`。\n\n```sh\ndotnet add package SimdSkia.Avalonia.Android --version 0.1.4\n```\n\n在 `AvaloniaAndroidApplication<TApp>.CreateAppBuilder()` 中配置入口和静态 TrueType 字体。\n\n```csharp\nreturn AppBuilder.Configure<App>()\n    .UseSimdSkiaAndroid(options => options.FontFiles.Add(fontFile));\n```\n\n现有模板需要移除 `Avalonia.Android` 直接引用，由本包提供窗口宿主，并使用 AppCompat 主题。完整 Application、Activity、主题、字体资产和单视图配置均在使用说明中。[Android 使用说明与示例](https://github.com/donet-org-cn/SimdSkia/tree/v0.1.4/examples/Mobile.Android)\n\n首批 Android 采用 **C# CPU/通用 SIMD 绘图**，系统宿主负责 Activity、输入和帧缓冲显示。Android 16 ARM64 USB 真机的源码示例已通过中文显示、输入框、按钮、进度条动画及前后台恢复。此次新增 NuGet 包另做独立缓存 Release/Mono AOT 消费构建，真机验证沿用此前源码记录。[真机记录与验证范围](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.4/docs/ANDROID-2026-11-09.md)\n\nAndroid API 23 是项目声明的最低版本，实际真机覆盖 Android 16。字体目前支持静态 TrueType，示例显式携带 OFL 中文 TTF。Android GPU、其他机型/系统版本以及可变/CFF 字体还需要继续完善。\n\n**iOS 的 Avalonia 呈现适配仍待实现，还需要 Mac/Xcode 与设备验证。**\n\n[0.1.4 发行说明](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.4) · [Android NuGet 包](https://www.nuget.org/packages/SimdSkia.Avalonia.Android/0.1.4)"
+}
