@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-android36.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <ApplicationId>org.simdskia.androidsample</ApplicationId>
+    <ApplicationTitle>SimdSkia Android</ApplicationTitle>
+    <ApplicationVersion>1</ApplicationVersion>
+    <ApplicationDisplayVersion>0.1.4</ApplicationDisplayVersion>
+    <SimdSkiaPackageVersion Condition="'$(SimdSkiaPackageVersion)' == ''">0.1.4</SimdSkiaPackageVersion>
+    <SupportedOSPlatformVersion>23</SupportedOSPlatformVersion>
+    <RuntimeIdentifier>android-arm64</RuntimeIdentifier>
+    <AndroidPackageFormats>apk</AndroidPackageFormats>
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/SimdSkia.Avalonia.Android/SimdSkia.Avalonia.Android.csproj" Condition="'$(UsePackedSimdSkia)' != 'true'" />
+    <PackageReference Include="SimdSkia.Avalonia.Android" Version="[$(SimdSkiaPackageVersion)]" Condition="'$(UsePackedSimdSkia)' == 'true'" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.5]" />
+    <AndroidAsset Include="../../baseline/fonts/ZCOOLXiaoWei-Regular.ttf" Link="Fonts/ZCOOLXiaoWei-Regular.ttf" />
+    <AndroidAsset Include="../../baseline/fonts/ZCOOLXiaoWei-OFL.txt" Link="Fonts/OFL.txt" />
+    <AndroidAsset Include="../../LICENSE" Link="Licenses/SimdSkia-MIT.txt" />
+    <AndroidAsset Include="../../docs/licenses/Avalonia-MIT.txt" Link="Licenses/Avalonia-MIT.txt" />
+    <AndroidAsset Include="../../docs/licenses/Apache-2.0.txt" Link="Licenses/AndroidX-Apache-2.0.txt" />
+    <AndroidAsset Include="../../docs/licenses/Clipper2-BSL-1.0.txt" Link="Licenses/Clipper2-BSL-1.0.txt" />
+    <AndroidAsset Include="../../docs/licenses/Sdcb.SimdCodecs-MIT.txt" Link="Licenses/Sdcb.SimdCodecs-MIT.txt" />
+  </ItemGroup>
+  <Import Project="../../src/SimdSkia.Avalonia.Android/buildTransitive/SimdSkia.Avalonia.Android.targets" Condition="'$(UsePackedSimdSkia)' != 'true'" />
+</Project>

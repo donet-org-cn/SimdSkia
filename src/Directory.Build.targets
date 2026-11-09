@@ -1,6 +1,6 @@
 <Project>
   <Target Name="RequirePreviewPackageVersion" BeforeTargets="GenerateNuspec" Condition="'$(IsPackable)' == 'true'">
-    <Error Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('$(PackageVersion)', '^\d+\.\d+\.\d+-preview\.\d+$')) And ('$(StableRelease)' != 'true' Or ('$(PackageVersion)' != '0.1.0' And '$(PackageVersion)' != '0.1.1' And '$(PackageVersion)' != '0.1.2' And '$(PackageVersion)' != '0.1.3')) And ('$(LocalCodecTrial)' != 'true' Or '$(PackageVersion)' != '0.1.0-codecs-trial.1')"
-           Text="Use an approved preview version, or explicitly set StableRelease=true for 0.1.0, 0.1.1, 0.1.2 or 0.1.3." />
+    <Error Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('$(PackageVersion)', '^\d+\.\d+\.\d+-preview\.\d+$')) And ('$(StableRelease)' != 'true' Or ('$(PackageVersion)' != '0.1.0' And '$(PackageVersion)' != '0.1.1' And '$(PackageVersion)' != '0.1.2' And '$(PackageVersion)' != '0.1.3' And '$(PackageVersion)' != '0.1.4')) And ('$(LocalCodecTrial)' != 'true' Or '$(PackageVersion)' != '0.1.0-codecs-trial.1')"
+           Text="Use an approved preview version, or explicitly set StableRelease=true for 0.1.0, 0.1.1, 0.1.2, 0.1.3 or 0.1.4." />
   </Target>
 </Project>

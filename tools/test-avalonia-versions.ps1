@@ -1,5 +1,5 @@
 param(
- [string]$Version='0.1.3',
+ [string]$Version='0.1.4',
  [string]$Packages='artifacts/avalonia-matrix/packages',
  [string]$Output='artifacts/avalonia-matrix/results',
  [string[]]$AvaloniaVersions=@('12.1.0','12.1.1','12.1.2','12.1.3','12.1.4','12.1.5'),

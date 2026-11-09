@@ -16,11 +16,13 @@ public static class SimdSkiaSystemFonts
             return new(found.DefaultFamily, found.Files, Array.Empty<string>());
         }
         string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        string[] roots = OperatingSystem.IsLinux()
+        string[] roots = OperatingSystem.IsAndroid()
+            ? ["/system/fonts", "/product/fonts", "/system/product/fonts"]
+            : OperatingSystem.IsLinux()
             ? [Path.Combine(Environment.GetEnvironmentVariable("XDG_DATA_HOME") ?? Path.Combine(home, ".local", "share"), "fonts"), Path.Combine(home, ".fonts"), "/usr/local/share/fonts", "/usr/share/fonts"]
             : OperatingSystem.IsMacOS()
                 ? [Path.Combine(home, "Library", "Fonts"), "/Library/Fonts", "/System/Library/Fonts", "/System/Library/Fonts/Supplemental"]
-                : throw new PlatformNotSupportedException("System font discovery supports Windows, Linux and macOS.");
+                : throw new PlatformNotSupportedException("System font discovery supports Windows, Linux, macOS and Android.");
         return UnixSystemFonts.Discover(roots, Environment.GetEnvironmentVariable("SIMDSKIA_DEFAULT_FONT_FAMILY"));
     }
 }

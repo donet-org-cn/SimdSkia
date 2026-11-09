@@ -1,5 +1,13 @@
 # SimdSkia 更新日志 / Release notes
 
+## 0.1.4 正式版 Android 接入 — 2026-11-09
+
+- 新增SimdSkia.Avalonia.Android NuGet包，十三包统一0.1.4。固定Avalonia 12.1.5，C# CPU/通用SIMD，提供UseSimdSkiaAndroid、完整主题/字体/生命周期示例及包消费检查。iOS呈现适配待完善。
+- 构建时固定哈希校验官方宿主，移除默认 Skia/HarfBuzz 注册，校验临时产物后原子发布。
+- Android 系统字体发现增加系统目录。示例显式使用 OFL 静态中文字体，Activity 暂停/恢复管理动画调度。
+- 修复首轮真机发现的 AppCompat 主题启动崩溃，补充深色启动背景和运行诊断。
+- 此前Android16 ARM64源码真机的Debug、裁剪/Mono AOT Release、中文、触摸、输入、动画及前后台恢复通过，43项字体与36项核心回归通过。新版包另做独立缓存Release/Mono AOT消费构建。[使用与测试范围](ANDROID-2026-11-09.md)。
+
 ## 0.1.3 正式版 — GPU 优先、完成等待和缓存优化（2026-11-07）
 
 Avalonia>=12.1.0且<13.0.0，十二包统一0.1.3。桌面默认GPU优先，UseCpu可保留CPU；原版画质、JPEG、Metal未实机和整体性能/内存差距保持披露。完整发行说明见[0.1.3](RELEASE-0.1.3.md)。

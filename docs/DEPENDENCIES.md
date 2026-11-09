@@ -1,5 +1,17 @@
 # 依赖与许可证
 
+## 2026-11-09 Android 源码接入
+
+| 依赖 | 用途 | 许可证 | 平台组件 |
+|---|---|---|---|
+| Avalonia.Android 12.1.5 | Activity、输入、系统帧缓冲宿主，固定哈希后移除默认绘图注册 | MIT | 托管宿主调用 Android 系统 API |
+| Xamarin.AndroidX.AppCompat 1.7.1.3、DocumentFile 1.1.0.3、Window 1.5.1.2 及锁文件中的传递依赖 | 官方宿主的窗口、输入和系统交互 | MIT AND Apache-2.0 | .NET 绑定与 Android Java/AAR 资源 |
+| Mono.Cecil 0.11.6 | 开发机构建时准备宿主程序集 | MIT | 纯托管构建工具 |
+| .NET for Android 36.1.2 | ARM64 平台运行、Mono 与 AOT 编译 | .NET/Mono MIT 及随工具链通知 | APK 携带 .NET Android 原生运行时 |
+| 站酷小薇体 | 示例中文静态 TrueType 字体 | OFL-1.1 | 字体数据，固定 SHA256 |
+
+Android APK 资产和运行程序集检查记录见[真机报告](ANDROID-2026-11-09.md)。SDK/JDK 为开发机工具。示例 APK 带有字体及相关依赖许可证，Android 适配器目前作为源码项目使用。
+
 ## 0.1.2 正式版累计发行
 
 依赖版本沿用0.1.1/preview.3：Sdcb.SimdCodecs1.4.0、Clipper2 2.0.0、可选PdfPig0.1.16，未因正式化升级第三方依赖。Core复用纯托管Clipper2；C#系统GPU调用及已允许的压缩/macOS窗口宿主例外、许可证和Metal未验证状态保持。详见[累计说明](RELEASE-0.1.2.md)。下方保留历史时点。

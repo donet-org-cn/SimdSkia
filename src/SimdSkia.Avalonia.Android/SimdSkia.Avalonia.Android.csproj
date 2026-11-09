@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-android36.0</TargetFramework>
+    <SupportedOSPlatformVersion>23</SupportedOSPlatformVersion>
+    <IsPackable>true</IsPackable>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <Description>Android Activity, input and framebuffer presentation for SimdSkia managed CPU/SIMD rendering. Fixed Avalonia 12.1.5 host, Android API 23+, tested on Android 16 ARM64.</Description>
+    <_PreparedAndroidHost>$(MSBuildProjectDirectory)/obj/$(Configuration)/hosts/12.1.5/Avalonia.Android.dll</_PreparedAndroidHost>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../SimdSkia.Avalonia/SimdSkia.Avalonia.csproj" />
+    <PackageDownload Include="Avalonia.Android" Version="[12.1.5]" />
+    <PackageReference Include="Avalonia" Version="[12.1.5]" />
+    <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="[1.7.1.3]" />
+    <PackageReference Include="Xamarin.AndroidX.DocumentFile" Version="[1.1.0.3]" />
+    <PackageReference Include="Xamarin.AndroidX.Window" Version="[1.5.1.2]" />
+    <Reference Include="Avalonia.Android" HintPath="$(_PreparedAndroidHost)" Private="true" />
+    <None Include="$(_PreparedAndroidHost)" Pack="true" PackagePath="lib/$(TargetFramework)/Avalonia.Android.dll" />
+    <None Include="../../examples/Mobile.Android/README.md" Pack="true" PackagePath="/README.md" />
+    <None Include="../../docs/licenses/Avalonia-MIT.txt" Link="licenses/Avalonia-MIT.txt" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../docs/licenses/Avalonia-MIT.txt" Pack="true" PackagePath="licenses/" />
+    <None Include="../../docs/licenses/Apache-2.0.txt" Pack="true" PackagePath="licenses/AndroidX-Apache-2.0.txt" />
+  </ItemGroup>
+  <Target Name="PrepareManagedAndroidHost" BeforeTargets="ResolveAssemblyReferences"
+          Inputs="$(NuGetPackageRoot)/avalonia.android/12.1.5/lib/net10.0-android36.0/Avalonia.Android.dll;../../tools/PrepareAndroidHost/Program.cs"
+          Outputs="$(_PreparedAndroidHost)">
+    <Exec Command="dotnet run --project &quot;$(MSBuildProjectDirectory)/../../tools/PrepareAndroidHost&quot; -c Release -- &quot;$(NuGetPackageRoot)/avalonia.android/12.1.5/lib/net10.0-android36.0/Avalonia.Android.dll&quot; &quot;$(_PreparedAndroidHost)&quot;" />
+  </Target>
+</Project>

@@ -72,6 +72,7 @@ internal static class InstalledFonts
     {
         string home=Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         string[] roots=OperatingSystem.IsWindows()?[Environment.GetFolderPath(Environment.SpecialFolder.Fonts),Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"Microsoft","Windows","Fonts")]
+            :OperatingSystem.IsAndroid()?["/system/fonts","/product/fonts","/system/product/fonts"]
             :OperatingSystem.IsMacOS()?["/System/Library/Fonts","/Library/Fonts",Path.Combine(home,"Library","Fonts")]
             :["/usr/share/fonts","/usr/local/share/fonts",Path.Combine(home,".fonts"),Path.Combine(Environment.GetEnvironmentVariable("XDG_DATA_HOME")??Path.Combine(home,".local","share"),"fonts")];
         var result=new List<InstalledFace>();int files=0;

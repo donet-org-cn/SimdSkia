@@ -10,15 +10,19 @@ import zipfile
 parser=argparse.ArgumentParser()
 parser.add_argument('--directory',required=True,type=Path)
 parser.add_argument('--version',required=True)
+parser.add_argument('--desktop-only',action='store_true',help='Build-time desktop CI feed, excluding the Android package.')
 args=parser.parse_args()
 if not re.fullmatch(r'\d+\.\d+\.\d+(?:-preview\.\d+)?',args.version):
     raise SystemExit('Expected a stable or preview SemVer.')
 ids=['SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Text','SimdSkia.Imaging','SimdSkia.Gpu','SimdSkia.Gpu.Direct2D','SimdSkia.Compatibility','SimdSkia.Avalonia','SimdSkia.Avalonia.Desktop','SimdSkia.Avalonia.Gpu','SimdSkia']
-modern=args.version in ('0.1.0-preview.10','0.1.0','0.1.1','0.1.2','0.1.3','0.1.2-preview.1','0.1.2-preview.2','0.1.2-preview.3')
-matrix=args.version in ('0.1.1','0.1.2','0.1.3','0.1.2-preview.1','0.1.2-preview.2','0.1.2-preview.3')
+modern=args.version in ('0.1.0-preview.10','0.1.0','0.1.1','0.1.2','0.1.3','0.1.4','0.1.2-preview.1','0.1.2-preview.2','0.1.2-preview.3')
+matrix=args.version in ('0.1.1','0.1.2','0.1.3','0.1.4','0.1.2-preview.1','0.1.2-preview.2','0.1.2-preview.3')
 if args.version=='0.1.0-preview.9' or modern:
     ids.append('SimdSkia.Pdf')
+if args.version=='0.1.4' and not args.desktop_only:
+    ids.append('SimdSkia.Avalonia.Android')
 release_topics={
+    '0.1.4':(('Android','12.1.5','CPU','iOS','0.1.4'),'0.1.4'),
     '0.1.3':(('GPU','Vulkan','Direct2D','缓存','画质','UseCpu','12.1.0'),'0.1.3'),
     '0.1.2':(('0.1.1','2338','3230','Vulkan','Metal','12.1.0','画质','SaveLayer'),'2338'),
     '0.1.2-preview.3':(('3230','Vulkan','Metal','12.1.0','画质','SaveLayer'),'3230'),
@@ -68,7 +72,7 @@ for package_id in ids:
             if package_id=='SimdSkia.Imaging':
                 assert dependencies.get('Sdcb.SimdCodecs')=='[1.4.0]',dependencies
                 assert 'licenses/Sdcb.SimdCodecs-MIT.txt' in names,path
-        if args.version in ('0.1.2-preview.3','0.1.2','0.1.3'):
+        if args.version in ('0.1.2-preview.3','0.1.2','0.1.3','0.1.4') and package_id!='SimdSkia.Avalonia.Android':
             pdf_readme_versions=re.findall(r'PdfPig\s+(?:\*\*)?([0-9A-Za-z.+-]+)',readme)
             assert pdf_readme_versions and set(pdf_readme_versions)=={'0.1.16'},(path,'Incorrect PDF dependency version in README',pdf_readme_versions)
         if package_id=='SimdSkia.Pdf':
@@ -81,7 +85,8 @@ for package_id in ids:
             if dependency.startswith('SimdSkia'):
                 assert version.strip('[]')==args.version,(path,dependency,version)
         if package_id!='SimdSkia':
-            assert f'lib/{framework}/{package_id}.dll' in names,path
+            assembly_framework='net10.0-android36.0' if package_id=='SimdSkia.Avalonia.Android' else framework
+            assert f'lib/{assembly_framework}/{package_id}.dll' in names,path
             with zipfile.ZipFile(args.directory/f'{package_id}.{args.version}.snupkg') as symbols:
                 assert any(name.endswith('.pdb') for name in symbols.namelist()),path
         if package_id=='SimdSkia.Gpu':
@@ -110,9 +115,17 @@ for package_id in ids:
                 else:
                     assert f'lib/{framework}/{host}' in names,(path,host)
         if package_id=='SimdSkia.Gpu.Direct2D':
-            assert set(dependencies)==({'SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Gpu'} if args.version in ('0.1.2','0.1.3','0.1.2-preview.1','0.1.2-preview.2','0.1.2-preview.3') else {'SimdSkia.Core'}),dependencies
-        if args.version=='0.1.3' and package_id=='SimdSkia.Avalonia.Desktop':
+            assert set(dependencies)==({'SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Gpu'} if args.version in ('0.1.2','0.1.3','0.1.4','0.1.2-preview.1','0.1.2-preview.2','0.1.2-preview.3') else {'SimdSkia.Core'}),dependencies
+        if args.version in ('0.1.3','0.1.4') and package_id=='SimdSkia.Avalonia.Desktop':
             assert dependencies.get('SimdSkia.Avalonia.Gpu','').strip('[]')==args.version,(path,'GPU-preferred desktop dependency missing')
+        if package_id=='SimdSkia.Avalonia.Android':
+            assert dependencies.get('Avalonia')=='[12.1.5]',dependencies
+            assert 'Avalonia.Android' not in dependencies,dependencies
+            assert 'lib/net10.0-android36.0/Avalonia.Android.dll' in names,path
+            assert 'licenses/Avalonia-MIT.txt' in names and 'licenses/AndroidX-Apache-2.0.txt' in names,path
+            assert not any('Mono.Cecil' in name for name in names),path
+            for step in ('UseSimdSkiaAndroid','CreateAppBuilder','Theme.AppCompat','dotnet add package','Mono AOT'):
+                assert step in readme,(path,'Missing Android usage instructions',step)
         rows.append({'id':package_id,'version':args.version,'bytes':path.stat().st_size,'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'dependencies':dependencies})
 (args.directory/'manifest.json').write_text(json.dumps(rows,indent=2)+'\n',encoding='utf-8')
 print(f'PASS {len(rows)} {args.version} packages: dependency versions, managed assemblies, README, CHANGELOG, NuGet release notes, MIT, symbols and no font/native drawing binaries')

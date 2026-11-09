@@ -42,4 +42,8 @@ docs/evidence/hotspots-2026-11-07/*.patch -text -whitespace
 docs/evidence/stable-0.1.3-preflight-2026-11-07/** -text whitespace=cr-at-eol
 
 docs/evidence/nuget-stable-0.1.3-2026-11-07/** -text whitespace=cr-at-eol
+
+docs/evidence/android-issue1-2026-11-09/** -text whitespace=cr-at-eol
+# ADB captured doubled CR bytes; preserve the hashed original log verbatim.
+docs/evidence/android-issue1-2026-11-09/smoke.txt -text -whitespace
 docs/assets/hotspots-2026-11-07/** -text whitespace=cr-at-eol,-blank-at-eol

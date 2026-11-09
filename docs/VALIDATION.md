@@ -1,4 +1,8 @@
-# 验证记录：0.1.3
+# 验证记录：0.1.4
+
+0.1.4新增Android NuGet包，正在执行十三包发布验收与独立缓存Android消费构建。[发行说明](RELEASE-0.1.4.md)与[公开发布状态](NUGET-PREVIEW.md)。
+
+2026-11-09 Android源码示例在24122RKC7C / Android16 / ARM64实际安装运行，中文与控件可见，触摸、系统输入、进度条像素变化、前后台恢复通过。Debug编译零警告/错误，Release裁剪与Mono AOT通过，APK及运行程序集依赖核对通过。桌面43项字体和36项核心回归通过。AndroidGPU与iOS接入待验证。[报告与原始记录](ANDROID-2026-11-09.md)。
 
 0.1.3正式包验证完成：十二包公开下载与CI内容一致，发布及关联CI全成功；同一适配器三平台12.1.0–12.1.5的18组窗口/控件、6组Native AOT通过。全新缓存仅NuGet.org源真实AOT默认Direct2D窗口、系统字体、真实呈现、零初始化失败、PE无CLR头与未加载CLR/JIT通过。[277文件及哈希](evidence/nuget-stable-0.1.3-2026-11-07/)、[发布汇总](evidence/nuget-stable-0.1.3-2026-11-07/release.json)。原版严格画质与5项原生合同差距保持，验收不代表全面行为兼容。
 
