@@ -1,78 +1,65 @@
 # SimdSkia.Avalonia
 
-## 0.1.4 Android NuGet 接入
+**用 C# 绘制图片，或为 Avalonia 应用更换渲染后端。**
 
-新增 `SimdSkia.Avalonia.Android` NuGet包和 `UseSimdSkiaAndroid()`，十三包统一0.1.4。Android固定Avalonia12.1.5，C# CPU/通用SIMD绘图，配套Application、Activity、主题和字体配置示例。此前Android16 ARM64源码真机通过中文、输入、按钮、动画及前后台恢复，源码APK14.57MiB。本版新增包另做独立缓存Release/Mono AOT构建，发布验收见记录。iOS呈现适配仍待实现和验证。[构建与使用](https://github.com/donet-org-cn/SimdSkia/blob/main/examples/Mobile.Android/README.md) · [0.1.4发行说明](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-0.1.4.md) · [发布验收](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/NUGET-PREVIEW.md) · [真机测试记录与范围](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/ANDROID-2026-11-09.md)
+SimdSkia 是一个 .NET 2D 渲染引擎，绘图无需加载 Google Skia 原生库。在控制台或服务端，可以用 `SKCanvas` 画图并输出 PNG。在 Avalonia 项目里，可以通过调整包引用和启动代码来切换后端，继续使用原有的 XAML 和视图模型。
 
-## 0.1.3 正式版：GPU 优先与文字缓存优化
+简体中文 · [English](https://github.com/donet-org-cn/SimdSkia/blob/main/README.en.md) · .NET 10 · [正式版 0.1.4](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-0.1.4.md) · [MIT](https://github.com/donet-org-cn/SimdSkia/blob/main/LICENSE)
 
-十二个包统一0.1.3，包含0.1.2之后的桌面GPU优先、Direct2D两帧完成队列和本轮缓存/内存优化。[完整发行说明与升级注意](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-0.1.3.md) · [NuGet发布状态](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/NUGET-PREVIEW.md)。**Windows优先Direct2D、Linux优先硬件Vulkan；macOS窗口仍CPU。** 使用 `.UseSimdSkiaDesktop(options => options.UseCpu())` 显式选择CPU。GPU并非通用省CPU或省内存方案，原版画质及整体性能门槛仍有差距。
+## 按用途开始
 
-## 0.1.3：动态文字与 GPU 慢项优化
+| 你要做什么 | 安装哪个包 | 从哪里开始 |
+| --- | --- | --- |
+| 在 .NET 程序里画图、生成 PNG | [SimdSkia](https://www.nuget.org/packages/SimdSkia/0.1.4) | [运行绘图示例](#生成-png) |
+| 为 Windows、Linux 或 macOS 上的 Avalonia 应用切换后端 | [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.4) | [迁移现有项目](#迁移现有项目) · [运行窗口示例](#运行桌面窗口示例) |
+| 为 Avalonia Android 应用接入 CPU 渲染 | [SimdSkia.Avalonia.Android](https://www.nuget.org/packages/SimdSkia.Avalonia.Android/0.1.4) | [配置 Android 启动项目](#avalonia-android) |
+| 将现有 PDF 的页面转成图片 | [SimdSkia.Pdf](https://www.nuget.org/packages/SimdSkia.Pdf/0.1.4) | [读取和渲染 PDF](https://github.com/donet-org-cn/SimdSkia/blob/main/src/SimdSkia.Pdf/README.md) |
 
-本轮修正文字子像素缓存重复计费、设备遮罩满64项整批清空和重复文字对象无法复用覆盖率的问题；在原有字节预算内共享不可变遮罩并逐项淘汰。Vulkan 为小面积纯色重叠矩形增加保持混合顺序的批处理。三轮完成等待/读回、CPU、内存和原版画质结果见[热点性能报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PERFORMANCE-HOTSPOTS-2026-11-07.md)。旧60FPS滚动7.528倍记录在本轮同一0.1.2二进制上未重现，根因仍未定位；原始记录保留，不能把差值归因于本轮优化。原版严格文字、曲线与整页画质仍有差距，公开状态以发布记录为准。
+同一个项目直接引用多个 `SimdSkia.*` 包时，请统一版本。
 
-## 0.1.3：桌面默认 GPU 优先
+## 生成 PNG
 
-Windows Direct2D 原生窗口进一步改为事件完成通知、最多两帧在途和双缓冲 flip 呈现，复用重复矩阵/裁剪状态，保留局部绘制并修复跨帧 CPU 回退的像素同步；提交耗时与 GPU 实际完成明确区分。[最新 CPU/GPU、CPU 占用与内存报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PERFORMANCE-GPU-COMPLETION-2026-11-07.md)。控件页总CPU仍未稳定低于CPU模式，Vulkan仍有同步读回差距；这些优化纳入0.1.3。
+只需安装 `SimdSkia`。这个示例会在位图上画出圆角矩形和圆形，再保存为 PNG。
 
-从0.1.3起，`UseSimdSkiaDesktop()` 改为 Windows 优先 Direct2D 交换链、Linux 优先硬件 Vulkan，设备/表面不适用时有诊断地回退 CPU；macOS 窗口仍使用 CPU。桌面包传递引入 GPU 适配器，可用 `options.UseCpu()` 显式选择 CPU。已补初始化失败/设备丢失路径、Vulkan 管线提前准备与有界字形 LRU，借鉴 Impeller 的可预测帧时间思路。[实现、合同与测试](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/GPU-PREFERRED-2026-11-07.md)。**0.1.2仍默认CPU，0.1.3桌面GPU优先；下方历史性能/体积不能代表新默认配置。**
-
-[最终18进程真实窗口对照](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PERFORMANCE-GPU-PREFERRED-2026-11-07.md)：Auto实际使用Direct2D，相对同轮显式CPU绘制耗时低约6.4%，CPU占用高约24.9%、采样峰值WS增加30.51MiB；相对原有Direct2D耗时基本持平。40项新检查、12174项GPU集成、566项GPU检查及实际Auto/CPU AOT窗口通过。原版画质及内存差距仍存在；此处为该批历史测量。
-
-本版修复连续MoveTo点序列和特殊混合模式的SaveLayer范围；原版几何300组/4636值、464组图层/2,375,680字节精确对照通过。PDF依赖说明与项目保持一致，固定使用 PdfPig 0.1.16。
-
-## 0.1.2 正式版：0.1.1以来累计更新
-
-固定 SkiaSharp **3.119.4 / 3235 项**，当前匹配 **3230 项、201 公开类型、5 缺口、0 额外签名**。相对0.1.1的892项累计新增2338项元数据签名（63→201公开类型），其中最后99项快照补入94项；五项原生句柄/版本合同按用户要求保留，不伪造替代语义。新增真实Alpha8、浮点颜色/Blender/抖动、LCD/中文点阵、SVG/XPS、原生v103 SKP子集与GL/D3D12/Metal GPU资源链路。Vulkan增加非重叠矩形合批、设备内复制、直接完成读回与去分配；Metal没有Mac GPU实机验证。**JPEG、部分文字/曲线、整页画质及性能/内存差距仍存在，不代表全面行为或二进制兼容。**
-
-十二个0.1.2正式包已公开，并经CI和本机独立下载核对。正式包三平台18组版本/窗口、6组AOT与NuGet.org-only新缓存的真实AOT窗口均通过。[0.1.1以来完整累计更新与升级说明](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-0.1.2.md)。[最终源码63进程性能与CPU/内存复测](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PERFORMANCE-PREVIEW3-2026-11-07.md)已更新；严格画质与内存差距仍保留。
-
-[完整测试、CPU/GPU和内存报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PUBLIC-API-FINAL-2026-11-07.md) · [发布状态](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/NUGET-PREVIEW.md) · [更新日志](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-NOTES.md)
-
-**正式公开包历史补测**：[preview.8→0.1.2博客园续文（8张图）](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/blog/2026-11-07-simdskia-preview8-to-012-cnblogs.md)、[AOT/CPU/内存与体积报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PERFORMANCE-STABLE-0.1.2-AOT-2026-11-07.md)。默认Avalonia AOT运行文件36.55→24.02MiB，减少34.27%；该次通用x64 AOT三项吞吐综合耗时比0.968，限帧滚动达到原版7.528倍、约3.21MiB/次托管分配，五项综合1.437，严格画质0/10。随后同一0.1.2二进制的独立复测未重现滚动异常，详见上方热点报告；原因仍未定位，不据此宣称问题已修复或整体持平。[原始45进程与包证据](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/evidence/blog-preview8-to-012-2026-11-07/)保留。
-
-[带性能图、兼容范围与安装方法的文章](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/blog/2026-11-07-simdskia-api-and-gpu.md)。本正式版汇集0.1.1以后各开发/预览批次，正式与预览的原始发布记录分别保留。
-
-独立 C# 2D 引擎，内部使用 `SimdSkia`，源码兼容层保留 `SkiaSharp.SK*`。不使用 Google Skia 绘图；字体、基础排版及图片编解码均由 C# 实现。通过 `SimdSkia.Avalonia` 可以接入 Avalonia，无需重新编译 Avalonia。
-
-当前版本 **`0.1.4`** 支持 **Avalonia >=12.1.0 且 <13.0.0**，已验证的 12.1.0–12.1.5 在此前版本已通过同一适配器二进制兼容测试。未来大版本需要另行适配；未来 12.x 要回归并补充对应宿主，不能保证未知版本的窗口 ABI。Windows、Linux X11/XWayland、macOS 已通过真实窗口验证；macOS 使用经用户确认允许的官方原生窗口宿主，绘图、字体、排版和编解码仍是 C#。桌面默认GPU优先，Windows优先Direct2D原生交换链、Linux优先硬件Vulkan，失败时诊断后回退CPU；macOS窗口仍CPU。基础适配器 `UseSimdSkia()` 与离屏位图仍CPU。**Metal核心已有实现但无Mac GPU实机验证，尚未接入Avalonia窗口呈现；完整兼容性和画质验收仍未全部通过。**
-
-## NuGet 包怎么选
-
-本轮包含下列十三个包，统一版本 `0.1.4`；发布状态见 [发布记录](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/NUGET-PREVIEW.md)。0.1.4 是正式版，NuGet 界面无需勾选“包含预发行版”；公开下载状态以发布记录为准。
-
-| 包名 | 用途 |
-| --- | --- |
-| [SimdSkia.Avalonia.Android](https://www.nuget.org/packages/SimdSkia.Avalonia.Android/0.1.4) | Android Activity、输入与CPU帧缓冲宿主，固定Avalonia12.1.5 |
-| [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.4) | **桌面应用优先选这个**：自动选择 Windows/Linux/macOS 宿主，传递引入渲染适配器 |
-| [SimdSkia.Avalonia](https://www.nuget.org/packages/SimdSkia.Avalonia/0.1.4) | 绘图、字体和基础文字排版服务，也可配合自行配置的宿主 |
-| [SimdSkia.Avalonia.Gpu](https://www.nuget.org/packages/SimdSkia.Avalonia.Gpu/0.1.4) | 可选 Avalonia GPU 绘图、Direct2D 直接呈现和回退/缓存诊断 |
-| [SimdSkia.Gpu.Direct2D](https://www.nuget.org/packages/SimdSkia.Gpu.Direct2D/0.1.4) | Windows Direct2D/D3D11及D3D12互操作，C#系统API绑定 |
-| [SimdSkia](https://www.nuget.org/packages/SimdSkia/0.1.4) | 需要 `SkiaSharp.SK*` 源码兼容 API 时使用的依赖汇总包 |
-| [SimdSkia.Compatibility](https://www.nuget.org/packages/SimdSkia.Compatibility/0.1.4) | `SKBitmap`、`SKCanvas` 等兼容层，也由 `SimdSkia` 汇总包引入 |
-| [SimdSkia.Core](https://www.nuget.org/packages/SimdSkia.Core/0.1.4) | 几何、路径和绘图状态 |
-| [SimdSkia.Cpu](https://www.nuget.org/packages/SimdSkia.Cpu/0.1.4) | CPU 光栅化、像素合成及 SIMD |
-| [SimdSkia.Text](https://www.nuget.org/packages/SimdSkia.Text/0.1.4) | TrueType 字体解析和基础排版 |
-| [SimdSkia.Imaging](https://www.nuget.org/packages/SimdSkia.Imaging/0.1.4) | 图片编解码和颜色处理 |
-| [SimdSkia.Gpu](https://www.nuget.org/packages/SimdSkia.Gpu/0.1.4) | Vulkan、GL/GLES与Metal核心（Metal未实机验证），需系统API/驱动 |
-| [SimdSkia.Pdf](https://www.nuget.org/packages/SimdSkia.Pdf/0.1.4) | 可选纯托管 PDF 阅读/页面绘制；导出 PDF 无需安装此包 |
-
-新桌面应用添加 `SimdSkia.Avalonia.Desktop`，其渲染服务和引擎依赖会自动还原，无需额外安装 `SimdSkia` 或手动复制底层 DLL：
-
-```powershell
-dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.4
+```sh
+dotnet new console --framework net10.0 -o SimdSkiaDemo
+cd SimdSkiaDemo
+dotnet add package SimdSkia --version 0.1.4
 ```
 
-**安装包后还必须配置启动代码。** 以下是完整的新程序示例；现有项目按后面的迁移步骤调整。
+将 `Program.cs` 替换为以下代码。`SkiaSharp` 是 SimdSkia 兼容层提供的命名空间。
 
-从0.1.2或更早版本升级时，将直接引用的所有 `SimdSkia.*` 包统一到 `0.1.4`，Avalonia 家族包统一选择 >=12.1.0 且 <13.0.0 中的同一版本。本次要求 .NET 10，第三方编解码依赖保持；重点更新渲染调度、缓存及测试报告；继承此前独立 SK* API、PDF、SIMD 和启动准备，无需重新编译 Avalonia。具体性能、画质限制与发布验收见 [发布记录](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/NUGET-PREVIEW.md)。
+```csharp
+using SkiaSharp;
 
-## Avalonia 快速开始（Windows / Linux / macOS）
+using var bitmap = new SKBitmap(320, 180);
+using var canvas = new SKCanvas(bitmap);
+canvas.Clear(SKColors.White);
 
-使用 .NET 10 SDK，在空目录创建以下两个文件。所有 Avalonia 包统一为 **12.1.5**，无需克隆或编译本仓库。
+using var paint = new SKPaint { Color = new SKColor(62, 90, 220), IsAntialias = true };
+canvas.DrawRoundRect(SKRect.Create(24, 24, 272, 132), 24, 24, paint);
+paint.Color = SKColors.White;
+canvas.DrawCircle(160, 90, 32, paint);
 
-**Demo.csproj**：
+using var png = bitmap.Encode(SKEncodedImageFormat.Png, 100)
+    ?? throw new InvalidOperationException("PNG encoding failed.");
+using var output = File.Create("hello-simdskia.png");
+png.SaveTo(output);
+```
+
+运行 `dotnet run` 后，当前目录会生成 `hello-simdskia.png`。
+
+## Avalonia 桌面
+
+### 迁移现有项目
+
+1. 在启动项目中运行 `dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.4`，并将 Avalonia 系列包统一为同一个已验证版本。下方示例使用 `12.1.5`。
+2. 移除直接引用的 `Avalonia.Desktop`、`Avalonia.Skia` 和 `Avalonia.Fonts.Inter`（如有）。同时检查第三方控件是否依赖原版 Skia 后端或 `ISkiaSharpApiLeaseFeature`。
+3. 添加 `using SimdSkia.Avalonia;`，把启动链中的 `.UsePlatformDetect()` 替换为 `.UseSimdSkiaDesktop()`。如果原来调用了 `.WithInterFont()`，也一并移除。
+
+### 运行桌面窗口示例
+
+在空目录创建 `Demo.csproj`。
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
@@ -80,7 +67,6 @@ dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.4
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="SimdSkia.Avalonia.Desktop" Version="0.1.4" />
@@ -90,7 +76,7 @@ dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.4
 </Project>
 ```
 
-**Program.cs**：
+在同一目录创建 `Program.cs`。
 
 ```csharp
 using Avalonia;
@@ -102,10 +88,9 @@ using SimdSkia.Avalonia;
 internal static class Program
 {
     [STAThread]
-    public static void Main(string[] args)
-        => AppBuilder.Configure<App>()
-            .UseSimdSkiaDesktop()
-            .StartWithClassicDesktopLifetime(args);
+    public static void Main(string[] args) => AppBuilder.Configure<App>()
+        .UseSimdSkiaDesktop()
+        .StartWithClassicDesktopLifetime(args);
 }
 
 public sealed class App : Application
@@ -118,110 +103,61 @@ public sealed class App : Application
         {
             desktop.MainWindow = new Window
             {
-                Title = "SimdSkia",
-                Width = 600,
-                Height = 300,
-                Content = new StackPanel
-                {
-                    Margin = new Thickness(24),
-                    Spacing = 16,
-                    Children =
-                    {
-                        new TextBlock { Text = "你好，SimdSkia / Hello Avalonia", FontSize = 24 },
-                        new Button { Content = "普通 Avalonia 按钮" }
-                    }
-                }
+                Title = "Hello SimdSkia",
+                Width = 480,
+                Height = 240,
+                Content = new TextBlock { Text = "Hello, Avalonia!", Margin = new Thickness(24) }
             };
         }
+
         base.OnFrameworkInitializationCompleted();
     }
 }
 ```
 
-在该目录运行：
-
-```powershell
+```sh
 dotnet restore
 dotnet run
 ```
 
-Windows 的 `WinExe` 避免额外控制台窗口。三平台自动发现受支持的已安装静态 TrueType 字体，无需附带字体资源；中文需要相应字形的已安装字体。Linux 需要 X11 或 XWayland 及系统窗口库。macOS 会分发官方 MIT `libAvaloniaNative.dylib`，只负责窗口和系统交互。字体解析、文字栅格化及编解码均由 C# 完成。
+下图来自 Avalonia 控件示例的 Direct2D 验证，包含输入框、渐变、曲线和中英文文字。使用中文时，需要安装含相应字形的受支持静态 TrueType 字体，或通过 `FontFiles` 指定字体。[控件示例源码](https://github.com/donet-org-cn/SimdSkia/blob/main/examples/CrossPlatform/Program.cs) · [截图与测试记录](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/DESKTOP-GPU-2026-10-22.md)
 
-## Avalonia GPU 与 Direct2D
+![SimdSkia 渲染的 Avalonia 窗口，展示按钮、文本输入、曲线、渐变和中英文文本](https://raw.githubusercontent.com/donet-org-cn/SimdSkia/main/docs/images/desktop-direct2d-controls-2026-10-22.png)
 
-桌面默认按平台优先尝试硬件GPU，提供初始化/设备丢失诊断和CPU回退；基础适配器与离屏位图仍CPU。轻控件页的总CPU和内存不保证降低，详见[完成时间与资源报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PERFORMANCE-GPU-COMPLETION-2026-11-07.md)和[热点复测](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PERFORMANCE-HOTSPOTS-2026-11-07.md)。显式 `UseGpu` 的allowCpuFallback是绘图命令级回退，不保证初始化成功；分层/逐像素透明窗口需选FramebufferReadback，macOS窗口GPU未接入。
+### 桌面平台与渲染后端
 
-桌面包已传递引入GPU适配器。使用基础适配器时可单独安装：
+| 平台 | `.UseSimdSkiaDesktop()` 的默认行为 |
+| --- | --- |
+| Windows | 优先使用 Direct2D 和原生交换链，可回退到 CPU |
+| Linux | 在 X11 或 XWayland 下优先使用硬件 Vulkan，可回退到 CPU |
+| macOS | 使用 CPU 渲染，由 Avalonia 原生宿主处理窗口 |
 
-```powershell
-dotnet add package SimdSkia.Avalonia.Gpu --version 0.1.4
-```
+可用 `.UseSimdSkiaDesktop(options => options.UseCpu())` 显式选用 CPU。基础适配器 `.UseSimdSkia()` 与离屏位图使用 CPU。桌面窗口已验证 Avalonia `12.1.0`–`12.1.5`，更新版本需要回归验证。[平台行为与回退](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/GPU-PREFERRED-2026-11-07.md) · [Avalonia 版本验证](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/AVALONIA-VERSION-COMPATIBILITY.md)
 
-Windows 将 `.UseSimdSkiaDesktop()` 改为：
+桌面应用可用目标平台的 Native AOT 工具链发布。例如在 Windows x64 上运行 `dotnet publish -c Release -r win-x64 -p:PublishAot=true`。Linux x64 和 macOS ARM64 分别使用 `linux-x64` 和 `osx-arm64`。[0.1.2 的 AOT 体积对照与复现步骤](https://github.com/donet-org-cn/SimdSkia/blob/main/examples/DefaultAvaloniaAot/README.md)
 
-```csharp
-.UseSimdSkiaDesktop(options => options.UseGpu(SimdSkiaGpuBackend.Direct2D, allowCpuFallback: true))
-```
+## Avalonia Android
 
-通过 C# 调用系统 Direct2D/D3D11，并使用 DXGI 原生交换链呈现；正常帧不强制回读像素，GPU 完成以事件查询确认。文字默认由 C# 生成并缓存覆盖率纹理，再交 GPU 合成；透明图层、滤镜等仍有 CPU 工作，诊断分别记录。可选择 `GpuOutlines` 进行轮廓 GPU 绘制，该模式当前更慢且文字覆盖率与默认模式不同。
+在目标为 `net10.0-android36.0` 的启动项目中安装 `SimdSkia.Avalonia.Android`，统一使用 Avalonia `12.1.5`，并在 `CreateAppBuilder()` 中调用 `.UseSimdSkiaAndroid()`。从官方模板迁移时，移除直接引用的 `Avalonia.Android`，并按示例配置 Activity 的 AppCompat 主题和字体。[Android 接入步骤与示例](https://github.com/donet-org-cn/SimdSkia/blob/main/examples/Mobile.Android/README.md)
 
-Linux/Windows 可改用 `SimdSkiaGpuBackend.Vulkan`，需硬件 Vulkan 设备；当前通过完成栅栏后回读并交窗口 framebuffer 呈现。**GPU 不保证快于 CPU，需按实际尺寸、DPI 和场景评估；macOS 调用 GPU 配置会明确报错。** 不支持的画刷等默认报错；可显式设置 `allowCpuFallback: true`，并通过 `SimdSkiaGpuDiagnostics` 查看原因、回退数及 Vulkan 覆盖缓存和同步计数。详见 [跨平台说明](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/CROSS-PLATFORM.md)、[最新窗口/内存报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/STARTUP-ROUND7-2026-10-22.md) 和 [此前 Vulkan 专项报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/VULKAN-OPTIMIZATION-2026-10-22.md)。
+Android 当前使用 CPU/SIMD 渲染。发布记录分别列出了 Android 16 ARM64 源码真机验证，以及 NuGet 包消费端的 Release 和 Mono AOT 构建验证。iOS 窗口呈现仍待实现。[真机报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/ANDROID-2026-11-09.md) · [包验收](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/NUGET-PREVIEW.md)
 
-## 现有 Avalonia 项目如何切换
+## 兼容性与性能
 
-1. 将 Avalonia 系列包统一为 **>=12.1.0 且 <13.0.0 的同一版本**，添加 `SimdSkia.Avalonia.Desktop`；需要 GPU 时再添加 `SimdSkia.Avalonia.Gpu`。
-2. 移除 `Avalonia.Desktop`、`Avalonia.Skia`、`Avalonia.Fonts.Inter` 等原版后端/字体引用及 `.WithInterFont()`，使用上述包配置；检查第三方控件是否仍间接引用 Skia/HarfBuzz/ANGLE。
-3. 添加 `using SimdSkia.Avalonia;`，将 `.UsePlatformDetect()` 或固定 `.UseWin32()` 链替换为 `.UseSimdSkiaDesktop()`。保留自己的 `App`、XAML、MVVM 和窗口创建代码。
+- **渲染实现。** CPU 光栅化支持 SIMD 加速，字体处理、基础文字排版和图像编解码也由 C# 实现。[架构](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/ARCHITECTURE.md) · [第三方依赖](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/DEPENDENCIES.md)
+- **SkiaSharp 源码兼容。** 以 SkiaSharp `3.119.4` 为基线，签名审计匹配了 3,235 项中的 3,230 项。迁移时应重新编译依赖 `SK*` 类型的代码，并检查原生句柄、像素输出和自定义控件的行为。兼容层与原版 `SkiaSharp.dll` 的程序集标识不同。[API 审计](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PUBLIC-API-FINAL-2026-11-07.md) · [兼容性报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/COMPATIBILITY.md)
+- **文档处理。** `SKDocument.CreatePdf` 可导出多页栅格 PDF。需要读取和渲染 PDF 页面时，另装基于 PdfPig 0.1.16 的 `SimdSkia.Pdf`，其读取能力限于文档列出的子集。[PDF 使用说明](https://github.com/donet-org-cn/SimdSkia/blob/main/src/SimdSkia.Pdf/README.md) · [文档示例](https://github.com/donet-org-cn/SimdSkia/blob/main/examples/Documents/README.md)
+- **渲染差异。** 部分 JPEG、文字和曲线场景仍与原版有差异。CPU 与 GPU 的耗时和内存占用取决于后端和场景，报告分别记录了 GPU 提交和实际完成的耗时。[画质与测试](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/VALIDATION.md) · [性能与内存](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PERFORMANCE-HOTSPOTS-2026-11-07.md)
 
-`.UseSimdSkia()` 注册 Avalonia 的绘图、字体和基础排版服务，因此无需修改 Avalonia 源码。它不会把 `SkiaSharp.dll` 替换为同名程序集；直接依赖原版 SK*/GR API 或 `ISkiaSharpApiLeaseFeature` 的自定义控件仍需迁移。
+## 从源码运行示例
 
-如需显式指定受支持的 TTF/TTC，将 `.UseSimdSkia()` 改为：
+在仓库根目录使用 .NET SDK `10.0.403` 或 `global.json` 允许的兼容版本。
 
-```csharp
-.UseSimdSkia(options => options.FontFiles.Add(@"C:\Fonts\MyFont.ttf"))
-```
-
-显式列表会替代自动系统字体列表；随程序分发字体时，应设置复制到输出/发布目录并遵守字体许可证。Linux/macOS 按受支持静态字体的优先级选择默认家族，可用 `SIMDSKIA_DEFAULT_FONT_FAMILY` 指定已安装家族，不复刻 fontconfig/CoreText 的所有规则。更多说明见 [Avalonia 包内 README](https://github.com/donet-org-cn/SimdSkia/blob/main/src/SimdSkia.Avalonia/README.md)。
-
-## 启动准备
-
-默认在经典桌面 JIT 初始化时，用一次性后台线程准备常用绘图路径；无窗口应用和 Native AOT 自动跳过。需要排查启动行为时可关闭：
-
-```csharp
-AppBuilder.Configure<App>()
-    .UseSimdSkiaDesktop(options => options.EnableStartupPreparation = false)
-    .StartWithClassicDesktopLifetime(args);
-```
-
-准备任务不隐藏窗口、不延迟 `Show`、不绘制占位帧；它缩短部分首帧等待，不能保证所有系统和业务窗口完全无白屏。
-
-## Avalonia Native AOT 发布
-
-在目标平台安装 Native AOT 工具链后执行对应命令。Windows 需要 Visual Studio C++ 和 Windows SDK，Linux 需要 clang/zlib 开发工具，macOS 需要 Xcode 命令行工具。AOT 发布必须在相应操作系统完成：
-
-```powershell
-dotnet publish -c Release -r win-x64 -p:PublishAot=true -o publish/win-x64
-dotnet publish -c Release -r linux-x64 -p:PublishAot=true -o publish/linux-x64
-dotnet publish -c Release -r osx-arm64 -p:PublishAot=true -o publish/osx-arm64
-```
-
-运行目标目录中的 `Demo.exe`（Windows）或 `Demo`（Linux/macOS），无需安装 .NET 运行时。业务代码仍需满足 AOT 要求。若没有窗口，检查 `desktop.MainWindow` 和单实例提前退出逻辑。macOS 正式分发还需自行准备应用包、签名和公证。
-
-上述两个文件与包内 README 保持一致。流水线、许可证、真实 nupkg 的消费验证与发布状态见 [发布说明](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/NUGET-PREVIEW.md)；本轮平台测试与性能见 [交付报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/DESKTOP-GPU-2026-10-22.md)，画质和 API 剩余缺口见 [兼容验证](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/VALIDATION.md)。
-
-## 示例与验证
-
-```powershell
-dotnet build SimdSkia.sln -c Release
+```sh
 dotnet run --project examples/Rectangle -c Release
-dotnet run --project examples/Compatibility99 -c Release
-python tools/run-final-compatibility.py --output artifacts/reproduce/final-api
+dotnet run --project examples/CrossPlatform -c Release -- --controls
 ```
 
-Compatibility99实际输出中英文PNG、带链接PDF及读取后的页面、向量SVG/XPS/SKP、延迟图片和WebP，并读取验证真实Alpha8。需要先按tools/fetch-test-font.ps1准备许可明确的测试字体；应用默认发现系统字体，无需默认携带字体资源。
+第一个示例逐像素验证矩形并写出 `artifacts/rectangle.ppm`，第二个示例打开 Avalonia 控件窗口。[公共 API 示例](https://github.com/donet-org-cn/SimdSkia/blob/main/examples/Compatibility99/README.md) · [更新日志](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-NOTES.md)
 
-GPU对照需要真实驱动，Metal无硬件不能计为通过。严格画质失败保持退出2，无后端/无硬件保持退出3；没有测试执行的dotnet test输出不能当作通过。性能、所有失败、逐项清单及复现命令见上方报告，旧版结果只在各自日期报告中使用。
-
-生产包不调用Google Skia，不携带其原生绘图库；PNG/TIFF允许.NET系统压缩，macOS窗口使用允许的官方原生宿主。CPU光栅/几何/字体/基础排版仍为C#。第三方依赖、用途/许可证与原生边界见[依赖说明](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/DEPENDENCIES.md)。
-
-[进度](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PROGRESS.md) · [兼容报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/COMPATIBILITY.md) · [验证](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/VALIDATION.md) · [架构](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/ARCHITECTURE.md) · [MIT许可证](https://github.com/donet-org-cn/SimdSkia/blob/main/LICENSE)
+欢迎在 [GitHub Issues](https://github.com/donet-org-cn/SimdSkia/issues) 反馈问题。若能附上包版本、系统、渲染后端和最小复现，会更容易定位。
