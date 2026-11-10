@@ -1,0 +1,65 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <!-- Versioned host DLLs are deliberately selected by buildTransitive, rather
+         than all being unconditional lib/ references (which causes ABI failures). -->
+    <NoWarn>$(NoWarn);NU5100</NoWarn>
+    <Description>Windows, Linux X11 and macOS window hosts with GPU-preferred rendering and diagnosed CPU fallback. macOS currently uses managed CPU rendering and the official MIT Avalonia window bridge.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="../SimdSkia.Avalonia/README.md" Pack="true" PackagePath="/README.md" />
+    <ProjectReference Include="../SimdSkia.Avalonia/SimdSkia.Avalonia.csproj" />
+    <ProjectReference Include="../SimdSkia.Avalonia.Gpu/SimdSkia.Avalonia.Gpu.csproj" />
+    <PackageReference Include="Avalonia" Version="[12.1.0,13.0.0)" GeneratePathProperty="true" ExcludeAssets="compile" />
+    <Reference Include="$(PkgAvalonia)/lib/net8.0/*.dll" />
+    <PackageReference Include="Tmds.DBus.Protocol" Version="[0.94.1]" />
+    <PackageDownload Include="Avalonia.Win32" Version="[12.1.0];[12.1.1];[12.1.2];[12.1.3];[12.1.4];[12.1.5]" />
+    <Reference Include="$(NuGetPackageRoot)/avalonia.win32/12.1.0/lib/net8.0/*.dll" />
+    <PackageDownload Include="Avalonia.X11" Version="[12.1.0];[12.1.1];[12.1.2];[12.1.3];[12.1.4];[12.1.5]" />
+    <Reference Include="$(NuGetPackageRoot)/avalonia.x11/12.1.0/lib/net8.0/*.dll" />
+    <PackageDownload Include="Avalonia.FreeDesktop" Version="[12.1.0];[12.1.1];[12.1.2];[12.1.3];[12.1.4];[12.1.5]" />
+    <Reference Include="$(NuGetPackageRoot)/avalonia.freedesktop/12.1.0/lib/net8.0/*.dll" />
+    <PackageDownload Include="Avalonia.FreeDesktop.AtSpi" Version="[12.1.0];[12.1.1];[12.1.2];[12.1.3];[12.1.4];[12.1.5]" />
+    <Reference Include="$(NuGetPackageRoot)/avalonia.freedesktop.atspi/12.1.0/lib/net8.0/*.dll" />
+    <PackageDownload Include="Avalonia.Native" Version="[12.1.0];[12.1.1];[12.1.2];[12.1.3];[12.1.4];[12.1.5]" />
+    <Reference Include="$(NuGetPackageRoot)/avalonia.native/12.1.0/lib/net8.0/*.dll" />
+    <None Include="buildTransitive/SimdSkia.Avalonia.Desktop.targets" Pack="true" PackagePath="buildTransitive/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.win32/12.1.0/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.0.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.x11/12.1.0/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.0.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.freedesktop/12.1.0/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.0.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.freedesktop.atspi/12.1.0/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.0.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.native/12.1.0/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.0.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.native/12.1.0/runtimes/osx/native/libAvaloniaNative.dylib" Pack="true" PackagePath="hosts/12.1.0.0/native/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.win32/12.1.1/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.1.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.x11/12.1.1/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.1.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.freedesktop/12.1.1/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.1.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.freedesktop.atspi/12.1.1/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.1.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.native/12.1.1/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.1.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.native/12.1.1/runtimes/osx/native/libAvaloniaNative.dylib" Pack="true" PackagePath="hosts/12.1.1.0/native/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.win32/12.1.2/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.2.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.x11/12.1.2/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.2.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.freedesktop/12.1.2/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.2.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.freedesktop.atspi/12.1.2/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.2.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.native/12.1.2/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.2.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.native/12.1.2/runtimes/osx/native/libAvaloniaNative.dylib" Pack="true" PackagePath="hosts/12.1.2.0/native/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.win32/12.1.3/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.3.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.x11/12.1.3/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.3.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.freedesktop/12.1.3/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.3.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.freedesktop.atspi/12.1.3/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.3.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.native/12.1.3/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.3.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.native/12.1.3/runtimes/osx/native/libAvaloniaNative.dylib" Pack="true" PackagePath="hosts/12.1.3.0/native/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.win32/12.1.4/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.4.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.x11/12.1.4/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.4.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.freedesktop/12.1.4/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.4.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.freedesktop.atspi/12.1.4/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.4.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.native/12.1.4/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.4.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.native/12.1.4/runtimes/osx/native/libAvaloniaNative.dylib" Pack="true" PackagePath="hosts/12.1.4.0/native/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.win32/12.1.5/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.5.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.x11/12.1.5/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.5.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.freedesktop/12.1.5/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.5.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.freedesktop.atspi/12.1.5/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.5.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.native/12.1.5/lib/net8.0/*.dll" Pack="true" PackagePath="hosts/12.1.5.0/" />
+    <None Include="$(NuGetPackageRoot)/avalonia.native/12.1.5/runtimes/osx/native/libAvaloniaNative.dylib" Pack="true" PackagePath="hosts/12.1.5.0/native/" />
+    <None Include="../../docs/licenses/Avalonia-MIT.txt" Pack="true" PackagePath="licenses/" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,17 @@
+{
+  "date": "2026-11-10",
+  "scope": "Working-tree source optimization; public NuGet remains 0.1.4",
+  "baseline": "SkiaSharp 3.119.4",
+  "avalonia": "12.1.5",
+  "beforeCommit": "1eceed6",
+  "sourceHead": "1eceed6ee0effc45544badad895394a0ad772bc6",
+  "rawDirectory": "F:\\SimdSkia\\artifacts\\performance-2026-11-10\\final",
+  "excludedExperiments": [
+    "Initial API and interrupted CPU collection before compact-storage policy",
+    "Incomplete frozen module replay",
+    "SKP replay without its cross-input",
+    "Preliminary four-case retention run"
+  ],
+  "hardwareScope": "Windows x64 / i7-8700K / 12 logical processors / GTX 1050 Ti",
+  "binaryObjects": "Lossless gzip, addressed by the uncompressed SHA256; includes pixels and latency ticks"
+}

@@ -12,9 +12,10 @@ public partial class SKBitmap
     {ArgumentNullException.ThrowIfNull(codec);var bitmap=new SKBitmap(bitmapInfo);try{var result=codec.GetPixels(bitmapInfo,bitmap.GetPixels(),bitmap.RowBytes,SKCodecOptions.Default);if(result is SKCodecResult.Success or SKCodecResult.IncompleteInput)return bitmap;bitmap.Dispose();return null!;}catch{bitmap.Dispose();throw;}}
     public static SKBitmap Decode(SKStream stream){using var data=SKData.Create(stream);return Decode(data);}
     public static SKBitmap Decode(SKStream stream,SKImageInfo bitmapInfo){using var data=SKData.Create(stream);return Decode(data,bitmapInfo);}
-    public static SKBitmap Decode(SKData data,SKImageInfo bitmapInfo){ArgumentNullException.ThrowIfNull(data);using var codec=SKCodec.Create(data);return codec is null?null!:Decode(codec,bitmapInfo);}
+    public static SKBitmap Decode(SKData data,SKImageInfo bitmapInfo){ArgumentNullException.ThrowIfNull(data);return Decode(data.AsSpan(),bitmapInfo);}
     public static SKBitmap Decode(byte[] buffer,SKImageInfo bitmapInfo){ArgumentNullException.ThrowIfNull(buffer);return Decode(buffer.AsSpan(),bitmapInfo);}
-    public static SKBitmap Decode(ReadOnlySpan<byte> buffer,SKImageInfo bitmapInfo){using var data=SKData.CreateCopy(buffer);return Decode(data,bitmapInfo);}
+    public static SKBitmap Decode(ReadOnlySpan<byte> buffer,SKImageInfo bitmapInfo)
+    {using var codec=SKCodec.Create(buffer);return codec is null?null!:codec.TakeRgbaBitmap(bitmapInfo)??Decode(codec,bitmapInfo);}
     public static SKBitmap Decode(string filename,SKImageInfo bitmapInfo){ArgumentNullException.ThrowIfNull(filename);using var stream=File.OpenRead(filename);return Decode(stream,bitmapInfo);}
     public static SKBitmap Decode(Stream stream,SKImageInfo bitmapInfo){ArgumentNullException.ThrowIfNull(stream);using var codec=SKCodec.Create(stream);return codec is null?null!:Decode(codec,bitmapInfo);}
     public static SKImageInfo DecodeBounds(byte[] buffer){ArgumentNullException.ThrowIfNull(buffer);return DecodeBounds(buffer.AsSpan());}

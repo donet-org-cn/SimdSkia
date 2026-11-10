@@ -20,6 +20,22 @@ internal static class CompletionValidation
         using var source=new WriteableBitmap(new(2,2),new(96,96),PixelFormats.Rgba8888,global::Avalonia.Platform.AlphaFormat.Premul);
         using(var locked=source.Lock())Marshal.Copy(new byte[]{255,0,0,255,0,255,0,255,0,0,255,255,255,255,0,255},0,locked.Address,16);
         using var target=factory.CreateRenderTargetBitmap(new(32,24),new(96,96));
+        using(var c=target.CreateDrawingContext())
+        {
+            c.Clear(Colors.Transparent);
+            c.PushOpacity(1,null);c.PushOpacity(.5,null);c.PushOpacity(1,null);
+            c.DrawRectangle(Brushes.Red,null,new Rect(0,0,8,8));
+            c.PopOpacity();c.PopOpacity();
+            c.PushOpacity(1,null);c.DrawRectangle(Brushes.Blue,null,new Rect(12,0,8,8));c.PopOpacity();c.PopOpacity();
+        }
+        Check(Pixel(target,3,3).A==128&&Pixel(target,3,3).R==128,"Nested opaque scopes changed real opacity-layer restoration.");
+        Check(Pixel(target,14,3)==Colors.Blue,"Opaque scope retained stale layer state.");
+        using(var c=target.CreateDrawingContext())
+        {
+            c.PushOpacity(1,null);bool rejected=false;
+            try{c.PopOpacityMask();}catch(InvalidOperationException){rejected=true;}
+            Check(rejected,"Mismatched lightweight group scope was accepted.");c.PopOpacity();
+        }
         foreach(var mode in Enum.GetValues<TileMode>())
         {
             var brush=new ImageBrush(source){Stretch=Stretch.Fill,TileMode=mode,DestinationRect=new(0,0,4,4,RelativeUnit.Absolute)};

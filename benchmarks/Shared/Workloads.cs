@@ -79,11 +79,7 @@ internal sealed class Workload : IDisposable
     }
     private static SKBitmap Decode(byte[] data,int width,int height)
     {
-#if ORIGINAL
         return SKBitmap.Decode(data,new SKImageInfo(width,height,SKColorType.Rgba8888,SKAlphaType.Unpremul))??throw new InvalidDataException("Reference decoder failed.");
-#else
-        return SKBitmap.Decode(data);
-#endif
     }
     public static SKBitmap CreatePixels(int width,int height)
     {

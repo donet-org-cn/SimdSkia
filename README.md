@@ -144,6 +144,8 @@ Android 当前使用 CPU/SIMD 渲染。发布记录分别列出了 Android 16 AR
 
 ## 兼容性与性能
 
+- **2026-11-10 第二轮源码优化。** 运行时效果耗时下降约 86%，图集约 27%，网格约 14%。固定字体 AOT 示例的私有内存下降约 15.6 MiB，整页耗时、系统字体场景及原版画质分别评估。本轮为工作区源码优化。[性能、CPU 与内存对照](docs/PERFORMANCE-2026-11-10-ROUND2.md) · [测试与剩余差距](docs/VALIDATION-PERFORMANCE-2026-11-10-ROUND2.md)
+- **2026-11-10 源码优化复测。** CPU、Vulkan、Direct2D、真实 AOT 窗口和长期图片内存共完成 294 个性能工作进程，另执行 82 个有效回归命令。报告逐项列出耗时、CPU、分配、内存与原版画质差异。[性能报告与图表](docs/PERFORMANCE-2026-11-10.md) · [完整测试记录](docs/VALIDATION-PERFORMANCE-2026-11-10.md)
 - **渲染实现。** CPU 光栅化支持 SIMD 加速，字体处理、基础文字排版和图像编解码也由 C# 实现。[架构](docs/ARCHITECTURE.md) · [第三方依赖](docs/DEPENDENCIES.md)
 - **SkiaSharp 源码兼容。** 以 SkiaSharp `3.119.4` 为基线，签名审计匹配了 3,235 项中的 3,230 项。迁移时应重新编译依赖 `SK*` 类型的代码，并检查原生句柄、像素输出和自定义控件的行为。兼容层与原版 `SkiaSharp.dll` 的程序集标识不同。[API 审计](docs/PUBLIC-API-FINAL-2026-11-07.md) · [兼容性报告](docs/COMPATIBILITY.md)
 - **文档处理。** `SKDocument.CreatePdf` 可导出多页栅格 PDF。需要读取和渲染 PDF 页面时，另装基于 PdfPig 0.1.16 的 `SimdSkia.Pdf`，其读取能力限于文档列出的子集。[PDF 使用说明](src/SimdSkia.Pdf/README.md) · [文档示例](examples/Documents/README.md)

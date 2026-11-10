@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><OutputType>Exe</OutputType><DefineConstants>$(DefineConstants);MANAGED</DefineConstants></PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../../../src/SimdSkia.Compatibility/SimdSkia.Compatibility.csproj" />
+    <ProjectReference Include="../../../src/SimdSkia.Compatibility/SimdSkia.Compatibility.csproj" Condition="'$(FrozenEngineDirectory)' == ''" />
+    <Reference Include="$(FrozenEngineDirectory)/SimdSkia*.dll;$(FrozenEngineDirectory)/Sdcb*.dll;$(FrozenEngineDirectory)/Clipper2Lib.dll" Condition="'$(FrozenEngineDirectory)' != ''" />
     <Compile Include="../Shared/Program.cs" />
   </ItemGroup>
 </Project>

@@ -1,0 +1,184 @@
+{
+  "baseline": "SkiaSharp 3.119.4",
+  "cases": 370,
+  "metadataChecks": 6810,
+  "metadataPassed": true,
+  "metadataFailures": [],
+  "pixelThreshold": {
+    "maxError": 32,
+    "rmse": 2
+  },
+  "images": [
+    {
+      "scene": "arc-False-False",
+      "maxError": 135,
+      "rmse": 1.0761984598576602,
+      "passed": false
+    },
+    {
+      "scene": "arc-False-True",
+      "maxError": 135,
+      "rmse": 2.594829288813801,
+      "passed": false
+    },
+    {
+      "scene": "arc-True-False",
+      "maxError": 29,
+      "rmse": 0.8507019734644149,
+      "passed": true
+    },
+    {
+      "scene": "arc-True-True",
+      "maxError": 37,
+      "rmse": 1.1591299121842695,
+      "passed": false
+    },
+    {
+      "scene": "circle-False-False",
+      "maxError": 135,
+      "rmse": 1.4052296645588755,
+      "passed": false
+    },
+    {
+      "scene": "circle-False-True",
+      "maxError": 135,
+      "rmse": 3.5652915323907943,
+      "passed": false
+    },
+    {
+      "scene": "circle-True-False",
+      "maxError": 29,
+      "rmse": 0.7997802432543579,
+      "passed": true
+    },
+    {
+      "scene": "circle-True-True",
+      "maxError": 38,
+      "rmse": 1.3563690273950384,
+      "passed": false
+    },
+    {
+      "scene": "conic-0.1",
+      "maxError": 24,
+      "rmse": 0.5730616530558689,
+      "passed": true
+    },
+    {
+      "scene": "conic-0.70710677",
+      "maxError": 24,
+      "rmse": 0.5482961445326558,
+      "passed": true
+    },
+    {
+      "scene": "conic-1",
+      "maxError": 27,
+      "rmse": 0.5771211724207058,
+      "passed": true
+    },
+    {
+      "scene": "conic-100",
+      "maxError": 12,
+      "rmse": 0.4349640509121846,
+      "passed": true
+    },
+    {
+      "scene": "conic-2",
+      "maxError": 11,
+      "rmse": 0.44145809983083334,
+      "passed": true
+    },
+    {
+      "scene": "draw-color-Clear",
+      "maxError": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "scene": "draw-color-Src",
+      "maxError": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "scene": "draw-color-SrcOver",
+      "maxError": 1,
+      "rmse": 0.2852365041176357,
+      "passed": true
+    },
+    {
+      "scene": "draw-paint-shader-identity",
+      "maxError": 1,
+      "rmse": 0.074321474962658,
+      "passed": true
+    },
+    {
+      "scene": "draw-paint-shader",
+      "maxError": 2,
+      "rmse": 0.48889024522381297,
+      "passed": true
+    },
+    {
+      "scene": "draw-paint-style",
+      "maxError": 1,
+      "rmse": 0.5,
+      "passed": true
+    },
+    {
+      "scene": "oval-False-False",
+      "maxError": 135,
+      "rmse": 1.7543324927496462,
+      "passed": false
+    },
+    {
+      "scene": "oval-False-True",
+      "maxError": 135,
+      "rmse": 3.6683181742508464,
+      "passed": false
+    },
+    {
+      "scene": "oval-thin-False-False",
+      "maxError": 135,
+      "rmse": 1.2315285614455922,
+      "passed": false
+    },
+    {
+      "scene": "oval-thin-False-True",
+      "maxError": 135,
+      "rmse": 1.7321212834628528,
+      "passed": false
+    },
+    {
+      "scene": "oval-thin-True-False",
+      "maxError": 32,
+      "rmse": 0.943640372875341,
+      "passed": true
+    },
+    {
+      "scene": "oval-thin-True-True",
+      "maxError": 31,
+      "rmse": 1.2218385344622567,
+      "passed": true
+    },
+    {
+      "scene": "oval-transformed",
+      "maxError": 41,
+      "rmse": 1.072377683693751,
+      "passed": false
+    },
+    {
+      "scene": "oval-True-False",
+      "maxError": 53,
+      "rmse": 1.6060816576424828,
+      "passed": false
+    },
+    {
+      "scene": "oval-True-True",
+      "maxError": 32,
+      "rmse": 1.4489239086867407,
+      "passed": true
+    }
+  ],
+  "pixelsPassed": false,
+  "fullCompatibility": false,
+  "passed": false
+}

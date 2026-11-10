@@ -1,0 +1,3032 @@
+{
+  "Settings": {
+    "Engine": "simd",
+    "Output": "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\cpu-formal\\simd-2",
+    "FixtureDirectory": "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\cpu-formal\\fixtures",
+    "FontPath": "F:\\SimdSkia\\baseline\\fonts\\ZCOOLXiaoWei-Regular.ttf",
+    "Fork": 2,
+    "Samples": 5,
+    "SampleMilliseconds": 100,
+    "WarmupMilliseconds": 500,
+    "Seed": 20261012,
+    "Sizes": "256x256,1024x768",
+    "Scenes": "clear,rectangles,blend,evenodd,stroke,rect-aa,gradient,image,curve-aa,chinese,png-encode,png-decode"
+  },
+  "Runtime": {
+    "Framework": ".NET 10.0.14",
+    "OS": "Microsoft Windows 10.0.26300",
+    "Architecture": "X64",
+    "Cpu": "Intel(R) Core(TM) i7-8700K CPU @ 3.70GHz",
+    "LogicalProcessors": 12,
+    "ServerGc": false,
+    "AssemblyIdentity": "SimdSkia.Compatibility, Version=0.1.4.0, Culture=neutral, PublicKeyToken=null",
+    "AssemblySha256": "3932B3B4B5D81A4F2B8D74E464E85363B3E50053CDCC23BA36DD7DC1FD1AD21E",
+    "FontSha256": "A42B620140F493DB42F741351DFBF343C0936D58588EE8004B8B2A218D997FF1",
+    "ExplicitSimd": "Vector256",
+    "TieredCompilation": "0",
+    "ReadyToRun": "0",
+    "StopwatchFrequency": 10000000
+  },
+  "Workloads": [
+    {
+      "Scene": "rectangles",
+      "Width": 256,
+      "Height": 256,
+      "PixelFormat": "Rgba8888",
+      "AlphaType": "Premul",
+      "OperationsPerFrame": 64,
+      "AllowedPixelError": 0,
+      "CompressionComparable": true,
+      "IterationsPerSample": 1929,
+      "SetupMilliseconds": 10.822,
+      "BeforeSetup": {
+        "ManagedLiveBytes": 314096,
+        "ManagedHeapBytes": 297792,
+        "PrivateBytes": 14184448,
+        "WorkingSetBytes": 35794944,
+        "ProcessPeakWorkingSetBytes": 40235008
+      },
+      "WarmResident": {
+        "ManagedLiveBytes": 566888,
+        "ManagedHeapBytes": 566920,
+        "PrivateBytes": 14192640,
+        "WorkingSetBytes": 36175872,
+        "ProcessPeakWorkingSetBytes": 40235008
+      },
+      "AfterGc": {
+        "ManagedLiveBytes": 645160,
+        "ManagedHeapBytes": 645192,
+        "PrivateBytes": 14258176,
+        "WorkingSetBytes": 36249600,
+        "ProcessPeakWorkingSetBytes": 40235008
+      },
+      "Samples": [
+        {
+          "Operations": 1929,
+          "TotalMilliseconds": 105.7597,
+          "AllocatedBytes": 600,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 663624,
+            "ManagedHeapBytes": 566920,
+            "PrivateBytes": 14192640,
+            "WorkingSetBytes": 36184064,
+            "ProcessPeakWorkingSetBytes": 40235008
+          },
+          "CpuUtilizationPercent": 103.41840984798559,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 1929,
+          "TotalMilliseconds": 100.3937,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 663624,
+            "ManagedHeapBytes": 566920,
+            "PrivateBytes": 14192640,
+            "WorkingSetBytes": 36184064,
+            "ProcessPeakWorkingSetBytes": 40235008
+          },
+          "CpuUtilizationPercent": 93.38235367358709,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 1929,
+          "TotalMilliseconds": 103.0518,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 671848,
+            "ManagedHeapBytes": 566920,
+            "PrivateBytes": 14192640,
+            "WorkingSetBytes": 36184064,
+            "ProcessPeakWorkingSetBytes": 40235008
+          },
+          "CpuUtilizationPercent": 106.13594328289268,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 1929,
+          "TotalMilliseconds": 104.8078,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 671848,
+            "ManagedHeapBytes": 566920,
+            "PrivateBytes": 14192640,
+            "WorkingSetBytes": 36184064,
+            "ProcessPeakWorkingSetBytes": 40235008
+          },
+          "CpuUtilizationPercent": 104.35769093521665,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 1929,
+          "TotalMilliseconds": 98.8642,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 671848,
+            "ManagedHeapBytes": 566920,
+            "PrivateBytes": 14192640,
+            "WorkingSetBytes": 36184064,
+            "ProcessPeakWorkingSetBytes": 40235008
+          },
+          "CpuUtilizationPercent": 94.82704558374013,
+          "CpuMilliseconds": 93.75
+        }
+      ],
+      "LatencyFile": "rectangles-256x256.ticks",
+      "PixelsFile": "rectangles-256x256.rgba",
+      "EncodedBytes": 0,
+      "InputEncodedBytes": 0,
+      "InputSha256": ""
+    },
+    {
+      "Scene": "png-encode",
+      "Width": 1024,
+      "Height": 768,
+      "PixelFormat": "Rgba8888",
+      "AlphaType": "Unpremul codec output",
+      "OperationsPerFrame": 1,
+      "AllowedPixelError": 0,
+      "CompressionComparable": false,
+      "IterationsPerSample": 4,
+      "SetupMilliseconds": 2.416,
+      "BeforeSetup": {
+        "ManagedLiveBytes": 300680,
+        "ManagedHeapBytes": 300680,
+        "PrivateBytes": 14135296,
+        "WorkingSetBytes": 36503552,
+        "ProcessPeakWorkingSetBytes": 40235008
+      },
+      "WarmResident": {
+        "ManagedLiveBytes": 6646048,
+        "ManagedHeapBytes": 6646112,
+        "PrivateBytes": 22335488,
+        "WorkingSetBytes": 42459136,
+        "ProcessPeakWorkingSetBytes": 42459136
+      },
+      "AfterGc": {
+        "ManagedLiveBytes": 6647320,
+        "ManagedHeapBytes": 6647384,
+        "PrivateBytes": 23580672,
+        "WorkingSetBytes": 43728896,
+        "ProcessPeakWorkingSetBytes": 43728896
+      },
+      "Samples": [
+        {
+          "Operations": 4,
+          "TotalMilliseconds": 107.9237,
+          "AllocatedBytes": 386264,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7052720,
+            "ManagedHeapBytes": 6646112,
+            "PrivateBytes": 22335488,
+            "WorkingSetBytes": 42459136,
+            "ProcessPeakWorkingSetBytes": 42459136
+          },
+          "CpuUtilizationPercent": 101.34474633467904,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 4,
+          "TotalMilliseconds": 120.4046,
+          "AllocatedBytes": 386016,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7442792,
+            "ManagedHeapBytes": 6646112,
+            "PrivateBytes": 22466560,
+            "WorkingSetBytes": 42557440,
+            "ProcessPeakWorkingSetBytes": 42557440
+          },
+          "CpuUtilizationPercent": 103.8166315904874,
+          "CpuMilliseconds": 125
+        },
+        {
+          "Operations": 4,
+          "TotalMilliseconds": 115.12,
+          "AllocatedBytes": 386016,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7828776,
+            "ManagedHeapBytes": 6646112,
+            "PrivateBytes": 22794240,
+            "WorkingSetBytes": 42942464,
+            "ProcessPeakWorkingSetBytes": 42942464
+          },
+          "CpuUtilizationPercent": 108.58234885337039,
+          "CpuMilliseconds": 125
+        },
+        {
+          "Operations": 4,
+          "TotalMilliseconds": 115.66,
+          "AllocatedBytes": 386016,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 8221992,
+            "ManagedHeapBytes": 6646112,
+            "PrivateBytes": 23187456,
+            "WorkingSetBytes": 43335680,
+            "ProcessPeakWorkingSetBytes": 43335680
+          },
+          "CpuUtilizationPercent": 94.56596922012797,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 4,
+          "TotalMilliseconds": 118.7494,
+          "AllocatedBytes": 386016,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 8613032,
+            "ManagedHeapBytes": 6646112,
+            "PrivateBytes": 23580672,
+            "WorkingSetBytes": 43728896,
+            "ProcessPeakWorkingSetBytes": 43728896
+          },
+          "CpuUtilizationPercent": 105.26368975337981,
+          "CpuMilliseconds": 125
+        }
+      ],
+      "LatencyFile": "png-encode-1024x768.ticks",
+      "PixelsFile": "png-encode-1024x768.rgba",
+      "EncodedBytes": 32341,
+      "InputEncodedBytes": 0,
+      "InputSha256": ""
+    },
+    {
+      "Scene": "evenodd",
+      "Width": 1024,
+      "Height": 768,
+      "PixelFormat": "Rgba8888",
+      "AlphaType": "Premul",
+      "OperationsPerFrame": 1,
+      "AllowedPixelError": 0,
+      "CompressionComparable": true,
+      "IterationsPerSample": 599,
+      "SetupMilliseconds": 2.6659,
+      "BeforeSetup": {
+        "ManagedLiveBytes": 3524552,
+        "ManagedHeapBytes": 9818408,
+        "PrivateBytes": 27660288,
+        "WorkingSetBytes": 49041408,
+        "ProcessPeakWorkingSetBytes": 51568640
+      },
+      "WarmResident": {
+        "ManagedLiveBytes": 6710480,
+        "ManagedHeapBytes": 9857000,
+        "PrivateBytes": 28274688,
+        "WorkingSetBytes": 52465664,
+        "ProcessPeakWorkingSetBytes": 52465664
+      },
+      "AfterGc": {
+        "ManagedLiveBytes": 6735552,
+        "ManagedHeapBytes": 9882072,
+        "PrivateBytes": 28274688,
+        "WorkingSetBytes": 52465664,
+        "ProcessPeakWorkingSetBytes": 52465664
+      },
+      "Samples": [
+        {
+          "Operations": 599,
+          "TotalMilliseconds": 89.3711,
+          "AllocatedBytes": 600,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 6754016,
+            "ManagedHeapBytes": 9857000,
+            "PrivateBytes": 28274688,
+            "WorkingSetBytes": 52465664,
+            "ProcessPeakWorkingSetBytes": 52465664
+          },
+          "CpuUtilizationPercent": 104.89968233578864,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 599,
+          "TotalMilliseconds": 90.5791,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 6754016,
+            "ManagedHeapBytes": 9857000,
+            "PrivateBytes": 28274688,
+            "WorkingSetBytes": 52465664,
+            "ProcessPeakWorkingSetBytes": 52465664
+          },
+          "CpuUtilizationPercent": 103.5006971806962,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 599,
+          "TotalMilliseconds": 87.6877,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 6762240,
+            "ManagedHeapBytes": 9857000,
+            "PrivateBytes": 28274688,
+            "WorkingSetBytes": 52465664,
+            "ProcessPeakWorkingSetBytes": 52465664
+          },
+          "CpuUtilizationPercent": 71.27567492362098,
+          "CpuMilliseconds": 62.5
+        },
+        {
+          "Operations": 599,
+          "TotalMilliseconds": 88.1845,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 6762240,
+            "ManagedHeapBytes": 9857000,
+            "PrivateBytes": 28274688,
+            "WorkingSetBytes": 52465664,
+            "ProcessPeakWorkingSetBytes": 52465664
+          },
+          "CpuUtilizationPercent": 88.59266651168856,
+          "CpuMilliseconds": 78.125
+        },
+        {
+          "Operations": 599,
+          "TotalMilliseconds": 87.4837,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 6762240,
+            "ManagedHeapBytes": 9857000,
+            "PrivateBytes": 28274688,
+            "WorkingSetBytes": 52465664,
+            "ProcessPeakWorkingSetBytes": 52465664
+          },
+          "CpuUtilizationPercent": 107.16282004533416,
+          "CpuMilliseconds": 93.75
+        }
+      ],
+      "LatencyFile": "evenodd-1024x768.ticks",
+      "PixelsFile": "evenodd-1024x768.rgba",
+      "EncodedBytes": 0,
+      "InputEncodedBytes": 0,
+      "InputSha256": ""
+    },
+    {
+      "Scene": "blend",
+      "Width": 256,
+      "Height": 256,
+      "PixelFormat": "Rgba8888",
+      "AlphaType": "Premul",
+      "OperationsPerFrame": 64,
+      "AllowedPixelError": 1,
+      "CompressionComparable": true,
+      "IterationsPerSample": 389,
+      "SetupMilliseconds": 0.0247,
+      "BeforeSetup": {
+        "ManagedLiveBytes": 3539168,
+        "ManagedHeapBytes": 9832632,
+        "PrivateBytes": 28274688,
+        "WorkingSetBytes": 52465664,
+        "ProcessPeakWorkingSetBytes": 55480320
+      },
+      "WarmResident": {
+        "ManagedLiveBytes": 3808448,
+        "ManagedHeapBytes": 9838160,
+        "PrivateBytes": 28274688,
+        "WorkingSetBytes": 52486144,
+        "ProcessPeakWorkingSetBytes": 55480320
+      },
+      "AfterGc": {
+        "ManagedLiveBytes": 3825120,
+        "ManagedHeapBytes": 9854832,
+        "PrivateBytes": 28274688,
+        "WorkingSetBytes": 52486144,
+        "ProcessPeakWorkingSetBytes": 55480320
+      },
+      "Samples": [
+        {
+          "Operations": 389,
+          "TotalMilliseconds": 96.4093,
+          "AllocatedBytes": 600,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 3843584,
+            "ManagedHeapBytes": 9838160,
+            "PrivateBytes": 28274688,
+            "WorkingSetBytes": 52486144,
+            "ProcessPeakWorkingSetBytes": 55480320
+          },
+          "CpuUtilizationPercent": 97.2416561472804,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 389,
+          "TotalMilliseconds": 93.3699,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 3843584,
+            "ManagedHeapBytes": 9838160,
+            "PrivateBytes": 28274688,
+            "WorkingSetBytes": 52486144,
+            "ProcessPeakWorkingSetBytes": 55480320
+          },
+          "CpuUtilizationPercent": 100.40709050775465,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 389,
+          "TotalMilliseconds": 91.5731,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 3851808,
+            "ManagedHeapBytes": 9838160,
+            "PrivateBytes": 28274688,
+            "WorkingSetBytes": 52486144,
+            "ProcessPeakWorkingSetBytes": 55480320
+          },
+          "CpuUtilizationPercent": 102.37722649992192,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 389,
+          "TotalMilliseconds": 93.6512,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 3851808,
+            "ManagedHeapBytes": 9838160,
+            "PrivateBytes": 28274688,
+            "WorkingSetBytes": 52486144,
+            "ProcessPeakWorkingSetBytes": 55480320
+          },
+          "CpuUtilizationPercent": 100.10549784733138,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 389,
+          "TotalMilliseconds": 95.2132,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 3851808,
+            "ManagedHeapBytes": 9838160,
+            "PrivateBytes": 28274688,
+            "WorkingSetBytes": 52486144,
+            "ProcessPeakWorkingSetBytes": 55480320
+          },
+          "CpuUtilizationPercent": 98.46323829048913,
+          "CpuMilliseconds": 93.75
+        }
+      ],
+      "LatencyFile": "blend-256x256.ticks",
+      "PixelsFile": "blend-256x256.rgba",
+      "EncodedBytes": 0,
+      "InputEncodedBytes": 0,
+      "InputSha256": ""
+    },
+    {
+      "Scene": "blend",
+      "Width": 1024,
+      "Height": 768,
+      "PixelFormat": "Rgba8888",
+      "AlphaType": "Premul",
+      "OperationsPerFrame": 64,
+      "AllowedPixelError": 1,
+      "CompressionComparable": true,
+      "IterationsPerSample": 58,
+      "SetupMilliseconds": 0.1001,
+      "BeforeSetup": {
+        "ManagedLiveBytes": 3540352,
+        "ManagedHeapBytes": 9832632,
+        "PrivateBytes": 28274688,
+        "WorkingSetBytes": 52486144,
+        "ProcessPeakWorkingSetBytes": 55480320
+      },
+      "WarmResident": {
+        "ManagedLiveBytes": 6693216,
+        "ManagedHeapBytes": 9839744,
+        "PrivateBytes": 28274688,
+        "WorkingSetBytes": 52486144,
+        "ProcessPeakWorkingSetBytes": 55480320
+      },
+      "AfterGc": {
+        "ManagedLiveBytes": 6696648,
+        "ManagedHeapBytes": 9843176,
+        "PrivateBytes": 28274688,
+        "WorkingSetBytes": 52486144,
+        "ProcessPeakWorkingSetBytes": 55480320
+      },
+      "Samples": [
+        {
+          "Operations": 58,
+          "TotalMilliseconds": 94.7477,
+          "AllocatedBytes": 600,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 6709496,
+            "ManagedHeapBytes": 9839744,
+            "PrivateBytes": 28274688,
+            "WorkingSetBytes": 52486144,
+            "ProcessPeakWorkingSetBytes": 55480320
+          },
+          "CpuUtilizationPercent": 98.946992908535,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 58,
+          "TotalMilliseconds": 97.7583,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 6716944,
+            "ManagedHeapBytes": 9839744,
+            "PrivateBytes": 28274688,
+            "WorkingSetBytes": 52486144,
+            "ProcessPeakWorkingSetBytes": 55480320
+          },
+          "CpuUtilizationPercent": 111.8830830732531,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 58,
+          "TotalMilliseconds": 94.0506,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 6716944,
+            "ManagedHeapBytes": 9839744,
+            "PrivateBytes": 28274688,
+            "WorkingSetBytes": 52486144,
+            "ProcessPeakWorkingSetBytes": 55480320
+          },
+          "CpuUtilizationPercent": 99.68038481413197,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 58,
+          "TotalMilliseconds": 94.8998,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 6725168,
+            "ManagedHeapBytes": 9839744,
+            "PrivateBytes": 28274688,
+            "WorkingSetBytes": 52486144,
+            "ProcessPeakWorkingSetBytes": 55480320
+          },
+          "CpuUtilizationPercent": 98.78840629801117,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 58,
+          "TotalMilliseconds": 98.42,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 6725168,
+            "ManagedHeapBytes": 9839744,
+            "PrivateBytes": 28274688,
+            "WorkingSetBytes": 52486144,
+            "ProcessPeakWorkingSetBytes": 55480320
+          },
+          "CpuUtilizationPercent": 95.25502946555578,
+          "CpuMilliseconds": 93.75
+        }
+      ],
+      "LatencyFile": "blend-1024x768.ticks",
+      "PixelsFile": "blend-1024x768.rgba",
+      "EncodedBytes": 0,
+      "InputEncodedBytes": 0,
+      "InputSha256": ""
+    },
+    {
+      "Scene": "chinese",
+      "Width": 256,
+      "Height": 256,
+      "PixelFormat": "Rgba8888",
+      "AlphaType": "Premul",
+      "OperationsPerFrame": 4,
+      "AllowedPixelError": 32,
+      "CompressionComparable": true,
+      "IterationsPerSample": 3966,
+      "SetupMilliseconds": 62.4851,
+      "BeforeSetup": {
+        "ManagedLiveBytes": 3541568,
+        "ManagedHeapBytes": 9833368,
+        "PrivateBytes": 28274688,
+        "WorkingSetBytes": 52486144,
+        "ProcessPeakWorkingSetBytes": 55500800
+      },
+      "WarmResident": {
+        "ManagedLiveBytes": 4232504,
+        "ManagedHeapBytes": 10262136,
+        "PrivateBytes": 28676096,
+        "WorkingSetBytes": 54091776,
+        "ProcessPeakWorkingSetBytes": 55500800
+      },
+      "AfterGc": {
+        "ManagedLiveBytes": 4392256,
+        "ManagedHeapBytes": 10263224,
+        "PrivateBytes": 27992064,
+        "WorkingSetBytes": 53407744,
+        "ProcessPeakWorkingSetBytes": 55500800
+      },
+      "Samples": [
+        {
+          "Operations": 3966,
+          "TotalMilliseconds": 97.5187,
+          "AllocatedBytes": 848,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4407448,
+            "ManagedHeapBytes": 10262136,
+            "PrivateBytes": 28676096,
+            "WorkingSetBytes": 54091776,
+            "ProcessPeakWorkingSetBytes": 55500800
+          },
+          "CpuUtilizationPercent": 96.1354078756177,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 3966,
+          "TotalMilliseconds": 96.4168,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4415384,
+            "ManagedHeapBytes": 10262136,
+            "PrivateBytes": 28676096,
+            "WorkingSetBytes": 54091776,
+            "ProcessPeakWorkingSetBytes": 55500800
+          },
+          "CpuUtilizationPercent": 97.2340919839696,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 3966,
+          "TotalMilliseconds": 97.826,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4415384,
+            "ManagedHeapBytes": 10262136,
+            "PrivateBytes": 28676096,
+            "WorkingSetBytes": 54091776,
+            "ProcessPeakWorkingSetBytes": 55500800
+          },
+          "CpuUtilizationPercent": 95.83341851859424,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 3966,
+          "TotalMilliseconds": 96.7365,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4415384,
+            "ManagedHeapBytes": 10262136,
+            "PrivateBytes": 28676096,
+            "WorkingSetBytes": 54091776,
+            "ProcessPeakWorkingSetBytes": 55500800
+          },
+          "CpuUtilizationPercent": 113.06487210101668,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 3966,
+          "TotalMilliseconds": 102.9647,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4423608,
+            "ManagedHeapBytes": 10262136,
+            "PrivateBytes": 28676096,
+            "WorkingSetBytes": 54091776,
+            "ProcessPeakWorkingSetBytes": 55500800
+          },
+          "CpuUtilizationPercent": 91.0506222035319,
+          "CpuMilliseconds": 93.75
+        }
+      ],
+      "LatencyFile": "chinese-256x256.ticks",
+      "PixelsFile": "chinese-256x256.rgba",
+      "EncodedBytes": 0,
+      "InputEncodedBytes": 0,
+      "InputSha256": ""
+    },
+    {
+      "Scene": "png-encode",
+      "Width": 256,
+      "Height": 256,
+      "PixelFormat": "Rgba8888",
+      "AlphaType": "Unpremul codec output",
+      "OperationsPerFrame": 1,
+      "AllowedPixelError": 0,
+      "CompressionComparable": false,
+      "IterationsPerSample": 38,
+      "SetupMilliseconds": 0.1871,
+      "BeforeSetup": {
+        "ManagedLiveBytes": 3718448,
+        "ManagedHeapBytes": 10010248,
+        "PrivateBytes": 27992064,
+        "WorkingSetBytes": 53407744,
+        "ProcessPeakWorkingSetBytes": 55500800
+      },
+      "WarmResident": {
+        "ManagedLiveBytes": 4245776,
+        "ManagedHeapBytes": 10013240,
+        "PrivateBytes": 30674944,
+        "WorkingSetBytes": 55996416,
+        "ProcessPeakWorkingSetBytes": 55996416
+      },
+      "AfterGc": {
+        "ManagedLiveBytes": 4248408,
+        "ManagedHeapBytes": 10015872,
+        "PrivateBytes": 30674944,
+        "WorkingSetBytes": 55996416,
+        "ProcessPeakWorkingSetBytes": 55996416
+      },
+      "Samples": [
+        {
+          "Operations": 38,
+          "TotalMilliseconds": 101.345,
+          "AllocatedBytes": 836248,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 5100424,
+            "ManagedHeapBytes": 10013240,
+            "PrivateBytes": 30674944,
+            "WorkingSetBytes": 55996416,
+            "ProcessPeakWorkingSetBytes": 55996416
+          },
+          "CpuUtilizationPercent": 92.50579702994722,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 38,
+          "TotalMilliseconds": 98.9076,
+          "AllocatedBytes": 836000,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 5942712,
+            "ManagedHeapBytes": 10013240,
+            "PrivateBytes": 30674944,
+            "WorkingSetBytes": 55996416,
+            "ProcessPeakWorkingSetBytes": 55996416
+          },
+          "CpuUtilizationPercent": 110.58300878800011,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 38,
+          "TotalMilliseconds": 101.2864,
+          "AllocatedBytes": 836000,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 6785000,
+            "ManagedHeapBytes": 10013240,
+            "PrivateBytes": 30674944,
+            "WorkingSetBytes": 55996416,
+            "ProcessPeakWorkingSetBytes": 55996416
+          },
+          "CpuUtilizationPercent": 92.55931694679641,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 38,
+          "TotalMilliseconds": 98.3542,
+          "AllocatedBytes": 836000,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7627288,
+            "ManagedHeapBytes": 10013240,
+            "PrivateBytes": 30674944,
+            "WorkingSetBytes": 55996416,
+            "ProcessPeakWorkingSetBytes": 55996416
+          },
+          "CpuUtilizationPercent": 111.20521543563976,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 38,
+          "TotalMilliseconds": 101.3712,
+          "AllocatedBytes": 836000,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 8469552,
+            "ManagedHeapBytes": 10013240,
+            "PrivateBytes": 30674944,
+            "WorkingSetBytes": 55996416,
+            "ProcessPeakWorkingSetBytes": 55996416
+          },
+          "CpuUtilizationPercent": 92.48188834698612,
+          "CpuMilliseconds": 93.75
+        }
+      ],
+      "LatencyFile": "png-encode-256x256.ticks",
+      "PixelsFile": "png-encode-256x256.rgba",
+      "EncodedBytes": 3910,
+      "InputEncodedBytes": 0,
+      "InputSha256": ""
+    },
+    {
+      "Scene": "gradient",
+      "Width": 256,
+      "Height": 256,
+      "PixelFormat": "Rgba8888",
+      "AlphaType": "Premul",
+      "OperationsPerFrame": 1,
+      "AllowedPixelError": 1,
+      "CompressionComparable": true,
+      "IterationsPerSample": 8613,
+      "SetupMilliseconds": 0.0268,
+      "BeforeSetup": {
+        "ManagedLiveBytes": 3983888,
+        "ManagedHeapBytes": 10013400,
+        "PrivateBytes": 30674944,
+        "WorkingSetBytes": 55996416,
+        "ProcessPeakWorkingSetBytes": 55996416
+      },
+      "WarmResident": {
+        "ManagedLiveBytes": 4254648,
+        "ManagedHeapBytes": 10021992,
+        "PrivateBytes": 30674944,
+        "WorkingSetBytes": 55955456,
+        "ProcessPeakWorkingSetBytes": 56008704
+      },
+      "AfterGc": {
+        "ManagedLiveBytes": 4600280,
+        "ManagedHeapBytes": 10023080,
+        "PrivateBytes": 25374720,
+        "WorkingSetBytes": 50802688,
+        "ProcessPeakWorkingSetBytes": 56008704
+      },
+      "Samples": [
+        {
+          "Operations": 8613,
+          "TotalMilliseconds": 95.133,
+          "AllocatedBytes": 600,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4615472,
+            "ManagedHeapBytes": 10021992,
+            "PrivateBytes": 30674944,
+            "WorkingSetBytes": 55955456,
+            "ProcessPeakWorkingSetBytes": 56008704
+          },
+          "CpuUtilizationPercent": 98.54624578222068,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 8613,
+          "TotalMilliseconds": 95.956,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4615472,
+            "ManagedHeapBytes": 10021992,
+            "PrivateBytes": 30674944,
+            "WorkingSetBytes": 55955456,
+            "ProcessPeakWorkingSetBytes": 56008704
+          },
+          "CpuUtilizationPercent": 97.70102963858434,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 8613,
+          "TotalMilliseconds": 94.5526,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4623448,
+            "ManagedHeapBytes": 10021992,
+            "PrivateBytes": 30674944,
+            "WorkingSetBytes": 55955456,
+            "ProcessPeakWorkingSetBytes": 56008704
+          },
+          "CpuUtilizationPercent": 99.15116030653837,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 8613,
+          "TotalMilliseconds": 94.3503,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4623448,
+            "ManagedHeapBytes": 10021992,
+            "PrivateBytes": 30674944,
+            "WorkingSetBytes": 55955456,
+            "ProcessPeakWorkingSetBytes": 56008704
+          },
+          "CpuUtilizationPercent": 99.3637540103211,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 8613,
+          "TotalMilliseconds": 98.6153,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4631672,
+            "ManagedHeapBytes": 10021992,
+            "PrivateBytes": 30674944,
+            "WorkingSetBytes": 55955456,
+            "ProcessPeakWorkingSetBytes": 56008704
+          },
+          "CpuUtilizationPercent": 95.06638422232655,
+          "CpuMilliseconds": 93.75
+        }
+      ],
+      "LatencyFile": "gradient-256x256.ticks",
+      "PixelsFile": "gradient-256x256.rgba",
+      "EncodedBytes": 0,
+      "InputEncodedBytes": 0,
+      "InputSha256": ""
+    },
+    {
+      "Scene": "image",
+      "Width": 1024,
+      "Height": 768,
+      "PixelFormat": "Rgba8888",
+      "AlphaType": "Premul",
+      "OperationsPerFrame": 1,
+      "AllowedPixelError": 0,
+      "CompressionComparable": true,
+      "IterationsPerSample": 133,
+      "SetupMilliseconds": 0.1104,
+      "BeforeSetup": {
+        "ManagedLiveBytes": 3985152,
+        "ManagedHeapBytes": 10014664,
+        "PrivateBytes": 25374720,
+        "WorkingSetBytes": 50802688,
+        "ProcessPeakWorkingSetBytes": 56008704
+      },
+      "WarmResident": {
+        "ManagedLiveBytes": 7155752,
+        "ManagedHeapBytes": 10039536,
+        "PrivateBytes": 29335552,
+        "WorkingSetBytes": 54685696,
+        "ProcessPeakWorkingSetBytes": 56008704
+      },
+      "AfterGc": {
+        "ManagedLiveBytes": 7162184,
+        "ManagedHeapBytes": 10045968,
+        "PrivateBytes": 29335552,
+        "WorkingSetBytes": 54685696,
+        "ProcessPeakWorkingSetBytes": 56008704
+      },
+      "Samples": [
+        {
+          "Operations": 133,
+          "TotalMilliseconds": 100.5968,
+          "AllocatedBytes": 600,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7175280,
+            "ManagedHeapBytes": 10039536,
+            "PrivateBytes": 29335552,
+            "WorkingSetBytes": 54685696,
+            "ProcessPeakWorkingSetBytes": 56008704
+          },
+          "CpuUtilizationPercent": 93.19381928649818,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 133,
+          "TotalMilliseconds": 101.7201,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7183504,
+            "ManagedHeapBytes": 10039536,
+            "PrivateBytes": 29335552,
+            "WorkingSetBytes": 54685696,
+            "ProcessPeakWorkingSetBytes": 56008704
+          },
+          "CpuUtilizationPercent": 92.1646754181327,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 133,
+          "TotalMilliseconds": 99.6366,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7183504,
+            "ManagedHeapBytes": 10039536,
+            "PrivateBytes": 29335552,
+            "WorkingSetBytes": 54685696,
+            "ProcessPeakWorkingSetBytes": 56008704
+          },
+          "CpuUtilizationPercent": 109.7739184195366,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 133,
+          "TotalMilliseconds": 101.7195,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7191728,
+            "ManagedHeapBytes": 10039536,
+            "PrivateBytes": 29335552,
+            "WorkingSetBytes": 54685696,
+            "ProcessPeakWorkingSetBytes": 56008704
+          },
+          "CpuUtilizationPercent": 92.16521905829266,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 133,
+          "TotalMilliseconds": 100.961,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7191728,
+            "ManagedHeapBytes": 10039536,
+            "PrivateBytes": 29335552,
+            "WorkingSetBytes": 54685696,
+            "ProcessPeakWorkingSetBytes": 56008704
+          },
+          "CpuUtilizationPercent": 108.33391111419262,
+          "CpuMilliseconds": 109.375
+        }
+      ],
+      "LatencyFile": "image-1024x768.ticks",
+      "PixelsFile": "image-1024x768.rgba",
+      "EncodedBytes": 0,
+      "InputEncodedBytes": 0,
+      "InputSha256": ""
+    },
+    {
+      "Scene": "clear",
+      "Width": 1024,
+      "Height": 768,
+      "PixelFormat": "Rgba8888",
+      "AlphaType": "Premul",
+      "OperationsPerFrame": 1,
+      "AllowedPixelError": 0,
+      "CompressionComparable": true,
+      "IterationsPerSample": 1494,
+      "SetupMilliseconds": 0.1349,
+      "BeforeSetup": {
+        "ManagedLiveBytes": 4004136,
+        "ManagedHeapBytes": 10033672,
+        "PrivateBytes": 29335552,
+        "WorkingSetBytes": 54685696,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "WarmResident": {
+        "ManagedLiveBytes": 7157000,
+        "ManagedHeapBytes": 10040784,
+        "PrivateBytes": 29335552,
+        "WorkingSetBytes": 54685696,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "AfterGc": {
+        "ManagedLiveBytes": 7217872,
+        "ManagedHeapBytes": 10101656,
+        "PrivateBytes": 29335552,
+        "WorkingSetBytes": 54685696,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "Samples": [
+        {
+          "Operations": 1494,
+          "TotalMilliseconds": 100.0994,
+          "AllocatedBytes": 600,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7236336,
+            "ManagedHeapBytes": 10040784,
+            "PrivateBytes": 29335552,
+            "WorkingSetBytes": 54685696,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 93.65690503639382,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 1494,
+          "TotalMilliseconds": 101.9567,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7236336,
+            "ManagedHeapBytes": 10040784,
+            "PrivateBytes": 29335552,
+            "WorkingSetBytes": 54685696,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 107.27593184165436,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 1494,
+          "TotalMilliseconds": 99.4337,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7244560,
+            "ManagedHeapBytes": 10040784,
+            "PrivateBytes": 29335552,
+            "WorkingSetBytes": 54685696,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 94.28392989499535,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 1494,
+          "TotalMilliseconds": 101.8885,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7244560,
+            "ManagedHeapBytes": 10040784,
+            "PrivateBytes": 29335552,
+            "WorkingSetBytes": 54685696,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 107.34773796846554,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 1494,
+          "TotalMilliseconds": 99.2024,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7244560,
+            "ManagedHeapBytes": 10040784,
+            "PrivateBytes": 29335552,
+            "WorkingSetBytes": 54685696,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 94.50376200575793,
+          "CpuMilliseconds": 93.75
+        }
+      ],
+      "LatencyFile": "clear-1024x768.ticks",
+      "PixelsFile": "clear-1024x768.rgba",
+      "EncodedBytes": 0,
+      "InputEncodedBytes": 0,
+      "InputSha256": ""
+    },
+    {
+      "Scene": "evenodd",
+      "Width": 256,
+      "Height": 256,
+      "PixelFormat": "Rgba8888",
+      "AlphaType": "Premul",
+      "OperationsPerFrame": 1,
+      "AllowedPixelError": 0,
+      "CompressionComparable": true,
+      "IterationsPerSample": 6411,
+      "SetupMilliseconds": 0.027,
+      "BeforeSetup": {
+        "ManagedLiveBytes": 4005320,
+        "ManagedHeapBytes": 10034856,
+        "PrivateBytes": 29335552,
+        "WorkingSetBytes": 54685696,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "WarmResident": {
+        "ManagedLiveBytes": 4281952,
+        "ManagedHeapBytes": 10049320,
+        "PrivateBytes": 28942336,
+        "WorkingSetBytes": 54337536,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "AfterGc": {
+        "ManagedLiveBytes": 4539504,
+        "ManagedHeapBytes": 10050408,
+        "PrivateBytes": 28942336,
+        "WorkingSetBytes": 54337536,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "Samples": [
+        {
+          "Operations": 6411,
+          "TotalMilliseconds": 100.502,
+          "AllocatedBytes": 600,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4554696,
+            "ManagedHeapBytes": 10049320,
+            "PrivateBytes": 28942336,
+            "WorkingSetBytes": 54337536,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 108.82868002626815,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 6411,
+          "TotalMilliseconds": 99.4822,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4554696,
+            "ManagedHeapBytes": 10049320,
+            "PrivateBytes": 28942336,
+            "WorkingSetBytes": 54337536,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 94.23796417851635,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 6411,
+          "TotalMilliseconds": 105.6978,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4562672,
+            "ManagedHeapBytes": 10049320,
+            "PrivateBytes": 28942336,
+            "WorkingSetBytes": 54337536,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 103.47897496447419,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 6411,
+          "TotalMilliseconds": 104.1282,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4562672,
+            "ManagedHeapBytes": 10049320,
+            "PrivateBytes": 28942336,
+            "WorkingSetBytes": 54337536,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 105.03878872389996,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 6411,
+          "TotalMilliseconds": 100.5103,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4570896,
+            "ManagedHeapBytes": 10049320,
+            "PrivateBytes": 28942336,
+            "WorkingSetBytes": 54337536,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 93.274022662354,
+          "CpuMilliseconds": 93.75
+        }
+      ],
+      "LatencyFile": "evenodd-256x256.ticks",
+      "PixelsFile": "evenodd-256x256.rgba",
+      "EncodedBytes": 0,
+      "InputEncodedBytes": 0,
+      "InputSha256": ""
+    },
+    {
+      "Scene": "curve-aa",
+      "Width": 1024,
+      "Height": 768,
+      "PixelFormat": "Rgba8888",
+      "AlphaType": "Premul",
+      "OperationsPerFrame": 1,
+      "AllowedPixelError": 32,
+      "CompressionComparable": true,
+      "IterationsPerSample": 571,
+      "SetupMilliseconds": 0.4071,
+      "BeforeSetup": {
+        "ManagedLiveBytes": 4006504,
+        "ManagedHeapBytes": 10036040,
+        "PrivateBytes": 28942336,
+        "WorkingSetBytes": 54337536,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "WarmResident": {
+        "ManagedLiveBytes": 7207736,
+        "ManagedHeapBytes": 10091520,
+        "PrivateBytes": 28942336,
+        "WorkingSetBytes": 54337536,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "AfterGc": {
+        "ManagedLiveBytes": 7231688,
+        "ManagedHeapBytes": 10115472,
+        "PrivateBytes": 24879104,
+        "WorkingSetBytes": 50204672,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "Samples": [
+        {
+          "Operations": 571,
+          "TotalMilliseconds": 100.8835,
+          "AllocatedBytes": 600,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7250152,
+            "ManagedHeapBytes": 10091520,
+            "PrivateBytes": 28942336,
+            "WorkingSetBytes": 54337536,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 92.92897252771762,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 571,
+          "TotalMilliseconds": 100.8153,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7250152,
+            "ManagedHeapBytes": 10091520,
+            "PrivateBytes": 28942336,
+            "WorkingSetBytes": 54337536,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 108.49047713987858,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 571,
+          "TotalMilliseconds": 104.0803,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7258376,
+            "ManagedHeapBytes": 10091520,
+            "PrivateBytes": 28942336,
+            "WorkingSetBytes": 54337536,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 105.08712984109386,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 571,
+          "TotalMilliseconds": 105.9658,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7258376,
+            "ManagedHeapBytes": 10091520,
+            "PrivateBytes": 28942336,
+            "WorkingSetBytes": 54337536,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 103.21726443814892,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 571,
+          "TotalMilliseconds": 100.7833,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7258376,
+            "ManagedHeapBytes": 10091520,
+            "PrivateBytes": 28942336,
+            "WorkingSetBytes": 54337536,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 93.02136365846326,
+          "CpuMilliseconds": 93.75
+        }
+      ],
+      "LatencyFile": "curve-aa-1024x768.ticks",
+      "PixelsFile": "curve-aa-1024x768.rgba",
+      "EncodedBytes": 0,
+      "InputEncodedBytes": 0,
+      "InputSha256": ""
+    },
+    {
+      "Scene": "rectangles",
+      "Width": 1024,
+      "Height": 768,
+      "PixelFormat": "Rgba8888",
+      "AlphaType": "Premul",
+      "OperationsPerFrame": 64,
+      "AllowedPixelError": 0,
+      "CompressionComparable": true,
+      "IterationsPerSample": 422,
+      "SetupMilliseconds": 0.1046,
+      "BeforeSetup": {
+        "ManagedLiveBytes": 4007704,
+        "ManagedHeapBytes": 10037240,
+        "PrivateBytes": 24879104,
+        "WorkingSetBytes": 50204672,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "WarmResident": {
+        "ManagedLiveBytes": 7160568,
+        "ManagedHeapBytes": 10044352,
+        "PrivateBytes": 24879104,
+        "WorkingSetBytes": 50204672,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "AfterGc": {
+        "ManagedLiveBytes": 7178560,
+        "ManagedHeapBytes": 10062344,
+        "PrivateBytes": 24879104,
+        "WorkingSetBytes": 50204672,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "Samples": [
+        {
+          "Operations": 422,
+          "TotalMilliseconds": 98.7277,
+          "AllocatedBytes": 600,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7197024,
+            "ManagedHeapBytes": 10044352,
+            "PrivateBytes": 24879104,
+            "WorkingSetBytes": 50204672,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 94.95815257521446,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 422,
+          "TotalMilliseconds": 101.752,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7197024,
+            "ManagedHeapBytes": 10044352,
+            "PrivateBytes": 24879104,
+            "WorkingSetBytes": 50204672,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 92.13578111486753,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 422,
+          "TotalMilliseconds": 104.0363,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7205248,
+            "ManagedHeapBytes": 10044352,
+            "PrivateBytes": 24879104,
+            "WorkingSetBytes": 50204672,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 90.1127779438523,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 422,
+          "TotalMilliseconds": 98.7475,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7205248,
+            "ManagedHeapBytes": 10044352,
+            "PrivateBytes": 24879104,
+            "WorkingSetBytes": 50204672,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 110.76229777969063,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 422,
+          "TotalMilliseconds": 98.9748,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7205248,
+            "ManagedHeapBytes": 10044352,
+            "PrivateBytes": 24879104,
+            "WorkingSetBytes": 50204672,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 94.72108051746505,
+          "CpuMilliseconds": 93.75
+        }
+      ],
+      "LatencyFile": "rectangles-1024x768.ticks",
+      "PixelsFile": "rectangles-1024x768.rgba",
+      "EncodedBytes": 0,
+      "InputEncodedBytes": 0,
+      "InputSha256": ""
+    },
+    {
+      "Scene": "rect-aa",
+      "Width": 1024,
+      "Height": 768,
+      "PixelFormat": "Rgba8888",
+      "AlphaType": "Premul",
+      "OperationsPerFrame": 1,
+      "AllowedPixelError": 2,
+      "CompressionComparable": true,
+      "IterationsPerSample": 596,
+      "SetupMilliseconds": 0.1068,
+      "BeforeSetup": {
+        "ManagedLiveBytes": 4008904,
+        "ManagedHeapBytes": 10038440,
+        "PrivateBytes": 24879104,
+        "WorkingSetBytes": 50204672,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "WarmResident": {
+        "ManagedLiveBytes": 7161768,
+        "ManagedHeapBytes": 10045552,
+        "PrivateBytes": 25448448,
+        "WorkingSetBytes": 50688000,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "AfterGc": {
+        "ManagedLiveBytes": 7186720,
+        "ManagedHeapBytes": 10070504,
+        "PrivateBytes": 25448448,
+        "WorkingSetBytes": 50688000,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "Samples": [
+        {
+          "Operations": 596,
+          "TotalMilliseconds": 104.2578,
+          "AllocatedBytes": 600,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7205184,
+            "ManagedHeapBytes": 10045552,
+            "PrivateBytes": 25448448,
+            "WorkingSetBytes": 50688000,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 104.9082178983251,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 596,
+          "TotalMilliseconds": 108.6834,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7205184,
+            "ManagedHeapBytes": 10045552,
+            "PrivateBytes": 25448448,
+            "WorkingSetBytes": 50688000,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 86.25972319599865,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 596,
+          "TotalMilliseconds": 106.8487,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7213408,
+            "ManagedHeapBytes": 10045552,
+            "PrivateBytes": 25448448,
+            "WorkingSetBytes": 50688000,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 102.36437130259891,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 596,
+          "TotalMilliseconds": 101.9638,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7213408,
+            "ManagedHeapBytes": 10045552,
+            "PrivateBytes": 25448448,
+            "WorkingSetBytes": 50688000,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 107.2684619443371,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 596,
+          "TotalMilliseconds": 101.9551,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7213408,
+            "ManagedHeapBytes": 10045552,
+            "PrivateBytes": 25448448,
+            "WorkingSetBytes": 50688000,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 91.95224172209139,
+          "CpuMilliseconds": 93.75
+        }
+      ],
+      "LatencyFile": "rect-aa-1024x768.ticks",
+      "PixelsFile": "rect-aa-1024x768.rgba",
+      "EncodedBytes": 0,
+      "InputEncodedBytes": 0,
+      "InputSha256": ""
+    },
+    {
+      "Scene": "image",
+      "Width": 256,
+      "Height": 256,
+      "PixelFormat": "Rgba8888",
+      "AlphaType": "Premul",
+      "OperationsPerFrame": 1,
+      "AllowedPixelError": 0,
+      "CompressionComparable": true,
+      "IterationsPerSample": 722,
+      "SetupMilliseconds": 0.0269,
+      "BeforeSetup": {
+        "ManagedLiveBytes": 4010096,
+        "ManagedHeapBytes": 10039632,
+        "PrivateBytes": 25448448,
+        "WorkingSetBytes": 50688000,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "WarmResident": {
+        "ManagedLiveBytes": 4283520,
+        "ManagedHeapBytes": 10050888,
+        "PrivateBytes": 25448448,
+        "WorkingSetBytes": 50692096,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "AfterGc": {
+        "ManagedLiveBytes": 4313512,
+        "ManagedHeapBytes": 10080880,
+        "PrivateBytes": 25448448,
+        "WorkingSetBytes": 50692096,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "Samples": [
+        {
+          "Operations": 722,
+          "TotalMilliseconds": 102.927,
+          "AllocatedBytes": 600,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4331976,
+            "ManagedHeapBytes": 10050888,
+            "PrivateBytes": 25448448,
+            "WorkingSetBytes": 50692096,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 91.08397213559124,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 722,
+          "TotalMilliseconds": 103.1422,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4331976,
+            "ManagedHeapBytes": 10050888,
+            "PrivateBytes": 25448448,
+            "WorkingSetBytes": 50692096,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 106.04291938702103,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 722,
+          "TotalMilliseconds": 100.0416,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4340200,
+            "ManagedHeapBytes": 10050888,
+            "PrivateBytes": 25448448,
+            "WorkingSetBytes": 50692096,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 109.32951892012922,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 722,
+          "TotalMilliseconds": 99.7433,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4340200,
+            "ManagedHeapBytes": 10050888,
+            "PrivateBytes": 25448448,
+            "WorkingSetBytes": 50692096,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 93.99127560447668,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 722,
+          "TotalMilliseconds": 100.7913,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4340200,
+            "ManagedHeapBytes": 10050888,
+            "PrivateBytes": 25448448,
+            "WorkingSetBytes": 50692096,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 108.51631043552369,
+          "CpuMilliseconds": 109.375
+        }
+      ],
+      "LatencyFile": "image-256x256.ticks",
+      "PixelsFile": "image-256x256.rgba",
+      "EncodedBytes": 0,
+      "InputEncodedBytes": 0,
+      "InputSha256": ""
+    },
+    {
+      "Scene": "png-decode",
+      "Width": 256,
+      "Height": 256,
+      "PixelFormat": "Rgba8888",
+      "AlphaType": "Unpremul codec output",
+      "OperationsPerFrame": 1,
+      "AllowedPixelError": 0,
+      "CompressionComparable": true,
+      "IterationsPerSample": 238,
+      "SetupMilliseconds": 0.3024,
+      "BeforeSetup": {
+        "ManagedLiveBytes": 4015424,
+        "ManagedHeapBytes": 10044960,
+        "PrivateBytes": 25448448,
+        "WorkingSetBytes": 50692096,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "WarmResident": {
+        "ManagedLiveBytes": 4547544,
+        "ManagedHeapBytes": 10052744,
+        "PrivateBytes": 26103808,
+        "WorkingSetBytes": 50843648,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "AfterGc": {
+        "ManagedLiveBytes": 4558176,
+        "ManagedHeapBytes": 10063376,
+        "PrivateBytes": 24662016,
+        "WorkingSetBytes": 50188288,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "Samples": [
+        {
+          "Operations": 238,
+          "TotalMilliseconds": 94.1313,
+          "AllocatedBytes": 607872,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 5185216,
+            "ManagedHeapBytes": 10052744,
+            "PrivateBytes": 26103808,
+            "WorkingSetBytes": 50843648,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 99.59492751082796,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 238,
+          "TotalMilliseconds": 91.5027,
+          "AllocatedBytes": 607376,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 5793792,
+            "ManagedHeapBytes": 10052744,
+            "PrivateBytes": 26103808,
+            "WorkingSetBytes": 50843648,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 85.37999425153575,
+          "CpuMilliseconds": 78.125
+        },
+        {
+          "Operations": 238,
+          "TotalMilliseconds": 93.106,
+          "AllocatedBytes": 607376,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 6410592,
+            "ManagedHeapBytes": 10052744,
+            "PrivateBytes": 26103808,
+            "WorkingSetBytes": 50843648,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 100.69168474641806,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 238,
+          "TotalMilliseconds": 93.2864,
+          "AllocatedBytes": 607376,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7019168,
+            "ManagedHeapBytes": 10052744,
+            "PrivateBytes": 26103808,
+            "WorkingSetBytes": 50843648,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 100.49696418770581,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 238,
+          "TotalMilliseconds": 93.1792,
+          "AllocatedBytes": 607376,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7635968,
+            "ManagedHeapBytes": 10052744,
+            "PrivateBytes": 26103808,
+            "WorkingSetBytes": 50843648,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 100.61258306574858,
+          "CpuMilliseconds": 93.75
+        }
+      ],
+      "LatencyFile": "png-decode-256x256.ticks",
+      "PixelsFile": "png-decode-256x256.rgba",
+      "EncodedBytes": 0,
+      "InputEncodedBytes": 4764,
+      "InputSha256": "64DBA02C636F527970A6C9DC4FAFB3AB369EFB5D657BE24DB4D116F901ED877E"
+    },
+    {
+      "Scene": "gradient",
+      "Width": 1024,
+      "Height": 768,
+      "PixelFormat": "Rgba8888",
+      "AlphaType": "Premul",
+      "OperationsPerFrame": 1,
+      "AllowedPixelError": 1,
+      "CompressionComparable": true,
+      "IterationsPerSample": 661,
+      "SetupMilliseconds": 0.1066,
+      "BeforeSetup": {
+        "ManagedLiveBytes": 4016776,
+        "ManagedHeapBytes": 10046312,
+        "PrivateBytes": 24662016,
+        "WorkingSetBytes": 50188288,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "WarmResident": {
+        "ManagedLiveBytes": 7174120,
+        "ManagedHeapBytes": 10057904,
+        "PrivateBytes": 24662016,
+        "WorkingSetBytes": 50188288,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "AfterGc": {
+        "ManagedLiveBytes": 7201672,
+        "ManagedHeapBytes": 10085456,
+        "PrivateBytes": 24662016,
+        "WorkingSetBytes": 50192384,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "Samples": [
+        {
+          "Operations": 661,
+          "TotalMilliseconds": 96.3288,
+          "AllocatedBytes": 600,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7220136,
+            "ManagedHeapBytes": 10057904,
+            "PrivateBytes": 24662016,
+            "WorkingSetBytes": 50188288,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 97.32291900241673,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 661,
+          "TotalMilliseconds": 97.221,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7220136,
+            "ManagedHeapBytes": 10057904,
+            "PrivateBytes": 24662016,
+            "WorkingSetBytes": 50188288,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 112.5014143034941,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 661,
+          "TotalMilliseconds": 93.9207,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7228360,
+            "ManagedHeapBytes": 10057904,
+            "PrivateBytes": 24662016,
+            "WorkingSetBytes": 50188288,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 99.818250928709,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 661,
+          "TotalMilliseconds": 96.1654,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7228360,
+            "ManagedHeapBytes": 10057904,
+            "PrivateBytes": 24662016,
+            "WorkingSetBytes": 50188288,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 97.48828580757736,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 661,
+          "TotalMilliseconds": 98.9836,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7228360,
+            "ManagedHeapBytes": 10057904,
+            "PrivateBytes": 24662016,
+            "WorkingSetBytes": 50192384,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 94.71265947086184,
+          "CpuMilliseconds": 93.75
+        }
+      ],
+      "LatencyFile": "gradient-1024x768.ticks",
+      "PixelsFile": "gradient-1024x768.rgba",
+      "EncodedBytes": 0,
+      "InputEncodedBytes": 0,
+      "InputSha256": ""
+    },
+    {
+      "Scene": "png-decode",
+      "Width": 1024,
+      "Height": 768,
+      "PixelFormat": "Rgba8888",
+      "AlphaType": "Unpremul codec output",
+      "OperationsPerFrame": 1,
+      "AllowedPixelError": 0,
+      "CompressionComparable": true,
+      "IterationsPerSample": 28,
+      "SetupMilliseconds": 2.6294,
+      "BeforeSetup": {
+        "ManagedLiveBytes": 4018104,
+        "ManagedHeapBytes": 10047640,
+        "PrivateBytes": 24662016,
+        "WorkingSetBytes": 50192384,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "WarmResident": {
+        "ManagedLiveBytes": 10354416,
+        "ManagedHeapBytes": 13238232,
+        "PrivateBytes": 27684864,
+        "WorkingSetBytes": 53207040,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "AfterGc": {
+        "ManagedLiveBytes": 10356648,
+        "ManagedHeapBytes": 13240464,
+        "PrivateBytes": 27684864,
+        "WorkingSetBytes": 53207040,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "Samples": [
+        {
+          "Operations": 28,
+          "TotalMilliseconds": 102.1973,
+          "AllocatedBytes": 164912,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 10533816,
+            "ManagedHeapBytes": 13238232,
+            "PrivateBytes": 27684864,
+            "WorkingSetBytes": 53207040,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 91.73432174822622,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 28,
+          "TotalMilliseconds": 97.3659,
+          "AllocatedBytes": 164416,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 10706520,
+            "ManagedHeapBytes": 13238232,
+            "PrivateBytes": 27684864,
+            "WorkingSetBytes": 53207040,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 96.28627681765383,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 28,
+          "TotalMilliseconds": 98.9974,
+          "AllocatedBytes": 164416,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 10871000,
+            "ManagedHeapBytes": 13238232,
+            "PrivateBytes": 27684864,
+            "WorkingSetBytes": 53207040,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 94.69945675340969,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 28,
+          "TotalMilliseconds": 100.7519,
+          "AllocatedBytes": 164416,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 11043704,
+            "ManagedHeapBytes": 13238232,
+            "PrivateBytes": 27684864,
+            "WorkingSetBytes": 53207040,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 108.55874678293907,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 28,
+          "TotalMilliseconds": 100.4795,
+          "AllocatedBytes": 164416,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 11208184,
+            "ManagedHeapBytes": 13238232,
+            "PrivateBytes": 27684864,
+            "WorkingSetBytes": 53207040,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 93.30261396603287,
+          "CpuMilliseconds": 93.75
+        }
+      ],
+      "LatencyFile": "png-decode-1024x768.ticks",
+      "PixelsFile": "png-decode-1024x768.rgba",
+      "EncodedBytes": 0,
+      "InputEncodedBytes": 41791,
+      "InputSha256": "48A66BFC3BC40493C840191918A6AC5862E80B34280253C1973AE5587333571C"
+    },
+    {
+      "Scene": "stroke",
+      "Width": 1024,
+      "Height": 768,
+      "PixelFormat": "Rgba8888",
+      "AlphaType": "Premul",
+      "OperationsPerFrame": 1,
+      "AllowedPixelError": 0,
+      "CompressionComparable": true,
+      "IterationsPerSample": 933,
+      "SetupMilliseconds": 0.1082,
+      "BeforeSetup": {
+        "ManagedLiveBytes": 4019456,
+        "ManagedHeapBytes": 10048992,
+        "PrivateBytes": 24662016,
+        "WorkingSetBytes": 50192384,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "WarmResident": {
+        "ManagedLiveBytes": 7198096,
+        "ManagedHeapBytes": 10081880,
+        "PrivateBytes": 26480640,
+        "WorkingSetBytes": 51998720,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "AfterGc": {
+        "ManagedLiveBytes": 7236528,
+        "ManagedHeapBytes": 10120312,
+        "PrivateBytes": 26480640,
+        "WorkingSetBytes": 51998720,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "Samples": [
+        {
+          "Operations": 933,
+          "TotalMilliseconds": 97.3211,
+          "AllocatedBytes": 848,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7254992,
+            "ManagedHeapBytes": 10081880,
+            "PrivateBytes": 26480640,
+            "WorkingSetBytes": 51998720,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 96.33060045560521,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 933,
+          "TotalMilliseconds": 98.1975,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7254992,
+            "ManagedHeapBytes": 10081880,
+            "PrivateBytes": 26480640,
+            "WorkingSetBytes": 51998720,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 111.38267267496626,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 933,
+          "TotalMilliseconds": 101.49,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7263216,
+            "ManagedHeapBytes": 10081880,
+            "PrivateBytes": 26480640,
+            "WorkingSetBytes": 51998720,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 92.37363287023352,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 933,
+          "TotalMilliseconds": 100.947,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7263216,
+            "ManagedHeapBytes": 10081880,
+            "PrivateBytes": 26480640,
+            "WorkingSetBytes": 51998720,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 92.87051621147731,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 933,
+          "TotalMilliseconds": 99.4434,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7263216,
+            "ManagedHeapBytes": 10081880,
+            "PrivateBytes": 26480640,
+            "WorkingSetBytes": 51998720,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 94.27473316479525,
+          "CpuMilliseconds": 93.75
+        }
+      ],
+      "LatencyFile": "stroke-1024x768.ticks",
+      "PixelsFile": "stroke-1024x768.rgba",
+      "EncodedBytes": 0,
+      "InputEncodedBytes": 0,
+      "InputSha256": ""
+    },
+    {
+      "Scene": "stroke",
+      "Width": 256,
+      "Height": 256,
+      "PixelFormat": "Rgba8888",
+      "AlphaType": "Premul",
+      "OperationsPerFrame": 1,
+      "AllowedPixelError": 0,
+      "CompressionComparable": true,
+      "IterationsPerSample": 5650,
+      "SetupMilliseconds": 0.0242,
+      "BeforeSetup": {
+        "ManagedLiveBytes": 4020688,
+        "ManagedHeapBytes": 10050224,
+        "PrivateBytes": 26480640,
+        "WorkingSetBytes": 51998720,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "WarmResident": {
+        "ManagedLiveBytes": 4299312,
+        "ManagedHeapBytes": 10066680,
+        "PrivateBytes": 26480640,
+        "WorkingSetBytes": 51998720,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "AfterGc": {
+        "ManagedLiveBytes": 4526424,
+        "ManagedHeapBytes": 10067768,
+        "PrivateBytes": 26480640,
+        "WorkingSetBytes": 51998720,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "Samples": [
+        {
+          "Operations": 5650,
+          "TotalMilliseconds": 93.7007,
+          "AllocatedBytes": 848,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4541616,
+            "ManagedHeapBytes": 10066680,
+            "PrivateBytes": 26480640,
+            "WorkingSetBytes": 51998720,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 100.05261433479153,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 5650,
+          "TotalMilliseconds": 94.8433,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4549552,
+            "ManagedHeapBytes": 10066680,
+            "PrivateBytes": 26480640,
+            "WorkingSetBytes": 51998720,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 98.8472564746271,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 5650,
+          "TotalMilliseconds": 94.9851,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4549552,
+            "ManagedHeapBytes": 10066680,
+            "PrivateBytes": 26480640,
+            "WorkingSetBytes": 51998720,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 98.69969079360868,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 5650,
+          "TotalMilliseconds": 95.865,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4549552,
+            "ManagedHeapBytes": 10066680,
+            "PrivateBytes": 26480640,
+            "WorkingSetBytes": 51998720,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 97.79377249256768,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 5650,
+          "TotalMilliseconds": 98.6893,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4557776,
+            "ManagedHeapBytes": 10066680,
+            "PrivateBytes": 26480640,
+            "WorkingSetBytes": 51998720,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 110.82761758366915,
+          "CpuMilliseconds": 109.375
+        }
+      ],
+      "LatencyFile": "stroke-256x256.ticks",
+      "PixelsFile": "stroke-256x256.rgba",
+      "EncodedBytes": 0,
+      "InputEncodedBytes": 0,
+      "InputSha256": ""
+    },
+    {
+      "Scene": "rect-aa",
+      "Width": 256,
+      "Height": 256,
+      "PixelFormat": "Rgba8888",
+      "AlphaType": "Premul",
+      "OperationsPerFrame": 1,
+      "AllowedPixelError": 2,
+      "CompressionComparable": true,
+      "IterationsPerSample": 4448,
+      "SetupMilliseconds": 0.026,
+      "BeforeSetup": {
+        "ManagedLiveBytes": 4021872,
+        "ManagedHeapBytes": 10051408,
+        "PrivateBytes": 26480640,
+        "WorkingSetBytes": 51998720,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "WarmResident": {
+        "ManagedLiveBytes": 4291152,
+        "ManagedHeapBytes": 10058520,
+        "PrivateBytes": 26480640,
+        "WorkingSetBytes": 51998720,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "AfterGc": {
+        "ManagedLiveBytes": 4470184,
+        "ManagedHeapBytes": 10059608,
+        "PrivateBytes": 26480640,
+        "WorkingSetBytes": 51998720,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "Samples": [
+        {
+          "Operations": 4448,
+          "TotalMilliseconds": 102.4215,
+          "AllocatedBytes": 600,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4485376,
+            "ManagedHeapBytes": 10058520,
+            "PrivateBytes": 26480640,
+            "WorkingSetBytes": 51998720,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 106.78910189755081,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 4448,
+          "TotalMilliseconds": 101.9878,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4485376,
+            "ManagedHeapBytes": 10058520,
+            "PrivateBytes": 26480640,
+            "WorkingSetBytes": 51998720,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 107.24321928701276,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 4448,
+          "TotalMilliseconds": 101.0243,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4493352,
+            "ManagedHeapBytes": 10058520,
+            "PrivateBytes": 26480640,
+            "WorkingSetBytes": 51998720,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 92.79945518058527,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 4448,
+          "TotalMilliseconds": 106.9806,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4493352,
+            "ManagedHeapBytes": 10058520,
+            "PrivateBytes": 26480640,
+            "WorkingSetBytes": 51998720,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 102.23816280708839,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 4448,
+          "TotalMilliseconds": 103.2852,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4501576,
+            "ManagedHeapBytes": 10058520,
+            "PrivateBytes": 26480640,
+            "WorkingSetBytes": 51998720,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 105.8961012807256,
+          "CpuMilliseconds": 109.375
+        }
+      ],
+      "LatencyFile": "rect-aa-256x256.ticks",
+      "PixelsFile": "rect-aa-256x256.rgba",
+      "EncodedBytes": 0,
+      "InputEncodedBytes": 0,
+      "InputSha256": ""
+    },
+    {
+      "Scene": "curve-aa",
+      "Width": 256,
+      "Height": 256,
+      "PixelFormat": "Rgba8888",
+      "AlphaType": "Premul",
+      "OperationsPerFrame": 1,
+      "AllowedPixelError": 32,
+      "CompressionComparable": true,
+      "IterationsPerSample": 3150,
+      "SetupMilliseconds": 0.0257,
+      "BeforeSetup": {
+        "ManagedLiveBytes": 4023056,
+        "ManagedHeapBytes": 10052592,
+        "PrivateBytes": 26480640,
+        "WorkingSetBytes": 51998720,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "WarmResident": {
+        "ManagedLiveBytes": 4306912,
+        "ManagedHeapBytes": 10074280,
+        "PrivateBytes": 26480640,
+        "WorkingSetBytes": 51998720,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "AfterGc": {
+        "ManagedLiveBytes": 4434024,
+        "ManagedHeapBytes": 10075368,
+        "PrivateBytes": 24535040,
+        "WorkingSetBytes": 50147328,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "Samples": [
+        {
+          "Operations": 3150,
+          "TotalMilliseconds": 102.346,
+          "AllocatedBytes": 600,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4449216,
+            "ManagedHeapBytes": 10074280,
+            "PrivateBytes": 26480640,
+            "WorkingSetBytes": 51998720,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 91.60103961073222,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 3150,
+          "TotalMilliseconds": 102.8541,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4449216,
+            "ManagedHeapBytes": 10074280,
+            "PrivateBytes": 26480640,
+            "WorkingSetBytes": 51998720,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 106.33995144578583,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 3150,
+          "TotalMilliseconds": 104.5424,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4457192,
+            "ManagedHeapBytes": 10074280,
+            "PrivateBytes": 26480640,
+            "WorkingSetBytes": 51998720,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 104.62262201747808,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 3150,
+          "TotalMilliseconds": 103.1381,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4457192,
+            "ManagedHeapBytes": 10074280,
+            "PrivateBytes": 26480640,
+            "WorkingSetBytes": 51998720,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 90.89754416651073,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 3150,
+          "TotalMilliseconds": 102.4307,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 4465416,
+            "ManagedHeapBytes": 10074280,
+            "PrivateBytes": 26480640,
+            "WorkingSetBytes": 51998720,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 106.7795104397412,
+          "CpuMilliseconds": 109.375
+        }
+      ],
+      "LatencyFile": "curve-aa-256x256.ticks",
+      "PixelsFile": "curve-aa-256x256.rgba",
+      "EncodedBytes": 0,
+      "InputEncodedBytes": 0,
+      "InputSha256": ""
+    },
+    {
+      "Scene": "clear",
+      "Width": 256,
+      "Height": 256,
+      "PixelFormat": "Rgba8888",
+      "AlphaType": "Premul",
+      "OperationsPerFrame": 1,
+      "AllowedPixelError": 0,
+      "CompressionComparable": true,
+      "IterationsPerSample": 18833,
+      "SetupMilliseconds": 0.0228,
+      "BeforeSetup": {
+        "ManagedLiveBytes": 4024248,
+        "ManagedHeapBytes": 10053784,
+        "PrivateBytes": 24535040,
+        "WorkingSetBytes": 50147328,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "WarmResident": {
+        "ManagedLiveBytes": 4293528,
+        "ManagedHeapBytes": 10060896,
+        "PrivateBytes": 24535040,
+        "WorkingSetBytes": 50147328,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "AfterGc": {
+        "ManagedLiveBytes": 5047960,
+        "ManagedHeapBytes": 10061984,
+        "PrivateBytes": 24535040,
+        "WorkingSetBytes": 50151424,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "Samples": [
+        {
+          "Operations": 18833,
+          "TotalMilliseconds": 94.7264,
+          "AllocatedBytes": 600,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 5063152,
+            "ManagedHeapBytes": 10060896,
+            "PrivateBytes": 24535040,
+            "WorkingSetBytes": 50151424,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 98.96924194311195,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 18833,
+          "TotalMilliseconds": 97.601,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 5063152,
+            "ManagedHeapBytes": 10060896,
+            "PrivateBytes": 24535040,
+            "WorkingSetBytes": 50151424,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 96.05434370549482,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 18833,
+          "TotalMilliseconds": 98.4867,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 5071128,
+            "ManagedHeapBytes": 10060896,
+            "PrivateBytes": 24535040,
+            "WorkingSetBytes": 50151424,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 95.19051811056721,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 18833,
+          "TotalMilliseconds": 100.1756,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 5071128,
+            "ManagedHeapBytes": 10060896,
+            "PrivateBytes": 24535040,
+            "WorkingSetBytes": 50151424,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 109.1832741705565,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 18833,
+          "TotalMilliseconds": 96.0388,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 5079352,
+            "ManagedHeapBytes": 10060896,
+            "PrivateBytes": 24535040,
+            "WorkingSetBytes": 50151424,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 97.61679654472984,
+          "CpuMilliseconds": 93.75
+        }
+      ],
+      "LatencyFile": "clear-256x256.ticks",
+      "PixelsFile": "clear-256x256.rgba",
+      "EncodedBytes": 0,
+      "InputEncodedBytes": 0,
+      "InputSha256": ""
+    },
+    {
+      "Scene": "chinese",
+      "Width": 1024,
+      "Height": 768,
+      "PixelFormat": "Rgba8888",
+      "AlphaType": "Premul",
+      "OperationsPerFrame": 4,
+      "AllowedPixelError": 32,
+      "CompressionComparable": true,
+      "IterationsPerSample": 905,
+      "SetupMilliseconds": 0.3453,
+      "BeforeSetup": {
+        "ManagedLiveBytes": 4025432,
+        "ManagedHeapBytes": 10054968,
+        "PrivateBytes": 24535040,
+        "WorkingSetBytes": 50151424,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "WarmResident": {
+        "ManagedLiveBytes": 7552096,
+        "ManagedHeapBytes": 10435880,
+        "PrivateBytes": 24731648,
+        "WorkingSetBytes": 50348032,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "AfterGc": {
+        "ManagedLiveBytes": 7589408,
+        "ManagedHeapBytes": 10473192,
+        "PrivateBytes": 24731648,
+        "WorkingSetBytes": 50348032,
+        "ProcessPeakWorkingSetBytes": 60846080
+      },
+      "Samples": [
+        {
+          "Operations": 905,
+          "TotalMilliseconds": 101.0662,
+          "AllocatedBytes": 848,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7607872,
+            "ManagedHeapBytes": 10435880,
+            "PrivateBytes": 24731648,
+            "WorkingSetBytes": 50348032,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 92.76098240559159,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 905,
+          "TotalMilliseconds": 101.5534,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7607872,
+            "ManagedHeapBytes": 10435880,
+            "PrivateBytes": 24731648,
+            "WorkingSetBytes": 50348032,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 107.70195778772548,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 905,
+          "TotalMilliseconds": 103.1399,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7616096,
+            "ManagedHeapBytes": 10435880,
+            "PrivateBytes": 24731648,
+            "WorkingSetBytes": 50348032,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 90.89595782039734,
+          "CpuMilliseconds": 93.75
+        },
+        {
+          "Operations": 905,
+          "TotalMilliseconds": 102.5584,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7616096,
+            "ManagedHeapBytes": 10435880,
+            "PrivateBytes": 24731648,
+            "WorkingSetBytes": 50348032,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 106.64655454843289,
+          "CpuMilliseconds": 109.375
+        },
+        {
+          "Operations": 905,
+          "TotalMilliseconds": 100.2277,
+          "AllocatedBytes": 0,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 7616096,
+            "ManagedHeapBytes": 10435880,
+            "PrivateBytes": 24731648,
+            "WorkingSetBytes": 50348032,
+            "ProcessPeakWorkingSetBytes": 60846080
+          },
+          "CpuUtilizationPercent": 109.1265189164273,
+          "CpuMilliseconds": 109.375
+        }
+      ],
+      "LatencyFile": "chinese-1024x768.ticks",
+      "PixelsFile": "chinese-1024x768.rgba",
+      "EncodedBytes": 0,
+      "InputEncodedBytes": 0,
+      "InputSha256": ""
+    }
+  ]
+}

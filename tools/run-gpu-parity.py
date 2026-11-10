@@ -19,6 +19,7 @@ p.add_argument("--output",type=Path,required=True)
 p.add_argument("--forks",type=int,default=3)
 p.add_argument("--seconds",type=float,default=5)
 p.add_argument("--warmup",type=float,default=3)
+p.add_argument("--before-managed",type=Path,help="Frozen pre-optimization Managed.exe")
 args=p.parse_args()
 if args.output.exists():raise SystemExit("Choose a fresh output directory.")
 args.output.mkdir(parents=True)
@@ -27,9 +28,12 @@ original=base/"Original/bin/Release/net10.0/Original.exe"
 managed=base/"Managed/bin/Release/net10.0/Managed.exe"
 variants={"original-vulkan":(original,[]),"original-angle":(original,["--angle"]),
           "vulkan":(managed,["--backend","vulkan"]),"direct2d":(managed,["--backend","direct2d"])}
+if args.before_managed:
+    before=args.before_managed.resolve()
+    variants.update({"before-vulkan":(before,["--backend","vulkan"]),"before-direct2d":(before,["--backend","direct2d"])})
 cases=[("controls",1),("controls",1.5),("scroll",1)]
 files={str(f.resolve()):hashlib.sha256(f.read_bytes()).hexdigest()
-       for parent in [original.parent,managed.parent] for f in parent.rglob("*")
+       for parent in {exe.parent for exe,_ in variants.values()} for f in parent.rglob("*")
        if f.is_file() and f.suffix in (".exe",".dll",".json")}
 source={str(f.relative_to(ROOT)):hashlib.sha256(f.read_bytes()).hexdigest()
         for directory in [ROOT/"src",base] for f in directory.rglob("*.cs") if not {"obj","bin"}.intersection(f.parts)}
@@ -70,6 +74,11 @@ for scene,scale in cases:
         entry[variant]={key:statistics.median(r[key] for r in group) for key in
             ["meanMs","recordingMs","completionMs","p95Ms","cpuMsPerFrame","cpuPercentMachine","sampledMedianWorkingSetMiB","sampledMedianPrivateMiB","allocatedBytesPerFrame"]}
     for variant in ["vulkan","direct2d"]:
+        if args.before_managed:
+            captures={v:Path(next(r['output'] for r in rows if (r['scene'],r['scale'],r['variant'])==(scene,scale,v)),'scene.rgba').read_bytes() for v in [variant,'before-'+variant]}
+            assert captures[variant]==captures['before-'+variant],f'Optimization changed {scene}/{scale}/{variant} pixels'
+            entry[variant+'BeforeAfterExact']=True
+            entry[variant+'RatioToBefore']=entry[variant]['meanMs']/entry['before-'+variant]['meanMs']
         entry[variant+"RatioToVulkan"]=entry[variant]["meanMs"]/entry["original-vulkan"]["meanMs"]
         entry[variant+"RatioToAngle"]=entry[variant]["meanMs"]/entry["original-angle"]["meanMs"]
         for reference in ["original-vulkan","original-angle"]:

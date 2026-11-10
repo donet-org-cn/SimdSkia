@@ -1,12 +1,14 @@
 using System.Numerics;
 namespace SimdSkia;
 
-public sealed class DestinationColorShader(IPremultipliedColorShader legacy,IPremultipliedColorShader srgb) : IPremultipliedColorShader
+public sealed class DestinationColorShader(IPremultipliedColorShader legacy,IPremultipliedColorShader srgb) : IPremultipliedColorShader,IPremultipliedBatchShader
 {
     public IColorShader ForDestination(bool taggedSrgb)=>taggedSrgb?srgb:legacy;
     public bool IsHorizontal=>legacy.IsHorizontal;
     public bool IsOpaque=>legacy.IsOpaque;
     public Vector4 SamplePremultiplied(float x,float y)=>legacy.SamplePremultiplied(x,y);
+    void IPremultipliedBatchShader.SampleBatch(Span<Vector4> samples)
+    {if(legacy is IPremultipliedBatchShader batch)batch.SampleBatch(samples);else for(int i=0;i<samples.Length;i++)samples[i]=legacy.SamplePremultiplied(samples[i].X,samples[i].Y);}
     public Rgba32 Sample(float x,float y)=>legacy.Sample(x,y);
 }
 
@@ -19,7 +21,7 @@ public sealed class FloatColorShader(Vector4 straight) : IPremultipliedColorShad
     public Rgba32 Sample(float x,float y)=>new(ColorBlend.Byte(straight.X),ColorBlend.Byte(straight.Y),ColorBlend.Byte(straight.Z),ColorBlend.Byte(straight.W));
 }
 public enum FloatGradientKind {Linear,Radial,Sweep,Conical}
-public sealed class FloatGradientShader : IPremultipliedColorShader
+public sealed class FloatGradientShader : IPremultipliedColorShader,IPremultipliedBatchShader
 {
     private readonly FloatGradientKind kind;
     private readonly Vector2 first,second;
@@ -28,6 +30,8 @@ public sealed class FloatGradientShader : IPremultipliedColorShader
     private readonly float[] offsets;
     private readonly int tileMode;
     private readonly Matrix3 inverse;
+    private readonly Vector2 direction;
+    private readonly float lengthSquared;
     private readonly bool opaque,horizontal;
     public bool IsOpaque=>opaque;
     public bool IsHorizontal=>horizontal;
@@ -35,14 +39,14 @@ public sealed class FloatGradientShader : IPremultipliedColorShader
     {
         this.kind=kind;this.first=first;this.second=second;this.radius0=radius0;this.radius1=radius1;this.colors=(Vector4[])colors.Clone();this.offsets=(float[])offsets.Clone();this.tileMode=tileMode;this.startAngle=startAngle;this.endAngle=endAngle;this.inverse=inverse;
         opaque=tileMode!=3&&kind!=FloatGradientKind.Conical&&colors.All(c=>c.W>=1);
-        var direction=second-first;horizontal=kind==FloatGradientKind.Linear&&direction.X*inverse.M01+direction.Y*inverse.M11==0;
+        direction=second-first;lengthSquared=direction.LengthSquared();horizontal=kind==FloatGradientKind.Linear&&direction.X*inverse.M01+direction.Y*inverse.M11==0;
     }
     public Vector4 SamplePremultiplied(float x,float y)
     {
         var point=inverse.Map(x,y);var q=new Vector2(point.X,point.Y)-first;float t;
         switch(kind)
         {
-            case FloatGradientKind.Linear:var d=second-first;float length=d.LengthSquared();t=length>0?Vector2.Dot(q,d)/length:1;break;
+            case FloatGradientKind.Linear:t=lengthSquared>0?Vector2.Dot(q,direction)/lengthSquared:1;break;
             case FloatGradientKind.Radial:t=radius0>0?q.Length()/radius0:1;break;
             case FloatGradientKind.Sweep:
                 float angle=MathF.Atan2(q.Y,q.X)*(180/MathF.PI);if(angle<0)angle+=360;
@@ -62,6 +66,21 @@ public sealed class FloatGradientShader : IPremultipliedColorShader
                 if(radius0+dr*t<0)return default;break;
             default:throw new InvalidOperationException("Unknown float gradient kind.");
         }
+        return Interpolate(t);
+    }
+    void IPremultipliedBatchShader.SampleBatch(Span<Vector4> samples)
+    {
+        if(kind!=FloatGradientKind.Linear)
+        {for(int i=0;i<samples.Length;i++)samples[i]=SamplePremultiplied(samples[i].X,samples[i].Y);return;}
+        for(int i=0;i<samples.Length;i++)
+        {
+            var point=inverse.Map(samples[i].X,samples[i].Y);
+            var q=new Vector2(point.X,point.Y)-first;
+            samples[i]=Interpolate(lengthSquared>0?Vector2.Dot(q,direction)/lengthSquared:1);
+        }
+    }
+    private Vector4 Interpolate(float t)
+    {
         if(!float.IsFinite(t))return default;
         if(tileMode==3&&(t<0||t>1))return default;
         t=tileMode switch{1=>t-MathF.Floor(t),2=>1-MathF.Abs(t-2*MathF.Floor(t/2)-1),_=>Math.Clamp(t,0,1)};

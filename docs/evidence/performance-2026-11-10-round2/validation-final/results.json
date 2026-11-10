@@ -1,0 +1,1197 @@
+[
+  {
+    "name": "SimdSkia.Tests",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/SimdSkia.Tests",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 1.7230023999982222
+  },
+  {
+    "name": "Features",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Features",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "baseline/fonts/ZenOldMincho-Regular.ttf"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 1.4490501000000222
+  },
+  {
+    "name": "Imaging",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Imaging",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "--independent-only"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 1.9865355000001728
+  },
+  {
+    "name": "Optimization",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Optimization",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "baseline/fonts/ZenOldMincho-Regular.ttf"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 6.0100232000004326
+  },
+  {
+    "name": "FloatPaintSimd",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/FloatPaintSimd",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\float-paint"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 1.3348034000009648
+  },
+  {
+    "name": "RuntimeNumeric",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/RuntimeNumeric",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\runtime-numeric"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 2.2237243999989005
+  },
+  {
+    "name": "CodecIntegration",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/CodecIntegration",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\codecs"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 2.042014599999675
+  },
+  {
+    "name": "Pdf",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Pdf",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\pdf"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 2.5823089000004984
+  },
+  {
+    "name": "PlatformFonts",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/PlatformFonts",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 2.0187923000012233
+  },
+  {
+    "name": "WindowsSystemFonts",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/WindowsSystemFonts",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 2.1964772999999695
+  },
+  {
+    "name": "GlyphBatches",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/GlyphBatches",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 1.2438814000015554
+  },
+  {
+    "name": "GpuPreferred",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/GpuPreferred",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "--hardware"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 3.142525499999465
+  },
+  {
+    "name": "Gpu",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Gpu",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 2.2587108000006992
+  },
+  {
+    "name": "GpuSampling",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/GpuSampling",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 2.2943529000003764
+  },
+  {
+    "name": "GpuOptimization",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/GpuOptimization",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "baseline/fonts/ZenOldMincho-Regular.ttf"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 23.540358999998716
+  },
+  {
+    "name": "Direct2D",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Direct2D",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 1.8158944999995583
+  },
+  {
+    "name": "AvaloniaGpu",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/AvaloniaGpu",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 2.775234900000214
+  },
+  {
+    "name": "CacheControls-Managed",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/CacheControls/Managed",
+      "-c",
+      "Release",
+      "--no-build",
+      "--"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 1.5472528999998758
+  },
+  {
+    "name": "CompatibilityExpansion-Managed",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/CompatibilityExpansion/Managed",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\compat-expansion"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 1.9911277999999584
+  },
+  {
+    "name": "Avalonia",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Avalonia",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "baseline/fonts/ZenOldMincho-Regular.ttf",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\avalonia"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 1.688029100001586
+  },
+  {
+    "name": "AvaloniaControls",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/AvaloniaControls",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "--frames",
+      "5",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\controls"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 7.486510400001862
+  },
+  {
+    "name": "FloatPaintSimd-sse2",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/FloatPaintSimd",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\float-sse2"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 1.0315121000021463
+  },
+  {
+    "name": "RuntimeNumeric-sse2",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/RuntimeNumeric",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\numeric-sse2"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 1.744528999999602
+  },
+  {
+    "name": "CodecIntegration-sse2",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/CodecIntegration",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\codec-sse2"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 1.3682748999999603
+  },
+  {
+    "name": "Optimization-sse2",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Optimization",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "baseline/fonts/ZenOldMincho-Regular.ttf"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 5.026826599998458
+  },
+  {
+    "name": "FloatPaintSimd-no-intrinsics",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/FloatPaintSimd",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\float-no-intrinsics"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 2.825782899999467
+  },
+  {
+    "name": "RuntimeNumeric-no-intrinsics",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/RuntimeNumeric",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\numeric-no-intrinsics"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 3.4636234999998123
+  },
+  {
+    "name": "CodecIntegration-no-intrinsics",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/CodecIntegration",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\codec-no-intrinsics"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 2.951398599998356
+  },
+  {
+    "name": "Optimization-no-intrinsics",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tests/Optimization",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "baseline/fonts/ZenOldMincho-Regular.ttf"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 7.232943300001352
+  },
+  {
+    "name": "check-alpha-compatibility",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-alpha-compatibility.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-alpha-compatibility"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 7.49972070000149
+  },
+  {
+    "name": "check-api99-batch",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-api99-batch.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-api99-batch"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 67.54063309999765
+  },
+  {
+    "name": "check-backend-descriptions",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-backend-descriptions.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-backend-descriptions"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 4.656358599997475
+  },
+  {
+    "name": "check-blends",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-blends.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-blends"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 4.92372400000022
+  },
+  {
+    "name": "check-canvas-operations",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-canvas-operations.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-canvas-operations"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 5.337007599999197
+  },
+  {
+    "name": "check-canvas-queries",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-canvas-queries.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-canvas-queries"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 4.834741999999096
+  },
+  {
+    "name": "check-canvas-views",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-canvas-views.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-canvas-views"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 4.675529500000266
+  },
+  {
+    "name": "check-codec-streaming",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-codec-streaming.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-codec-streaming"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 5.188656499998615
+  },
+  {
+    "name": "check-color-filters",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-color-filters.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-color-filters"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 4.993825599998672
+  },
+  {
+    "name": "check-color-spaces",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-color-spaces.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-color-spaces"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 4.99015529999815
+  },
+  {
+    "name": "check-conic-compatibility",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-conic-compatibility.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-conic-compatibility"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 5.24985750000269
+  },
+  {
+    "name": "check-drawing-additions",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-drawing-additions.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-drawing-additions"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 5.04922390000138
+  },
+  {
+    "name": "check-embedded-bitmaps",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-embedded-bitmaps.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-embedded-bitmaps"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 5.757830300000933
+  },
+  {
+    "name": "check-encoder-options",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-encoder-options.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-encoder-options"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 5.23135209999964
+  },
+  {
+    "name": "check-final-paint",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-final-paint.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-final-paint"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 5.029527700000472
+  },
+  {
+    "name": "check-final-raster",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-final-raster.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-final-raster"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 5.344273200000316
+  },
+  {
+    "name": "check-float-shaders",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-float-shaders.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-float-shaders"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 4.935911299999134
+  },
+  {
+    "name": "check-foundations",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-foundations.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-foundations"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 4.9920955000015965
+  },
+  {
+    "name": "check-geometry-compatibility",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-geometry-compatibility.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-geometry-compatibility"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 5.829176200000802
+  },
+  {
+    "name": "check-gl-interop",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-gl-interop.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-gl-interop"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 6.143206499997177
+  },
+  {
+    "name": "check-gpu-context",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-gpu-context.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-gpu-context"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 5.603194499999518
+  },
+  {
+    "name": "check-gpu-pending",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-gpu-pending.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-gpu-pending"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 4.986696799998754
+  },
+  {
+    "name": "check-image-filters",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-image-filters.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-image-filters"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 6.767196099997818
+  },
+  {
+    "name": "check-image-operations",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-image-operations.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-image-operations"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 4.575473599998077
+  },
+  {
+    "name": "check-jpeg-parity",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-jpeg-parity.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-jpeg-parity"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 0.2543736000006902
+  },
+  {
+    "name": "check-lattice-resources",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-lattice-resources.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-lattice-resources"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 4.756245100001252
+  },
+  {
+    "name": "check-layer-bounds",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-layer-bounds.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-layer-bounds"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 5.405448699999397
+  },
+  {
+    "name": "check-mask-filters",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-mask-filters.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-mask-filters"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 5.932912500000384
+  },
+  {
+    "name": "check-mesh-atlas",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-mesh-atlas.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-mesh-atlas"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 4.944274400000722
+  },
+  {
+    "name": "check-path-boolean",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-path-boolean.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-path-boolean"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 6.084664199999679
+  },
+  {
+    "name": "check-path-effects",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-path-effects.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-path-effects"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 8.333792199999152
+  },
+  {
+    "name": "check-perlin",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-perlin.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-perlin"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 4.625309899998683
+  },
+  {
+    "name": "check-pictures",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-pictures.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-pictures"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 5.212624200001301
+  },
+  {
+    "name": "check-pixel-compatibility",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-pixel-compatibility.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-pixel-compatibility"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 6.049710800001776
+  },
+  {
+    "name": "check-raster-shaders",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-raster-shaders.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-raster-shaders"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 5.365739000000758
+  },
+  {
+    "name": "check-runtime-effects",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-runtime-effects.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-runtime-effects"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 4.737473599998339
+  },
+  {
+    "name": "check-runtime-values",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-runtime-values.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-runtime-values"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 4.492215500002203
+  },
+  {
+    "name": "check-shader-compatibility",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-shader-compatibility.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-shader-compatibility"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 7.023022900000797
+  },
+  {
+    "name": "check-skp-documents",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-skp-documents.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-skp-documents"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 6.97569250000015
+  },
+  {
+    "name": "check-stroke-compatibility",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-stroke-compatibility.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-stroke-compatibility"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 5.653688300000795
+  },
+  {
+    "name": "check-svg-documents",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-svg-documents.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-svg-documents"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 184.10686220000207
+  },
+  {
+    "name": "check-text-blobs",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-text-blobs.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-text-blobs"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 8.264526200000546
+  },
+  {
+    "name": "check-utilities",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "F:\\SimdSkia\\tools\\check-utilities.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\check-utilities"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 4.87072039999839
+  },
+  {
+    "name": "foundations-PathOperations",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/check-foundations.py",
+      "--suite",
+      "PathOperations",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\foundations-PathOperations"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 4.60944820000077
+  },
+  {
+    "name": "foundations-PathMeasure",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/check-foundations.py",
+      "--suite",
+      "PathMeasure",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\foundations-PathMeasure"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 4.6044805999990785
+  },
+  {
+    "name": "foundations-FontOperations",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/check-foundations.py",
+      "--suite",
+      "FontOperations",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\foundations-FontOperations"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 5.755961200000456
+  },
+  {
+    "name": "foundations-ImageFactories",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/check-foundations.py",
+      "--suite",
+      "ImageFactories",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\foundations-ImageFactories"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 5.305899999999383
+  },
+  {
+    "name": "foundations-Regions",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/check-foundations.py",
+      "--suite",
+      "Regions",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\foundations-Regions"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 5.099264399999811
+  },
+  {
+    "name": "interop-GlContext",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/check-gl-interop.py",
+      "--project",
+      "GlContext",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\interop-GlContext"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 5.430967199998122
+  },
+  {
+    "name": "interop-GlSystem",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/check-gl-interop.py",
+      "--project",
+      "GlSystem",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\interop-GlSystem"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 5.412674999999581
+  },
+  {
+    "name": "interop-D3DContext",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/check-gl-interop.py",
+      "--project",
+      "D3DContext",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\interop-D3DContext"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 6.115489100000559
+  },
+  {
+    "name": "interop-D3DInterop",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/check-gl-interop.py",
+      "--project",
+      "D3DInterop",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\interop-D3DInterop"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 7.922147799999948
+  },
+  {
+    "name": "interop-VulkanInterop",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/check-gl-interop.py",
+      "--project",
+      "VulkanInterop",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\interop-VulkanInterop"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 7.212267399998382
+  },
+  {
+    "name": "api-extract",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tools/ApiAudit",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "extract",
+      "src/SimdSkia.Compatibility/bin/Release/net10.0/SimdSkia.Compatibility.dll",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\implemented.json"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 1.101289700000052
+  },
+  {
+    "name": "api-compare",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tools/ApiAudit",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "compare",
+      "docs/api/baseline-3.119.4.json",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\implemented.json",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\api-comparison.json"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 0.9078124000006937
+  },
+  {
+    "name": "api-scope",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/check-final-api-baseline.py",
+      "--comparison",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final\\api-comparison.json"
+    ],
+    "exitCode": 0,
+    "status": "passed",
+    "seconds": 0.063122999999905
+  }
+]

@@ -1,0 +1,61 @@
+{
+  "renderer": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+  "browserSha256": "d258e512aa24947cfbef0c0033d8c3cd56ecb40f7b2ad59802fa75c4e4f3324d",
+  "metadata": 14,
+  "differences": [],
+  "cases": [
+    {
+      "scene": "scene-0",
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "scene": "scene-1",
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "scene": "scene-2",
+      "maximum": 156,
+      "rmse": 59.88337379466232,
+      "passed": false
+    },
+    {
+      "scene": "scene-3",
+      "maximum": 255,
+      "rmse": 108.6526247777464,
+      "passed": false
+    },
+    {
+      "scene": "scene-4",
+      "maximum": 131,
+      "rmse": 47.51098557176014,
+      "passed": false
+    },
+    {
+      "scene": "scene-5",
+      "maximum": 72,
+      "rmse": 19.763324964991973,
+      "passed": false
+    },
+    {
+      "scene": "scene-6",
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    {
+      "scene": "wstream",
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    }
+  ],
+  "gate": {
+    "maximum": 3,
+    "rmse": 0.75
+  },
+  "passed": false
+}

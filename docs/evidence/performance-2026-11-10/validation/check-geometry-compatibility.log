@@ -1,0 +1,46 @@
+Recorded 300 geometry/behavior cases
+Recorded 300 geometry/behavior cases
+{
+  "cases": 300,
+  "valueChecks": 4636,
+  "numericTolerance": {
+    "absolute": 0.0001,
+    "relative": 2e-06
+  },
+  "pixelThreshold": {
+    "maximum": 32,
+    "rmse": 2
+  },
+  "images": [
+    {
+      "scene": "clone-gradient",
+      "maxError": 1,
+      "rmse": 0.31868871959954903,
+      "passed": true
+    },
+    {
+      "scene": "layer-bounds-hint",
+      "maxError": 1,
+      "rmse": 0.02209708691207961,
+      "passed": true
+    },
+    {
+      "scene": "path-fill",
+      "maxError": 1,
+      "rmse": 0.33829117335329634,
+      "passed": true
+    },
+    {
+      "scene": "transformed-fill",
+      "maxError": 1,
+      "rmse": 0.29646353064078557,
+      "passed": true
+    }
+  ],
+  "failures": [],
+  "knownBehavioralDifferences": [],
+  "fullBehavioralCompatibility": false,
+  "scopedChecksPassed": true,
+  "circleRepresentationMatches": true,
+  "passed": true
+}

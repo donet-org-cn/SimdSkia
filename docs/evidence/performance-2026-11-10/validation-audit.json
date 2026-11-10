@@ -1,0 +1,41 @@
+{
+  "rawCommands": 83,
+  "validCommands": 82,
+  "passed": 56,
+  "failedOriginalReferenceGates": 25,
+  "documentedApiGapAudit": {
+    "name": "api-compare",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "tools/ApiAudit",
+      "-c",
+      "Release",
+      "--no-build",
+      "--",
+      "compare",
+      "docs/api/baseline-3.119.4.json",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10\\final\\validation\\implemented.json",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10\\final\\validation\\api-comparison.json"
+    ],
+    "exitCode": 2,
+    "status": "reference-gate-failed",
+    "seconds": 1.4383756999995967
+  },
+  "invalidToolInvocations": [
+    {
+      "name": "check-optimization-regressions",
+      "command": [
+        "D:\\Program Files\\Python\\Python313\\python.exe",
+        "F:\\SimdSkia\\tools\\check-optimization-regressions.py",
+        "--output",
+        "F:\\SimdSkia\\artifacts\\performance-2026-11-10\\final\\validation\\check-optimization-regressions"
+      ],
+      "exitCode": 2,
+      "status": "reference-gate-failed",
+      "seconds": 0.07618030000048748
+    }
+  ],
+  "unexpectedExecutionFailures": []
+}

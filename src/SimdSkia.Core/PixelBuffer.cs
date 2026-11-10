@@ -15,6 +15,7 @@ public sealed class PixelBuffer : IDisposable
     public bool IsDisposed => data is null&&external is null;
     public int BytesPerPixel=>Format==PixelFormat.Alpha8?1:4;
     public int ByteCount => checked(RowBytes * (Height-1) + Width * BytesPerPixel);
+    internal int StorageCapacity=>data?.Length??ByteCount;
 
     public PixelBuffer(int width, int height, PixelFormat format, AlphaFormat alpha, int rowBytes = 0)
         :this(width,height,format,alpha,rowBytes,false) { }
@@ -29,7 +30,7 @@ public sealed class PixelBuffer : IDisposable
         return buffer;
     }
 
-    private PixelBuffer(int width,int height,PixelFormat format,AlphaFormat alpha,int rowBytes,bool pooled)
+    private PixelBuffer(int width,int height,PixelFormat format,AlphaFormat alpha,int rowBytes,bool pooled,bool uninitialized=false)
     {
         if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
         if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
@@ -41,7 +42,7 @@ public sealed class PixelBuffer : IDisposable
         Width = width; Height = height; RowBytes = rowBytes; Format = format; Alpha = alpha;
         int length=checked(rowBytes*height);
         if(pooled){storage=PixelStorage.Rent(length);data=storage.Bytes;}
-        else data = new byte[length];
+        else data = uninitialized?GC.AllocateUninitializedArray<byte>(length):new byte[length];
         if (alpha == AlphaFormat.Opaque)
             for (int y=0; y<height; y++) for (int x=0; x<width; x++) data[y*rowBytes+x*BytesPerPixel+BytesPerPixel-1] = 255;
     }
@@ -98,6 +99,17 @@ public sealed class PixelBuffer : IDisposable
         ThrowIfDisposed();
         var copy=new PixelBuffer(Width,Height,Format,Alpha,RowBytes);
         GetPixelSpan().CopyTo(copy.GetPixelSpan());
+        return copy;
+    }
+
+    // Decoder outputs are fully initialized before ownership reaches the caller.
+    // Compact copies avoid retaining a substantially oversized pool bucket.
+    internal PixelBuffer CopyCompact()
+    {
+        ThrowIfDisposed();
+        var copy=new PixelBuffer(Width,Height,Format,Alpha,0,false,true);
+        int length=checked(Width*BytesPerPixel);
+        for(int y=0;y<Height;y++)GetRowSpan(y)[..length].CopyTo(copy.GetRowSpan(y));
         return copy;
     }
 

@@ -6,3 +6,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("SimdSkia.Cpu")]
 [assembly: InternalsVisibleTo("SimdSkia.Gpu")]
 [assembly: InternalsVisibleTo("SimdSkia.Avalonia.Gpu")]
+[assembly: InternalsVisibleTo("SimdSkia.RuntimeNumeric.Tests")]

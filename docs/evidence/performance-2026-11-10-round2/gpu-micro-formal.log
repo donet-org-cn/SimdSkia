@@ -1,0 +1,242 @@
+original 0 done
+disabled 0 done
+ordered 0 done
+before 0 done
+disabled 1 done
+ordered 1 done
+before 1 done
+original 1 done
+ordered 2 done
+before 2 done
+original 2 done
+disabled 2 done
+[
+  {
+    "scene": "blend",
+    "width": 256,
+    "height": 256,
+    "original": {
+      "milliseconds": 0.2189371726190476,
+      "cpuMilliseconds": 0.14695712309820194,
+      "allocation": 0.0,
+      "workingSetMiB": 86.65625,
+      "privateMiB": 100.14453125
+    },
+    "disabled": {
+      "milliseconds": 0.43663409356725147,
+      "cpuMilliseconds": 0.12254901960784313,
+      "allocation": 0.5005847953216375,
+      "workingSetMiB": 88.59765625,
+      "privateMiB": 92.6875
+    },
+    "ordered": {
+      "milliseconds": 0.26001618887015177,
+      "cpuMilliseconds": 0.11066610455311973,
+      "allocation": 0.2946643717728055,
+      "workingSetMiB": 88.54296875,
+      "privateMiB": 93.0234375
+    },
+    "before": {
+      "milliseconds": 0.2557564137931035,
+      "cpuMilliseconds": 0.09698275862068965,
+      "allocation": 0.2891891891891892,
+      "workingSetMiB": 88.078125,
+      "privateMiB": 90.93359375
+    },
+    "maximumError": 0,
+    "allowedError": 1,
+    "nativeQualityPassed": true,
+    "orderedOverDisabled": 0.5955013424303374,
+    "orderedOverOriginal": 1.1876292443155918
+  },
+  {
+    "scene": "blend",
+    "width": 1024,
+    "height": 768,
+    "original": {
+      "milliseconds": 2.4002571875000003,
+      "cpuMilliseconds": 1.539855072463768,
+      "allocation": 0.0,
+      "workingSetMiB": 89.51171875,
+      "privateMiB": 104.1015625
+    },
+    "disabled": {
+      "milliseconds": 1.9421010256410256,
+      "cpuMilliseconds": 0.3605769230769231,
+      "allocation": 2.194871794871795,
+      "workingSetMiB": 91.8359375,
+      "privateMiB": 96.81640625
+    },
+    "ordered": {
+      "milliseconds": 1.4245854716981132,
+      "cpuMilliseconds": 0.3242924528301887,
+      "allocation": 1.6,
+      "workingSetMiB": 91.9375,
+      "privateMiB": 97.27734375
+    },
+    "before": {
+      "milliseconds": 1.423108155339806,
+      "cpuMilliseconds": 0.26785714285714285,
+      "allocation": 1.6304761904761904,
+      "workingSetMiB": 92.03125,
+      "privateMiB": 98.3828125
+    },
+    "maximumError": 0,
+    "allowedError": 1,
+    "nativeQualityPassed": true,
+    "orderedOverDisabled": 0.7335279951401616,
+    "orderedOverOriginal": 0.5935136780829297
+  },
+  {
+    "scene": "curve-changing",
+    "width": 256,
+    "height": 256,
+    "original": {
+      "milliseconds": 0.20269053177691312,
+      "cpuMilliseconds": 0.12220670391061453,
+      "allocation": 0.0,
+      "workingSetMiB": 84.47265625,
+      "privateMiB": 90.62109375
+    },
+    "disabled": {
+      "milliseconds": 0.218555661971831,
+      "cpuMilliseconds": 0.09255994358251057,
+      "allocation": 232.24146685472496,
+      "workingSetMiB": 82.62890625,
+      "privateMiB": 87.12890625
+    },
+    "ordered": {
+      "milliseconds": 0.21744827389443652,
+      "cpuMilliseconds": 0.09807417974322397,
+      "allocation": 232.2435277382646,
+      "workingSetMiB": 82.66796875,
+      "privateMiB": 87.3984375
+    },
+    "before": {
+      "milliseconds": 0.21459315625000003,
+      "cpuMilliseconds": 0.068359375,
+      "allocation": 232.26379044684128,
+      "workingSetMiB": 82.74609375,
+      "privateMiB": 87.51953125
+    },
+    "maximumError": 45,
+    "allowedError": 32,
+    "nativeQualityPassed": false,
+    "orderedOverDisabled": 0.9949331531043236,
+    "orderedOverOriginal": 1.072809232814911
+  },
+  {
+    "scene": "curve-changing",
+    "width": 1024,
+    "height": 768,
+    "original": {
+      "milliseconds": 2.1450304,
+      "cpuMilliseconds": 1.4322916666666667,
+      "allocation": 0.0,
+      "workingSetMiB": 94.08203125,
+      "privateMiB": 107.59765625
+    },
+    "disabled": {
+      "milliseconds": 1.3592601801801802,
+      "cpuMilliseconds": 0.6193693693693694,
+      "allocation": 192838.63063063062,
+      "workingSetMiB": 114.22265625,
+      "privateMiB": 121.0703125
+    },
+    "ordered": {
+      "milliseconds": 1.365441090909091,
+      "cpuMilliseconds": 0.6084070796460177,
+      "allocation": 192834.3127272727,
+      "workingSetMiB": 114.01171875,
+      "privateMiB": 120.734375
+    },
+    "before": {
+      "milliseconds": 1.3649028828828829,
+      "cpuMilliseconds": 0.5630630630630631,
+      "allocation": 192850.14285714287,
+      "workingSetMiB": 113.875,
+      "privateMiB": 121.2890625
+    },
+    "maximumError": 44,
+    "allowedError": 32,
+    "nativeQualityPassed": false,
+    "orderedOverDisabled": 1.004547260943149,
+    "orderedOverOriginal": 0.6365602515046365
+  },
+  {
+    "scene": "chinese-changing",
+    "width": 256,
+    "height": 256,
+    "original": {
+      "milliseconds": 0.273798154425612,
+      "cpuMilliseconds": 0.14124293785310735,
+      "allocation": 640.0,
+      "workingSetMiB": 88.6640625,
+      "privateMiB": 102.68359375
+    },
+    "disabled": {
+      "milliseconds": 0.14530808270676693,
+      "cpuMilliseconds": 0.06748826291079812,
+      "allocation": 168.20751879699247,
+      "workingSetMiB": 91.4375,
+      "privateMiB": 96.83203125
+    },
+    "ordered": {
+      "milliseconds": 0.14436682352941177,
+      "cpuMilliseconds": 0.08747586872586872,
+      "allocation": 168.2131274131274,
+      "workingSetMiB": 92.28515625,
+      "privateMiB": 98.734375
+    },
+    "before": {
+      "milliseconds": 0.14174144075829384,
+      "cpuMilliseconds": 0.061446629213483143,
+      "allocation": 168.20928909952607,
+      "workingSetMiB": 91.55859375,
+      "privateMiB": 98.07421875
+    },
+    "maximumError": 188,
+    "allowedError": 32,
+    "nativeQualityPassed": false,
+    "orderedOverDisabled": 0.9935223205769315,
+    "orderedOverOriginal": 0.5272746408107535
+  },
+  {
+    "scene": "chinese-changing",
+    "width": 1024,
+    "height": 768,
+    "original": {
+      "milliseconds": 2.0871421621621624,
+      "cpuMilliseconds": 1.5202702702702702,
+      "allocation": 640.0,
+      "workingSetMiB": 94.08203125,
+      "privateMiB": 108.28125
+    },
+    "disabled": {
+      "milliseconds": 0.7563871356783919,
+      "cpuMilliseconds": 0.26695979899497485,
+      "allocation": 169.10954773869346,
+      "workingSetMiB": 94.44140625,
+      "privateMiB": 100.5859375
+    },
+    "ordered": {
+      "milliseconds": 0.7501156218905471,
+      "cpuMilliseconds": 0.24875621890547264,
+      "allocation": 169.10954773869346,
+      "workingSetMiB": 94.18359375,
+      "privateMiB": 100.3203125
+    },
+    "before": {
+      "milliseconds": 0.7474727272727273,
+      "cpuMilliseconds": 0.24147727272727273,
+      "allocation": 169.11515151515152,
+      "workingSetMiB": 93.81640625,
+      "privateMiB": 98.6171875
+    },
+    "maximumError": 185,
+    "allowedError": 32,
+    "nativeQualityPassed": false,
+    "orderedOverDisabled": 0.991708592740383,
+    "orderedOverOriginal": 0.3593984326939519
+  }
+]

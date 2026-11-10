@@ -41,9 +41,9 @@ internal sealed partial class DrawingContext
             var color=ConvertTo.Color(shadow.Color);filter=new(s.X,s.Y,x,y,color with{A=(byte)Math.Floor(color.A*shadow.Opacity)},true);
         }
         else throw new NotSupportedException($"Effect {effect.GetType().Name} is not implemented.");
-        BeginGroup("effect",255,null,bounds??default,filter);
+        BeginGroup(GroupKind.Effect,255,null,bounds??default,filter);
     }
-    public void PopEffect()=>EndGroup("effect");
+    public void PopEffect()=>EndGroup(GroupKind.Effect);
     private void ValidateShadows(BoxShadows shadows)
     {
         foreach(var shadow in shadows)

@@ -67,13 +67,9 @@ Console.WriteLine($"{engine} {scene} {operation}: {row.millisecondsPerImage:F3}m
 
 static SKBitmap Decode(byte[] input,int width=0,int height=0)
 {
-#if MANAGED
-    return SKBitmap.Decode(input);
-#else
     if(width==0){var bounds=SKBitmap.DecodeBounds(input);width=bounds.Width;height=bounds.Height;}
     return SKBitmap.Decode(input,new SKImageInfo(width,height,SKColorType.Rgba8888,SKAlphaType.Unpremul))
-        ??throw new InvalidDataException("Original decode failed");
-#endif
+        ??throw new InvalidDataException("Decode failed");
 }
 static byte[] Encode(SKBitmap bitmap,bool png)
 {

@@ -38,6 +38,58 @@ foreach(var format in new[]{SKEncodedImageFormat.Png,SKEncodedImageFormat.Jpeg,S
     using var decoded=SKBitmap.Decode(encoded.AsSpan());Check(decoded.Width==11&&decoded.Height==7,"SK bitmap encoded roundtrip");
     using var image=SKImage.FromBitmap(bitmap);using var bytes=image.Encode(format,90);Check(bytes.Size>0,"SKImage encoding");
 }
+// Temporary codecs may transfer their RGBA storage. Persistent codec decodes
+// must remain independent, and returned bitmaps must outlive all input owners.
+foreach(var format in new[]{SKEncodedImageFormat.Png,SKEncodedImageFormat.Jpeg,SKEncodedImageFormat.Bmp})
+foreach(int width in new[]{1,7,8,9,31,32,33})
+{
+    const int decodeHeight=4;
+    using var original=new SKBitmap(new SKImageInfo(width,decodeHeight,SKColorType.Rgba8888,SKAlphaType.Unpremul));
+    for(int y=0;y<decodeHeight;y++)for(int x=0;x<width;x++)original.SetPixel(x,y,new((byte)(x*23),(byte)(y*41),173,(byte)(x*17+y*29)));
+    byte[] bytes;using(var encoded=original.Encode(format,90))bytes=encoded.ToArray();
+    using var data=SKData.CreateCopy(bytes);
+    using var codec=SKCodec.Create(data)??throw new Exception("Missing codec");
+    var info=new SKImageInfo(width,decodeHeight,SKColorType.Rgba8888,SKAlphaType.Unpremul);
+    using var expected=SKBitmap.Decode(codec,info);
+    using var spanResult=SKBitmap.Decode(bytes.AsSpan(),info);
+    using var dataResult=SKBitmap.Decode(data,info);
+    Check(expected.GetPixelSpan().SequenceEqual(spanResult.GetPixelSpan()),"Transferred decode preserves RGBA");
+    Check(expected.GetPixelSpan().SequenceEqual(dataResult.GetPixelSpan()),"SKData decode matches persistent codec");
+    data.Dispose();
+    spanResult.SetPixel(0,0,SKColors.Magenta);
+    using var repeated=SKBitmap.Decode(codec,info);
+    Check(expected.GetPixelSpan().SequenceEqual(repeated.GetPixelSpan()),"Decoded bitmap mutation cannot alter codec storage");
+    Check(expected.GetPixelSpan().SequenceEqual(dataResult.GetPixelSpan()),"Transferred outputs own independent leases");
+    codec.Dispose();expected.Dispose();spanResult.Dispose();
+    using var later=SKBitmap.Decode(bytes,info);
+    Check(dataResult.GetPixelSpan().SequenceEqual(later.GetPixelSpan()),"Pool reuse cannot overwrite a live transferred image");
+    foreach(bool simd in new[]{false,true})
+    {
+        SimdSkia.Cpu.CpuOptions.EnableSimd=simd;
+        using var decoded=SKBitmap.Decode(bytes);
+        for(int y=0;y<decodeHeight;y++)for(int x=0;x<width;x++)
+        {
+            int offset=(y*width+x)*4;var rgba=later.GetPixelSpan();var stored=decoded.GetPixelSpan();byte a=rgba[offset+3];
+            Check(stored[offset]==PixelBuffer.Multiply(rgba[offset+2],a)&&stored[offset+1]==PixelBuffer.Multiply(rgba[offset+1],a)&&stored[offset+2]==PixelBuffer.Multiply(rgba[offset],a)&&stored[offset+3]==a,"Default BGRA decode preserves exact premultiplication");
+        }
+    }
+}
+SimdSkia.Cpu.CpuOptions.EnableSimd=true;
+using(var exhaustive=new SKBitmap(new SKImageInfo(256,256,SKColorType.Rgba8888,SKAlphaType.Unpremul)))
+{
+    for(int a=0;a<256;a++)for(int c=0;c<256;c++)exhaustive.SetPixel(c,a,new((byte)c,(byte)(255-c),(byte)(c*11+a),(byte)a));
+    using var encoded=exhaustive.Encode(SKEncodedImageFormat.Png,100);
+    foreach(bool simd in new[]{false,true})
+    {
+        SimdSkia.Cpu.CpuOptions.EnableSimd=simd;using var decoded=SKBitmap.Decode(encoded);
+        for(int a=0;a<256;a++)for(int c=0;c<256;c++)
+        {
+            int at=(a*256+c)*4;var p=decoded.GetPixelSpan();
+            Check(p[at]==PixelBuffer.Multiply((byte)(c*11+a),(byte)a)&&p[at+1]==PixelBuffer.Multiply((byte)(255-c),(byte)a)&&p[at+2]==PixelBuffer.Multiply((byte)c,(byte)a)&&p[at+3]==a,"Exhaustive premultiplication and channel order");
+        }
+    }
+}
+SimdSkia.Cpu.CpuOptions.EnableSimd=true;
 foreach(string name in new[]{"disposal.gif","interlaced.gif"})
 {
     byte[] bytes=File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Fixtures",name));

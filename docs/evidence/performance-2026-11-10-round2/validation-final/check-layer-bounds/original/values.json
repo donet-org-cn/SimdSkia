@@ -1,0 +1,2786 @@
+{
+  "Bgra8888-False-Clear-clear": {
+    "offset": 0,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Bgra8888-False-Clear-empty": {
+    "offset": 5120,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Bgra8888-False-Clear-partial-draw": {
+    "offset": 10240,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Bgra8888-False-Clear-clip-transform": {
+    "offset": 15360,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#00000000"
+  },
+  "Bgra8888-False-Src-clear": {
+    "offset": 20480,
+    "length": 5120,
+    "outside": "#ffff0000",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-False-Src-empty": {
+    "offset": 25600,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Bgra8888-False-Src-partial-draw": {
+    "offset": 30720,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-False-Src-clip-transform": {
+    "offset": 35840,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-False-Dst-clear": {
+    "offset": 40960,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Dst-empty": {
+    "offset": 46080,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Dst-partial-draw": {
+    "offset": 51200,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Dst-clip-transform": {
+    "offset": 56320,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-SrcOver-clear": {
+    "offset": 61440,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-False-SrcOver-empty": {
+    "offset": 66560,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-SrcOver-partial-draw": {
+    "offset": 71680,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-False-SrcOver-clip-transform": {
+    "offset": 76800,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-DstOver-clear": {
+    "offset": 81920,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-DstOver-empty": {
+    "offset": 87040,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-DstOver-partial-draw": {
+    "offset": 92160,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-DstOver-clip-transform": {
+    "offset": 97280,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-SrcIn-clear": {
+    "offset": 102400,
+    "length": 5120,
+    "outside": "#ffff0000",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-False-SrcIn-empty": {
+    "offset": 107520,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Bgra8888-False-SrcIn-partial-draw": {
+    "offset": 112640,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-False-SrcIn-clip-transform": {
+    "offset": 117760,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-False-DstIn-clear": {
+    "offset": 122880,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-DstIn-empty": {
+    "offset": 128000,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Bgra8888-False-DstIn-partial-draw": {
+    "offset": 133120,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-DstIn-clip-transform": {
+    "offset": 138240,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-SrcOut-clear": {
+    "offset": 143360,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Bgra8888-False-SrcOut-empty": {
+    "offset": 148480,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Bgra8888-False-SrcOut-partial-draw": {
+    "offset": 153600,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Bgra8888-False-SrcOut-clip-transform": {
+    "offset": 158720,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#00000000"
+  },
+  "Bgra8888-False-DstOut-clear": {
+    "offset": 163840,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#00000000"
+  },
+  "Bgra8888-False-DstOut-empty": {
+    "offset": 168960,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-DstOut-partial-draw": {
+    "offset": 174080,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#00000000"
+  },
+  "Bgra8888-False-DstOut-clip-transform": {
+    "offset": 179200,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-SrcATop-clear": {
+    "offset": 184320,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-False-SrcATop-empty": {
+    "offset": 189440,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-SrcATop-partial-draw": {
+    "offset": 194560,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-False-SrcATop-clip-transform": {
+    "offset": 199680,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-DstATop-clear": {
+    "offset": 204800,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-DstATop-empty": {
+    "offset": 209920,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Bgra8888-False-DstATop-partial-draw": {
+    "offset": 215040,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-DstATop-clip-transform": {
+    "offset": 220160,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Xor-clear": {
+    "offset": 225280,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#00000000"
+  },
+  "Bgra8888-False-Xor-empty": {
+    "offset": 230400,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Xor-partial-draw": {
+    "offset": 235520,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#00000000"
+  },
+  "Bgra8888-False-Xor-clip-transform": {
+    "offset": 240640,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Plus-clear": {
+    "offset": 245760,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Plus-empty": {
+    "offset": 250880,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Plus-partial-draw": {
+    "offset": 256000,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Plus-clip-transform": {
+    "offset": 261120,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Modulate-clear": {
+    "offset": 266240,
+    "length": 5120,
+    "outside": "#ffff0000",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-False-Modulate-empty": {
+    "offset": 271360,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Bgra8888-False-Modulate-partial-draw": {
+    "offset": 276480,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-False-Modulate-clip-transform": {
+    "offset": 281600,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-False-Screen-clear": {
+    "offset": 286720,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Screen-empty": {
+    "offset": 291840,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Screen-partial-draw": {
+    "offset": 296960,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Screen-clip-transform": {
+    "offset": 302080,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Overlay-clear": {
+    "offset": 307200,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Overlay-empty": {
+    "offset": 312320,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Overlay-partial-draw": {
+    "offset": 317440,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Overlay-clip-transform": {
+    "offset": 322560,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Darken-clear": {
+    "offset": 327680,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-False-Darken-empty": {
+    "offset": 332800,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Darken-partial-draw": {
+    "offset": 337920,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-False-Darken-clip-transform": {
+    "offset": 343040,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Lighten-clear": {
+    "offset": 348160,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Lighten-empty": {
+    "offset": 353280,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Lighten-partial-draw": {
+    "offset": 358400,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Lighten-clip-transform": {
+    "offset": 363520,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-ColorDodge-clear": {
+    "offset": 368640,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-ColorDodge-empty": {
+    "offset": 373760,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-ColorDodge-partial-draw": {
+    "offset": 378880,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-ColorDodge-clip-transform": {
+    "offset": 384000,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-ColorBurn-clear": {
+    "offset": 389120,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-ColorBurn-empty": {
+    "offset": 394240,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-ColorBurn-partial-draw": {
+    "offset": 399360,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-ColorBurn-clip-transform": {
+    "offset": 404480,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-HardLight-clear": {
+    "offset": 409600,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-False-HardLight-empty": {
+    "offset": 414720,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-HardLight-partial-draw": {
+    "offset": 419840,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-False-HardLight-clip-transform": {
+    "offset": 424960,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-SoftLight-clear": {
+    "offset": 430080,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-SoftLight-empty": {
+    "offset": 435200,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-SoftLight-partial-draw": {
+    "offset": 440320,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-SoftLight-clip-transform": {
+    "offset": 445440,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Difference-clear": {
+    "offset": 450560,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ff00ffff"
+  },
+  "Bgra8888-False-Difference-empty": {
+    "offset": 455680,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Difference-partial-draw": {
+    "offset": 460800,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ff00ffff"
+  },
+  "Bgra8888-False-Difference-clip-transform": {
+    "offset": 465920,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Exclusion-clear": {
+    "offset": 471040,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ff00ffff"
+  },
+  "Bgra8888-False-Exclusion-empty": {
+    "offset": 476160,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Exclusion-partial-draw": {
+    "offset": 481280,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ff00ffff"
+  },
+  "Bgra8888-False-Exclusion-clip-transform": {
+    "offset": 486400,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Multiply-clear": {
+    "offset": 491520,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-False-Multiply-empty": {
+    "offset": 496640,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Multiply-partial-draw": {
+    "offset": 501760,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-False-Multiply-clip-transform": {
+    "offset": 506880,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Hue-clear": {
+    "offset": 512000,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Hue-empty": {
+    "offset": 517120,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Hue-partial-draw": {
+    "offset": 522240,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Hue-clip-transform": {
+    "offset": 527360,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Saturation-clear": {
+    "offset": 532480,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Saturation-empty": {
+    "offset": 537600,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Saturation-partial-draw": {
+    "offset": 542720,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Saturation-clip-transform": {
+    "offset": 547840,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Color-clear": {
+    "offset": 552960,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Color-empty": {
+    "offset": 558080,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Color-partial-draw": {
+    "offset": 563200,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Color-clip-transform": {
+    "offset": 568320,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Luminosity-clear": {
+    "offset": 573440,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ff4c4c4c"
+  },
+  "Bgra8888-False-Luminosity-empty": {
+    "offset": 578560,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-False-Luminosity-partial-draw": {
+    "offset": 583680,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ff4c4c4c"
+  },
+  "Bgra8888-False-Luminosity-clip-transform": {
+    "offset": 588800,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Clear-clear": {
+    "offset": 593920,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Bgra8888-True-Clear-empty": {
+    "offset": 599040,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Bgra8888-True-Clear-partial-draw": {
+    "offset": 604160,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Bgra8888-True-Clear-clip-transform": {
+    "offset": 609280,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#00000000"
+  },
+  "Bgra8888-True-Src-clear": {
+    "offset": 614400,
+    "length": 5120,
+    "outside": "#ffff0000",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-True-Src-empty": {
+    "offset": 619520,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Bgra8888-True-Src-partial-draw": {
+    "offset": 624640,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-True-Src-clip-transform": {
+    "offset": 629760,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-True-Dst-clear": {
+    "offset": 634880,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Dst-empty": {
+    "offset": 640000,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Dst-partial-draw": {
+    "offset": 645120,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Dst-clip-transform": {
+    "offset": 650240,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-SrcOver-clear": {
+    "offset": 655360,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-True-SrcOver-empty": {
+    "offset": 660480,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-SrcOver-partial-draw": {
+    "offset": 665600,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-True-SrcOver-clip-transform": {
+    "offset": 670720,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-DstOver-clear": {
+    "offset": 675840,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-DstOver-empty": {
+    "offset": 680960,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-DstOver-partial-draw": {
+    "offset": 686080,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-DstOver-clip-transform": {
+    "offset": 691200,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-SrcIn-clear": {
+    "offset": 696320,
+    "length": 5120,
+    "outside": "#ffff0000",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-True-SrcIn-empty": {
+    "offset": 701440,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Bgra8888-True-SrcIn-partial-draw": {
+    "offset": 706560,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-True-SrcIn-clip-transform": {
+    "offset": 711680,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-True-DstIn-clear": {
+    "offset": 716800,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-DstIn-empty": {
+    "offset": 721920,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Bgra8888-True-DstIn-partial-draw": {
+    "offset": 727040,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-DstIn-clip-transform": {
+    "offset": 732160,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-SrcOut-clear": {
+    "offset": 737280,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Bgra8888-True-SrcOut-empty": {
+    "offset": 742400,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Bgra8888-True-SrcOut-partial-draw": {
+    "offset": 747520,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Bgra8888-True-SrcOut-clip-transform": {
+    "offset": 752640,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#00000000"
+  },
+  "Bgra8888-True-DstOut-clear": {
+    "offset": 757760,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#00000000"
+  },
+  "Bgra8888-True-DstOut-empty": {
+    "offset": 762880,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-DstOut-partial-draw": {
+    "offset": 768000,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#00000000"
+  },
+  "Bgra8888-True-DstOut-clip-transform": {
+    "offset": 773120,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-SrcATop-clear": {
+    "offset": 778240,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-True-SrcATop-empty": {
+    "offset": 783360,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-SrcATop-partial-draw": {
+    "offset": 788480,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-True-SrcATop-clip-transform": {
+    "offset": 793600,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-DstATop-clear": {
+    "offset": 798720,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-DstATop-empty": {
+    "offset": 803840,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Bgra8888-True-DstATop-partial-draw": {
+    "offset": 808960,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-DstATop-clip-transform": {
+    "offset": 814080,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Xor-clear": {
+    "offset": 819200,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#00000000"
+  },
+  "Bgra8888-True-Xor-empty": {
+    "offset": 824320,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Xor-partial-draw": {
+    "offset": 829440,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#00000000"
+  },
+  "Bgra8888-True-Xor-clip-transform": {
+    "offset": 834560,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Plus-clear": {
+    "offset": 839680,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Plus-empty": {
+    "offset": 844800,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Plus-partial-draw": {
+    "offset": 849920,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Plus-clip-transform": {
+    "offset": 855040,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Modulate-clear": {
+    "offset": 860160,
+    "length": 5120,
+    "outside": "#ffff0000",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-True-Modulate-empty": {
+    "offset": 865280,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Bgra8888-True-Modulate-partial-draw": {
+    "offset": 870400,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-True-Modulate-clip-transform": {
+    "offset": 875520,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-True-Screen-clear": {
+    "offset": 880640,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Screen-empty": {
+    "offset": 885760,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Screen-partial-draw": {
+    "offset": 890880,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Screen-clip-transform": {
+    "offset": 896000,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Overlay-clear": {
+    "offset": 901120,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Overlay-empty": {
+    "offset": 906240,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Overlay-partial-draw": {
+    "offset": 911360,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Overlay-clip-transform": {
+    "offset": 916480,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Darken-clear": {
+    "offset": 921600,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-True-Darken-empty": {
+    "offset": 926720,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Darken-partial-draw": {
+    "offset": 931840,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-True-Darken-clip-transform": {
+    "offset": 936960,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Lighten-clear": {
+    "offset": 942080,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Lighten-empty": {
+    "offset": 947200,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Lighten-partial-draw": {
+    "offset": 952320,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Lighten-clip-transform": {
+    "offset": 957440,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-ColorDodge-clear": {
+    "offset": 962560,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-ColorDodge-empty": {
+    "offset": 967680,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-ColorDodge-partial-draw": {
+    "offset": 972800,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-ColorDodge-clip-transform": {
+    "offset": 977920,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-ColorBurn-clear": {
+    "offset": 983040,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-ColorBurn-empty": {
+    "offset": 988160,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-ColorBurn-partial-draw": {
+    "offset": 993280,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-ColorBurn-clip-transform": {
+    "offset": 998400,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-HardLight-clear": {
+    "offset": 1003520,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-True-HardLight-empty": {
+    "offset": 1008640,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-HardLight-partial-draw": {
+    "offset": 1013760,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-True-HardLight-clip-transform": {
+    "offset": 1018880,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-SoftLight-clear": {
+    "offset": 1024000,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-SoftLight-empty": {
+    "offset": 1029120,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-SoftLight-partial-draw": {
+    "offset": 1034240,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-SoftLight-clip-transform": {
+    "offset": 1039360,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Difference-clear": {
+    "offset": 1044480,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ff00ffff"
+  },
+  "Bgra8888-True-Difference-empty": {
+    "offset": 1049600,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Difference-partial-draw": {
+    "offset": 1054720,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ff00ffff"
+  },
+  "Bgra8888-True-Difference-clip-transform": {
+    "offset": 1059840,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Exclusion-clear": {
+    "offset": 1064960,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ff00ffff"
+  },
+  "Bgra8888-True-Exclusion-empty": {
+    "offset": 1070080,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Exclusion-partial-draw": {
+    "offset": 1075200,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ff00ffff"
+  },
+  "Bgra8888-True-Exclusion-clip-transform": {
+    "offset": 1080320,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Multiply-clear": {
+    "offset": 1085440,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-True-Multiply-empty": {
+    "offset": 1090560,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Multiply-partial-draw": {
+    "offset": 1095680,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Bgra8888-True-Multiply-clip-transform": {
+    "offset": 1100800,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Hue-clear": {
+    "offset": 1105920,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Hue-empty": {
+    "offset": 1111040,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Hue-partial-draw": {
+    "offset": 1116160,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Hue-clip-transform": {
+    "offset": 1121280,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Saturation-clear": {
+    "offset": 1126400,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Saturation-empty": {
+    "offset": 1131520,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Saturation-partial-draw": {
+    "offset": 1136640,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Saturation-clip-transform": {
+    "offset": 1141760,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Color-clear": {
+    "offset": 1146880,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Color-empty": {
+    "offset": 1152000,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Color-partial-draw": {
+    "offset": 1157120,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Color-clip-transform": {
+    "offset": 1162240,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Luminosity-clear": {
+    "offset": 1167360,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ff4c4c4c"
+  },
+  "Bgra8888-True-Luminosity-empty": {
+    "offset": 1172480,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Bgra8888-True-Luminosity-partial-draw": {
+    "offset": 1177600,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ff4c4c4c"
+  },
+  "Bgra8888-True-Luminosity-clip-transform": {
+    "offset": 1182720,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Clear-clear": {
+    "offset": 1187840,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Rgba8888-False-Clear-empty": {
+    "offset": 1192960,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Rgba8888-False-Clear-partial-draw": {
+    "offset": 1198080,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Rgba8888-False-Clear-clip-transform": {
+    "offset": 1203200,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#00000000"
+  },
+  "Rgba8888-False-Src-clear": {
+    "offset": 1208320,
+    "length": 5120,
+    "outside": "#ffff0000",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-False-Src-empty": {
+    "offset": 1213440,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Rgba8888-False-Src-partial-draw": {
+    "offset": 1218560,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-False-Src-clip-transform": {
+    "offset": 1223680,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-False-Dst-clear": {
+    "offset": 1228800,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Dst-empty": {
+    "offset": 1233920,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Dst-partial-draw": {
+    "offset": 1239040,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Dst-clip-transform": {
+    "offset": 1244160,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-SrcOver-clear": {
+    "offset": 1249280,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-False-SrcOver-empty": {
+    "offset": 1254400,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-SrcOver-partial-draw": {
+    "offset": 1259520,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-False-SrcOver-clip-transform": {
+    "offset": 1264640,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-DstOver-clear": {
+    "offset": 1269760,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-DstOver-empty": {
+    "offset": 1274880,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-DstOver-partial-draw": {
+    "offset": 1280000,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-DstOver-clip-transform": {
+    "offset": 1285120,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-SrcIn-clear": {
+    "offset": 1290240,
+    "length": 5120,
+    "outside": "#ffff0000",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-False-SrcIn-empty": {
+    "offset": 1295360,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Rgba8888-False-SrcIn-partial-draw": {
+    "offset": 1300480,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-False-SrcIn-clip-transform": {
+    "offset": 1305600,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-False-DstIn-clear": {
+    "offset": 1310720,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-DstIn-empty": {
+    "offset": 1315840,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Rgba8888-False-DstIn-partial-draw": {
+    "offset": 1320960,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-DstIn-clip-transform": {
+    "offset": 1326080,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-SrcOut-clear": {
+    "offset": 1331200,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Rgba8888-False-SrcOut-empty": {
+    "offset": 1336320,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Rgba8888-False-SrcOut-partial-draw": {
+    "offset": 1341440,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Rgba8888-False-SrcOut-clip-transform": {
+    "offset": 1346560,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#00000000"
+  },
+  "Rgba8888-False-DstOut-clear": {
+    "offset": 1351680,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#00000000"
+  },
+  "Rgba8888-False-DstOut-empty": {
+    "offset": 1356800,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-DstOut-partial-draw": {
+    "offset": 1361920,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#00000000"
+  },
+  "Rgba8888-False-DstOut-clip-transform": {
+    "offset": 1367040,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-SrcATop-clear": {
+    "offset": 1372160,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-False-SrcATop-empty": {
+    "offset": 1377280,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-SrcATop-partial-draw": {
+    "offset": 1382400,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-False-SrcATop-clip-transform": {
+    "offset": 1387520,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-DstATop-clear": {
+    "offset": 1392640,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-DstATop-empty": {
+    "offset": 1397760,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Rgba8888-False-DstATop-partial-draw": {
+    "offset": 1402880,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-DstATop-clip-transform": {
+    "offset": 1408000,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Xor-clear": {
+    "offset": 1413120,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#00000000"
+  },
+  "Rgba8888-False-Xor-empty": {
+    "offset": 1418240,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Xor-partial-draw": {
+    "offset": 1423360,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#00000000"
+  },
+  "Rgba8888-False-Xor-clip-transform": {
+    "offset": 1428480,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Plus-clear": {
+    "offset": 1433600,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Plus-empty": {
+    "offset": 1438720,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Plus-partial-draw": {
+    "offset": 1443840,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Plus-clip-transform": {
+    "offset": 1448960,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Modulate-clear": {
+    "offset": 1454080,
+    "length": 5120,
+    "outside": "#ffff0000",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-False-Modulate-empty": {
+    "offset": 1459200,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Rgba8888-False-Modulate-partial-draw": {
+    "offset": 1464320,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-False-Modulate-clip-transform": {
+    "offset": 1469440,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-False-Screen-clear": {
+    "offset": 1474560,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Screen-empty": {
+    "offset": 1479680,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Screen-partial-draw": {
+    "offset": 1484800,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Screen-clip-transform": {
+    "offset": 1489920,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Overlay-clear": {
+    "offset": 1495040,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Overlay-empty": {
+    "offset": 1500160,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Overlay-partial-draw": {
+    "offset": 1505280,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Overlay-clip-transform": {
+    "offset": 1510400,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Darken-clear": {
+    "offset": 1515520,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-False-Darken-empty": {
+    "offset": 1520640,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Darken-partial-draw": {
+    "offset": 1525760,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-False-Darken-clip-transform": {
+    "offset": 1530880,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Lighten-clear": {
+    "offset": 1536000,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Lighten-empty": {
+    "offset": 1541120,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Lighten-partial-draw": {
+    "offset": 1546240,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Lighten-clip-transform": {
+    "offset": 1551360,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-ColorDodge-clear": {
+    "offset": 1556480,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-ColorDodge-empty": {
+    "offset": 1561600,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-ColorDodge-partial-draw": {
+    "offset": 1566720,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-ColorDodge-clip-transform": {
+    "offset": 1571840,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-ColorBurn-clear": {
+    "offset": 1576960,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-ColorBurn-empty": {
+    "offset": 1582080,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-ColorBurn-partial-draw": {
+    "offset": 1587200,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-ColorBurn-clip-transform": {
+    "offset": 1592320,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-HardLight-clear": {
+    "offset": 1597440,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-False-HardLight-empty": {
+    "offset": 1602560,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-HardLight-partial-draw": {
+    "offset": 1607680,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-False-HardLight-clip-transform": {
+    "offset": 1612800,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-SoftLight-clear": {
+    "offset": 1617920,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-SoftLight-empty": {
+    "offset": 1623040,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-SoftLight-partial-draw": {
+    "offset": 1628160,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-SoftLight-clip-transform": {
+    "offset": 1633280,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Difference-clear": {
+    "offset": 1638400,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ff00ffff"
+  },
+  "Rgba8888-False-Difference-empty": {
+    "offset": 1643520,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Difference-partial-draw": {
+    "offset": 1648640,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ff00ffff"
+  },
+  "Rgba8888-False-Difference-clip-transform": {
+    "offset": 1653760,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Exclusion-clear": {
+    "offset": 1658880,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ff00ffff"
+  },
+  "Rgba8888-False-Exclusion-empty": {
+    "offset": 1664000,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Exclusion-partial-draw": {
+    "offset": 1669120,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ff00ffff"
+  },
+  "Rgba8888-False-Exclusion-clip-transform": {
+    "offset": 1674240,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Multiply-clear": {
+    "offset": 1679360,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-False-Multiply-empty": {
+    "offset": 1684480,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Multiply-partial-draw": {
+    "offset": 1689600,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-False-Multiply-clip-transform": {
+    "offset": 1694720,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Hue-clear": {
+    "offset": 1699840,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Hue-empty": {
+    "offset": 1704960,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Hue-partial-draw": {
+    "offset": 1710080,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Hue-clip-transform": {
+    "offset": 1715200,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Saturation-clear": {
+    "offset": 1720320,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Saturation-empty": {
+    "offset": 1725440,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Saturation-partial-draw": {
+    "offset": 1730560,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Saturation-clip-transform": {
+    "offset": 1735680,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Color-clear": {
+    "offset": 1740800,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Color-empty": {
+    "offset": 1745920,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Color-partial-draw": {
+    "offset": 1751040,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Color-clip-transform": {
+    "offset": 1756160,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Luminosity-clear": {
+    "offset": 1761280,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ff4c4c4c"
+  },
+  "Rgba8888-False-Luminosity-empty": {
+    "offset": 1766400,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-False-Luminosity-partial-draw": {
+    "offset": 1771520,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ff4c4c4c"
+  },
+  "Rgba8888-False-Luminosity-clip-transform": {
+    "offset": 1776640,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Clear-clear": {
+    "offset": 1781760,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Rgba8888-True-Clear-empty": {
+    "offset": 1786880,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Rgba8888-True-Clear-partial-draw": {
+    "offset": 1792000,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Rgba8888-True-Clear-clip-transform": {
+    "offset": 1797120,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#00000000"
+  },
+  "Rgba8888-True-Src-clear": {
+    "offset": 1802240,
+    "length": 5120,
+    "outside": "#ffff0000",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-True-Src-empty": {
+    "offset": 1807360,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Rgba8888-True-Src-partial-draw": {
+    "offset": 1812480,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-True-Src-clip-transform": {
+    "offset": 1817600,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-True-Dst-clear": {
+    "offset": 1822720,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Dst-empty": {
+    "offset": 1827840,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Dst-partial-draw": {
+    "offset": 1832960,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Dst-clip-transform": {
+    "offset": 1838080,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-SrcOver-clear": {
+    "offset": 1843200,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-True-SrcOver-empty": {
+    "offset": 1848320,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-SrcOver-partial-draw": {
+    "offset": 1853440,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-True-SrcOver-clip-transform": {
+    "offset": 1858560,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-DstOver-clear": {
+    "offset": 1863680,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-DstOver-empty": {
+    "offset": 1868800,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-DstOver-partial-draw": {
+    "offset": 1873920,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-DstOver-clip-transform": {
+    "offset": 1879040,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-SrcIn-clear": {
+    "offset": 1884160,
+    "length": 5120,
+    "outside": "#ffff0000",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-True-SrcIn-empty": {
+    "offset": 1889280,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Rgba8888-True-SrcIn-partial-draw": {
+    "offset": 1894400,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-True-SrcIn-clip-transform": {
+    "offset": 1899520,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-True-DstIn-clear": {
+    "offset": 1904640,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-DstIn-empty": {
+    "offset": 1909760,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Rgba8888-True-DstIn-partial-draw": {
+    "offset": 1914880,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-DstIn-clip-transform": {
+    "offset": 1920000,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-SrcOut-clear": {
+    "offset": 1925120,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Rgba8888-True-SrcOut-empty": {
+    "offset": 1930240,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Rgba8888-True-SrcOut-partial-draw": {
+    "offset": 1935360,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Rgba8888-True-SrcOut-clip-transform": {
+    "offset": 1940480,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#00000000"
+  },
+  "Rgba8888-True-DstOut-clear": {
+    "offset": 1945600,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#00000000"
+  },
+  "Rgba8888-True-DstOut-empty": {
+    "offset": 1950720,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-DstOut-partial-draw": {
+    "offset": 1955840,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#00000000"
+  },
+  "Rgba8888-True-DstOut-clip-transform": {
+    "offset": 1960960,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-SrcATop-clear": {
+    "offset": 1966080,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-True-SrcATop-empty": {
+    "offset": 1971200,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-SrcATop-partial-draw": {
+    "offset": 1976320,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-True-SrcATop-clip-transform": {
+    "offset": 1981440,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-DstATop-clear": {
+    "offset": 1986560,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-DstATop-empty": {
+    "offset": 1991680,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Rgba8888-True-DstATop-partial-draw": {
+    "offset": 1996800,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-DstATop-clip-transform": {
+    "offset": 2001920,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Xor-clear": {
+    "offset": 2007040,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#00000000"
+  },
+  "Rgba8888-True-Xor-empty": {
+    "offset": 2012160,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Xor-partial-draw": {
+    "offset": 2017280,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#00000000"
+  },
+  "Rgba8888-True-Xor-clip-transform": {
+    "offset": 2022400,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Plus-clear": {
+    "offset": 2027520,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Plus-empty": {
+    "offset": 2032640,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Plus-partial-draw": {
+    "offset": 2037760,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Plus-clip-transform": {
+    "offset": 2042880,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Modulate-clear": {
+    "offset": 2048000,
+    "length": 5120,
+    "outside": "#ffff0000",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-True-Modulate-empty": {
+    "offset": 2053120,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#00000000"
+  },
+  "Rgba8888-True-Modulate-partial-draw": {
+    "offset": 2058240,
+    "length": 5120,
+    "outside": "#00000000",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-True-Modulate-clip-transform": {
+    "offset": 2063360,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-True-Screen-clear": {
+    "offset": 2068480,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Screen-empty": {
+    "offset": 2073600,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Screen-partial-draw": {
+    "offset": 2078720,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Screen-clip-transform": {
+    "offset": 2083840,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Overlay-clear": {
+    "offset": 2088960,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Overlay-empty": {
+    "offset": 2094080,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Overlay-partial-draw": {
+    "offset": 2099200,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Overlay-clip-transform": {
+    "offset": 2104320,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Darken-clear": {
+    "offset": 2109440,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-True-Darken-empty": {
+    "offset": 2114560,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Darken-partial-draw": {
+    "offset": 2119680,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-True-Darken-clip-transform": {
+    "offset": 2124800,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Lighten-clear": {
+    "offset": 2129920,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Lighten-empty": {
+    "offset": 2135040,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Lighten-partial-draw": {
+    "offset": 2140160,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Lighten-clip-transform": {
+    "offset": 2145280,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-ColorDodge-clear": {
+    "offset": 2150400,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-ColorDodge-empty": {
+    "offset": 2155520,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-ColorDodge-partial-draw": {
+    "offset": 2160640,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-ColorDodge-clip-transform": {
+    "offset": 2165760,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-ColorBurn-clear": {
+    "offset": 2170880,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-ColorBurn-empty": {
+    "offset": 2176000,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-ColorBurn-partial-draw": {
+    "offset": 2181120,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-ColorBurn-clip-transform": {
+    "offset": 2186240,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-HardLight-clear": {
+    "offset": 2191360,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-True-HardLight-empty": {
+    "offset": 2196480,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-HardLight-partial-draw": {
+    "offset": 2201600,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-True-HardLight-clip-transform": {
+    "offset": 2206720,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-SoftLight-clear": {
+    "offset": 2211840,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-SoftLight-empty": {
+    "offset": 2216960,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-SoftLight-partial-draw": {
+    "offset": 2222080,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-SoftLight-clip-transform": {
+    "offset": 2227200,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Difference-clear": {
+    "offset": 2232320,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ff00ffff"
+  },
+  "Rgba8888-True-Difference-empty": {
+    "offset": 2237440,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Difference-partial-draw": {
+    "offset": 2242560,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ff00ffff"
+  },
+  "Rgba8888-True-Difference-clip-transform": {
+    "offset": 2247680,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Exclusion-clear": {
+    "offset": 2252800,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ff00ffff"
+  },
+  "Rgba8888-True-Exclusion-empty": {
+    "offset": 2257920,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Exclusion-partial-draw": {
+    "offset": 2263040,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ff00ffff"
+  },
+  "Rgba8888-True-Exclusion-clip-transform": {
+    "offset": 2268160,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Multiply-clear": {
+    "offset": 2273280,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-True-Multiply-empty": {
+    "offset": 2278400,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Multiply-partial-draw": {
+    "offset": 2283520,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffff0000"
+  },
+  "Rgba8888-True-Multiply-clip-transform": {
+    "offset": 2288640,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Hue-clear": {
+    "offset": 2293760,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Hue-empty": {
+    "offset": 2298880,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Hue-partial-draw": {
+    "offset": 2304000,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Hue-clip-transform": {
+    "offset": 2309120,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Saturation-clear": {
+    "offset": 2314240,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Saturation-empty": {
+    "offset": 2319360,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Saturation-partial-draw": {
+    "offset": 2324480,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Saturation-clip-transform": {
+    "offset": 2329600,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Color-clear": {
+    "offset": 2334720,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Color-empty": {
+    "offset": 2339840,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Color-partial-draw": {
+    "offset": 2344960,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Color-clip-transform": {
+    "offset": 2350080,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Luminosity-clear": {
+    "offset": 2355200,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ff4c4c4c"
+  },
+  "Rgba8888-True-Luminosity-empty": {
+    "offset": 2360320,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  },
+  "Rgba8888-True-Luminosity-partial-draw": {
+    "offset": 2365440,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ff4c4c4c"
+  },
+  "Rgba8888-True-Luminosity-clip-transform": {
+    "offset": 2370560,
+    "length": 5120,
+    "outside": "#ffffffff",
+    "inside": "#ffffffff"
+  }
+}

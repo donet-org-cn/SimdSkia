@@ -111,10 +111,23 @@ internal sealed class FontManager:IFontManagerImpl
         // Avalonia uses a failed Try result to retain the nearest real face.
         // Do not manufacture a simulated face or abort the window's layout.
         if(simulations!=FontSimulations.None){typeface=null;return false;}
-        using var memory=new MemoryStream();stream.CopyTo(memory);var data=memory.GetBuffer().AsSpan(0,(int)memory.Length);var digest=SHA256.HashData(data);
+        // EmbeddedFontCollection can reopen a file already registered in
+        // FontFiles. Hash a seekable stream before making a font-sized snapshot,
+        // avoiding a temporary growable LOH buffer on every matching open.
+        if(stream.CanSeek)
+        {
+            long start=stream.Position;var digest=SHA256.HashData(stream);
+            var existing=FindLoaded(digest);
+            if(existing is not null){typeface=new PlatformTypeface(existing);return true;}
+            stream.Position=start;
+        }
+        using var memory=new MemoryStream();stream.CopyTo(memory);var data=memory.GetBuffer().AsSpan(0,(int)memory.Length);
         // An external stream need not load unrelated installed fallback files.
-        var existing=fonts.FirstOrDefault(f=>f.IsLoaded&&f.Data.Digest.AsSpan().SequenceEqual(digest));typeface=new PlatformTypeface(existing?.Data??new FontData(data));return true;
+        var shared=stream.CanSeek?null:FindLoaded(SHA256.HashData(data));
+        typeface=new PlatformTypeface(shared??new FontData(data));return true;
     }
+    private FontData? FindLoaded(ReadOnlySpan<byte> digest)
+    {foreach(var font in fonts)if(font.IsLoaded&&font.Data.Digest.AsSpan().SequenceEqual(digest))return font.Data;return null;}
     public bool TryGetFamilyTypefaces(string family,[NotNullWhen(true)]out IReadOnlyList<Typeface>? typefaces)
     {var found=fonts.Where(f=>f.Family.Equals(family,StringComparison.OrdinalIgnoreCase)).Select(f=>new Typeface(f.Family,f.Style,f.Weight,f.Stretch)).ToArray();typefaces=found.Length==0?null:found;return typefaces is not null;}
 }

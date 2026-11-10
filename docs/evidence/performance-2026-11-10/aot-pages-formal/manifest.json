@@ -1,0 +1,61 @@
+{
+  "utc": "2026-11-10T05:10:46Z",
+  "os": "Windows-11-10.0.26300-SP0",
+  "processors": 12,
+  "physicalMemoryBytes": 34286309376,
+  "forks": 3,
+  "seconds": 5,
+  "warmupSeconds": 2,
+  "resourceSamplingIntervalMs": 25,
+  "instructionSet": "portable",
+  "simdSkiaPublicPackageVersion": null,
+  "sdk": "10.0.403",
+  "sourceCommit": "1eceed6ee0effc45544badad895394a0ad772bc6",
+  "sourceStatus": [
+    " M benchmarks/CodecSkiaComparison/Managed/Managed.csproj",
+    " M benchmarks/CodecSkiaComparison/Shared/Program.cs",
+    " M benchmarks/Report/Program.cs",
+    " M benchmarks/Shared/Workloads.cs",
+    " M docs/shader-build-ordered.json",
+    " M examples/AvaloniaAot/SimdSkia/AvaloniaAot.SimdSkia.csproj",
+    " M src/SimdSkia.Compatibility/DecodedRaster.cs",
+    " M src/SimdSkia.Compatibility/SKBitmap.Factories.cs",
+    " M src/SimdSkia.Compatibility/SKCodec.cs",
+    " M src/SimdSkia.Core/PixelBuffer.cs",
+    " M src/SimdSkia.Cpu/RasterCanvas.cs",
+    " M src/SimdSkia.Cpu/SpanCompositor.cs",
+    " M src/SimdSkia.Gpu/Shaders/renderer-ordered.comp",
+    " M src/SimdSkia.Gpu/Shaders/renderer-ordered.spv",
+    " M src/SimdSkia.Gpu/VulkanCanvas.Batches.cs",
+    " M tests/CodecIntegration/Program.cs",
+    " M tests/FloatPaintSimd/Program.cs",
+    " M tools/build-ordered-rectangle-shader.ps1",
+    " M tools/run-avalonia-aot.py",
+    " M tools/run-codec-skia-comparison.py",
+    " M tools/run-final-api-benchmarks.py",
+    " M tools/run-gpu-parity.py",
+    "?? benchmarks/DecodeRetention/",
+    "?? src/SimdSkia.Cpu/BlendKernel.Varying.cs",
+    "?? src/SimdSkia.Cpu/PixelTransferKernel.Premultiply.cs",
+    "?? src/SimdSkia.Cpu/RasterCanvas.ShaderSpans.cs",
+    "?? tools/check-optimization-regressions.py",
+    "?? tools/run-cpu-optimization.py",
+    "?? tools/run-decode-retention.py",
+    "?? tools/run-performance-validation.py"
+  ],
+  "binaries": {
+    "simd": {
+      "path": "F:\\SimdSkia\\artifacts\\performance-2026-11-10\\final\\aot-publish\\simd\\AvaloniaAot.SimdSkia.exe",
+      "sha256": "281aef6983bf2a44f84de02167d81c9ddd3e55a6c42aa7719b73cf9c5db70528"
+    },
+    "original": {
+      "path": "F:\\SimdSkia\\artifacts\\performance-2026-11-10\\final\\aot-publish\\original\\AvaloniaAot.Original.exe",
+      "sha256": "690e4c3c4ef8ec75ab5157a7ae16660b03c721d9fb281107cc96507f36e61d42"
+    },
+    "before": {
+      "path": "F:\\SimdSkia\\artifacts\\performance-2026-11-10\\final\\aot-publish\\before\\AvaloniaAot.SimdSkia.exe",
+      "sha256": "ba3d7a4eada7423b4f5672b7c82d6d9ebcde6d1d1bdffa74b12fba4c1767364c"
+    }
+  },
+  "sourceSnapshotSha256": "28abc0e50ccadb36cbb563d685421fa55390dbc1b2e371818be2afa9807bbe29"
+}

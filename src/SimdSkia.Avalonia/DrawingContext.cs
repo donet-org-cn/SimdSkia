@@ -28,10 +28,13 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
     private Stack<RenderOptions> renderStack=>scratch.RenderOptions;
     private Stack<TextOptions> textStack=>scratch.TextOptions;
     private Stack<Group> groups=>scratch.Groups;
+    private Stack<GroupScope> groupScopes=>scratch.GroupScopes;
     private RectF? dirty;
     private int activeLayers;
     private int originX,originY;
-    private readonly record struct Group(string Kind,PixelBuffer? Parent,ICanvasBackend? Canvas,RectF? Clip,CoverageClip? Coverage,byte Opacity,IBrush? Mask,Rect Bounds,RectF? ParentDirty,Matrix3 Matrix,FilterSpec? Filter=null,int OffsetX=0,int OffsetY=0);
+    private enum GroupKind {Opacity,Layer,Mask,Effect}
+    private readonly record struct GroupScope(GroupKind Kind,bool HasLayer);
+    private readonly record struct Group(PixelBuffer Parent,ICanvasBackend Canvas,RectF? Clip,CoverageClip? Coverage,byte Opacity,IBrush? Mask,Rect Bounds,RectF? ParentDirty,Matrix3 Matrix,FilterSpec? Filter=null,int OffsetX=0,int OffsetY=0);
     // Reuse only empty internal storage. Public context wrappers are never
     // recycled, so a disposed context cannot become valid in a later frame.
     private sealed class FrameScratch
@@ -40,13 +43,14 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
         internal readonly Stack<RenderOptions> RenderOptions=[];
         internal readonly Stack<TextOptions> TextOptions=[];
         internal readonly Stack<Group> Groups=[];
+        internal readonly Stack<GroupScope> GroupScopes=[];
         private static readonly object gate=new();
         private static readonly Stack<FrameScratch> pool=new(8);
         internal static FrameScratch Rent(){lock(gate)return pool.TryPop(out var value)?value:new();}
         internal static void Return(FrameScratch value)
         {
-            value.Clips.Clear();value.RenderOptions.Clear();value.TextOptions.Clear();value.Groups.Clear();
-            if(value.Clips.EnsureCapacity(0)>64||value.RenderOptions.EnsureCapacity(0)>64||value.TextOptions.EnsureCapacity(0)>64||value.Groups.EnsureCapacity(0)>16)return;
+            value.Clips.Clear();value.RenderOptions.Clear();value.TextOptions.Clear();value.Groups.Clear();value.GroupScopes.Clear();
+            if(value.Clips.EnsureCapacity(0)>64||value.RenderOptions.EnsureCapacity(0)>64||value.TextOptions.EnsureCapacity(0)>64||value.Groups.EnsureCapacity(0)>16||value.GroupScopes.EnsureCapacity(0)>64)return;
             lock(gate)if(pool.Count<8)pool.Push(value);
         }
     }
@@ -169,13 +173,13 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
     }
     public void PopClip(){Check();if(!clips.TryPop(out var state))throw new InvalidOperationException("Unbalanced clip stack.");(clip,coverageClip)=state;}
     public void PopGeometryClip()=>PopClip();
-    private void BeginGroup(string kind,byte opacity,IBrush? mask,Rect bounds,FilterSpec? filter=null)
+    private void BeginGroup(GroupKind kind,byte opacity,IBrush? mask,Rect bounds,FilterSpec? filter=null)
     {
         using var measurement=SimdSkiaDiagnostics.Measure("push-group");
         Check();using var validation=mask is not null?CreatePaint(mask,bounds,Antialias):default;
         // Avalonia pushes opacity 1 for ordinary visuals. Retain the balanced
         // scope, but no saved state or dirty bounds are needed without a layer.
-        if(opacity==255&&mask is null&&kind=="opacity"){groups.Push(new(kind,null,null,null,null,255,null,default,null,default));return;}
+        if(opacity==255&&mask is null&&kind==GroupKind.Opacity){groupScopes.Push(new(kind,false));return;}
         // Only pixels that can reach the restore clip are needed. Layer bounds
         // are hints and do NOT crop arbitrary opacity/layer content. A mask is
         // zero outside its actual bounds; filters additionally need their halo.
@@ -191,14 +195,15 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
         int x=(int)MathF.Floor(extent.Left),y=(int)MathF.Floor(extent.Top),width=Math.Max(1,(int)MathF.Ceiling(extent.Right)-x),height=Math.Max(1,(int)MathF.Ceiling(extent.Bottom)-y);
         if(width>32768||height>32768||(long)width*height*4>256*1024*1024)throw new NotSupportedException("Layer exceeds the configured 256 MiB limit.");
         var buffer=PixelBuffer.Rent(width,height,target.Format,AlphaFormat.Premultiplied);var next=new RasterCanvas(buffer);
-        groups.Push(new(kind,target,canvas,clip,coverageClip,opacity,mask,bounds,dirty,DeviceMatrix,filter,x,y));activeLayers++;target=buffer;canvas=next;dirty=null;originX+=x;originY+=y;
+        groups.Push(new(target,canvas,clip,coverageClip,opacity,mask,bounds,dirty,DeviceMatrix,filter,x,y));groupScopes.Push(new(kind,true));activeLayers++;target=buffer;canvas=next;dirty=null;originX+=x;originY+=y;
         // Apply the existing clip exactly once when restoring this group.
         coverageClip=null;clip=null;
     }
-    private void EndGroup(string kind)
+    private void EndGroup(GroupKind kind)
     {
         using var measurement=SimdSkiaDiagnostics.Measure("pop-group");
-        Check();if(!groups.TryPeek(out var state)||state.Kind!=kind)throw new InvalidOperationException($"Unbalanced {kind} stack.");groups.Pop();if(state.Parent is null)return;
+        Check();if(!groupScopes.TryPeek(out var scope)||scope.Kind!=kind)throw new InvalidOperationException($"Unbalanced {kind} stack.");groupScopes.Pop();if(!scope.HasLayer)return;
+        var state=groups.Pop();
         activeLayers--;
         var layer=target;var region=dirty;canvas.Dispose();target=state.Parent;canvas=state.Canvas!;clip=state.Clip;coverageClip=state.Coverage;dirty=state.ParentDirty;originX-=state.OffsetX;originY-=state.OffsetY;
         try
@@ -223,12 +228,12 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
         }
         finally{layer.Dispose();}
     }
-    public void PushLayer(Rect bounds)=>BeginGroup("layer",255,null,bounds);
-    public void PopLayer()=>EndGroup("layer");
-    public void PushOpacity(double opacity,Rect? bounds)=>BeginGroup("opacity",BrushFactory.Opacity(opacity),null,bounds??default);
-    public void PopOpacity()=>EndGroup("opacity");
-    public void PushOpacityMask(IBrush mask,Rect bounds)=>BeginGroup("mask",255,mask,bounds);
-    public void PopOpacityMask()=>EndGroup("mask");
+    public void PushLayer(Rect bounds)=>BeginGroup(GroupKind.Layer,255,null,bounds);
+    public void PopLayer()=>EndGroup(GroupKind.Layer);
+    public void PushOpacity(double opacity,Rect? bounds)=>BeginGroup(GroupKind.Opacity,BrushFactory.Opacity(opacity),null,bounds??default);
+    public void PopOpacity()=>EndGroup(GroupKind.Opacity);
+    public void PushOpacityMask(IBrush mask,Rect bounds)=>BeginGroup(GroupKind.Mask,255,mask,bounds);
+    public void PopOpacityMask()=>EndGroup(GroupKind.Mask);
     public void PushRenderOptions(RenderOptions options){Check();renderStack.Push(renderOptions);renderOptions=options.MergeWith(renderOptions);}
     public void PopRenderOptions(){Check();if(!renderStack.TryPop(out renderOptions))throw new InvalidOperationException("Unbalanced render options.");}
     public void PushTextOptions(TextOptions options){Check();textStack.Push(textOptions);textOptions=options.MergeWith(textOptions);}
@@ -237,7 +242,7 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
     public void Dispose()
     {
         if(disposed)return;disposed=true;
-        bool unbalanced=groups.Count>0||clips.Count>0||renderStack.Count>0||textStack.Count>0;
+        bool unbalanced=groupScopes.Count>0||clips.Count>0||renderStack.Count>0||textStack.Count>0;
         bool success=false;
         try
         {

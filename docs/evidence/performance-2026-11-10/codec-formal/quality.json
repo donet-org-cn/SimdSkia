@@ -1,0 +1,276 @@
+[
+  {
+    "kind": "pair",
+    "scene": "ui",
+    "operation": "decode-jpeg444",
+    "maximumChannelError": 2,
+    "rmseRgba": 0.04234545475703676,
+    "psnrRgb": 74.34528021838767,
+    "losslessExact": null,
+    "jpegNote": "No new JPEG acceptance threshold invented; existing 1-LSB joint test remains separate"
+  },
+  {
+    "kind": "pair",
+    "scene": "ui",
+    "operation": "decode-jpeg420",
+    "maximumChannelError": 2,
+    "rmseRgba": 0.2911170002452453,
+    "psnrRgb": 57.600064892519825,
+    "losslessExact": null,
+    "jpegNote": "No new JPEG acceptance threshold invented; existing 1-LSB joint test remains separate"
+  },
+  {
+    "kind": "pair",
+    "scene": "ui",
+    "operation": "decode-png",
+    "maximumChannelError": 0,
+    "rmseRgba": 0.0,
+    "psnrRgb": null,
+    "losslessExact": true,
+    "jpegNote": null
+  },
+  {
+    "kind": "encode",
+    "scene": "ui",
+    "operation": "encode-jpeg444",
+    "variant": "original",
+    "outputBytes": 129451,
+    "maximumChannelError": 20,
+    "rmseRgba": 0.9302339307373505,
+    "psnrRgb": 47.50957271123741,
+    "jpegHeader": {
+      "sof": 192,
+      "components": [
+        17,
+        17,
+        17
+      ]
+    }
+  },
+  {
+    "kind": "encode",
+    "scene": "ui",
+    "operation": "encode-jpeg444",
+    "variant": "simd",
+    "outputBytes": 196847,
+    "maximumChannelError": 20,
+    "rmseRgba": 0.9039691657908566,
+    "psnrRgb": 47.758343902010665,
+    "jpegHeader": {
+      "sof": 192,
+      "components": [
+        17,
+        17,
+        17
+      ]
+    }
+  },
+  {
+    "kind": "encode",
+    "scene": "ui",
+    "operation": "encode-jpeg444",
+    "variant": "before",
+    "outputBytes": 196847,
+    "maximumChannelError": 20,
+    "rmseRgba": 0.9039691657908566,
+    "psnrRgb": 47.758343902010665,
+    "jpegHeader": {
+      "sof": 192,
+      "components": [
+        17,
+        17,
+        17
+      ]
+    }
+  },
+  {
+    "kind": "pair",
+    "scene": "ui",
+    "operation": "encode-jpeg444",
+    "maximumChannelError": 9,
+    "rmseRgba": 0.5001162094891818,
+    "psnrRgb": 52.899997624843245,
+    "losslessExact": null,
+    "jpegNote": "No new JPEG acceptance threshold invented; existing 1-LSB joint test remains separate"
+  },
+  {
+    "kind": "encode",
+    "scene": "ui",
+    "operation": "encode-png",
+    "variant": "original",
+    "outputBytes": 12569,
+    "maximumChannelError": 0,
+    "rmseRgba": 0.0,
+    "psnrRgb": null,
+    "jpegHeader": null
+  },
+  {
+    "kind": "encode",
+    "scene": "ui",
+    "operation": "encode-png",
+    "variant": "simd",
+    "outputBytes": 8099,
+    "maximumChannelError": 0,
+    "rmseRgba": 0.0,
+    "psnrRgb": null,
+    "jpegHeader": null
+  },
+  {
+    "kind": "encode",
+    "scene": "ui",
+    "operation": "encode-png",
+    "variant": "before",
+    "outputBytes": 8099,
+    "maximumChannelError": 0,
+    "rmseRgba": 0.0,
+    "psnrRgb": null,
+    "jpegHeader": null
+  },
+  {
+    "kind": "pair",
+    "scene": "ui",
+    "operation": "encode-png",
+    "maximumChannelError": 0,
+    "rmseRgba": 0.0,
+    "psnrRgb": null,
+    "losslessExact": true,
+    "jpegNote": null
+  },
+  {
+    "kind": "pair",
+    "scene": "texture",
+    "operation": "decode-jpeg444",
+    "maximumChannelError": 3,
+    "rmseRgba": 0.15145338203226874,
+    "psnrRgb": 63.2758367266498,
+    "losslessExact": null,
+    "jpegNote": "No new JPEG acceptance threshold invented; existing 1-LSB joint test remains separate"
+  },
+  {
+    "kind": "pair",
+    "scene": "texture",
+    "operation": "decode-jpeg420",
+    "maximumChannelError": 3,
+    "rmseRgba": 0.23750659916107958,
+    "psnrRgb": 59.36790262111096,
+    "losslessExact": null,
+    "jpegNote": "No new JPEG acceptance threshold invented; existing 1-LSB joint test remains separate"
+  },
+  {
+    "kind": "pair",
+    "scene": "texture",
+    "operation": "decode-png",
+    "maximumChannelError": 0,
+    "rmseRgba": 0.0,
+    "psnrRgb": null,
+    "losslessExact": true,
+    "jpegNote": null
+  },
+  {
+    "kind": "encode",
+    "scene": "texture",
+    "operation": "encode-jpeg444",
+    "variant": "original",
+    "outputBytes": 719929,
+    "maximumChannelError": 20,
+    "rmseRgba": 3.3828742590162606,
+    "psnrRgb": 36.29569913419252,
+    "jpegHeader": {
+      "sof": 192,
+      "components": [
+        17,
+        17,
+        17
+      ]
+    }
+  },
+  {
+    "kind": "encode",
+    "scene": "texture",
+    "operation": "encode-jpeg444",
+    "variant": "simd",
+    "outputBytes": 749217,
+    "maximumChannelError": 20,
+    "rmseRgba": 3.3768079291134487,
+    "psnrRgb": 36.31128906422857,
+    "jpegHeader": {
+      "sof": 192,
+      "components": [
+        17,
+        17,
+        17
+      ]
+    }
+  },
+  {
+    "kind": "encode",
+    "scene": "texture",
+    "operation": "encode-jpeg444",
+    "variant": "before",
+    "outputBytes": 749217,
+    "maximumChannelError": 20,
+    "rmseRgba": 3.3768079291134487,
+    "psnrRgb": 36.31128906422857,
+    "jpegHeader": {
+      "sof": 192,
+      "components": [
+        17,
+        17,
+        17
+      ]
+    }
+  },
+  {
+    "kind": "pair",
+    "scene": "texture",
+    "operation": "encode-jpeg444",
+    "maximumChannelError": 13,
+    "rmseRgba": 1.167506208346567,
+    "psnrRgb": 45.53623226950785,
+    "losslessExact": null,
+    "jpegNote": "No new JPEG acceptance threshold invented; existing 1-LSB joint test remains separate"
+  },
+  {
+    "kind": "encode",
+    "scene": "texture",
+    "operation": "encode-png",
+    "variant": "original",
+    "outputBytes": 2921668,
+    "maximumChannelError": 0,
+    "rmseRgba": 0.0,
+    "psnrRgb": null,
+    "jpegHeader": null
+  },
+  {
+    "kind": "encode",
+    "scene": "texture",
+    "operation": "encode-png",
+    "variant": "simd",
+    "outputBytes": 2637917,
+    "maximumChannelError": 0,
+    "rmseRgba": 0.0,
+    "psnrRgb": null,
+    "jpegHeader": null
+  },
+  {
+    "kind": "encode",
+    "scene": "texture",
+    "operation": "encode-png",
+    "variant": "before",
+    "outputBytes": 2637917,
+    "maximumChannelError": 0,
+    "rmseRgba": 0.0,
+    "psnrRgb": null,
+    "jpegHeader": null
+  },
+  {
+    "kind": "pair",
+    "scene": "texture",
+    "operation": "encode-png",
+    "maximumChannelError": 0,
+    "rmseRgba": 0.0,
+    "psnrRgb": null,
+    "losslessExact": true,
+    "jpegNote": null
+  }
+]

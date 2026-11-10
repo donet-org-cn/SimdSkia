@@ -1,0 +1,29 @@
+{
+  "validation-final/source-sha256.json": {
+    "files": 333,
+    "mismatch": [],
+    "semanticallyEquivalentLockChanges": []
+  },
+  "gpu-pages-formal/manifest.json": {
+    "files": 318,
+    "mismatch": [],
+    "semanticallyEquivalentLockChanges": []
+  },
+  "aot-pages-formal/source-files.json": {
+    "files": 349,
+    "mismatch": [],
+    "semanticallyEquivalentLockChanges": [
+      {
+        "path": "src/SimdSkia.Pdf/packages.lock.json",
+        "reason": "Empty net10.0/win-x64 RID entry removed by final solution restore",
+        "recordedSha256": "7d304d8070b9b50e0f03c515c77b599bfe2ba677696c034c45f51210d9a4777b",
+        "currentSha256": "3611c5b4f3f8827f513fdc37dff257ff67c7d4e4746faedb09dea490a6d35c9c"
+      }
+    ]
+  },
+  "aot-scroll-confirmation/source-files.json": {
+    "files": 349,
+    "mismatch": [],
+    "semanticallyEquivalentLockChanges": []
+  }
+}

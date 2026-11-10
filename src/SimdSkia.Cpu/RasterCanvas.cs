@@ -101,6 +101,11 @@ public sealed partial class RasterCanvas : ICanvasBackend
                 }
                 if(paint.Blender is null&&!paint.Dither&&paint.ColorFilter is null&&paint.Shader is LinearGradient linear&&linear.IsOpaque&&paint.Color.A==255&&(paint.Composite is CompositeMode.Source or CompositeMode.SourceOver)&&Finite(inverse.Map(x0+.5f,y0+.5f))&&Finite(inverse.Map(x1-.5f,y1-.5f)))
                 {LinearGradientKernel.Fill(target,linear,inverse,x0,y0,x1,y1);return;}
+                if(CanBatchShader(paint))
+                {
+                    for(int y=y0;y<y1;y++)FillShaderSpan(target.GetRowSpan(y).Slice(x0*4,(x1-x0)*4),(IPremultipliedColorShader)paint.Shader!,inverse,x0,y,paint.Color.A);
+                    return;
+                }
                 for(int y=y0;y<y1;y++)for(int x=x0;x<x1;x++)
                 {var local=inverse.Map(x+.5f,y+.5f);CompositeShader(target.GetRowSpan(y).Slice(x*4,4),paint,local.X,local.Y,255,x,y);}
                 return;
@@ -205,7 +210,7 @@ public sealed partial class RasterCanvas : ICanvasBackend
             int firstY=Math.Max(top,originY),lastY=Math.Min(bottom,originY+mask.Height);
             if(start>=end||firstY>=lastY)return;
             int width=end-start,coverageOffset=(firstY-originY)*mask.Width+start-originX;
-            if(CpuOptions.EnableSimd&&Sse2.IsSupported&&!Avx2.IsSupported&&target.Alpha!=AlphaFormat.Straight&&
+            if(CpuOptions.EnableSimd&&Sse2.IsSupported&&target.Alpha!=AlphaFormat.Straight&&
                 command.Paint.Blender is null&&command.Paint.FloatingColor is null&&command.Paint.ColorFilter is null&&command.Paint.Shader is null&&command.CoverageClip is null&&
                 command.Paint.Composite==CompositeMode.SourceOver&&command.Paint.Color==new Rgba32(0,0,0,255))
             {
@@ -236,6 +241,8 @@ public sealed partial class RasterCanvas : ICanvasBackend
             var row=target.GetRowSpan(y);
             if(command.Paint.Shader is null)
                 ApplyMasked(row.Slice(start*4,(end-start)*4),start,y,command.Paint,run.Coverage,command.CoverageClip);
+            else if(run.Coverage==255&&command.CoverageClip is null&&CanBatchShader(command.Paint))
+                FillShaderSpan(row.Slice(start*4,(end-start)*4),(IPremultipliedColorShader)command.Paint.Shader,inverse,start,y,command.Paint.Color.A);
             else if(command.Paint.ColorFilter is null&&run.Coverage==255&&command.CoverageClip is null&&command.Paint.Color.A==255&&
                 command.Paint.Composite is CompositeMode.Source or CompositeMode.SourceOver&&
                 command.Paint.Shader is IOpaqueRowShader opaque&&opaque.TryCopyOpaqueRow(row.Slice(start*4,(end-start)*4),target.Format,inverse,start,y))continue;

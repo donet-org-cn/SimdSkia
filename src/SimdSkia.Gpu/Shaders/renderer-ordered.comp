@@ -3,7 +3,7 @@ layout(local_size_x=8,local_size_y=8) in;
 layout(std430,binding=0) buffer Target { uint pixels[]; };
 // Aliased, axis-aligned solid rectangles only. Retain the destination in
 // registers across painter-ordered blends, with one global read/write per pixel.
-layout(std140,binding=2) uniform Params { uvec4 batchInfo; uvec4 targetInfo; uvec4 drawWords[192]; };
+layout(std140,binding=2) uniform Params { uvec4 batchInfo; uvec4 targetInfo; uvec4 drawWords[128]; };
 uvec4 unpackColor(uint c){return uvec4(c&255u,(c>>8)&255u,(c>>16)&255u,c>>24);}
 uint packColor(uvec4 c){return c.x|(c.y<<8)|(c.z<<16)|(c.w<<24);}
 void main(){
@@ -14,12 +14,13 @@ void main(){
     uvec4 value=unpackColor(pixels[at]);if(batchInfo.w!=0u)value=value.bgra;
     vec2 point=vec2(pixel)+vec2(.5);
     for(uint i=0u;i<batchInfo.z;i++){
-        vec4 r=uintBitsToFloat(drawWords[i*3u]),clip=uintBitsToFloat(drawWords[i*3u+1u]);
-        if(point.x<r.x||point.y<r.y||point.x>=r.z||point.y>=r.w||point.x<clip.x||point.y<clip.y||point.x>=clip.z||point.y>=clip.w)continue;
-        uvec4 info=drawWords[i*3u+2u],color=unpackColor(info.x);
+        // Bounds are intersected with the rectangular clip once on the CPU.
+        // Color is already premultiplied using the identical integer rule.
+        vec4 r=uintBitsToFloat(drawWords[i*2u]);
+        if(point.x<r.x||point.y<r.y||point.x>=r.z||point.y>=r.w)continue;
+        uvec4 info=drawWords[i*2u+1u],color=unpackColor(info.x);
         uint alpha=color.a,remain=info.y==0u?255u-alpha:0u;
-        if(info.y==2u){color=uvec4(0u);alpha=0u;}
-        value=min(uvec4(255u),(value*remain+uvec4(127u))/255u+uvec4((color.rgb*alpha+uvec3(127u))/255u,alpha));
+        value=min(uvec4(255u),(value*remain+uvec4(127u))/255u+color);
     }
     if(batchInfo.w!=0u)value=value.bgra;pixels[at]=packColor(value);
 }

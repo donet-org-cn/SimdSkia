@@ -182,6 +182,7 @@ def main():
     parser.add_argument("--warmup", type=float, default=2)
     parser.add_argument("--isa", choices=("portable", "v3"), default="portable")
     parser.add_argument("--package-version", help="Use this exact public SimdSkia NuGet version instead of source references")
+    parser.add_argument("--before-simd",type=Path,help="Frozen pre-optimization Native AOT executable")
     options = parser.parse_args()
     if sys.platform != "win32": raise RuntimeError("Windows x64 is required for this desktop AOT comparison")
     if options.forks < 1 or not math.isfinite(options.seconds) or not .1 <= options.seconds <= 120:
@@ -194,9 +195,15 @@ def main():
             command = ["dotnet", "publish", f"examples/AvaloniaAot/{project}/AvaloniaAot.{project}.csproj", "-c", "Release", f"-p:ComparisonIsa={options.isa}", "-o", str(publish / variant)]
             if options.package_version:
                 command += ['-p:UsePackedSimdSkia=true',f'-p:SimdSkiaPackageVersion={options.package_version}']
+            else:
+                command += ['-p:UsePackedSimdSkia=false','-p:RestoreForce=true']
             with (output / f"publish-{variant}.txt").open("w", encoding="utf-8") as log:
                 subprocess.run(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT, check=True)
     binaries = {"simd": publish / "simd/AvaloniaAot.SimdSkia.exe", "original": publish / "original/AvaloniaAot.Original.exe"}
+    variants=VARIANTS
+    if options.before_simd:
+        binaries['before']=options.before_simd.resolve()
+        variants+=('before',)
     ram = physical_memory()
     manifest = {"utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "os": platform.platform(),
         "processors": os.cpu_count(), "physicalMemoryBytes": ram, "forks": options.forks,
@@ -225,10 +232,10 @@ def main():
     for case_index, (scene, scale, mode) in enumerate(CASES):
         case = f"{scene}-{scale:g}-{mode}"
         for fork in range(options.forks):
-            offset = (case_index + fork) % len(VARIANTS)
-            for variant in VARIANTS[offset:] + VARIANTS[:offset]:
+            offset = (case_index + fork) % len(variants)
+            for variant in variants[offset:] + variants[:offset]:
                 destination = output / f"{case}/{variant}-{fork + 1}"
-                binary = binaries["simd" if variant == "simd" else "original"]
+                binary = binaries[variant if variant in ('simd','before') else 'original']
                 arguments = ["--hidden", "--output", str(destination), "--scene", scene, "--scale", str(scale),
                              "--mode", mode, "--seconds", str(options.seconds), "--warmup", str(options.warmup)]
                 if variant != "original-default": arguments += ["--full-opacity"]
@@ -242,6 +249,12 @@ def main():
     quality = []
     for scene, scale, mode in CASES:
         case = f"{scene}-{scale:g}-{mode}"
+        for variant in variants:
+            captures=[(output/f'{case}/{variant}-{fork+1}/scene.rgba').read_bytes() for fork in range(options.forks)]
+            if any(frame!=captures[0] for frame in captures):raise RuntimeError('Unstable fixed-pose pixels: '+case+'/'+variant)
+        if options.before_simd:
+            if (output/f'{case}/simd-1/scene.rgba').read_bytes()!=(output/f'{case}/before-1/scene.rgba').read_bytes():
+                raise RuntimeError('Optimization changed fixed-pose pixels: '+case)
         for variant in ("original-default", "original-full"):
             item = quality_compare(output / f"{case}/simd-1/scene.rgba", output / f"{case}/{variant}-1/scene.rgba",
                                    int(1000 * scale), int(720 * scale))
@@ -251,7 +264,7 @@ def main():
     summary = []
     for scene, scale, mode in CASES:
         case = f"{scene}-{scale:g}-{mode}"
-        for variant in VARIANTS:
+        for variant in variants:
             matches = [r for r in rows if r["case"] == case and r["variant"] == variant]
             item = {"case": case, "variant": variant, "forks": len(matches)}
             for key, value in matches[0].items():

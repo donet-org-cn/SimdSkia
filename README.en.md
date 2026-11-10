@@ -144,6 +144,7 @@ Android uses CPU/SIMD rendering. The release record distinguishes tests of the s
 
 ## Compatibility and performance
 
+- **2026-11-10 working-tree follow-up.** Runtime effects took about 86% less time, atlas rendering 27% less, and meshes 14% less. Fixed-font Native AOT examples used about 15.6 MiB less private memory. Full-page timing, system-font workloads, and original-renderer quality are assessed separately. [Performance, CPU and memory](docs/PERFORMANCE-2026-11-10-ROUND2.md) · [Validation and remaining gaps](docs/VALIDATION-PERFORMANCE-2026-11-10-ROUND2.md)
 - **Rendering internals.** The CPU rasterizer uses SIMD acceleration. Font handling, basic text layout, and image codecs are also implemented in C#. [Architecture](docs/ARCHITECTURE.md) · [Third-party dependencies](docs/DEPENDENCIES.md)
 - **SkiaSharp source compatibility.** The signature audit matched 3,230 of 3,235 entries against SkiaSharp `3.119.4`. When migrating, rebuild code that depends on `SK*` types and check native handles, pixel output, and custom control behavior. The compatibility layer has a different assembly identity from the original `SkiaSharp.dll`. [API audit](docs/PUBLIC-API-FINAL-2026-11-07.md) · [Compatibility report](docs/COMPATIBILITY.md)
 - **Document rendering.** `SKDocument.CreatePdf` exports multipage raster PDFs. For reading PDFs and rendering their pages, add `SimdSkia.Pdf`, which uses PdfPig 0.1.16 and supports the subset described in its documentation. [PDF guide](src/SimdSkia.Pdf/README.md) · [Document examples](examples/Documents/README.md)

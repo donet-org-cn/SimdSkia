@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><AllowUnsafeBlocks>true</AllowUnsafeBlocks></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../SimdSkia.Core/SimdSkia.Core.csproj" /></ItemGroup>
+  <ItemGroup><None Include="../../docs/licenses/Skia-BSD.txt" Link="licenses/Skia-BSD.txt" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="licenses" /></ItemGroup>
+</Project>

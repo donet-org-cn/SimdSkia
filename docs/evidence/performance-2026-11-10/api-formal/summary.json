@@ -1,0 +1,212 @@
+[
+  {
+    "scene": "mesh",
+    "Original": {
+      "msPerFrame": 0.332814850249584,
+      "cpuMsPerFrame": 0.3314787853577371,
+      "cpuPercentOfMachine": 8.29947823191759,
+      "allocatedBytesPerFrame": 0,
+      "workingSetMiB": 27.8046875,
+      "privateMiB": 8.90625
+    },
+    "Managed": {
+      "msPerFrame": 1.629004674796748,
+      "cpuMsPerFrame": 1.6296012269938651,
+      "cpuPercentOfMachine": 8.299757267447129,
+      "allocatedBytesPerFrame": 1.934959349593496,
+      "workingSetMiB": 29.62890625,
+      "privateMiB": 10.328125
+    },
+    "Before": {
+      "msPerFrame": 2.3161881502890176,
+      "cpuMsPerFrame": 2.303106936416185,
+      "cpuPercentOfMachine": 8.28051365775843,
+      "allocatedBytesPerFrame": 2.7514450867052025,
+      "workingSetMiB": 32.40625,
+      "privateMiB": 12.36328125
+    },
+    "quality": {
+      "maximum": 1,
+      "rmse": 0.24028994530046405,
+      "passed": true
+    },
+    "managedOverOriginal": 4.894627368866285,
+    "beforeAfterExact": true,
+    "afterOverBefore": 0.7033127574689811
+  },
+  {
+    "scene": "patch",
+    "Original": {
+      "msPerFrame": 0.7687645533141211,
+      "cpuMsPerFrame": 0.766963426371511,
+      "cpuPercentOfMachine": 8.297836555252454,
+      "allocatedBytesPerFrame": 0,
+      "workingSetMiB": 27.29296875,
+      "privateMiB": 7.53125
+    },
+    "Managed": {
+      "msPerFrame": 2.123518037135278,
+      "cpuMsPerFrame": 2.1494708994708995,
+      "cpuPercentOfMachine": 8.450064869457991,
+      "allocatedBytesPerFrame": 2.5251989389920424,
+      "workingSetMiB": 31.20703125,
+      "privateMiB": 10.91796875
+    },
+    "Before": {
+      "msPerFrame": 2.540864761904762,
+      "cpuMsPerFrame": 2.545926517571885,
+      "cpuPercentOfMachine": 8.296919034189585,
+      "allocatedBytesPerFrame": 3.022222222222222,
+      "workingSetMiB": 33.9609375,
+      "privateMiB": 13.71484375
+    },
+    "quality": {
+      "maximum": 1,
+      "rmse": 0.2530836032250098,
+      "passed": true
+    },
+    "managedOverOriginal": 2.762247593207641,
+    "beforeAfterExact": true,
+    "afterOverBefore": 0.8357461872718407
+  },
+  {
+    "scene": "atlas32",
+    "Original": {
+      "msPerFrame": 0.039764481336050504,
+      "cpuMsPerFrame": 0.039608081912619914,
+      "cpuPercentOfMachine": 8.300552984792917,
+      "allocatedBytesPerFrame": 0,
+      "workingSetMiB": 30.5390625,
+      "privateMiB": 9.921875
+    },
+    "Managed": {
+      "msPerFrame": 0.32924,
+      "cpuMsPerFrame": 0.3234070616883117,
+      "cpuPercentOfMachine": 8.300229284752564,
+      "allocatedBytesPerFrame": 312.3917695473251,
+      "workingSetMiB": 33.13671875,
+      "privateMiB": 12.0390625
+    },
+    "Before": {
+      "msPerFrame": 0.46716859311150033,
+      "cpuMsPerFrame": 0.4743140688849971,
+      "cpuPercentOfMachine": 8.460794023807434,
+      "allocatedBytesPerFrame": 312.5557501459428,
+      "workingSetMiB": 34.84375,
+      "privateMiB": 13.94140625
+    },
+    "quality": {
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    "managedOverOriginal": 8.279750896725787,
+    "beforeAfterExact": true,
+    "afterOverBefore": 0.7047562803979407
+  },
+  {
+    "scene": "runtime",
+    "Original": {
+      "msPerFrame": 0.2806694142406173,
+      "cpuMsPerFrame": 0.2795071904594879,
+      "cpuPercentOfMachine": 8.298825839161648,
+      "allocatedBytesPerFrame": 0,
+      "workingSetMiB": 32.0859375,
+      "privateMiB": 10.45703125
+    },
+    "Managed": {
+      "msPerFrame": 5.188589032258065,
+      "cpuMsPerFrame": 5.241935483870968,
+      "cpuPercentOfMachine": 8.431286725387855,
+      "allocatedBytesPerFrame": 3.870967741935484,
+      "workingSetMiB": 34.984375,
+      "privateMiB": 13.08984375
+    },
+    "Before": {
+      "msPerFrame": 6.4269552,
+      "cpuMsPerFrame": 6.5,
+      "cpuPercentOfMachine": 8.452426725522605,
+      "allocatedBytesPerFrame": 4.8,
+      "workingSetMiB": 36.92578125,
+      "privateMiB": 14.94140625
+    },
+    "quality": {
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    "managedOverOriginal": 18.486478287263242,
+    "beforeAfterExact": true,
+    "afterOverBefore": 0.8073168196750562
+  },
+  {
+    "scene": "perlin",
+    "Original": {
+      "msPerFrame": 13.17845081967213,
+      "cpuMsPerFrame": 13.319672131147541,
+      "cpuPercentOfMachine": 8.373136907476642,
+      "allocatedBytesPerFrame": 0,
+      "workingSetMiB": 29.56640625,
+      "privateMiB": 7.76171875
+    },
+    "Managed": {
+      "msPerFrame": 4.6149706896551725,
+      "cpuMsPerFrame": 4.579741379310345,
+      "cpuPercentOfMachine": 8.269719151153373,
+      "allocatedBytesPerFrame": 3.4482758620689653,
+      "workingSetMiB": 35.078125,
+      "privateMiB": 13.09765625
+    },
+    "Before": {
+      "msPerFrame": 5.562088888888889,
+      "cpuMsPerFrame": 5.533854166666667,
+      "cpuPercentOfMachine": 8.291030997546885,
+      "allocatedBytesPerFrame": 4.166666666666667,
+      "workingSetMiB": 36.96875,
+      "privateMiB": 14.953125
+    },
+    "quality": {
+      "maximum": 0,
+      "rmse": 0.0,
+      "passed": true
+    },
+    "managedOverOriginal": 0.35019068271409987,
+    "beforeAfterExact": true,
+    "afterOverBefore": 0.8297189746237735
+  },
+  {
+    "scene": "bilingual",
+    "Original": {
+      "msPerFrame": 0.06668937979326442,
+      "cpuMsPerFrame": 0.0664283927975992,
+      "cpuPercentOfMachine": 8.30037245665651,
+      "allocatedBytesPerFrame": 960,
+      "workingSetMiB": 39.58203125,
+      "privateMiB": 16.88671875
+    },
+    "Managed": {
+      "msPerFrame": 0.020271721062233936,
+      "cpuMsPerFrame": 0.02020525368290271,
+      "cpuPercentOfMachine": 8.300748047007813,
+      "allocatedBytesPerFrame": 0.021487938374214473,
+      "workingSetMiB": 38.515625,
+      "privateMiB": 14.80078125
+    },
+    "Before": {
+      "msPerFrame": 0.020166330568929445,
+      "cpuMsPerFrame": 0.020087091326157647,
+      "cpuPercentOfMachine": 8.300626650828628,
+      "allocatedBytesPerFrame": 0.021375816087318193,
+      "workingSetMiB": 38.453125,
+      "privateMiB": 14.8671875
+    },
+    "quality": {
+      "maximum": 207,
+      "rmse": 23.542567233074394,
+      "passed": false
+    },
+    "managedOverOriginal": 0.3039722535293598,
+    "beforeAfterExact": true,
+    "afterOverBefore": 1.00522606197217
+  }
+]

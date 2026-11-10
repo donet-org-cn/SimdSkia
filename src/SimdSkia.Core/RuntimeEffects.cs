@@ -29,12 +29,13 @@ public sealed partial class RuntimeEffectProgram
     private readonly bool coordinateDependent;
     private readonly IReadOnlyList<RuntimeUniform> uniforms;
     private readonly IReadOnlyList<RuntimeChildDeclaration> children;
+    private readonly Lazy<FloatProgram?> numericProgram;
     public RuntimeEffectKind Kind {get;}
     public int UniformSize {get;}
     public IReadOnlyList<RuntimeUniform> Uniforms=>uniforms;
     public IReadOnlyList<RuntimeChildDeclaration> Children=>children;
     private RuntimeEffectProgram(RuntimeEffectKind kind,Statement body,int slots,int[] parameters,RuntimeUniform[] uniforms,RuntimeChildDeclaration[] children,bool coordinateDependent)
-    {Kind=kind;this.body=body;this.slots=slots;this.parameters=parameters;this.coordinateDependent=coordinateDependent;this.uniforms=Array.AsReadOnly(uniforms);this.children=Array.AsReadOnly(children);UniformSize=uniforms.Length==0?0:uniforms[^1].Offset+uniforms[^1].Size;}
+    {Kind=kind;this.body=body;this.slots=slots;this.parameters=parameters;this.coordinateDependent=coordinateDependent;this.uniforms=Array.AsReadOnly(uniforms);this.children=Array.AsReadOnly(children);UniformSize=uniforms.Length==0?0:uniforms[^1].Offset+uniforms[^1].Size;numericProgram=new(()=>FloatProgram.TryCreate(this));}
     public static RuntimeEffectProgram Compile(string source,RuntimeEffectKind kind)
     {ArgumentNullException.ThrowIfNull(source);if(source.Length>65536)throw new NotSupportedException("Runtime source exceeds 64 KiB.");return new Parser(source,kind).Parse();}
     public BoundRuntimeEffect Bind(ReadOnlySpan<byte> data,IReadOnlyList<IRuntimeEffectChild?>? inputs=null)
@@ -87,7 +88,7 @@ public sealed partial class RuntimeEffectProgram
         internal abstract Value Evaluate(ref Evaluation context);
     }
     private sealed class Constant(Value value):Expression(value.Type)
-    {internal override bool IsConstant=>true;internal override Value Evaluate(ref Evaluation context){context.Tick();return value;}}
+    {internal Value Literal=>value;internal override bool IsConstant=>true;internal override Value Evaluate(ref Evaluation context){context.Tick();return value;}}
     private sealed class Local(int slot,RuntimeType type):Expression(type)
     {
         internal int Slot=>slot;
@@ -95,6 +96,8 @@ public sealed partial class RuntimeEffectProgram
     }
     private sealed class Uniform(RuntimeUniform uniform,Expression? index=null):Expression(uniform.Type)
     {
+        internal RuntimeUniform Declaration=>uniform;
+        internal Expression? Element=>index;
         internal override Value Evaluate(ref Evaluation context)
         {
             context.Tick();int element=index is null?0:(int)index.Evaluate(ref context)[0];if((uint)element>=(uint)uniform.Count)throw new InvalidOperationException("Runtime uniform array index is out of bounds.");
@@ -104,6 +107,8 @@ public sealed partial class RuntimeEffectProgram
     }
     private sealed class Swizzle(Expression source,int[] indices):Expression(new(source.Type.Scalar,indices.Length))
     {
+        internal Expression Source=>source;
+        internal int[] Indices=>indices;
         internal override bool IsConstant=>source.IsConstant;
         internal override Value Evaluate(ref Evaluation context)
         {context.Tick();var input=source.Evaluate(ref context);var result=new Value{Type=Type};for(int i=0;i<indices.Length;i++){if(Type.Scalar==RuntimeScalarKind.Int)result.SetInt(i,input.Int(indices[i]));else result[i]=input[indices[i]];}return result;}
@@ -119,12 +124,17 @@ public sealed partial class RuntimeEffectProgram
     }
     private sealed class Unary(string operation,Expression value,RuntimeType type):Expression(type)
     {
+        internal string Operation=>operation;
+        internal Expression Operand=>value;
         internal override bool IsConstant=>value.IsConstant;
         internal override Value Evaluate(ref Evaluation context)
         {context.Tick();var v=value.Evaluate(ref context);if(operation=="!")return Value.Scalar(v.Truth?0:1,RuntimeScalarKind.Bool);if(operation=="-")for(int i=0;i<Type.Components;i++){if(Type.Scalar==RuntimeScalarKind.Int)v.SetInt(i,unchecked(-v.Int(i)));else v[i]=-v[i];}return v;}
     }
     private sealed class Binary(string operation,Expression left,Expression right,RuntimeType type):Expression(type)
     {
+        internal string Operation=>operation;
+        internal Expression Left=>left;
+        internal Expression Right=>right;
         internal override bool IsConstant=>left.IsConstant&&right.IsConstant;
         internal override Value Evaluate(ref Evaluation context)
         {
@@ -158,6 +168,7 @@ public sealed partial class RuntimeEffectProgram
     {internal override bool IsConstant=>condition.IsConstant&&yes.IsConstant&&no.IsConstant;internal override Value Evaluate(ref Evaluation context){context.Tick();return(condition.Evaluate(ref context).Truth?yes:no).Evaluate(ref context).Convert(Type);}}
     private sealed class Constructor(RuntimeType type,Expression[] arguments):Expression(type)
     {
+        internal Expression[] Arguments=>arguments;
         internal override bool IsConstant=>arguments.All(a=>a.IsConstant);
         internal override Value Evaluate(ref Evaluation context)
         {
@@ -178,6 +189,8 @@ public sealed partial class RuntimeEffectProgram
     }
     private sealed class Builtin(string name,RuntimeType type,Expression[] arguments):Expression(type)
     {
+        internal string Name=>name;
+        internal Expression[] Arguments=>arguments;
         internal override bool IsConstant=>arguments.All(a=>a.IsConstant);
         internal override Value Evaluate(ref Evaluation context)
         {
@@ -215,14 +228,19 @@ public sealed partial class RuntimeEffectProgram
     }
     private sealed class Block(Statement[] statements):Statement
     {
+        internal Statement[] Statements=>statements;
         internal override bool AlwaysReturns=>statements.Any(s=>s.AlwaysReturns);
         internal override bool Execute(ref Evaluation context,out Value result)
         {context.Tick();foreach(var statement in statements)if(statement.Execute(ref context,out result))return true;result=default;return false;}
     }
     private sealed class Return(Expression value):Statement
-    {internal override bool AlwaysReturns=>true;internal override bool Execute(ref Evaluation context,out Value result){context.Tick();result=value.Evaluate(ref context);return true;}}
+    {internal Expression Value=>value;internal override bool AlwaysReturns=>true;internal override bool Execute(ref Evaluation context,out Value result){context.Tick();result=value.Evaluate(ref context);return true;}}
     private sealed class Assign(int slot,RuntimeType type,Expression value,int[]? components=null):Statement
     {
+        internal int Slot=>slot;
+        internal RuntimeType TargetType=>type;
+        internal Expression Value=>value;
+        internal int[]? Components=>components;
         internal override bool Execute(ref Evaluation context,out Value result)
         {context.Tick();var v=value.Evaluate(ref context);if(components is null)context.Locals[slot]=v.Convert(type);else{var target=context.Locals[slot];for(int i=0;i<components.Length;i++){if(type.Scalar==RuntimeScalarKind.Int)target.SetInt(components[i],v.Int(i));else target[components[i]]=v[i];}context.Locals[slot]=target;}result=default;return false;}
     }
@@ -238,9 +256,20 @@ public sealed partial class RuntimeEffectProgram
         private readonly byte[] data;
         private readonly IRuntimeEffectChild?[] children;
         private readonly Vector4? constant;
+        private readonly FloatProgram? numeric;
         internal BoundRuntimeEffect(RuntimeEffectProgram program,byte[] data,IRuntimeEffectChild?[] children)
-        {this.program=program;this.data=data;this.children=children;if(program.Kind==RuntimeEffectKind.Shader&&!program.coordinateDependent&&children.All(c=>c?.Kind!=RuntimeEffectKind.Shader))constant=program.Evaluate(data,children,default,default);}
+        {
+            this.program=program;this.data=data;this.children=children;
+            if(program.Kind==RuntimeEffectKind.Shader&&!program.coordinateDependent&&children.All(c=>c?.Kind!=RuntimeEffectKind.Shader))constant=program.Evaluate(data,children,default,default);
+            else if(!AppContext.TryGetSwitch("SimdSkia.DisableRuntimeNumericProgram",out bool disabled)||!disabled)numeric=program.numericProgram.Value?.Bind(data);
+        }
         public bool TryGetConstant(out Vector4 value){value=constant??default;return constant.HasValue;}
-        public Vector4 Evaluate(Vector4 first,Vector4 second=default)=>constant??program.Evaluate(data,children,first,second);
+        public Vector4 Evaluate(Vector4 first,Vector4 second=default)=>constant??(numeric is {} compiled?compiled.Evaluate(first,second):program.Evaluate(data,children,first,second));
+        internal void EvaluateBatch(Span<Vector4> samples)
+        {
+            if(constant is {} color){samples.Fill(color);return;}
+            if(numeric is {} compiled){compiled.EvaluateBatch(samples);return;}
+            for(int i=0;i<samples.Length;i++)samples[i]=program.Evaluate(data,children,samples[i],default);
+        }
     }
 }

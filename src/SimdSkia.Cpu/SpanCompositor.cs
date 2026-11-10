@@ -52,7 +52,13 @@ internal static partial class SpanCompositor
         byte sb=paint.Composite == CompositeMode.Clear ? (byte)0 : PixelBuffer.Multiply(c.B,sa);
         byte sourceAlpha=paint.Composite == CompositeMode.Clear ? (byte)0 : sa;
         int offset=0;
-        if (alpha != AlphaFormat.Straight && CpuOptions.EnableSimd && Vector.IsHardwareAccelerated && pixels.Length >= Vector<byte>.Count)
+        if (alpha != AlphaFormat.Straight && CpuOptions.EnableSimd && Sse2.IsSupported)
+        {
+            uint packed=(uint)(format==PixelFormat.Rgba8888?sr:sb)|(uint)sg<<8|
+                (uint)(format==PixelFormat.Rgba8888?sb:sr)<<16|(uint)sourceAlpha<<24;
+            offset=ApplyConstant(pixels,packed,remainder);
+        }
+        else if (alpha != AlphaFormat.Straight && CpuOptions.EnableSimd && Vector.IsHardwareAccelerated && pixels.Length >= Vector<byte>.Count)
         {
             Span<byte> pattern=stackalloc byte[Vector<byte>.Count];
             for(int j=0;j<pattern.Length;j+=4) {pattern[j+ri]=sr;pattern[j+1]=sg;pattern[j+bi]=sb;pattern[j+3]=sourceAlpha;}
@@ -77,6 +83,51 @@ internal static partial class SpanCompositor
             if(alpha == AlphaFormat.Straight) {r=PixelBuffer.Unmultiply(r,oa);g=PixelBuffer.Unmultiply(g,oa);b=PixelBuffer.Unmultiply(b,oa);}
             p[ri]=r;p[1]=g;p[bi]=b;p[3]=oa;
         }
+    }
+
+    // Keep unpacked pixels in their native 128-bit lanes. Generic Vector.Widen /
+    // Narrow also reorder AVX2 lanes, which is unnecessary for this operation.
+    private static int ApplyConstant(Span<byte> pixels,uint packed,byte remainder)
+    {
+        int offset=0;
+        ref byte first=ref MemoryMarshal.GetReference(pixels);
+        if(Avx2.IsSupported)
+        {
+            var source=Vector256.Create(packed).AsByte();
+            var lowSource=Avx2.UnpackLow(source,Vector256<byte>.Zero).AsUInt16();
+            var highSource=Avx2.UnpackHigh(source,Vector256<byte>.Zero).AsUInt16();
+            var factor=Vector256.Create((ushort)remainder);
+            var rounding=Vector256.Create((ushort)128);
+            var divisor=Vector256.Create((ushort)257);
+            for(;offset<=pixels.Length-32;offset+=32)
+            {
+                var value=Vector256.LoadUnsafe(ref first,(nuint)offset);
+                var low=Avx2.UnpackLow(value,Vector256<byte>.Zero).AsUInt16();
+                var high=Avx2.UnpackHigh(value,Vector256<byte>.Zero).AsUInt16();
+                low=Avx2.Add(Avx2.MultiplyHigh(Avx2.Add(Avx2.MultiplyLow(low,factor),rounding),divisor),lowSource);
+                high=Avx2.Add(Avx2.MultiplyHigh(Avx2.Add(Avx2.MultiplyLow(high,factor),rounding),divisor),highSource);
+                Avx2.PackUnsignedSaturate(low.AsInt16(),high.AsInt16()).StoreUnsafe(ref first,(nuint)offset);
+            }
+        }
+        if(offset<=pixels.Length-16)
+        {
+            var source=Vector128.Create(packed).AsByte();
+            var lowSource=Sse2.UnpackLow(source,Vector128<byte>.Zero).AsUInt16();
+            var highSource=Sse2.UnpackHigh(source,Vector128<byte>.Zero).AsUInt16();
+            var factor=Vector128.Create((ushort)remainder);
+            var rounding=Vector128.Create((ushort)128);
+            var divisor=Vector128.Create((ushort)257);
+            for(;offset<=pixels.Length-16;offset+=16)
+            {
+                var value=Vector128.LoadUnsafe(ref first,(nuint)offset);
+                var low=Sse2.UnpackLow(value,Vector128<byte>.Zero).AsUInt16();
+                var high=Sse2.UnpackHigh(value,Vector128<byte>.Zero).AsUInt16();
+                low=Sse2.Add(Sse2.MultiplyHigh(Sse2.Add(Sse2.MultiplyLow(low,factor),rounding),divisor),lowSource);
+                high=Sse2.Add(Sse2.MultiplyHigh(Sse2.Add(Sse2.MultiplyLow(high,factor),rounding),divisor),highSource);
+                Sse2.PackUnsignedSaturate(low.AsInt16(),high.AsInt16()).StoreUnsafe(ref first,(nuint)offset);
+            }
+        }
+        return offset;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

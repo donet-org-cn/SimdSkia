@@ -151,7 +151,8 @@ internal static class Bench
             if(modules.Any(n=>n.Equals("libSkiaSharp.dll",StringComparison.OrdinalIgnoreCase)||n.Equals("libHarfBuzzSharp.dll",StringComparison.OrdinalIgnoreCase)))throw new InvalidOperationException("Native reference leaked into managed worker.");
             var counters=SimdSkiaGpuDiagnostics.GetStatistics();
             object diagnostics=new{gpuCommands=counters.GpuCommands-countersBefore.GpuCommands,cpuFallbackCommands=counters.CpuFallbackCommands-countersBefore.CpuFallbackCommands,
-                completedBatches=counters.CompletedBatches-countersBefore.CompletedBatches,fallbackReasons=counters.FallbackReasons,glyphCache=CacheStats("GlyphCoverageCache"),textCache=CacheStats("TextCoverageCache")};
+                completedBatches=counters.CompletedBatches-countersBefore.CompletedBatches,fallbackReasons=counters.FallbackReasons,glyphCache=CacheStats("GlyphCoverageCache"),textCache=CacheStats("TextCoverageCache"),
+                drawingTimings=SimdSkiaDiagnostics.GetDrawingTimings().ToDictionary(p=>p.Key,p=>new{calls=p.Value.Calls,milliseconds=p.Value.Milliseconds})};
 #else
             if(!modules.Any(n=>n.Equals("libSkiaSharp.dll",StringComparison.OrdinalIgnoreCase)))throw new InvalidOperationException("Original native renderer not loaded.");
             object diagnostics=new{nativeReadbacks=gpu is null?0:frames};

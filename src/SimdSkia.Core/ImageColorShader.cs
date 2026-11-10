@@ -3,7 +3,7 @@ namespace SimdSkia;
 
 /// <summary>Immutable raster snapshot sampler. Coordinates are pixel edges;
 /// interpolation occurs on premultiplied channels before conversion to straight color.</summary>
-internal sealed class ImageColorShader(PixelBuffer pixels,int tileX,int tileY,ImageSampling sampling,float cubicB=1f/3,float cubicC=1f/3,bool raw=false) : IPremultipliedColorShader,IImageShader
+internal sealed class ImageColorShader(PixelBuffer pixels,int tileX,int tileY,ImageSampling sampling,float cubicB=1f/3,float cubicC=1f/3,bool raw=false) : IPremultipliedColorShader,IImageShader,IPremultipliedBatchShader
 {
     public bool TryGetImage(out ImageColorShader image,out Matrix3 inverse){image=this;inverse=Matrix3.Identity;return true;}
     internal bool IsNearest=>sampling==ImageSampling.Nearest;
@@ -21,6 +21,21 @@ internal sealed class ImageColorShader(PixelBuffer pixels,int tileX,int tileY,Im
     public bool IsOpaque=>pixels.Alpha==AlphaFormat.Opaque&&tileX!=3&&tileY!=3;
     public Rgba32 Sample(float x,float y)=>Straight(SampleVector(x,y));
     public Vector4 SamplePremultiplied(float x,float y)=>SampleVector(x,y);
+    void IPremultipliedBatchShader.SampleBatch(Span<Vector4> samples)
+    {
+        if(sampling!=ImageSampling.Nearest)
+        {for(int i=0;i<samples.Length;i++)samples[i]=SampleVector(samples[i].X,samples[i].Y);return;}
+        int previous=-1;ReadOnlySpan<byte> row=default;
+        for(int i=0;i<samples.Length;i++)
+        {
+            float x=samples[i].X,y=samples[i].Y;
+            if(!float.IsFinite(x)||!float.IsFinite(y)){samples[i]=default;continue;}
+            int ix=Index(Nearest(Reduce(x,pixels.Width,tileX)),pixels.Width,tileX),iy=Row(y);
+            if(ix<0||iy<0){samples[i]=default;continue;}
+            if(iy!=previous){row=pixels.GetRowSpan(iy);previous=iy;}
+            samples[i]=ReadRow(row,ix);
+        }
+    }
     private Vector4 SampleVector(float x,float y)
     {
         if(!float.IsFinite(x)||!float.IsFinite(y))return default;
@@ -46,7 +61,7 @@ internal sealed class ImageColorShader(PixelBuffer pixels,int tileX,int tileY,Im
     private static float Reduce(float x,int length,int mode)=>mode switch{0=>Math.Clamp(x,-2,length+2),1=>x%length,2=>x%(2f*length),_=>Math.Clamp(x,-2,length+2)};
     // The pinned raster sampler assigns exact texel boundaries to the lower
     // texel. Keep that rule in both the scalar sampler and cached row path.
-    private static float Nearest(float value)=>MathF.Floor(MathF.BitDecrement(value));
+    internal static float Nearest(float value)=>MathF.Abs(value)<16_777_216?MathF.Ceiling(value)-1:MathF.Floor(MathF.BitDecrement(value));
     private static int Index(float value,int length,int mode)
     {
         if(mode==0)return(int)Math.Clamp(value,0,length-1);
@@ -56,8 +71,12 @@ internal sealed class ImageColorShader(PixelBuffer pixels,int tileX,int tileY,Im
     private Vector4 Read(float x,float y)
     {
         int ix=Index(x,pixels.Width,tileX),iy=Index(y,pixels.Height,tileY);if(ix<0||iy<0)return default;
-        if(pixels.Format==PixelFormat.Alpha8)return new(0,0,0,pixels.Alpha==AlphaFormat.Opaque?1:pixels.GetRowSpan(iy)[ix]/255f);
-        var p=pixels.GetRowSpan(iy).Slice(ix*4,4);float a=pixels.Alpha==AlphaFormat.Opaque?1:p[3]/255f;
+        return ReadRow(pixels.GetRowSpan(iy),ix);
+    }
+    private Vector4 ReadRow(ReadOnlySpan<byte> row,int ix)
+    {
+        if(pixels.Format==PixelFormat.Alpha8)return new(0,0,0,pixels.Alpha==AlphaFormat.Opaque?1:row[ix]/255f);
+        var p=row.Slice(ix*4,4);float a=pixels.Alpha==AlphaFormat.Opaque?1:p[3]/255f;
         var c=new Vector4(p[pixels.Format==PixelFormat.Rgba8888?0:2]/255f,p[1]/255f,p[pixels.Format==PixelFormat.Rgba8888?2:0]/255f,a);
         if(!raw&&pixels.Alpha==AlphaFormat.Straight){c.X*=a;c.Y*=a;c.Z*=a;}return c;
     }
@@ -70,7 +89,8 @@ public interface IPremultipliedColorShader : IColorShader
     Vector4 SamplePremultiplied(float x,float y);
 }
 internal interface IImageShader {bool TryGetImage(out ImageColorShader image,out Matrix3 inverse);}
-internal sealed class PremultipliedTransformedShader(IPremultipliedColorShader shader,Matrix3 inverse) : IPremultipliedColorShader,IImageShader
+internal interface IPremultipliedBatchShader {void SampleBatch(Span<Vector4> samples);}
+internal sealed class PremultipliedTransformedShader(IPremultipliedColorShader shader,Matrix3 inverse) : IPremultipliedColorShader,IImageShader,IPremultipliedBatchShader
 {
     internal IPremultipliedColorShader ForDevice(Matrix3 deviceToLocal)
     {var combined=inverse*deviceToLocal;return shader is PremultipliedTransformedShader nested?nested.ForDevice(combined):new DeviceShader(shader,combined);}
@@ -82,11 +102,19 @@ internal sealed class PremultipliedTransformedShader(IPremultipliedColorShader s
     public bool IsOpaque=>shader.IsOpaque;
     public Rgba32 Sample(float x,float y){var p=inverse.Map(x,y);return shader.Sample(p.X,p.Y);}
     public Vector4 SamplePremultiplied(float x,float y){var p=inverse.Map(x,y);return shader.SamplePremultiplied(p.X,p.Y);}
-    private sealed class DeviceShader(IPremultipliedColorShader source,Matrix3 matrix):IPremultipliedColorShader,IImageShader
+    void IPremultipliedBatchShader.SampleBatch(Span<Vector4> samples)=>SampleTransformedBatch(shader,inverse,samples);
+    private static void SampleTransformedBatch(IPremultipliedColorShader source,Matrix3 matrix,Span<Vector4> samples)
+    {
+        for(int i=0;i<samples.Length;i++){var p=matrix.Map(samples[i].X,samples[i].Y);samples[i]=new(p.X,p.Y,0,0);}
+        if(source is IPremultipliedBatchShader batch)batch.SampleBatch(samples);
+        else for(int i=0;i<samples.Length;i++)samples[i]=source.SamplePremultiplied(samples[i].X,samples[i].Y);
+    }
+    private sealed class DeviceShader(IPremultipliedColorShader source,Matrix3 matrix):IPremultipliedColorShader,IImageShader,IPremultipliedBatchShader
     {
         public bool IsOpaque=>source.IsOpaque;
         public bool IsHorizontal=>source.IsHorizontal&&matrix.M01==0;
         public Vector4 SamplePremultiplied(float x,float y){var p=matrix.Map(x,y);return source.SamplePremultiplied(p.X,p.Y);}
+        void IPremultipliedBatchShader.SampleBatch(Span<Vector4> samples)=>SampleTransformedBatch(source,matrix,samples);
         public Rgba32 Sample(float x,float y){var p=SamplePremultiplied(x,y);return p.W>0?new(ColorBlend.Byte(p.X/p.W),ColorBlend.Byte(p.Y/p.W),ColorBlend.Byte(p.Z/p.W),ColorBlend.Byte(p.W)):default;}
         public bool TryGetImage(out ImageColorShader image,out Matrix3 inverse)
         {if(source is IImageShader raster&&raster.TryGetImage(out image,out var child)){inverse=child*matrix;return true;}image=null!;inverse=default;return false;}

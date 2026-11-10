@@ -1,0 +1,1570 @@
+diff --git a/README.en.md b/README.en.md
+index 0a17037..28fe8bd 100644
+--- a/README.en.md
++++ b/README.en.md
+@@ -144,6 +144,7 @@ Android uses CPU/SIMD rendering. The release record distinguishes tests of the s
+ 
+ ## Compatibility and performance
+ 
++- **2026-11-10 working-tree follow-up.** Runtime effects took about 86% less time, atlas rendering 27% less, and meshes 14% less. Fixed-font Native AOT examples used about 15.6 MiB less private memory. Full-page timing, system-font workloads, and original-renderer quality are assessed separately. [Performance, CPU and memory](docs/PERFORMANCE-2026-11-10-ROUND2.md) · [Validation and remaining gaps](docs/VALIDATION-PERFORMANCE-2026-11-10-ROUND2.md)
+ - **Rendering internals.** The CPU rasterizer uses SIMD acceleration. Font handling, basic text layout, and image codecs are also implemented in C#. [Architecture](docs/ARCHITECTURE.md) · [Third-party dependencies](docs/DEPENDENCIES.md)
+ - **SkiaSharp source compatibility.** The signature audit matched 3,230 of 3,235 entries against SkiaSharp `3.119.4`. When migrating, rebuild code that depends on `SK*` types and check native handles, pixel output, and custom control behavior. The compatibility layer has a different assembly identity from the original `SkiaSharp.dll`. [API audit](docs/PUBLIC-API-FINAL-2026-11-07.md) · [Compatibility report](docs/COMPATIBILITY.md)
+ - **Document rendering.** `SKDocument.CreatePdf` exports multipage raster PDFs. For reading PDFs and rendering their pages, add `SimdSkia.Pdf`, which uses PdfPig 0.1.16 and supports the subset described in its documentation. [PDF guide](src/SimdSkia.Pdf/README.md) · [Document examples](examples/Documents/README.md)
+diff --git a/README.md b/README.md
+index 3b58971..617fed0 100644
+--- a/README.md
++++ b/README.md
+@@ -144,6 +144,8 @@ Android 当前使用 CPU/SIMD 渲染。发布记录分别列出了 Android 16 AR
+ 
+ ## 兼容性与性能
+ 
++- **2026-11-10 第二轮源码优化。** 运行时效果耗时下降约 86%，图集约 27%，网格约 14%。固定字体 AOT 示例的私有内存下降约 15.6 MiB，整页耗时、系统字体场景及原版画质分别评估。本轮为工作区源码优化。[性能、CPU 与内存对照](docs/PERFORMANCE-2026-11-10-ROUND2.md) · [测试与剩余差距](docs/VALIDATION-PERFORMANCE-2026-11-10-ROUND2.md)
++- **2026-11-10 源码优化复测。** CPU、Vulkan、Direct2D、真实 AOT 窗口和长期图片内存共完成 294 个性能工作进程，另执行 82 个有效回归命令。报告逐项列出耗时、CPU、分配、内存与原版画质差异。[性能报告与图表](docs/PERFORMANCE-2026-11-10.md) · [完整测试记录](docs/VALIDATION-PERFORMANCE-2026-11-10.md)
+ - **渲染实现。** CPU 光栅化支持 SIMD 加速，字体处理、基础文字排版和图像编解码也由 C# 实现。[架构](docs/ARCHITECTURE.md) · [第三方依赖](docs/DEPENDENCIES.md)
+ - **SkiaSharp 源码兼容。** 以 SkiaSharp `3.119.4` 为基线，签名审计匹配了 3,235 项中的 3,230 项。迁移时应重新编译依赖 `SK*` 类型的代码，并检查原生句柄、像素输出和自定义控件的行为。兼容层与原版 `SkiaSharp.dll` 的程序集标识不同。[API 审计](docs/PUBLIC-API-FINAL-2026-11-07.md) · [兼容性报告](docs/COMPATIBILITY.md)
+ - **文档处理。** `SKDocument.CreatePdf` 可导出多页栅格 PDF。需要读取和渲染 PDF 页面时，另装基于 PdfPig 0.1.16 的 `SimdSkia.Pdf`，其读取能力限于文档列出的子集。[PDF 使用说明](src/SimdSkia.Pdf/README.md) · [文档示例](examples/Documents/README.md)
+diff --git a/SimdSkia.sln b/SimdSkia.sln
+index 20f76d7..99543cb 100644
+--- a/SimdSkia.sln
++++ b/SimdSkia.sln
+@@ -527,6 +527,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Managed", "tests\LayerBound
+ EndProject
+ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GpuPreferred", "tests\GpuPreferred\GpuPreferred.csproj", "{25D9A90C-F0DD-4625-8865-C54DF27D5F02}"
+ EndProject
++Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuntimeNumeric", "tests\RuntimeNumeric\RuntimeNumeric.csproj", "{3A47FB0F-70F3-484F-94AE-F5258B858C16}"
++EndProject
+ Global
+ 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+ 		Debug|Any CPU = Debug|Any CPU
+@@ -2805,6 +2807,18 @@ Global
+ 		{25D9A90C-F0DD-4625-8865-C54DF27D5F02}.Release|x64.Build.0 = Release|Any CPU
+ 		{25D9A90C-F0DD-4625-8865-C54DF27D5F02}.Release|x86.ActiveCfg = Release|Any CPU
+ 		{25D9A90C-F0DD-4625-8865-C54DF27D5F02}.Release|x86.Build.0 = Release|Any CPU
++		{3A47FB0F-70F3-484F-94AE-F5258B858C16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
++		{3A47FB0F-70F3-484F-94AE-F5258B858C16}.Debug|Any CPU.Build.0 = Debug|Any CPU
++		{3A47FB0F-70F3-484F-94AE-F5258B858C16}.Debug|x64.ActiveCfg = Debug|Any CPU
++		{3A47FB0F-70F3-484F-94AE-F5258B858C16}.Debug|x64.Build.0 = Debug|Any CPU
++		{3A47FB0F-70F3-484F-94AE-F5258B858C16}.Debug|x86.ActiveCfg = Debug|Any CPU
++		{3A47FB0F-70F3-484F-94AE-F5258B858C16}.Debug|x86.Build.0 = Debug|Any CPU
++		{3A47FB0F-70F3-484F-94AE-F5258B858C16}.Release|Any CPU.ActiveCfg = Release|Any CPU
++		{3A47FB0F-70F3-484F-94AE-F5258B858C16}.Release|Any CPU.Build.0 = Release|Any CPU
++		{3A47FB0F-70F3-484F-94AE-F5258B858C16}.Release|x64.ActiveCfg = Release|Any CPU
++		{3A47FB0F-70F3-484F-94AE-F5258B858C16}.Release|x64.Build.0 = Release|Any CPU
++		{3A47FB0F-70F3-484F-94AE-F5258B858C16}.Release|x86.ActiveCfg = Release|Any CPU
++		{3A47FB0F-70F3-484F-94AE-F5258B858C16}.Release|x86.Build.0 = Release|Any CPU
+ 	EndGlobalSection
+ 	GlobalSection(SolutionProperties) = preSolution
+ 		HideSolutionNode = FALSE
+@@ -3067,5 +3081,6 @@ Global
+ 		{8F59BA2B-8A4B-41C7-AA53-7F1D7370DD81} = {346C22DA-DA82-64F3-587C-54354DB7F4F4}
+ 		{66E7D4EB-B7FB-4541-8E7A-A40B8157E43A} = {346C22DA-DA82-64F3-587C-54354DB7F4F4}
+ 		{25D9A90C-F0DD-4625-8865-C54DF27D5F02} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
++		{3A47FB0F-70F3-484F-94AE-F5258B858C16} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+ 	EndGlobalSection
+ EndGlobal
+diff --git a/benchmarks/AvaloniaGpuParity/Shared/Program.cs b/benchmarks/AvaloniaGpuParity/Shared/Program.cs
+index c1bcc04..df20c93 100644
+--- a/benchmarks/AvaloniaGpuParity/Shared/Program.cs
++++ b/benchmarks/AvaloniaGpuParity/Shared/Program.cs
+@@ -151,7 +151,8 @@ internal static class Bench
+             if(modules.Any(n=>n.Equals("libSkiaSharp.dll",StringComparison.OrdinalIgnoreCase)||n.Equals("libHarfBuzzSharp.dll",StringComparison.OrdinalIgnoreCase)))throw new InvalidOperationException("Native reference leaked into managed worker.");
+             var counters=SimdSkiaGpuDiagnostics.GetStatistics();
+             object diagnostics=new{gpuCommands=counters.GpuCommands-countersBefore.GpuCommands,cpuFallbackCommands=counters.CpuFallbackCommands-countersBefore.CpuFallbackCommands,
+-                completedBatches=counters.CompletedBatches-countersBefore.CompletedBatches,fallbackReasons=counters.FallbackReasons,glyphCache=CacheStats("GlyphCoverageCache"),textCache=CacheStats("TextCoverageCache")};
++                completedBatches=counters.CompletedBatches-countersBefore.CompletedBatches,fallbackReasons=counters.FallbackReasons,glyphCache=CacheStats("GlyphCoverageCache"),textCache=CacheStats("TextCoverageCache"),
++                drawingTimings=SimdSkiaDiagnostics.GetDrawingTimings().ToDictionary(p=>p.Key,p=>new{calls=p.Value.Calls,milliseconds=p.Value.Milliseconds})};
+ #else
+             if(!modules.Any(n=>n.Equals("libSkiaSharp.dll",StringComparison.OrdinalIgnoreCase)))throw new InvalidOperationException("Original native renderer not loaded.");
+             object diagnostics=new{nativeReadbacks=gpu is null?0:frames};
+diff --git a/benchmarks/CodecSkiaComparison/Managed/Managed.csproj b/benchmarks/CodecSkiaComparison/Managed/Managed.csproj
+index d2fdcbe..62c0330 100644
+--- a/benchmarks/CodecSkiaComparison/Managed/Managed.csproj
++++ b/benchmarks/CodecSkiaComparison/Managed/Managed.csproj
+@@ -1,7 +1,8 @@
+ <Project Sdk="Microsoft.NET.Sdk">
+   <PropertyGroup><OutputType>Exe</OutputType><DefineConstants>$(DefineConstants);MANAGED</DefineConstants></PropertyGroup>
+   <ItemGroup>
+-    <ProjectReference Include="../../../src/SimdSkia.Compatibility/SimdSkia.Compatibility.csproj" />
++    <ProjectReference Include="../../../src/SimdSkia.Compatibility/SimdSkia.Compatibility.csproj" Condition="'$(FrozenEngineDirectory)' == ''" />
++    <Reference Include="$(FrozenEngineDirectory)/SimdSkia*.dll;$(FrozenEngineDirectory)/Sdcb*.dll;$(FrozenEngineDirectory)/Clipper2Lib.dll" Condition="'$(FrozenEngineDirectory)' != ''" />
+     <Compile Include="../Shared/Program.cs" />
+   </ItemGroup>
+ </Project>
+diff --git a/benchmarks/CodecSkiaComparison/Shared/Program.cs b/benchmarks/CodecSkiaComparison/Shared/Program.cs
+index c849d77..f379c2a 100644
+--- a/benchmarks/CodecSkiaComparison/Shared/Program.cs
++++ b/benchmarks/CodecSkiaComparison/Shared/Program.cs
+@@ -67,13 +67,9 @@ Console.WriteLine($"{engine} {scene} {operation}: {row.millisecondsPerImage:F3}m
+ 
+ static SKBitmap Decode(byte[] input,int width=0,int height=0)
+ {
+-#if MANAGED
+-    return SKBitmap.Decode(input);
+-#else
+     if(width==0){var bounds=SKBitmap.DecodeBounds(input);width=bounds.Width;height=bounds.Height;}
+     return SKBitmap.Decode(input,new SKImageInfo(width,height,SKColorType.Rgba8888,SKAlphaType.Unpremul))
+-        ??throw new InvalidDataException("Original decode failed");
+-#endif
++        ??throw new InvalidDataException("Decode failed");
+ }
+ static byte[] Encode(SKBitmap bitmap,bool png)
+ {
+diff --git a/benchmarks/Report/Program.cs b/benchmarks/Report/Program.cs
+index 89267ec..1777ba9 100644
+--- a/benchmarks/Report/Program.cs
++++ b/benchmarks/Report/Program.cs
+@@ -90,7 +90,7 @@ foreach(var size in keys.Select(k=>(k.Width,k.Height)).Distinct())
+     text.AppendLine();
+     WriteChart(size.Width,size.Height);
+ }
+-text.AppendLine("## 解读边界\n\n- 每个‘op’是一整帧工作负载；rectangles/blend 各含 64 个矩形，chinese 含 4 行，其余 1 项。除 clear 和 codec 外，每帧含同样的清屏。对象/字体/图像准备、JSON、像素核查不在计时内；绘制产生的分配及实际 GC 在计时内。固定场景允许正常复用缓存；额外 curve-changing/chinese-changing 场景每帧移动 1/16 像素、97 个位置循环，超过 64 项缓存容量，强制覆盖率/文字缓存持续未命中。变化场景像素 gate 检查 frame=0；变化位置另外由冻结渲染器随机测试检查。\n- CPU RGBA8888/Premul、连续 stride、同尺寸/画笔/命令/字体。PNG 解码共享原版生成的相同压缩输入，双方输出 RGBA8888/Unpremul。\n- PNG 编码像素虽相同，原版压缩与 SimdSkia stored 块不同，必须同时看输出字节，不能据时间宣布压缩效率优势。\n- AA/字体必须检查本轮相同尺寸的像素 gate；失败的时间保留为诊断数据。未提高容差，也未降低画质。\n- B/op 是线程托管分配，不含 native malloc。private/working set 是整个进程，包含 runtime、native/font caches 和先前场景，不能当纯渲染缓冲区内存公平排名；peak working set 是进程历史峰值。完整分配、GC 和内存字段在 CSV/JSON。\n- P95 是实际单帧延迟，包含 GC/调度抖动；耗时列是批均值中位数，两者定义不同。原始 ticks 也包含两次计时读取的微小共同开销。\n- 样本不控制 OS power plan/Turbo/其他用户进程，不给全引擎或所有硬件的优势承诺。\n");
++text.AppendLine("## 解读边界\n\n- 每个‘op’是一整帧工作负载；rectangles/blend 各含 64 个矩形，chinese 含 4 行，其余 1 项。除 clear 和 codec 外，每帧含同样的清屏。对象/字体/图像准备、JSON、像素核查不在计时内；绘制产生的分配及实际 GC 在计时内。固定场景允许正常复用缓存；额外 curve-changing/chinese-changing 场景每帧移动 1/16 像素、97 个位置循环，超过 64 项缓存容量，强制覆盖率/文字缓存持续未命中。变化场景像素 gate 检查 frame=0；变化位置另外由冻结渲染器随机测试检查。\n- CPU RGBA8888/Premul、连续 stride、同尺寸/画笔/命令/字体。PNG 解码共享原版生成的相同压缩输入，双方输出 RGBA8888/Unpremul。\n- PNG 编码像素虽相同，两者均压缩 PNG，但筛选、无损降位和压缩策略不同，必须同时看输出字节，不能据时间宣布压缩效率优势。\n- AA/字体必须检查本轮相同尺寸的像素 gate；失败的时间保留为诊断数据。未提高容差，也未降低画质。\n- B/op 是线程托管分配，不含 native malloc。private/working set 是整个进程，包含 runtime、native/font caches 和先前场景，不能当纯渲染缓冲区内存公平排名；peak working set 是进程历史峰值。完整分配、GC 和内存字段在 CSV/JSON。\n- P95 是实际单帧延迟，包含 GC/调度抖动；耗时列是批均值中位数，两者定义不同。原始 ticks 也包含两次计时读取的微小共同开销。\n- 样本不控制 OS power plan/Turbo/其他用户进程，不给全引擎或所有硬件的优势承诺。\n");
+ Directory.CreateDirectory(Path.GetDirectoryName(markdownPath)!);File.WriteAllText(markdownPath,text.ToString());Console.WriteLine($"Report: {markdownPath}; {rows.Count} engine/workload rows.");return 0;
+ 
+ void WriteChart(int width,int height)
+diff --git a/benchmarks/Shared/Workloads.cs b/benchmarks/Shared/Workloads.cs
+index 35dc30a..e12b000 100644
+--- a/benchmarks/Shared/Workloads.cs
++++ b/benchmarks/Shared/Workloads.cs
+@@ -79,11 +79,7 @@ internal sealed class Workload : IDisposable
+     }
+     private static SKBitmap Decode(byte[] data,int width,int height)
+     {
+-#if ORIGINAL
+         return SKBitmap.Decode(data,new SKImageInfo(width,height,SKColorType.Rgba8888,SKAlphaType.Unpremul))??throw new InvalidDataException("Reference decoder failed.");
+-#else
+-        return SKBitmap.Decode(data);
+-#endif
+     }
+     public static SKBitmap CreatePixels(int width,int height)
+     {
+diff --git a/docs/PROGRESS.md b/docs/PROGRESS.md
+index 07b7b64..6fa9f10 100644
+--- a/docs/PROGRESS.md
++++ b/docs/PROGRESS.md
+@@ -1,5 +1,13 @@
+ # 开发进度：0.1.4
+ 
++2026-11-10第二轮源码优化完成数值执行计划共享、uniform 快照、像素批量执行、网格/图集材质采样、覆盖率计算、轻量 Avalonia 作用域与注册字体流复用。三进程 CPU API 对照中运行时效果下降约86%、图集27%、网格14%；固定字体 AOT 窗口私有内存约下降15.6MiB，整页耗时改善有限，GPU整页耗时总体接近修改前。测试与原版画质门槛分别列出。[第二轮性能报告](PERFORMANCE-2026-11-10-ROUND2.md) · [第二轮测试报告](VALIDATION-PERFORMANCE-2026-11-10-ROUND2.md)。
++
++2026-11-10完成本地源码性能批次。CPU 常量混合增加 SSE2/AVX2 通道内核，浮点着色器按固定栈块采样与合成；默认解码增加向量透明度扫描、预乘与通道转换，指定 RGBA 解码减少整图复制并加入 6.25% 容量余量保护；Vulkan 有序矩形预处理裁剪与颜色，参数步长缩至32字节。
++
++294个性能工作进程覆盖 CPU、公共 API、编解码、16张长期图片及混合尺寸、Vulkan、Direct2D、真实 AOT 窗口和额外六进程 GPU 中文复测。CPU 透明叠加耗时下降42%–50%（原版像素门槛失败，作为诊断），网格/图集等下降约17%–30%，Vulkan 透明混合下降10%–16%（通过原版门槛）。16张1080p Private约148→139MiB，混合尺寸约86→64MiB。AOT整页耗时变化较小，页面内存与原版的差距及严格画质失败继续列入后续工作。[性能与CPU/内存报告](PERFORMANCE-2026-11-10.md)。
++
++82个有效回归命令完成，56通过、25个原版差异套件失败、1个API审计按5项原生合同缺口返回2。17个相关套件的冻结回放561个输出一致。Native AOT采样、runtime/mesh/PDF、编解码及60窗口进程通过实际执行。另记录并修复聚合扫描的一次专用工具参数错误。[测试报告](VALIDATION-PERFORMANCE-2026-11-10.md)。正式NuGet版本为0.1.4。
++
+ 0.1.4新增Android NuGet包，十三包已公开并核对内容，发布CI与Android独立缓存消费构建通过，GitHub发行和issue #1回复已完成。[发行说明](RELEASE-0.1.4.md)与[公开发布状态](NUGET-PREVIEW.md)。
+ 
+ 2026-11-09新增 Android 源码接入与示例，Avalonia12.1.5 / Android16 ARM64 USB真机的 Debug、裁剪/Mono AOT Release、中文、输入、按钮、动画及前后台恢复通过。43项字体、36项核心回归通过，APK约14.57MiB。Android首批CPU/通用SIMD，iOS呈现适配待实现。[使用方法](../examples/Mobile.Android/README.md)与[本轮测试范围](ANDROID-2026-11-09.md)。
+diff --git a/docs/VALIDATION.md b/docs/VALIDATION.md
+index 98dbc6f..5a62869 100644
+--- a/docs/VALIDATION.md
++++ b/docs/VALIDATION.md
+@@ -1,5 +1,9 @@
+ # 验证记录：0.1.4
+ 
++2026-11-10第二轮最终源码重建完成85个验收命令，59个成功、25个原版行为/画质门槛失败，另1个API审计保留5项原生合同缺口。21个套件651个原始输出与冻结旧引擎完全相同，50张派生PNG通过对应完整BGRA源比对。新增270719项数值、采样、绑定、并发与回退检查，Native AOT、JIT、关闭AVX2及全部硬件指令均执行；两种AOT指令集各460050项采样检查通过。AOT整页0/10、GPU整页0/12原版严格画质门槛失败。[第二轮完整报告](VALIDATION-PERFORMANCE-2026-11-10-ROUND2.md) · [第二轮性能与内存](PERFORMANCE-2026-11-10-ROUND2.md)。
++
++2026-11-10源码优化完成整套复测。Release构建零警告/错误；82个有效回归命令、294个性能工作进程，含禁用AVX2/全部硬件指令、真实Vulkan/Direct2D、图片所有权与穷举预乘、PDF、原版公共API与像素对照。17个相关失败套件使用完整冻结引擎重放，561个输出一致。AOT采样、runtime/mesh/PDF和编解码实际执行通过，60个AOT窗口进程逐个核对无CLR/JIT。原版JPEG、部分绘图与整页画质差异分别保留。[完整测试报告](VALIDATION-PERFORMANCE-2026-11-10.md) · [性能、CPU、分配和内存](PERFORMANCE-2026-11-10.md)。
++
+ 0.1.4新增Android NuGet包，十三包已公开并核对内容，发布CI与Android独立缓存消费构建通过，GitHub发行和issue #1回复已完成。[发行说明](RELEASE-0.1.4.md)与[公开发布状态](NUGET-PREVIEW.md)。
+ 
+ 2026-11-09 Android源码示例在24122RKC7C / Android16 / ARM64实际安装运行，中文与控件可见，触摸、系统输入、进度条像素变化、前后台恢复通过。Debug编译零警告/错误，Release裁剪与Mono AOT通过，APK及运行程序集依赖核对通过。桌面43项字体和36项核心回归通过。AndroidGPU与iOS接入待验证。[报告与原始记录](ANDROID-2026-11-09.md)。
+diff --git a/docs/shader-build-ordered.json b/docs/shader-build-ordered.json
+index d51ebc4..4f90e86 100644
+--- a/docs/shader-build-ordered.json
++++ b/docs/shader-build-ordered.json
+@@ -2,10 +2,10 @@
+   "Target": "Vulkan 1.0 / SPIR-V 1.0",
+   "Compiler": "Glslang Version: 11:16.6.0",
+   "CompilerSha256": "9643709C02C83E26773F96B6A87F197AB2E84F78BE0879AD8FB3619418B5D9AD",
+-  "SourceSha256": "8A87F9D68ACEA1855E16FC3856084391C26E52F81D23066FCCD58AC58AEECDE5",
+-  "SpirvSha256": "0A3FAE7B3C10A5FB9A4937E466BFB75AE5A434C33ED9680E0EB7553000C290E9",
++  "SourceSha256": "7D84964297633E06037131A2529B029F5F7C89AFADE51B7F79C30DC0B14EE801",
++  "SpirvSha256": "5D34D28E364247FF131C827B42675675086CA6921CF8C13039EE695D0D40FC9B",
+   "BatchDraws": 64,
+-  "ParameterStrideBytes": 48,
+-  "UniformRangeBytes": 3104,
++  "ParameterStrideBytes": 32,
++  "UniformRangeBytes": 2080,
+   "RuntimeCompilerRequired": false
+ }
+diff --git a/examples/AvaloniaAot/SimdSkia/AvaloniaAot.SimdSkia.csproj b/examples/AvaloniaAot/SimdSkia/AvaloniaAot.SimdSkia.csproj
+index 834e01b..9eb18ff 100644
+--- a/examples/AvaloniaAot/SimdSkia/AvaloniaAot.SimdSkia.csproj
++++ b/examples/AvaloniaAot/SimdSkia/AvaloniaAot.SimdSkia.csproj
+@@ -3,7 +3,7 @@
+   <PropertyGroup><DefineConstants>$(DefineConstants);MANAGED</DefineConstants><SimdSkiaPackageVersion Condition="'$(SimdSkiaPackageVersion)' == ''">0.1.2</SimdSkiaPackageVersion></PropertyGroup>
+   <ItemGroup>
+     <ProjectReference Include="../../../src/SimdSkia.Avalonia/SimdSkia.Avalonia.csproj" Condition="'$(UsePackedSimdSkia)' != 'true' and '$(FrozenEngineDirectory)' == ''" />
+-    <Reference Include="$(FrozenEngineDirectory)/SimdSkia*.dll;$(FrozenEngineDirectory)/Sdcb*.dll" Condition="'$(FrozenEngineDirectory)' != ''" />
++    <Reference Include="$(FrozenEngineDirectory)/SimdSkia*.dll;$(FrozenEngineDirectory)/Sdcb*.dll;$(FrozenEngineDirectory)/Clipper2Lib.dll" Condition="'$(FrozenEngineDirectory)' != ''" />
+     <PackageReference Include="SimdSkia.Avalonia" Version="[$(SimdSkiaPackageVersion)]" Condition="'$(UsePackedSimdSkia)' == 'true'" />
+   </ItemGroup>
+ </Project>
+diff --git a/src/SimdSkia.Avalonia/DrawingContext.Effects.cs b/src/SimdSkia.Avalonia/DrawingContext.Effects.cs
+index 9ccf2f2..8fed502 100644
+--- a/src/SimdSkia.Avalonia/DrawingContext.Effects.cs
++++ b/src/SimdSkia.Avalonia/DrawingContext.Effects.cs
+@@ -41,9 +41,9 @@ internal sealed partial class DrawingContext
+             var color=ConvertTo.Color(shadow.Color);filter=new(s.X,s.Y,x,y,color with{A=(byte)Math.Floor(color.A*shadow.Opacity)},true);
+         }
+         else throw new NotSupportedException($"Effect {effect.GetType().Name} is not implemented.");
+-        BeginGroup("effect",255,null,bounds??default,filter);
++        BeginGroup(GroupKind.Effect,255,null,bounds??default,filter);
+     }
+-    public void PopEffect()=>EndGroup("effect");
++    public void PopEffect()=>EndGroup(GroupKind.Effect);
+     private void ValidateShadows(BoxShadows shadows)
+     {
+         foreach(var shadow in shadows)
+diff --git a/src/SimdSkia.Avalonia/DrawingContext.cs b/src/SimdSkia.Avalonia/DrawingContext.cs
+index 7f85b37..0fedc6e 100644
+--- a/src/SimdSkia.Avalonia/DrawingContext.cs
++++ b/src/SimdSkia.Avalonia/DrawingContext.cs
+@@ -28,10 +28,13 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
+     private Stack<RenderOptions> renderStack=>scratch.RenderOptions;
+     private Stack<TextOptions> textStack=>scratch.TextOptions;
+     private Stack<Group> groups=>scratch.Groups;
++    private Stack<GroupScope> groupScopes=>scratch.GroupScopes;
+     private RectF? dirty;
+     private int activeLayers;
+     private int originX,originY;
+-    private readonly record struct Group(string Kind,PixelBuffer? Parent,ICanvasBackend? Canvas,RectF? Clip,CoverageClip? Coverage,byte Opacity,IBrush? Mask,Rect Bounds,RectF? ParentDirty,Matrix3 Matrix,FilterSpec? Filter=null,int OffsetX=0,int OffsetY=0);
++    private enum GroupKind {Opacity,Layer,Mask,Effect}
++    private readonly record struct GroupScope(GroupKind Kind,bool HasLayer);
++    private readonly record struct Group(PixelBuffer Parent,ICanvasBackend Canvas,RectF? Clip,CoverageClip? Coverage,byte Opacity,IBrush? Mask,Rect Bounds,RectF? ParentDirty,Matrix3 Matrix,FilterSpec? Filter=null,int OffsetX=0,int OffsetY=0);
+     // Reuse only empty internal storage. Public context wrappers are never
+     // recycled, so a disposed context cannot become valid in a later frame.
+     private sealed class FrameScratch
+@@ -40,13 +43,14 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
+         internal readonly Stack<RenderOptions> RenderOptions=[];
+         internal readonly Stack<TextOptions> TextOptions=[];
+         internal readonly Stack<Group> Groups=[];
++        internal readonly Stack<GroupScope> GroupScopes=[];
+         private static readonly object gate=new();
+         private static readonly Stack<FrameScratch> pool=new(8);
+         internal static FrameScratch Rent(){lock(gate)return pool.TryPop(out var value)?value:new();}
+         internal static void Return(FrameScratch value)
+         {
+-            value.Clips.Clear();value.RenderOptions.Clear();value.TextOptions.Clear();value.Groups.Clear();
+-            if(value.Clips.EnsureCapacity(0)>64||value.RenderOptions.EnsureCapacity(0)>64||value.TextOptions.EnsureCapacity(0)>64||value.Groups.EnsureCapacity(0)>16)return;
++            value.Clips.Clear();value.RenderOptions.Clear();value.TextOptions.Clear();value.Groups.Clear();value.GroupScopes.Clear();
++            if(value.Clips.EnsureCapacity(0)>64||value.RenderOptions.EnsureCapacity(0)>64||value.TextOptions.EnsureCapacity(0)>64||value.Groups.EnsureCapacity(0)>16||value.GroupScopes.EnsureCapacity(0)>64)return;
+             lock(gate)if(pool.Count<8)pool.Push(value);
+         }
+     }
+@@ -169,13 +173,13 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
+     }
+     public void PopClip(){Check();if(!clips.TryPop(out var state))throw new InvalidOperationException("Unbalanced clip stack.");(clip,coverageClip)=state;}
+     public void PopGeometryClip()=>PopClip();
+-    private void BeginGroup(string kind,byte opacity,IBrush? mask,Rect bounds,FilterSpec? filter=null)
++    private void BeginGroup(GroupKind kind,byte opacity,IBrush? mask,Rect bounds,FilterSpec? filter=null)
+     {
+         using var measurement=SimdSkiaDiagnostics.Measure("push-group");
+         Check();using var validation=mask is not null?CreatePaint(mask,bounds,Antialias):default;
+         // Avalonia pushes opacity 1 for ordinary visuals. Retain the balanced
+         // scope, but no saved state or dirty bounds are needed without a layer.
+-        if(opacity==255&&mask is null&&kind=="opacity"){groups.Push(new(kind,null,null,null,null,255,null,default,null,default));return;}
++        if(opacity==255&&mask is null&&kind==GroupKind.Opacity){groupScopes.Push(new(kind,false));return;}
+         // Only pixels that can reach the restore clip are needed. Layer bounds
+         // are hints and do NOT crop arbitrary opacity/layer content. A mask is
+         // zero outside its actual bounds; filters additionally need their halo.
+@@ -191,14 +195,15 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
+         int x=(int)MathF.Floor(extent.Left),y=(int)MathF.Floor(extent.Top),width=Math.Max(1,(int)MathF.Ceiling(extent.Right)-x),height=Math.Max(1,(int)MathF.Ceiling(extent.Bottom)-y);
+         if(width>32768||height>32768||(long)width*height*4>256*1024*1024)throw new NotSupportedException("Layer exceeds the configured 256 MiB limit.");
+         var buffer=PixelBuffer.Rent(width,height,target.Format,AlphaFormat.Premultiplied);var next=new RasterCanvas(buffer);
+-        groups.Push(new(kind,target,canvas,clip,coverageClip,opacity,mask,bounds,dirty,DeviceMatrix,filter,x,y));activeLayers++;target=buffer;canvas=next;dirty=null;originX+=x;originY+=y;
++        groups.Push(new(target,canvas,clip,coverageClip,opacity,mask,bounds,dirty,DeviceMatrix,filter,x,y));groupScopes.Push(new(kind,true));activeLayers++;target=buffer;canvas=next;dirty=null;originX+=x;originY+=y;
+         // Apply the existing clip exactly once when restoring this group.
+         coverageClip=null;clip=null;
+     }
+-    private void EndGroup(string kind)
++    private void EndGroup(GroupKind kind)
+     {
+         using var measurement=SimdSkiaDiagnostics.Measure("pop-group");
+-        Check();if(!groups.TryPeek(out var state)||state.Kind!=kind)throw new InvalidOperationException($"Unbalanced {kind} stack.");groups.Pop();if(state.Parent is null)return;
++        Check();if(!groupScopes.TryPeek(out var scope)||scope.Kind!=kind)throw new InvalidOperationException($"Unbalanced {kind} stack.");groupScopes.Pop();if(!scope.HasLayer)return;
++        var state=groups.Pop();
+         activeLayers--;
+         var layer=target;var region=dirty;canvas.Dispose();target=state.Parent;canvas=state.Canvas!;clip=state.Clip;coverageClip=state.Coverage;dirty=state.ParentDirty;originX-=state.OffsetX;originY-=state.OffsetY;
+         try
+@@ -223,12 +228,12 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
+         }
+         finally{layer.Dispose();}
+     }
+-    public void PushLayer(Rect bounds)=>BeginGroup("layer",255,null,bounds);
+-    public void PopLayer()=>EndGroup("layer");
+-    public void PushOpacity(double opacity,Rect? bounds)=>BeginGroup("opacity",BrushFactory.Opacity(opacity),null,bounds??default);
+-    public void PopOpacity()=>EndGroup("opacity");
+-    public void PushOpacityMask(IBrush mask,Rect bounds)=>BeginGroup("mask",255,mask,bounds);
+-    public void PopOpacityMask()=>EndGroup("mask");
++    public void PushLayer(Rect bounds)=>BeginGroup(GroupKind.Layer,255,null,bounds);
++    public void PopLayer()=>EndGroup(GroupKind.Layer);
++    public void PushOpacity(double opacity,Rect? bounds)=>BeginGroup(GroupKind.Opacity,BrushFactory.Opacity(opacity),null,bounds??default);
++    public void PopOpacity()=>EndGroup(GroupKind.Opacity);
++    public void PushOpacityMask(IBrush mask,Rect bounds)=>BeginGroup(GroupKind.Mask,255,mask,bounds);
++    public void PopOpacityMask()=>EndGroup(GroupKind.Mask);
+     public void PushRenderOptions(RenderOptions options){Check();renderStack.Push(renderOptions);renderOptions=options.MergeWith(renderOptions);}
+     public void PopRenderOptions(){Check();if(!renderStack.TryPop(out renderOptions))throw new InvalidOperationException("Unbalanced render options.");}
+     public void PushTextOptions(TextOptions options){Check();textStack.Push(textOptions);textOptions=options.MergeWith(textOptions);}
+@@ -237,7 +242,7 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
+     public void Dispose()
+     {
+         if(disposed)return;disposed=true;
+-        bool unbalanced=groups.Count>0||clips.Count>0||renderStack.Count>0||textStack.Count>0;
++        bool unbalanced=groupScopes.Count>0||clips.Count>0||renderStack.Count>0||textStack.Count>0;
+         bool success=false;
+         try
+         {
+diff --git a/src/SimdSkia.Avalonia/Fonts.cs b/src/SimdSkia.Avalonia/Fonts.cs
+index 5831bbf..3df0904 100644
+--- a/src/SimdSkia.Avalonia/Fonts.cs
++++ b/src/SimdSkia.Avalonia/Fonts.cs
+@@ -111,10 +111,23 @@ internal sealed class FontManager:IFontManagerImpl
+         // Avalonia uses a failed Try result to retain the nearest real face.
+         // Do not manufacture a simulated face or abort the window's layout.
+         if(simulations!=FontSimulations.None){typeface=null;return false;}
+-        using var memory=new MemoryStream();stream.CopyTo(memory);var data=memory.GetBuffer().AsSpan(0,(int)memory.Length);var digest=SHA256.HashData(data);
++        // EmbeddedFontCollection can reopen a file already registered in
++        // FontFiles. Hash a seekable stream before making a font-sized snapshot,
++        // avoiding a temporary growable LOH buffer on every matching open.
++        if(stream.CanSeek)
++        {
++            long start=stream.Position;var digest=SHA256.HashData(stream);
++            var existing=FindLoaded(digest);
++            if(existing is not null){typeface=new PlatformTypeface(existing);return true;}
++            stream.Position=start;
++        }
++        using var memory=new MemoryStream();stream.CopyTo(memory);var data=memory.GetBuffer().AsSpan(0,(int)memory.Length);
+         // An external stream need not load unrelated installed fallback files.
+-        var existing=fonts.FirstOrDefault(f=>f.IsLoaded&&f.Data.Digest.AsSpan().SequenceEqual(digest));typeface=new PlatformTypeface(existing?.Data??new FontData(data));return true;
++        var shared=stream.CanSeek?null:FindLoaded(SHA256.HashData(data));
++        typeface=new PlatformTypeface(shared??new FontData(data));return true;
+     }
++    private FontData? FindLoaded(ReadOnlySpan<byte> digest)
++    {foreach(var font in fonts)if(font.IsLoaded&&font.Data.Digest.AsSpan().SequenceEqual(digest))return font.Data;return null;}
+     public bool TryGetFamilyTypefaces(string family,[NotNullWhen(true)]out IReadOnlyList<Typeface>? typefaces)
+     {var found=fonts.Where(f=>f.Family.Equals(family,StringComparison.OrdinalIgnoreCase)).Select(f=>new Typeface(f.Family,f.Style,f.Weight,f.Stretch)).ToArray();typefaces=found.Length==0?null:found;return typefaces is not null;}
+ }
+diff --git a/src/SimdSkia.Compatibility/DecodedRaster.cs b/src/SimdSkia.Compatibility/DecodedRaster.cs
+index 3e096a5..b522037 100644
+--- a/src/SimdSkia.Compatibility/DecodedRaster.cs
++++ b/src/SimdSkia.Compatibility/DecodedRaster.cs
+@@ -5,17 +5,13 @@ internal static class DecodedRaster
+ {
+     internal static (SKImageInfo Info,PixelBuffer Pixels) Read(ReadOnlySpan<byte> encoded)
+     {
+-        using var decoded=ImageCodec.Decode(encoded);bool opaque=true;var bytes=decoded.GetPixelSpan();for(int i=3;i<bytes.Length;i+=4)if(bytes[i]!=255){opaque=false;break;}
++        using var decoded=ImageCodec.Decode(encoded);var bytes=decoded.GetPixelSpan();bool allOpaque=SimdSkia.Cpu.PixelTransferKernel.IsOpaque(bytes,SimdSkia.Cpu.CpuOptions.EnableSimd),opaque=allOpaque;
+         // A lazy native image reports header transparency even if its RGBA samples
+         // all happen to be opaque. Do not infer that such a PNG has no alpha channel.
+         ReadOnlySpan<byte> signature=[137,80,78,71,13,10,26,10];
+         if(encoded.Length>=29&&encoded[..8].SequenceEqual(signature)&&encoded[25] is 4 or 6)opaque=false;
+-        for(int i=0;i<bytes.Length;i+=4)
+-        {
+-            byte r=bytes[i],g=bytes[i+1],b=bytes[i+2],a=bytes[i+3];
+-            if(!opaque){r=PixelBuffer.Multiply(r,a);g=PixelBuffer.Multiply(g,a);b=PixelBuffer.Multiply(b,a);}
+-            bytes[i]=b;bytes[i+1]=g;bytes[i+2]=r;
+-        }
++        if(allOpaque)SimdSkia.Cpu.PixelTransferKernel.SwapRedBlue(bytes,bytes,SimdSkia.Cpu.CpuOptions.EnableSimd);
++        else SimdSkia.Cpu.PixelTransferKernel.Premultiply(bytes,true,SimdSkia.Cpu.CpuOptions.EnableSimd);
+         var alpha=opaque?SKAlphaType.Opaque:SKAlphaType.Premul;
+         return (new(decoded.Width,decoded.Height,SKColorType.Bgra8888,alpha),decoded.Reinterpret(PixelFormat.Bgra8888,opaque?AlphaFormat.Opaque:AlphaFormat.Premultiplied));
+     }
+diff --git a/src/SimdSkia.Compatibility/SKBitmap.Factories.cs b/src/SimdSkia.Compatibility/SKBitmap.Factories.cs
+index b44f781..24aa3c8 100644
+--- a/src/SimdSkia.Compatibility/SKBitmap.Factories.cs
++++ b/src/SimdSkia.Compatibility/SKBitmap.Factories.cs
+@@ -12,9 +12,10 @@ public partial class SKBitmap
+     {ArgumentNullException.ThrowIfNull(codec);var bitmap=new SKBitmap(bitmapInfo);try{var result=codec.GetPixels(bitmapInfo,bitmap.GetPixels(),bitmap.RowBytes,SKCodecOptions.Default);if(result is SKCodecResult.Success or SKCodecResult.IncompleteInput)return bitmap;bitmap.Dispose();return null!;}catch{bitmap.Dispose();throw;}}
+     public static SKBitmap Decode(SKStream stream){using var data=SKData.Create(stream);return Decode(data);}
+     public static SKBitmap Decode(SKStream stream,SKImageInfo bitmapInfo){using var data=SKData.Create(stream);return Decode(data,bitmapInfo);}
+-    public static SKBitmap Decode(SKData data,SKImageInfo bitmapInfo){ArgumentNullException.ThrowIfNull(data);using var codec=SKCodec.Create(data);return codec is null?null!:Decode(codec,bitmapInfo);}
++    public static SKBitmap Decode(SKData data,SKImageInfo bitmapInfo){ArgumentNullException.ThrowIfNull(data);return Decode(data.AsSpan(),bitmapInfo);}
+     public static SKBitmap Decode(byte[] buffer,SKImageInfo bitmapInfo){ArgumentNullException.ThrowIfNull(buffer);return Decode(buffer.AsSpan(),bitmapInfo);}
+-    public static SKBitmap Decode(ReadOnlySpan<byte> buffer,SKImageInfo bitmapInfo){using var data=SKData.CreateCopy(buffer);return Decode(data,bitmapInfo);}
++    public static SKBitmap Decode(ReadOnlySpan<byte> buffer,SKImageInfo bitmapInfo)
++    {using var codec=SKCodec.Create(buffer);return codec is null?null!:codec.TakeRgbaBitmap(bitmapInfo)??Decode(codec,bitmapInfo);}
+     public static SKBitmap Decode(string filename,SKImageInfo bitmapInfo){ArgumentNullException.ThrowIfNull(filename);using var stream=File.OpenRead(filename);return Decode(stream,bitmapInfo);}
+     public static SKBitmap Decode(Stream stream,SKImageInfo bitmapInfo){ArgumentNullException.ThrowIfNull(stream);using var codec=SKCodec.Create(stream);return codec is null?null!:Decode(codec,bitmapInfo);}
+     public static SKImageInfo DecodeBounds(byte[] buffer){ArgumentNullException.ThrowIfNull(buffer);return DecodeBounds(buffer.AsSpan());}
+diff --git a/src/SimdSkia.Compatibility/SKCodec.cs b/src/SimdSkia.Compatibility/SKCodec.cs
+index 48b1454..f2afb15 100644
+--- a/src/SimdSkia.Compatibility/SKCodec.cs
++++ b/src/SimdSkia.Compatibility/SKCodec.cs
+@@ -59,14 +59,14 @@ public partial class SKCodec : SKObject
+             }
+             else
+             {
+-                still=ImageCodec.Decode(bytes);bool opaque=true;var pixels=still.GetPixelSpan();for(int i=3;i<pixels.Length;i+=4)if(pixels[i]!=255){opaque=false;break;}
++                still=ImageCodec.Decode(bytes);bool opaque=SimdSkia.Cpu.PixelTransferKernel.IsOpaque(still.GetPixelSpan(),SimdSkia.Cpu.CpuOptions.EnableSimd);
+                 info=new(still.Width,still.Height,SKColorType.Bgra8888,opaque?SKAlphaType.Opaque:SKAlphaType.Unpremul);frames=[];
+             }
+         }
+         else
+         {
+             format=CodecFormats.ToSkia(ImageCodec.DetectFormat(bytes));still=ImageCodec.Decode(bytes);
+-            bool opaque=true;var span=still.GetPixelSpan();for(int i=3;i<span.Length;i+=4)if(span[i]!=255){opaque=false;break;}
++            bool opaque=SimdSkia.Cpu.PixelTransferKernel.IsOpaque(still.GetPixelSpan(),SimdSkia.Cpu.CpuOptions.EnableSimd);
+             info=new(still.Width,still.Height,SKColorType.Bgra8888,opaque?SKAlphaType.Opaque:SKAlphaType.Unpremul);frames=[];
+         }
+     }
+@@ -78,6 +78,27 @@ public partial class SKCodec : SKObject
+     public bool GetFrameInfo(int index,out SKCodecFrameInfo frameInfo){ThrowIfDisposed();frameInfo=default;if((uint)index>=(uint)frames.Length)return false;frameInfo=frames[index];return true;}
+     public byte[] Pixels {get{var result=GetPixels(out var pixels);if(result!=SKCodecResult.Success)throw new InvalidDataException(result.ToString());return pixels;}}
+     public static SKCodec? Create(SKData data){ArgumentNullException.ThrowIfNull(data);return CreateBytes(data.AsSpan(),out _);}
++    internal static SKCodec? Create(ReadOnlySpan<byte> bytes)=>CreateBytes(bytes,out _);
++    // Only temporary codecs owned by SKBitmap.Decode use this transfer. A caller's
++    // persistent SKCodec must retain independent pixels for subsequent decodes.
++    internal SKBitmap? TakeRgbaBitmap(SKImageInfo bitmapInfo)
++    {
++        if(still is null||bitmapInfo.Width!=info.Width||bitmapInfo.Height!=info.Height||
++            bitmapInfo.ColorType!=SKColorType.Rgba8888||bitmapInfo.AlphaType!=SKAlphaType.Unpremul||
++            bitmapInfo.ColorSpace is {} space&&!space.IsSrgb)return null;
++        // A pool bucket can nearly double the memory retained by a long-lived
++        // bitmap. Transfer only compact buckets (at most 6.25% unused capacity).
++        // Other sizes receive a fully written, exact-size output allocation.
++        if(still.StorageCapacity-still.ByteCount>still.ByteCount/16)
++        {
++            var compact=still.CopyCompact();
++            try{return new SKBitmap(bitmapInfo,compact);}
++            catch{compact.Dispose();throw;}
++        }
++        var bitmap=new SKBitmap(bitmapInfo,still);
++        still=null;
++        return bitmap;
++    }
+     public static SKCodec? Create(string filename)=>Create(filename,out _);
+     public static SKCodec? Create(string filename,out SKCodecResult result)
+     {
+diff --git a/src/SimdSkia.Core/AssemblyInfo.cs b/src/SimdSkia.Core/AssemblyInfo.cs
+index 1ee8f70..7a32bcb 100644
+--- a/src/SimdSkia.Core/AssemblyInfo.cs
++++ b/src/SimdSkia.Core/AssemblyInfo.cs
+@@ -6,3 +6,4 @@ using System.Runtime.CompilerServices;
+ [assembly: InternalsVisibleTo("SimdSkia.Cpu")]
+ [assembly: InternalsVisibleTo("SimdSkia.Gpu")]
+ [assembly: InternalsVisibleTo("SimdSkia.Avalonia.Gpu")]
++[assembly: InternalsVisibleTo("SimdSkia.RuntimeNumeric.Tests")]
+diff --git a/src/SimdSkia.Core/FloatColorShaders.cs b/src/SimdSkia.Core/FloatColorShaders.cs
+index 1bba1b8..9543725 100644
+--- a/src/SimdSkia.Core/FloatColorShaders.cs
++++ b/src/SimdSkia.Core/FloatColorShaders.cs
+@@ -1,12 +1,14 @@
+ using System.Numerics;
+ namespace SimdSkia;
+ 
+-public sealed class DestinationColorShader(IPremultipliedColorShader legacy,IPremultipliedColorShader srgb) : IPremultipliedColorShader
++public sealed class DestinationColorShader(IPremultipliedColorShader legacy,IPremultipliedColorShader srgb) : IPremultipliedColorShader,IPremultipliedBatchShader
+ {
+     public IColorShader ForDestination(bool taggedSrgb)=>taggedSrgb?srgb:legacy;
+     public bool IsHorizontal=>legacy.IsHorizontal;
+     public bool IsOpaque=>legacy.IsOpaque;
+     public Vector4 SamplePremultiplied(float x,float y)=>legacy.SamplePremultiplied(x,y);
++    void IPremultipliedBatchShader.SampleBatch(Span<Vector4> samples)
++    {if(legacy is IPremultipliedBatchShader batch)batch.SampleBatch(samples);else for(int i=0;i<samples.Length;i++)samples[i]=legacy.SamplePremultiplied(samples[i].X,samples[i].Y);}
+     public Rgba32 Sample(float x,float y)=>legacy.Sample(x,y);
+ }
+ 
+@@ -19,7 +21,7 @@ public sealed class FloatColorShader(Vector4 straight) : IPremultipliedColorShad
+     public Rgba32 Sample(float x,float y)=>new(ColorBlend.Byte(straight.X),ColorBlend.Byte(straight.Y),ColorBlend.Byte(straight.Z),ColorBlend.Byte(straight.W));
+ }
+ public enum FloatGradientKind {Linear,Radial,Sweep,Conical}
+-public sealed class FloatGradientShader : IPremultipliedColorShader
++public sealed class FloatGradientShader : IPremultipliedColorShader,IPremultipliedBatchShader
+ {
+     private readonly FloatGradientKind kind;
+     private readonly Vector2 first,second;
+@@ -28,6 +30,8 @@ public sealed class FloatGradientShader : IPremultipliedColorShader
+     private readonly float[] offsets;
+     private readonly int tileMode;
+     private readonly Matrix3 inverse;
++    private readonly Vector2 direction;
++    private readonly float lengthSquared;
+     private readonly bool opaque,horizontal;
+     public bool IsOpaque=>opaque;
+     public bool IsHorizontal=>horizontal;
+@@ -35,14 +39,14 @@ public sealed class FloatGradientShader : IPremultipliedColorShader
+     {
+         this.kind=kind;this.first=first;this.second=second;this.radius0=radius0;this.radius1=radius1;this.colors=(Vector4[])colors.Clone();this.offsets=(float[])offsets.Clone();this.tileMode=tileMode;this.startAngle=startAngle;this.endAngle=endAngle;this.inverse=inverse;
+         opaque=tileMode!=3&&kind!=FloatGradientKind.Conical&&colors.All(c=>c.W>=1);
+-        var direction=second-first;horizontal=kind==FloatGradientKind.Linear&&direction.X*inverse.M01+direction.Y*inverse.M11==0;
++        direction=second-first;lengthSquared=direction.LengthSquared();horizontal=kind==FloatGradientKind.Linear&&direction.X*inverse.M01+direction.Y*inverse.M11==0;
+     }
+     public Vector4 SamplePremultiplied(float x,float y)
+     {
+         var point=inverse.Map(x,y);var q=new Vector2(point.X,point.Y)-first;float t;
+         switch(kind)
+         {
+-            case FloatGradientKind.Linear:var d=second-first;float length=d.LengthSquared();t=length>0?Vector2.Dot(q,d)/length:1;break;
++            case FloatGradientKind.Linear:t=lengthSquared>0?Vector2.Dot(q,direction)/lengthSquared:1;break;
+             case FloatGradientKind.Radial:t=radius0>0?q.Length()/radius0:1;break;
+             case FloatGradientKind.Sweep:
+                 float angle=MathF.Atan2(q.Y,q.X)*(180/MathF.PI);if(angle<0)angle+=360;
+@@ -62,6 +66,21 @@ public sealed class FloatGradientShader : IPremultipliedColorShader
+                 if(radius0+dr*t<0)return default;break;
+             default:throw new InvalidOperationException("Unknown float gradient kind.");
+         }
++        return Interpolate(t);
++    }
++    void IPremultipliedBatchShader.SampleBatch(Span<Vector4> samples)
++    {
++        if(kind!=FloatGradientKind.Linear)
++        {for(int i=0;i<samples.Length;i++)samples[i]=SamplePremultiplied(samples[i].X,samples[i].Y);return;}
++        for(int i=0;i<samples.Length;i++)
++        {
++            var point=inverse.Map(samples[i].X,samples[i].Y);
++            var q=new Vector2(point.X,point.Y)-first;
++            samples[i]=Interpolate(lengthSquared>0?Vector2.Dot(q,direction)/lengthSquared:1);
++        }
++    }
++    private Vector4 Interpolate(float t)
++    {
+         if(!float.IsFinite(t))return default;
+         if(tileMode==3&&(t<0||t>1))return default;
+         t=tileMode switch{1=>t-MathF.Floor(t),2=>1-MathF.Abs(t-2*MathF.Floor(t/2)-1),_=>Math.Clamp(t,0,1)};
+diff --git a/src/SimdSkia.Core/ImageColorShader.cs b/src/SimdSkia.Core/ImageColorShader.cs
+index c5e055c..e1324d7 100644
+--- a/src/SimdSkia.Core/ImageColorShader.cs
++++ b/src/SimdSkia.Core/ImageColorShader.cs
+@@ -3,7 +3,7 @@ namespace SimdSkia;
+ 
+ /// <summary>Immutable raster snapshot sampler. Coordinates are pixel edges;
+ /// interpolation occurs on premultiplied channels before conversion to straight color.</summary>
+-internal sealed class ImageColorShader(PixelBuffer pixels,int tileX,int tileY,ImageSampling sampling,float cubicB=1f/3,float cubicC=1f/3,bool raw=false) : IPremultipliedColorShader,IImageShader
++internal sealed class ImageColorShader(PixelBuffer pixels,int tileX,int tileY,ImageSampling sampling,float cubicB=1f/3,float cubicC=1f/3,bool raw=false) : IPremultipliedColorShader,IImageShader,IPremultipliedBatchShader
+ {
+     public bool TryGetImage(out ImageColorShader image,out Matrix3 inverse){image=this;inverse=Matrix3.Identity;return true;}
+     internal bool IsNearest=>sampling==ImageSampling.Nearest;
+@@ -21,6 +21,21 @@ internal sealed class ImageColorShader(PixelBuffer pixels,int tileX,int tileY,Im
+     public bool IsOpaque=>pixels.Alpha==AlphaFormat.Opaque&&tileX!=3&&tileY!=3;
+     public Rgba32 Sample(float x,float y)=>Straight(SampleVector(x,y));
+     public Vector4 SamplePremultiplied(float x,float y)=>SampleVector(x,y);
++    void IPremultipliedBatchShader.SampleBatch(Span<Vector4> samples)
++    {
++        if(sampling!=ImageSampling.Nearest)
++        {for(int i=0;i<samples.Length;i++)samples[i]=SampleVector(samples[i].X,samples[i].Y);return;}
++        int previous=-1;ReadOnlySpan<byte> row=default;
++        for(int i=0;i<samples.Length;i++)
++        {
++            float x=samples[i].X,y=samples[i].Y;
++            if(!float.IsFinite(x)||!float.IsFinite(y)){samples[i]=default;continue;}
++            int ix=Index(Nearest(Reduce(x,pixels.Width,tileX)),pixels.Width,tileX),iy=Row(y);
++            if(ix<0||iy<0){samples[i]=default;continue;}
++            if(iy!=previous){row=pixels.GetRowSpan(iy);previous=iy;}
++            samples[i]=ReadRow(row,ix);
++        }
++    }
+     private Vector4 SampleVector(float x,float y)
+     {
+         if(!float.IsFinite(x)||!float.IsFinite(y))return default;
+@@ -46,7 +61,7 @@ internal sealed class ImageColorShader(PixelBuffer pixels,int tileX,int tileY,Im
+     private static float Reduce(float x,int length,int mode)=>mode switch{0=>Math.Clamp(x,-2,length+2),1=>x%length,2=>x%(2f*length),_=>Math.Clamp(x,-2,length+2)};
+     // The pinned raster sampler assigns exact texel boundaries to the lower
+     // texel. Keep that rule in both the scalar sampler and cached row path.
+-    private static float Nearest(float value)=>MathF.Floor(MathF.BitDecrement(value));
++    internal static float Nearest(float value)=>MathF.Abs(value)<16_777_216?MathF.Ceiling(value)-1:MathF.Floor(MathF.BitDecrement(value));
+     private static int Index(float value,int length,int mode)
+     {
+         if(mode==0)return(int)Math.Clamp(value,0,length-1);
+@@ -56,8 +71,12 @@ internal sealed class ImageColorShader(PixelBuffer pixels,int tileX,int tileY,Im
+     private Vector4 Read(float x,float y)
+     {
+         int ix=Index(x,pixels.Width,tileX),iy=Index(y,pixels.Height,tileY);if(ix<0||iy<0)return default;
+-        if(pixels.Format==PixelFormat.Alpha8)return new(0,0,0,pixels.Alpha==AlphaFormat.Opaque?1:pixels.GetRowSpan(iy)[ix]/255f);
+-        var p=pixels.GetRowSpan(iy).Slice(ix*4,4);float a=pixels.Alpha==AlphaFormat.Opaque?1:p[3]/255f;
++        return ReadRow(pixels.GetRowSpan(iy),ix);
++    }
++    private Vector4 ReadRow(ReadOnlySpan<byte> row,int ix)
++    {
++        if(pixels.Format==PixelFormat.Alpha8)return new(0,0,0,pixels.Alpha==AlphaFormat.Opaque?1:row[ix]/255f);
++        var p=row.Slice(ix*4,4);float a=pixels.Alpha==AlphaFormat.Opaque?1:p[3]/255f;
+         var c=new Vector4(p[pixels.Format==PixelFormat.Rgba8888?0:2]/255f,p[1]/255f,p[pixels.Format==PixelFormat.Rgba8888?2:0]/255f,a);
+         if(!raw&&pixels.Alpha==AlphaFormat.Straight){c.X*=a;c.Y*=a;c.Z*=a;}return c;
+     }
+@@ -70,7 +89,8 @@ public interface IPremultipliedColorShader : IColorShader
+     Vector4 SamplePremultiplied(float x,float y);
+ }
+ internal interface IImageShader {bool TryGetImage(out ImageColorShader image,out Matrix3 inverse);}
+-internal sealed class PremultipliedTransformedShader(IPremultipliedColorShader shader,Matrix3 inverse) : IPremultipliedColorShader,IImageShader
++internal interface IPremultipliedBatchShader {void SampleBatch(Span<Vector4> samples);}
++internal sealed class PremultipliedTransformedShader(IPremultipliedColorShader shader,Matrix3 inverse) : IPremultipliedColorShader,IImageShader,IPremultipliedBatchShader
+ {
+     internal IPremultipliedColorShader ForDevice(Matrix3 deviceToLocal)
+     {var combined=inverse*deviceToLocal;return shader is PremultipliedTransformedShader nested?nested.ForDevice(combined):new DeviceShader(shader,combined);}
+@@ -82,11 +102,19 @@ internal sealed class PremultipliedTransformedShader(IPremultipliedColorShader s
+     public bool IsOpaque=>shader.IsOpaque;
+     public Rgba32 Sample(float x,float y){var p=inverse.Map(x,y);return shader.Sample(p.X,p.Y);}
+     public Vector4 SamplePremultiplied(float x,float y){var p=inverse.Map(x,y);return shader.SamplePremultiplied(p.X,p.Y);}
+-    private sealed class DeviceShader(IPremultipliedColorShader source,Matrix3 matrix):IPremultipliedColorShader,IImageShader
++    void IPremultipliedBatchShader.SampleBatch(Span<Vector4> samples)=>SampleTransformedBatch(shader,inverse,samples);
++    private static void SampleTransformedBatch(IPremultipliedColorShader source,Matrix3 matrix,Span<Vector4> samples)
++    {
++        for(int i=0;i<samples.Length;i++){var p=matrix.Map(samples[i].X,samples[i].Y);samples[i]=new(p.X,p.Y,0,0);}
++        if(source is IPremultipliedBatchShader batch)batch.SampleBatch(samples);
++        else for(int i=0;i<samples.Length;i++)samples[i]=source.SamplePremultiplied(samples[i].X,samples[i].Y);
++    }
++    private sealed class DeviceShader(IPremultipliedColorShader source,Matrix3 matrix):IPremultipliedColorShader,IImageShader,IPremultipliedBatchShader
+     {
+         public bool IsOpaque=>source.IsOpaque;
+         public bool IsHorizontal=>source.IsHorizontal&&matrix.M01==0;
+         public Vector4 SamplePremultiplied(float x,float y){var p=matrix.Map(x,y);return source.SamplePremultiplied(p.X,p.Y);}
++        void IPremultipliedBatchShader.SampleBatch(Span<Vector4> samples)=>SampleTransformedBatch(source,matrix,samples);
+         public Rgba32 Sample(float x,float y){var p=SamplePremultiplied(x,y);return p.W>0?new(ColorBlend.Byte(p.X/p.W),ColorBlend.Byte(p.Y/p.W),ColorBlend.Byte(p.Z/p.W),ColorBlend.Byte(p.W)):default;}
+         public bool TryGetImage(out ImageColorShader image,out Matrix3 inverse)
+         {if(source is IImageShader raster&&raster.TryGetImage(out image,out var child)){inverse=child*matrix;return true;}image=null!;inverse=default;return false;}
+diff --git a/src/SimdSkia.Core/PixelBuffer.cs b/src/SimdSkia.Core/PixelBuffer.cs
+index 9e49373..c6c3f31 100644
+--- a/src/SimdSkia.Core/PixelBuffer.cs
++++ b/src/SimdSkia.Core/PixelBuffer.cs
+@@ -15,6 +15,7 @@ public sealed class PixelBuffer : IDisposable
+     public bool IsDisposed => data is null&&external is null;
+     public int BytesPerPixel=>Format==PixelFormat.Alpha8?1:4;
+     public int ByteCount => checked(RowBytes * (Height-1) + Width * BytesPerPixel);
++    internal int StorageCapacity=>data?.Length??ByteCount;
+ 
+     public PixelBuffer(int width, int height, PixelFormat format, AlphaFormat alpha, int rowBytes = 0)
+         :this(width,height,format,alpha,rowBytes,false) { }
+@@ -29,7 +30,7 @@ public sealed class PixelBuffer : IDisposable
+         return buffer;
+     }
+ 
+-    private PixelBuffer(int width,int height,PixelFormat format,AlphaFormat alpha,int rowBytes,bool pooled)
++    private PixelBuffer(int width,int height,PixelFormat format,AlphaFormat alpha,int rowBytes,bool pooled,bool uninitialized=false)
+     {
+         if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
+         if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
+@@ -41,7 +42,7 @@ public sealed class PixelBuffer : IDisposable
+         Width = width; Height = height; RowBytes = rowBytes; Format = format; Alpha = alpha;
+         int length=checked(rowBytes*height);
+         if(pooled){storage=PixelStorage.Rent(length);data=storage.Bytes;}
+-        else data = new byte[length];
++        else data = uninitialized?GC.AllocateUninitializedArray<byte>(length):new byte[length];
+         if (alpha == AlphaFormat.Opaque)
+             for (int y=0; y<height; y++) for (int x=0; x<width; x++) data[y*rowBytes+x*BytesPerPixel+BytesPerPixel-1] = 255;
+     }
+@@ -101,6 +102,17 @@ public sealed class PixelBuffer : IDisposable
+         return copy;
+     }
+ 
++    // Decoder outputs are fully initialized before ownership reaches the caller.
++    // Compact copies avoid retaining a substantially oversized pool bucket.
++    internal PixelBuffer CopyCompact()
++    {
++        ThrowIfDisposed();
++        var copy=new PixelBuffer(Width,Height,Format,Alpha,0,false,true);
++        int length=checked(Width*BytesPerPixel);
++        for(int y=0;y<Height;y++)GetRowSpan(y)[..length].CopyTo(copy.GetRowSpan(y));
++        return copy;
++    }
++
+     public Rgba32 ReadPixel(int x, int y)
+     {
+         ValidatePixel(x, y);
+diff --git a/src/SimdSkia.Core/RuntimeColorShader.cs b/src/SimdSkia.Core/RuntimeColorShader.cs
+index dbcb40b..6a53c5d 100644
+--- a/src/SimdSkia.Core/RuntimeColorShader.cs
++++ b/src/SimdSkia.Core/RuntimeColorShader.cs
+@@ -1,11 +1,17 @@
+ using System.Numerics;
+ namespace SimdSkia;
+-public sealed class RuntimeColorShader(RuntimeEffectProgram.BoundRuntimeEffect effect,Matrix3 inverse) : IPremultipliedColorShader
++public sealed class RuntimeColorShader(RuntimeEffectProgram.BoundRuntimeEffect effect,Matrix3 inverse) : IPremultipliedColorShader,IPremultipliedBatchShader
+ {
+     public bool IsHorizontal=>effect.TryGetConstant(out _);
+     public bool IsOpaque=>effect.TryGetConstant(out var c)&&c.W>=1;
+     public Vector4 SamplePremultiplied(float x,float y)
+     {var point=inverse.Map(x,y);return Vector4.Clamp(effect.Evaluate(new(point.X,point.Y,0,0)),Vector4.Zero,Vector4.One);}
++    void IPremultipliedBatchShader.SampleBatch(Span<Vector4> samples)
++    {
++        for(int i=0;i<samples.Length;i++){var p=inverse.Map(samples[i].X,samples[i].Y);samples[i]=new(p.X,p.Y,0,0);}
++        effect.EvaluateBatch(samples);
++        for(int i=0;i<samples.Length;i++)samples[i]=Vector4.Clamp(samples[i],Vector4.Zero,Vector4.One);
++    }
+     public Rgba32 Sample(float x,float y)
+     {var c=SamplePremultiplied(x,y);return c.W>0?new(ColorBlend.Byte(c.X/c.W),ColorBlend.Byte(c.Y/c.W),ColorBlend.Byte(c.Z/c.W),ColorBlend.Byte(c.W)):default;}
+ }
+diff --git a/src/SimdSkia.Core/RuntimeEffects.cs b/src/SimdSkia.Core/RuntimeEffects.cs
+index f17d944..c9d4baa 100644
+--- a/src/SimdSkia.Core/RuntimeEffects.cs
++++ b/src/SimdSkia.Core/RuntimeEffects.cs
+@@ -29,12 +29,13 @@ public sealed partial class RuntimeEffectProgram
+     private readonly bool coordinateDependent;
+     private readonly IReadOnlyList<RuntimeUniform> uniforms;
+     private readonly IReadOnlyList<RuntimeChildDeclaration> children;
++    private readonly Lazy<FloatProgram?> numericProgram;
+     public RuntimeEffectKind Kind {get;}
+     public int UniformSize {get;}
+     public IReadOnlyList<RuntimeUniform> Uniforms=>uniforms;
+     public IReadOnlyList<RuntimeChildDeclaration> Children=>children;
+     private RuntimeEffectProgram(RuntimeEffectKind kind,Statement body,int slots,int[] parameters,RuntimeUniform[] uniforms,RuntimeChildDeclaration[] children,bool coordinateDependent)
+-    {Kind=kind;this.body=body;this.slots=slots;this.parameters=parameters;this.coordinateDependent=coordinateDependent;this.uniforms=Array.AsReadOnly(uniforms);this.children=Array.AsReadOnly(children);UniformSize=uniforms.Length==0?0:uniforms[^1].Offset+uniforms[^1].Size;}
++    {Kind=kind;this.body=body;this.slots=slots;this.parameters=parameters;this.coordinateDependent=coordinateDependent;this.uniforms=Array.AsReadOnly(uniforms);this.children=Array.AsReadOnly(children);UniformSize=uniforms.Length==0?0:uniforms[^1].Offset+uniforms[^1].Size;numericProgram=new(()=>FloatProgram.TryCreate(this));}
+     public static RuntimeEffectProgram Compile(string source,RuntimeEffectKind kind)
+     {ArgumentNullException.ThrowIfNull(source);if(source.Length>65536)throw new NotSupportedException("Runtime source exceeds 64 KiB.");return new Parser(source,kind).Parse();}
+     public BoundRuntimeEffect Bind(ReadOnlySpan<byte> data,IReadOnlyList<IRuntimeEffectChild?>? inputs=null)
+@@ -87,7 +88,7 @@ public sealed partial class RuntimeEffectProgram
+         internal abstract Value Evaluate(ref Evaluation context);
+     }
+     private sealed class Constant(Value value):Expression(value.Type)
+-    {internal override bool IsConstant=>true;internal override Value Evaluate(ref Evaluation context){context.Tick();return value;}}
++    {internal Value Literal=>value;internal override bool IsConstant=>true;internal override Value Evaluate(ref Evaluation context){context.Tick();return value;}}
+     private sealed class Local(int slot,RuntimeType type):Expression(type)
+     {
+         internal int Slot=>slot;
+@@ -95,6 +96,8 @@ public sealed partial class RuntimeEffectProgram
+     }
+     private sealed class Uniform(RuntimeUniform uniform,Expression? index=null):Expression(uniform.Type)
+     {
++        internal RuntimeUniform Declaration=>uniform;
++        internal Expression? Element=>index;
+         internal override Value Evaluate(ref Evaluation context)
+         {
+             context.Tick();int element=index is null?0:(int)index.Evaluate(ref context)[0];if((uint)element>=(uint)uniform.Count)throw new InvalidOperationException("Runtime uniform array index is out of bounds.");
+@@ -104,6 +107,8 @@ public sealed partial class RuntimeEffectProgram
+     }
+     private sealed class Swizzle(Expression source,int[] indices):Expression(new(source.Type.Scalar,indices.Length))
+     {
++        internal Expression Source=>source;
++        internal int[] Indices=>indices;
+         internal override bool IsConstant=>source.IsConstant;
+         internal override Value Evaluate(ref Evaluation context)
+         {context.Tick();var input=source.Evaluate(ref context);var result=new Value{Type=Type};for(int i=0;i<indices.Length;i++){if(Type.Scalar==RuntimeScalarKind.Int)result.SetInt(i,input.Int(indices[i]));else result[i]=input[indices[i]];}return result;}
+@@ -119,12 +124,17 @@ public sealed partial class RuntimeEffectProgram
+     }
+     private sealed class Unary(string operation,Expression value,RuntimeType type):Expression(type)
+     {
++        internal string Operation=>operation;
++        internal Expression Operand=>value;
+         internal override bool IsConstant=>value.IsConstant;
+         internal override Value Evaluate(ref Evaluation context)
+         {context.Tick();var v=value.Evaluate(ref context);if(operation=="!")return Value.Scalar(v.Truth?0:1,RuntimeScalarKind.Bool);if(operation=="-")for(int i=0;i<Type.Components;i++){if(Type.Scalar==RuntimeScalarKind.Int)v.SetInt(i,unchecked(-v.Int(i)));else v[i]=-v[i];}return v;}
+     }
+     private sealed class Binary(string operation,Expression left,Expression right,RuntimeType type):Expression(type)
+     {
++        internal string Operation=>operation;
++        internal Expression Left=>left;
++        internal Expression Right=>right;
+         internal override bool IsConstant=>left.IsConstant&&right.IsConstant;
+         internal override Value Evaluate(ref Evaluation context)
+         {
+@@ -158,6 +168,7 @@ public sealed partial class RuntimeEffectProgram
+     {internal override bool IsConstant=>condition.IsConstant&&yes.IsConstant&&no.IsConstant;internal override Value Evaluate(ref Evaluation context){context.Tick();return(condition.Evaluate(ref context).Truth?yes:no).Evaluate(ref context).Convert(Type);}}
+     private sealed class Constructor(RuntimeType type,Expression[] arguments):Expression(type)
+     {
++        internal Expression[] Arguments=>arguments;
+         internal override bool IsConstant=>arguments.All(a=>a.IsConstant);
+         internal override Value Evaluate(ref Evaluation context)
+         {
+@@ -178,6 +189,8 @@ public sealed partial class RuntimeEffectProgram
+     }
+     private sealed class Builtin(string name,RuntimeType type,Expression[] arguments):Expression(type)
+     {
++        internal string Name=>name;
++        internal Expression[] Arguments=>arguments;
+         internal override bool IsConstant=>arguments.All(a=>a.IsConstant);
+         internal override Value Evaluate(ref Evaluation context)
+         {
+@@ -215,14 +228,19 @@ public sealed partial class RuntimeEffectProgram
+     }
+     private sealed class Block(Statement[] statements):Statement
+     {
++        internal Statement[] Statements=>statements;
+         internal override bool AlwaysReturns=>statements.Any(s=>s.AlwaysReturns);
+         internal override bool Execute(ref Evaluation context,out Value result)
+         {context.Tick();foreach(var statement in statements)if(statement.Execute(ref context,out result))return true;result=default;return false;}
+     }
+     private sealed class Return(Expression value):Statement
+-    {internal override bool AlwaysReturns=>true;internal override bool Execute(ref Evaluation context,out Value result){context.Tick();result=value.Evaluate(ref context);return true;}}
++    {internal Expression Value=>value;internal override bool AlwaysReturns=>true;internal override bool Execute(ref Evaluation context,out Value result){context.Tick();result=value.Evaluate(ref context);return true;}}
+     private sealed class Assign(int slot,RuntimeType type,Expression value,int[]? components=null):Statement
+     {
++        internal int Slot=>slot;
++        internal RuntimeType TargetType=>type;
++        internal Expression Value=>value;
++        internal int[]? Components=>components;
+         internal override bool Execute(ref Evaluation context,out Value result)
+         {context.Tick();var v=value.Evaluate(ref context);if(components is null)context.Locals[slot]=v.Convert(type);else{var target=context.Locals[slot];for(int i=0;i<components.Length;i++){if(type.Scalar==RuntimeScalarKind.Int)target.SetInt(components[i],v.Int(i));else target[components[i]]=v[i];}context.Locals[slot]=target;}result=default;return false;}
+     }
+@@ -238,9 +256,20 @@ public sealed partial class RuntimeEffectProgram
+         private readonly byte[] data;
+         private readonly IRuntimeEffectChild?[] children;
+         private readonly Vector4? constant;
++        private readonly FloatProgram? numeric;
+         internal BoundRuntimeEffect(RuntimeEffectProgram program,byte[] data,IRuntimeEffectChild?[] children)
+-        {this.program=program;this.data=data;this.children=children;if(program.Kind==RuntimeEffectKind.Shader&&!program.coordinateDependent&&children.All(c=>c?.Kind!=RuntimeEffectKind.Shader))constant=program.Evaluate(data,children,default,default);}
++        {
++            this.program=program;this.data=data;this.children=children;
++            if(program.Kind==RuntimeEffectKind.Shader&&!program.coordinateDependent&&children.All(c=>c?.Kind!=RuntimeEffectKind.Shader))constant=program.Evaluate(data,children,default,default);
++            else if(!AppContext.TryGetSwitch("SimdSkia.DisableRuntimeNumericProgram",out bool disabled)||!disabled)numeric=program.numericProgram.Value?.Bind(data);
++        }
+         public bool TryGetConstant(out Vector4 value){value=constant??default;return constant.HasValue;}
+-        public Vector4 Evaluate(Vector4 first,Vector4 second=default)=>constant??program.Evaluate(data,children,first,second);
++        public Vector4 Evaluate(Vector4 first,Vector4 second=default)=>constant??(numeric is {} compiled?compiled.Evaluate(first,second):program.Evaluate(data,children,first,second));
++        internal void EvaluateBatch(Span<Vector4> samples)
++        {
++            if(constant is {} color){samples.Fill(color);return;}
++            if(numeric is {} compiled){compiled.EvaluateBatch(samples);return;}
++            for(int i=0;i<samples.Length;i++)samples[i]=program.Evaluate(data,children,samples[i],default);
++        }
+     }
+ }
+diff --git a/src/SimdSkia.Core/TriangleMesh.cs b/src/SimdSkia.Core/TriangleMesh.cs
+index 3944c45..74b7186 100644
+--- a/src/SimdSkia.Core/TriangleMesh.cs
++++ b/src/SimdSkia.Core/TriangleMesh.cs
+@@ -29,22 +29,22 @@ public sealed class TriangleMesh
+             if(materials.Count>=8)materials.Clear();if(TriangleCount<=4096)materials.Add(key,shaders);return shaders;
+         }
+     }
+-    private sealed class TriangleShader : IPremultipliedColorShader
++    private sealed class TriangleShader : IPremultipliedColorShader,IPremultipliedBatchShader
+     {
+-        private readonly PointF a,ta,tb,tc;
++        private readonly PointF a,ta,textureB,textureC;
+         private readonly float ux,uy,vx,vy;
+-        private readonly Vector4 ca,cb,cc;
++        private readonly Vector4 ca,colorB,colorC;
+         private readonly bool colored;
+         private readonly IColorShader? material;
+         private readonly CompositeMode mode;
+         private IColorShader? managed;
+         internal TriangleShader(PointF a,PointF b,PointF c,PointF ta,PointF tb,PointF tc,Rgba32? ca,Rgba32? cb,Rgba32? cc,IColorShader? material,CompositeMode mode)
+         {
+-            this.a=a;this.ta=ta;this.tb=tb;this.tc=tc;this.material=material;this.mode=mode;colored=ca is not null;
++            this.a=a;this.ta=ta;textureB=new(tb.X-ta.X,tb.Y-ta.Y);textureC=new(tc.X-ta.X,tc.Y-ta.Y);this.material=material;this.mode=mode;colored=ca is not null;
+             double bx=(double)b.X-a.X,by=(double)b.Y-a.Y,cx=(double)c.X-a.X,cy=(double)c.Y-a.Y,det=bx*cy-by*cx;
+             if(det!=0){ux=(float)(cy/det);uy=(float)(-cx/det);vx=(float)(-by/det);vy=(float)(bx/det);}
+             static Vector4 Pma(Rgba32? value){if(value is not {} color)return default;float alpha=color.A/255f;return new(color.R/255f*alpha,color.G/255f*alpha,color.B/255f*alpha,alpha);}
+-            this.ca=Pma(ca);this.cb=Pma(cb);this.cc=Pma(cc);
++            this.ca=Pma(ca);colorB=Pma(cb)-this.ca;colorC=Pma(cc)-this.ca;
+         }
+         public IColorShader ForDestination(bool taggedSrgb)
+         {
+@@ -54,15 +54,37 @@ public sealed class TriangleMesh
+         private Vector4 Evaluate(float x,float y,IColorShader? shader)
+         {
+             float px=x-a.X,py=y-a.Y,u=px*ux+py*uy,v=px*vx+py*vy;
+-            var vertex=ca+(cb-ca)*u+(cc-ca)*v;if(shader is null)return vertex;
+-            float tx=ta.X+(tb.X-ta.X)*u+(tc.X-ta.X)*v,ty=ta.Y+(tb.Y-ta.Y)*u+(tc.Y-ta.Y)*v;
++            var vertex=ca+colorB*u+colorC*v;if(shader is null)return vertex;
++            float tx=ta.X+textureB.X*u+textureC.X*v,ty=ta.Y+textureB.Y*u+textureC.Y*v;
+             Vector4 value;if(shader is IPremultipliedColorShader pm)value=pm.SamplePremultiplied(tx,ty);else{var c=shader.Sample(tx,ty);float alpha=c.A/255f;value=new(c.R/255f*alpha,c.G/255f*alpha,c.B/255f*alpha,alpha);}
+             return colored?ColorBlend.ComposePremultiplied(value,vertex,mode):value;
+         }
+         public Vector4 SamplePremultiplied(float x,float y)=>Evaluate(x,y,material);
++        void IPremultipliedBatchShader.SampleBatch(Span<Vector4> samples)=>SampleBatch(samples,material);
++        private void SampleBatch(Span<Vector4> samples,IColorShader? shader)
++        {
++            if(samples.Length>128)
++            {for(int i=0;i<samples.Length;i++)samples[i]=Evaluate(samples[i].X,samples[i].Y,shader);return;}
++            Span<Vector4> vertices=stackalloc Vector4[samples.Length];
++            for(int i=0;i<samples.Length;i++)
++            {
++                float px=samples[i].X-a.X,py=samples[i].Y-a.Y,u=px*ux+py*uy,v=px*vx+py*vy;
++                var vertex=ca+colorB*u+colorC*v;
++                if(shader is null){samples[i]=vertex;continue;}
++                vertices[i]=vertex;
++                samples[i]=new(ta.X+textureB.X*u+textureC.X*v,ta.Y+textureB.Y*u+textureC.Y*v,0,0);
++            }
++            if(shader is null)return;
++            if(shader is IPremultipliedBatchShader batch)batch.SampleBatch(samples);
++            else if(shader is IPremultipliedColorShader premultiplied)
++                for(int i=0;i<samples.Length;i++)samples[i]=premultiplied.SamplePremultiplied(samples[i].X,samples[i].Y);
++            else for(int i=0;i<samples.Length;i++)
++            {var color=shader.Sample(samples[i].X,samples[i].Y);float alpha=color.A/255f;samples[i]=new(color.R/255f*alpha,color.G/255f*alpha,color.B/255f*alpha,alpha);}
++            if(colored)for(int i=0;i<samples.Length;i++)samples[i]=ColorBlend.ComposePremultiplied(samples[i],vertices[i],mode);
++        }
+         public Rgba32 Sample(float x,float y)=>Straight(SamplePremultiplied(x,y));
+         private static Rgba32 Straight(Vector4 p)=>p.W>0?new(ColorBlend.Byte(p.X/p.W),ColorBlend.Byte(p.Y/p.W),ColorBlend.Byte(p.Z/p.W),ColorBlend.Byte(p.W)):default;
+-        private sealed class Resolved(TriangleShader source,IColorShader material) : IPremultipliedColorShader
+-        {public Vector4 SamplePremultiplied(float x,float y)=>source.Evaluate(x,y,material);public Rgba32 Sample(float x,float y)=>Straight(SamplePremultiplied(x,y));}
++        private sealed class Resolved(TriangleShader source,IColorShader material) : IPremultipliedColorShader,IPremultipliedBatchShader
++        {public Vector4 SamplePremultiplied(float x,float y)=>source.Evaluate(x,y,material);public Rgba32 Sample(float x,float y)=>Straight(SamplePremultiplied(x,y));void IPremultipliedBatchShader.SampleBatch(Span<Vector4> samples)=>source.SampleBatch(samples,material);}
+     }
+ }
+diff --git a/src/SimdSkia.Cpu/CoverageCompositor.cs b/src/SimdSkia.Cpu/CoverageCompositor.cs
+index b970830..5aeb9f0 100644
+--- a/src/SimdSkia.Cpu/CoverageCompositor.cs
++++ b/src/SimdSkia.Cpu/CoverageCompositor.cs
+@@ -12,6 +12,8 @@ internal static partial class SpanCompositor
+         if(paint.Blender is not null||paint.FloatingColor is not null){for(int i=0;i<coverage.Length;i++)Apply(pixels.Slice(i*4,4),format,alpha,paint,coverage[i]);return;}
+         if(paint.ColorFilter is {} filter){var c=paint.Color;float a=c.A/255f;var source=paint.FilteredConstant?.Value??filter.Filter(new(c.R/255f*a,c.G/255f*a,c.B/255f*a,a));for(int i=0;i<coverage.Length;i++)if(coverage[i]!=0)BlendKernel.ApplyPremultiplied(pixels.Slice(i*4,4),format,alpha,source,255,paint.Composite,coverage[i]);return;}
+         if(paint.Composite is not (CompositeMode.SourceOver or CompositeMode.Source or CompositeMode.Clear)){for(int i=0;i<coverage.Length;i++)if(coverage[i]!=0)BlendKernel.Apply(pixels.Slice(i*4,4),format,alpha,paint.Color,paint.Composite,coverage[i]);return;}
++        if(CpuOptions.EnableSimd&&Sse2.IsSupported&&alpha!=AlphaFormat.Straight&&paint.Composite==CompositeMode.SourceOver&&paint.Color==new Rgba32(0,0,0,255))
++        {ApplyOpaqueBlackCoverage(pixels,coverage);return;}
+         int x=0;
+         if(CpuOptions.EnableSimd&&Avx2.IsSupported&&alpha!=AlphaFormat.Straight)
+         {
+@@ -28,8 +30,8 @@ internal static partial class SpanCompositor
+                 var expanded=Avx2.Shuffle(Vector256.Create(bytes,bytes),shuffle);
+                 var covLow=Avx2.ConvertToVector256Int16(expanded.GetLower()).AsUInt16();
+                 var covHigh=Avx2.ConvertToVector256Int16(expanded.GetUpper()).AsUInt16();
+-                var aLow=Divide(Avx2.Add(Avx2.MultiplyLow(covLow,opacity),rounding));
+-                var aHigh=Divide(Avx2.Add(Avx2.MultiplyLow(covHigh,opacity),rounding));
++                var aLow=c.A==255?covLow:Divide(Avx2.Add(Avx2.MultiplyLow(covLow,opacity),rounding));
++                var aHigh=c.A==255?covHigh:Divide(Avx2.Add(Avx2.MultiplyLow(covHigh,opacity),rounding));
+                 var lowRemain=Avx2.Subtract(maximum,paint.Composite==CompositeMode.SourceOver?aLow:covLow);
+                 var highRemain=Avx2.Subtract(maximum,paint.Composite==CompositeMode.SourceOver?aHigh:covHigh);
+                 var destination=Vector256.LoadUnsafe(ref MemoryMarshal.GetReference(pixels),(nuint)(x*4));
+diff --git a/src/SimdSkia.Cpu/RasterCanvas.cs b/src/SimdSkia.Cpu/RasterCanvas.cs
+index 4f64e01..96e8d45 100644
+--- a/src/SimdSkia.Cpu/RasterCanvas.cs
++++ b/src/SimdSkia.Cpu/RasterCanvas.cs
+@@ -101,6 +101,11 @@ public sealed partial class RasterCanvas : ICanvasBackend
+                 }
+                 if(paint.Blender is null&&!paint.Dither&&paint.ColorFilter is null&&paint.Shader is LinearGradient linear&&linear.IsOpaque&&paint.Color.A==255&&(paint.Composite is CompositeMode.Source or CompositeMode.SourceOver)&&Finite(inverse.Map(x0+.5f,y0+.5f))&&Finite(inverse.Map(x1-.5f,y1-.5f)))
+                 {LinearGradientKernel.Fill(target,linear,inverse,x0,y0,x1,y1);return;}
++                if(CanBatchShader(paint))
++                {
++                    for(int y=y0;y<y1;y++)FillShaderSpan(target.GetRowSpan(y).Slice(x0*4,(x1-x0)*4),(IPremultipliedColorShader)paint.Shader!,inverse,x0,y,paint.Color.A);
++                    return;
++                }
+                 for(int y=y0;y<y1;y++)for(int x=x0;x<x1;x++)
+                 {var local=inverse.Map(x+.5f,y+.5f);CompositeShader(target.GetRowSpan(y).Slice(x*4,4),paint,local.X,local.Y,255,x,y);}
+                 return;
+@@ -205,7 +210,7 @@ public sealed partial class RasterCanvas : ICanvasBackend
+             int firstY=Math.Max(top,originY),lastY=Math.Min(bottom,originY+mask.Height);
+             if(start>=end||firstY>=lastY)return;
+             int width=end-start,coverageOffset=(firstY-originY)*mask.Width+start-originX;
+-            if(CpuOptions.EnableSimd&&Sse2.IsSupported&&!Avx2.IsSupported&&target.Alpha!=AlphaFormat.Straight&&
++            if(CpuOptions.EnableSimd&&Sse2.IsSupported&&target.Alpha!=AlphaFormat.Straight&&
+                 command.Paint.Blender is null&&command.Paint.FloatingColor is null&&command.Paint.ColorFilter is null&&command.Paint.Shader is null&&command.CoverageClip is null&&
+                 command.Paint.Composite==CompositeMode.SourceOver&&command.Paint.Color==new Rgba32(0,0,0,255))
+             {
+@@ -236,6 +241,8 @@ public sealed partial class RasterCanvas : ICanvasBackend
+             var row=target.GetRowSpan(y);
+             if(command.Paint.Shader is null)
+                 ApplyMasked(row.Slice(start*4,(end-start)*4),start,y,command.Paint,run.Coverage,command.CoverageClip);
++            else if(run.Coverage==255&&command.CoverageClip is null&&CanBatchShader(command.Paint))
++                FillShaderSpan(row.Slice(start*4,(end-start)*4),(IPremultipliedColorShader)command.Paint.Shader,inverse,start,y,command.Paint.Color.A);
+             else if(command.Paint.ColorFilter is null&&run.Coverage==255&&command.CoverageClip is null&&command.Paint.Color.A==255&&
+                 command.Paint.Composite is CompositeMode.Source or CompositeMode.SourceOver&&
+                 command.Paint.Shader is IOpaqueRowShader opaque&&opaque.TryCopyOpaqueRow(row.Slice(start*4,(end-start)*4),target.Format,inverse,start,y))continue;
+diff --git a/src/SimdSkia.Cpu/SpanCompositor.cs b/src/SimdSkia.Cpu/SpanCompositor.cs
+index ba35a5d..37757f9 100644
+--- a/src/SimdSkia.Cpu/SpanCompositor.cs
++++ b/src/SimdSkia.Cpu/SpanCompositor.cs
+@@ -52,7 +52,13 @@ internal static partial class SpanCompositor
+         byte sb=paint.Composite == CompositeMode.Clear ? (byte)0 : PixelBuffer.Multiply(c.B,sa);
+         byte sourceAlpha=paint.Composite == CompositeMode.Clear ? (byte)0 : sa;
+         int offset=0;
+-        if (alpha != AlphaFormat.Straight && CpuOptions.EnableSimd && Vector.IsHardwareAccelerated && pixels.Length >= Vector<byte>.Count)
++        if (alpha != AlphaFormat.Straight && CpuOptions.EnableSimd && Sse2.IsSupported)
++        {
++            uint packed=(uint)(format==PixelFormat.Rgba8888?sr:sb)|(uint)sg<<8|
++                (uint)(format==PixelFormat.Rgba8888?sb:sr)<<16|(uint)sourceAlpha<<24;
++            offset=ApplyConstant(pixels,packed,remainder);
++        }
++        else if (alpha != AlphaFormat.Straight && CpuOptions.EnableSimd && Vector.IsHardwareAccelerated && pixels.Length >= Vector<byte>.Count)
+         {
+             Span<byte> pattern=stackalloc byte[Vector<byte>.Count];
+             for(int j=0;j<pattern.Length;j+=4) {pattern[j+ri]=sr;pattern[j+1]=sg;pattern[j+bi]=sb;pattern[j+3]=sourceAlpha;}
+@@ -79,6 +85,51 @@ internal static partial class SpanCompositor
+         }
+     }
+ 
++    // Keep unpacked pixels in their native 128-bit lanes. Generic Vector.Widen /
++    // Narrow also reorder AVX2 lanes, which is unnecessary for this operation.
++    private static int ApplyConstant(Span<byte> pixels,uint packed,byte remainder)
++    {
++        int offset=0;
++        ref byte first=ref MemoryMarshal.GetReference(pixels);
++        if(Avx2.IsSupported)
++        {
++            var source=Vector256.Create(packed).AsByte();
++            var lowSource=Avx2.UnpackLow(source,Vector256<byte>.Zero).AsUInt16();
++            var highSource=Avx2.UnpackHigh(source,Vector256<byte>.Zero).AsUInt16();
++            var factor=Vector256.Create((ushort)remainder);
++            var rounding=Vector256.Create((ushort)128);
++            var divisor=Vector256.Create((ushort)257);
++            for(;offset<=pixels.Length-32;offset+=32)
++            {
++                var value=Vector256.LoadUnsafe(ref first,(nuint)offset);
++                var low=Avx2.UnpackLow(value,Vector256<byte>.Zero).AsUInt16();
++                var high=Avx2.UnpackHigh(value,Vector256<byte>.Zero).AsUInt16();
++                low=Avx2.Add(Avx2.MultiplyHigh(Avx2.Add(Avx2.MultiplyLow(low,factor),rounding),divisor),lowSource);
++                high=Avx2.Add(Avx2.MultiplyHigh(Avx2.Add(Avx2.MultiplyLow(high,factor),rounding),divisor),highSource);
++                Avx2.PackUnsignedSaturate(low.AsInt16(),high.AsInt16()).StoreUnsafe(ref first,(nuint)offset);
++            }
++        }
++        if(offset<=pixels.Length-16)
++        {
++            var source=Vector128.Create(packed).AsByte();
++            var lowSource=Sse2.UnpackLow(source,Vector128<byte>.Zero).AsUInt16();
++            var highSource=Sse2.UnpackHigh(source,Vector128<byte>.Zero).AsUInt16();
++            var factor=Vector128.Create((ushort)remainder);
++            var rounding=Vector128.Create((ushort)128);
++            var divisor=Vector128.Create((ushort)257);
++            for(;offset<=pixels.Length-16;offset+=16)
++            {
++                var value=Vector128.LoadUnsafe(ref first,(nuint)offset);
++                var low=Sse2.UnpackLow(value,Vector128<byte>.Zero).AsUInt16();
++                var high=Sse2.UnpackHigh(value,Vector128<byte>.Zero).AsUInt16();
++                low=Sse2.Add(Sse2.MultiplyHigh(Sse2.Add(Sse2.MultiplyLow(low,factor),rounding),divisor),lowSource);
++                high=Sse2.Add(Sse2.MultiplyHigh(Sse2.Add(Sse2.MultiplyLow(high,factor),rounding),divisor),highSource);
++                Sse2.PackUnsignedSaturate(low.AsInt16(),high.AsInt16()).StoreUnsafe(ref first,(nuint)offset);
++            }
++        }
++        return offset;
++    }
++
+     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+     internal static Vector<ushort> Divide255(Vector<ushort> n)
+     {
+diff --git a/src/SimdSkia.Gpu.Direct2D/packages.lock.json b/src/SimdSkia.Gpu.Direct2D/packages.lock.json
+index da0741b..25aa3c5 100644
+--- a/src/SimdSkia.Gpu.Direct2D/packages.lock.json
++++ b/src/SimdSkia.Gpu.Direct2D/packages.lock.json
+@@ -16,14 +16,14 @@
+       "simdskia.cpu": {
+         "type": "Project",
+         "dependencies": {
+-          "SimdSkia.Core": "[0.1.2, )"
++          "SimdSkia.Core": "[0.1.4, )"
+         }
+       },
+       "simdskia.gpu": {
+         "type": "Project",
+         "dependencies": {
+-          "SimdSkia.Core": "[0.1.2, )",
+-          "SimdSkia.Cpu": "[0.1.2, )"
++          "SimdSkia.Core": "[0.1.4, )",
++          "SimdSkia.Cpu": "[0.1.4, )"
+         }
+       }
+     }
+diff --git a/src/SimdSkia.Gpu/Shaders/renderer-ordered.comp b/src/SimdSkia.Gpu/Shaders/renderer-ordered.comp
+index 24bb247..421e4e0 100644
+--- a/src/SimdSkia.Gpu/Shaders/renderer-ordered.comp
++++ b/src/SimdSkia.Gpu/Shaders/renderer-ordered.comp
+@@ -3,7 +3,7 @@ layout(local_size_x=8,local_size_y=8) in;
+ layout(std430,binding=0) buffer Target { uint pixels[]; };
+ // Aliased, axis-aligned solid rectangles only. Retain the destination in
+ // registers across painter-ordered blends, with one global read/write per pixel.
+-layout(std140,binding=2) uniform Params { uvec4 batchInfo; uvec4 targetInfo; uvec4 drawWords[192]; };
++layout(std140,binding=2) uniform Params { uvec4 batchInfo; uvec4 targetInfo; uvec4 drawWords[128]; };
+ uvec4 unpackColor(uint c){return uvec4(c&255u,(c>>8)&255u,(c>>16)&255u,c>>24);}
+ uint packColor(uvec4 c){return c.x|(c.y<<8)|(c.z<<16)|(c.w<<24);}
+ void main(){
+@@ -14,12 +14,13 @@ void main(){
+     uvec4 value=unpackColor(pixels[at]);if(batchInfo.w!=0u)value=value.bgra;
+     vec2 point=vec2(pixel)+vec2(.5);
+     for(uint i=0u;i<batchInfo.z;i++){
+-        vec4 r=uintBitsToFloat(drawWords[i*3u]),clip=uintBitsToFloat(drawWords[i*3u+1u]);
+-        if(point.x<r.x||point.y<r.y||point.x>=r.z||point.y>=r.w||point.x<clip.x||point.y<clip.y||point.x>=clip.z||point.y>=clip.w)continue;
+-        uvec4 info=drawWords[i*3u+2u],color=unpackColor(info.x);
++        // Bounds are intersected with the rectangular clip once on the CPU.
++        // Color is already premultiplied using the identical integer rule.
++        vec4 r=uintBitsToFloat(drawWords[i*2u]);
++        if(point.x<r.x||point.y<r.y||point.x>=r.z||point.y>=r.w)continue;
++        uvec4 info=drawWords[i*2u+1u],color=unpackColor(info.x);
+         uint alpha=color.a,remain=info.y==0u?255u-alpha:0u;
+-        if(info.y==2u){color=uvec4(0u);alpha=0u;}
+-        value=min(uvec4(255u),(value*remain+uvec4(127u))/255u+uvec4((color.rgb*alpha+uvec3(127u))/255u,alpha));
++        value=min(uvec4(255u),(value*remain+uvec4(127u))/255u+color);
+     }
+     if(batchInfo.w!=0u)value=value.bgra;pixels[at]=packColor(value);
+ }
+diff --git a/src/SimdSkia.Gpu/Shaders/renderer-ordered.spv b/src/SimdSkia.Gpu/Shaders/renderer-ordered.spv
+index 372323396aa2962ba019542c32e548e2fa8457b5..79607c0039aef145d9b9320e5c999fec9d366a64 100644
+GIT binary patch
+delta 2038
+zcmZ9M-HVk~6vp>^W<1Bxfq_AgfvyU>Xb`$HQo#$8sL=WkPGKpjBhzj04k6tI!3!c@
+z)<uo>r6<civ?(ns9aE<dKdR|-Dl;oT($P-!`<?c(gD*U@)_T_3Yd?GKedf@jO$+;a
+zYBx1fD$<-ZJN4}7J73&Cky2W_;h|wnnw5IfB=*7Kb;Bb${sg<RInrF8<Kx)ox{Yg^
+zIX;CQS-rlwcEf+`+o^h>HeJ+OclA6{6r-(Oy>}PISXI;qn$wgHT!&lPvJUqPD8W!_
+zAT6acnUfDhZBe97%@8Z^AYUVvE2^>jvt=KQhvJ-Mdy}z;idgHRx?>O39eb$mc&aP5
+zUpvQ3=&ypMU<p{68m+0ujrC%vYWJ-umod>X=xyLBa5Hepli2M*K5CxFe;Rbxyg)3!
+zn?CnqUj(j`e~vzKF9G>WsVD8g`duLhKbT%7ki48~9X~ePSsm>kC|hK9f?!|4SHdkI
+zWbVS34+*d0yH0+FuF+k4k(nv!HK3#|z<O1L+}-%*kz1xWaQxJ3;&mXWT>TLCCjRyF
+zdkaoJYWCnOeh7s4z4-Eb^Zee%cb)u9dboCNGdB(O<M=A{L@rQBsDB54960QKSU<(f
+zzYF9PuOGtpJL~G6{@K@_!~0~FdK(C-2k_-X>IeAm0eR;fowcF#L;P`|dh6X)We2f-
+zDzoMz09SUT8Q5?uR;d;%qK-WbHiJ#f%lPBWIn&Y19m%|pWEoW}ut&ji@C-0-KYzr>
+zfVriJn(*f>;anQnPr(F;2k(ZTW!?q;MvZT$-e#YJIY8dLziGMXcLHB7rfR>FK;HV}
+z?B5|`!572|@FX#TFY)EKv8hk_D<G#xNBa%d&(WIu8hj6&q<-}I7T<p=kLRg<hhGlx
+z$AoI8u##SdO>JPK$hl#6&YEcc1HS96^*@zyjQmIZ$8zihegf94N{zBJ#-B53BH(>H
+z;?uwe)_C7?zXJI)fF>R8EWU^7#uK^zH+a`r6QX{{pG=GYZ~6y>g(l|arswbrumDU0
+zYdoQ+IhU%f^9L84$Mt>2TfBfTw+dKl?n0_g&L1o<;`$`-1l=#<PhxZ1k?RFt0&>pV
+z3!cIHdBNr`13B+UKaO+-Uu7%P4V{r(#g`Mcl&Z<O^GZ4IFxG414*$Y`G{=tlZ(u)<
+n(ay0i-#h#V^aFW+a`#~!)hNdE*~@iu*0ymLrJ~gsTwePZE%!F(
+
+literal 7244
+zcmZ9Q34oSW6^8#|hGE!2Hj!-*1QbM2P!N$pl##-~v}~83MVK6BreQ!Us*%iA&B}0T
+zLuhd+qun+m(rn-N)%JZ)BTMLc{`ubenp?;7p7)%4?tAZdzi(!!A24H3rBYWJT4}1R
+ztgF<<=*j??3S48&x30Zp?fe}*o98cDyugAHmHJwpH6y7Rh;P8QSKB&FEXPK{%Z<jG
+z3bVeR{|&$&CKyOXdEP+g3?;X-qpP~<%2l21o!xVGE?h=kePsyzCd`^q`2SVx+PP?%
+zd_7uH(@;4Z+}^pV+FqN}RMWJz{qolK&W+XfH66Q1^|W<%tU14yZ>Y53yV|ba(pTS5
+zSw+0Q+Fjkgqr!@fwHT_hvD&j~+nSCmI>F)HS5LKj>z1CrM0oePxx0GRWu4udX;ag9
+z0p6irxoVHNp|TsitJ=PEOD)$>c_IGNT2I#*Sc{?hG&0foy%G%P@4<Jew}@{v?riIz
+zeXVvczOBIf@!d7tP`MMoslBZWSL<^G-`2OiT71;JPol^l!<W~oXY<weu5HyK-$>lO
+zrSB%FYZ-CsTZz3JKI6%l@p<@0%xBulo;-KY?Lt-;J7)B`|8lgfan4DdbF6E|?CUvC
+z$K(^A2zD610PniqKiBoV>oNO@9a-1<USj(>5|{h6Aj*AB#Ky3y>rSVmJ;meb;d;%O
+zqnVf&uV(TSh<#6@X*%&>Vma%qA6{TN^CR%q%g-eikHLIKt~VavjMZW0jVEBvPdo|i
+zIVPS4KE8<UHxqND|7>vjnV*NbzvLH!-Lv~yg15%J`j_I}i@bSW+gjdw^XK60Ex)XY
+zy)WhURuUh=CX+u8?_T7l7Wc(iGiT59@vgrLv!}6lLoRz>4R%=HiZ^GEv7n3asap@O
+z!>qd)Z=L&_!j5yFrh>gc#@4+EZ=Ia$8~0*z<EgzK-;8-4H{gxUIrr6g&r4nn=3a*}
+zR?K6+@;6~}nmzX6t!u#SaXa1~`>^ce061$L1e<rxJdpbyU)T5CXM$tNO(5qTE1P{i
+zhsosJUuvfi%av^&l|J8D{rL1)0k4MCwGhi`v*FKV-)eV%4)4wpn1OiD*E{C7-#sO6
+zDaG<TO7U>8-`>>g_mpCv!HuQZyx-E)-wxj2FZP?7y#4*AmgA$PSpHbQ*l%j;^?p;!
+z@sLt%f4{Njm$QG*_S_n-RMx@zuB|9Ic?adx)Ys0*+)7Tb6@MY-yW#s_FQ3C2Og_CH
+zS8(zUds*u`kH<XwUiulY#jKZiy%xNj>#6q%nDyQ<dw7S|Ve%`9e8--MsmXWGZ%yhh
+z0h_yrUKimn#hfdD2fgH;gvtMdwJ*av9wjILWK7PxBaWu0fYme`%UVwb%SY4Gz|rLQ
+zE_F`_n~SDrfSoJ<Pu9tL`iD6IH9iwlqxaW(wM753z~<Gz0q;=1{N>mNO#R~MuYy~!
+z@|kWVmXH2T;OH;cZH6}&{ae7!l~?};yzA+s{|c}g-IMidiT<r%^XhNIJJc_~4U@B<
+zIQpLrZo$gue<iVe^tXefzg)K+-dyx|fSoI^{;a2u{!XwOH(=JQMZM3#JJf4U7bd4(
+z@nhV4v0SwGfLpM#rk%v{(Y^~D?d7w-3f|nc+yvi)t1;)wr~h-oEm(Qp^N8hr=bZO^
+z%(?QubAIdOa!0QL%SF$N!M)gO%v|cO1)H<S9=!2V)@Z`N1RILUoA>)Em!8*w-J?Cr
+z@5f7t&D~8O@BYg$xtW+}{tCRqGdK5gOwMx_tIhRaiMi%FenT>TRl&&*!0IqZJr;e|
+zcn8u?Z@(q@*I+GJ7x4}F*J5(lpwsyE1$PtPe*Qd=6Ys^V-`+Rl)vAAlUbo_J!yM+{
+zfH$wtIlmEXkDT3`z&X2lrMfqR%^fVx?k!;F%6neMw_vX68se<+R<LX2ZoLgG=d*F$
+zR{YyB*FAul&so0%Y;HGe?8D!I$+`FaMVxi+A}+6UH?f@S<bJ*rEI%8|+V28qZSz_C
+z9<aHr{cf<FYu|}C_T4y$e-Gw!@mV<kdi;Aa`P94*tmbmf`-$c6Ezb1=VCTu_JN7}a
+zym$0oyu&k>{}3kUnTxa5hr#M`pV9LXuzYGh3RX|K=3~V2(erVz^W?olSxcX9*nMF2
+z-GW)Kj%fb`*u2_5iFc@7{tzaoc5!qa2KPV9Pr=Ej=6<l+b4NYz2Qc~jinIJQ*m?45
+z&szFue-Nxb_hbDbEZRQ<Hm~;2;T>w1|12h_c5!rl9^C)jzW^tnnlFOY?!C;j`4U(@
+z+P@5Tp1j(#mOk3Q0#={<v0fd~{#CGfwSOJ&P`musFgdl0qw5>s{^$NpIQi6k3+&x5
+z-{Ef)%jeE~2kbm~wP!7Tw0{?@KKEn2I->o1VDoDK0p6i@`R`+LY8OY>55a0L-{l_>
+z%cthYV6~TP9wL^H_Md>A_YkJ`tfi0kpMurreymqVwEqljUhTiYJJc@!b4*U{;^_J%
+zxc|BT3Qj&XzXq$leBXaVET22`Td?!w)t<HV(f&KI`rME8>WKE=gUze`k9ddL<^O=m
+zsa+ghe**VE_dmnQr{*tUwU_VvUy0?T{cm9B$*VnU>7)JcVD-5l>(!ywNAM1{TJta_
+zr&h83ZYyGW-?_#b|NlQP9xXU^=I6z~!1A7ZeqQ_=d;xX<GjG2p{9~9oe?A;3V$Wa@
+z*k20dW@1^t4o=?sV?uC##~A<~3MX&=C|)l88o+WnQ};6vPTqR|hBHq6Ah7Gt#<G4B
+zocvwI_i`{;PK}=HFtEdOH8&I+iFvN#^cfCzy*>0%#|ZEkyu4ccdr{8kU{B}UCpp(E
+z=d4NZQDEm=+lV*Lo<@WF@98)=`Rr*7SkC9?p2mS4?#bL(OioQ=*YRBaHwdx&ioVq8
+z)#o!m9=sbLy%UMmxt^zP{sgdG+5A1o+$4DCTjPC`n+lfq-!9T)8rbtJ+jT{KGdbs2
+z6HU{>?qMArm*Gz&meU-%0a!H8fN-Ddd3x5*1k1(LD}NH4z09juZZ=qc7MA&Q!2Pva
+zdosNB=Ck%GVAsBwe%_tAVCx*=<`tZDxKj(xedL_x!#Ur2^Y+fUo(A@;tQl53n+0J0
+zUzvsZ?@HGA%zd8b%HIvYAJM#!++JdPtNC<dx%FV@o0D_?&0z1=t@!+oeFizdAFHwQ
+z`@0C<T>d^;43?Woop<*vu*17+?o3S1{^C6UC1CfEzfYDD%W0k$t~ToVZ}w}Adecvz
+z{hkfpL2de<Lu`NN`foqRez!b}<=|0x`Rw;xa4($uwU_hcto85MC7A!N=Kc4Z=NOEg
+zMV;TyA((p{hL5J>3jV=j-Lb@S-n-O{D{2lGHOCXnO~5j5B3QmW?*wAk%)H59xk*^&
+zO##c7=S?Lp&ub=@n}+3%P6w;ib?woN9c6FwIS0?tGjxo=Jcr@<k(lQ&8lP|ANd@m6
+z$-ZZS<x?}Ks40K@Pll7fzc`yyz;d3=0|hr1Y%g=^bt+gLeowRBe6W0aod%ZkywYm{
+k*nZ~H>vXWa%J0A##PaF22rTCrrq^Py{mglG#-81O0L9+EI{*Lx
+
+diff --git a/src/SimdSkia.Gpu/VulkanCanvas.Batches.cs b/src/SimdSkia.Gpu/VulkanCanvas.Batches.cs
+index c06fe01..e4d6685 100644
+--- a/src/SimdSkia.Gpu/VulkanCanvas.Batches.cs
++++ b/src/SimdSkia.Gpu/VulkanCanvas.Batches.cs
+@@ -3,7 +3,7 @@ namespace SimdSkia.Gpu;
+ public sealed unsafe partial class VulkanCanvas
+ {
+     private const int RectangleBatchSize=16,RectangleBatchUniformBytes=RectangleBatchSize*768;
+-    private const int OrderedRectangleBatchSize=64,OrderedRectangleUniformBytes=32+OrderedRectangleBatchSize*48;
++    private const int OrderedRectangleBatchSize=64,OrderedRectangleUniformBytes=32+OrderedRectangleBatchSize*32;
+     private ulong rectangleBatchPipeline;
+     private ulong orderedRectanglePipeline;
+     private readonly bool orderedRectanglesEnabled=!(AppContext.TryGetSwitch("SimdSkia.Vulkan.DisableOrderedRectangleBatches",out bool disabled)&&disabled);
+@@ -57,12 +57,24 @@ public sealed unsafe partial class VulkanCanvas
+         // path when sequential work per pixel cannot amortize that area.
+         double unionArea=(double)(union.Right-union.Left)*(union.Bottom-union.Top);
+         if(ordered&&(unionArea>area*2||unionArea>128*1024))return 0;
+-        EnsureRectangleBatchPipeline();int paramBase=(paramOffset+255)&~255,header=ordered?32:0,stride=ordered?48:768;
++        EnsureRectangleBatchPipeline();int paramBase=(paramOffset+255)&~255,header=ordered?32:0,stride=ordered?32:768;
+         if(ordered){var info=MemoryMarshal.Cast<byte,uint>(paramsArena!.Bytes.Slice(paramBase,32));info[0]=(uint)union.Left;info[1]=(uint)union.Top;info[2]=(uint)count;info[3]=target.Format==PixelFormat.Bgra8888?1u:0u;info[4]=(uint)target.Width;info[5]=(uint)target.Height;info[6]=(uint)(union.Right-union.Left);info[7]=(uint)(union.Bottom-union.Top);}
+         for(int i=0;i<count;i++)
+         {
+-            Prepare(pending[start+i],words);var output=MemoryMarshal.Cast<byte,uint>(paramsArena!.Bytes.Slice(paramBase+header+i*stride,ordered?48:640));
+-            if(ordered){words.Slice(33,4).CopyTo(output);words.Slice(8,4).CopyTo(output[4..]);output[8]=words[4];output[9]=words[3];output[10]=output[11]=0;}
++            Prepare(pending[start+i],words);var output=MemoryMarshal.Cast<byte,uint>(paramsArena!.Bytes.Slice(paramBase+header+i*stride,ordered?32:640));
++            if(ordered)
++            {
++                var floats=MemoryMarshal.Cast<uint,float>(words);
++                var boundsOutput=MemoryMarshal.Cast<uint,float>(output);
++                boundsOutput[0]=Math.Max(floats[33],floats[8]);
++                boundsOutput[1]=Math.Max(floats[34],floats[9]);
++                boundsOutput[2]=Math.Min(floats[35],floats[10]);
++                boundsOutput[3]=Math.Min(floats[36],floats[11]);
++                var color=pending[start+i].Command.Paint.Color;
++                output[4]=words[3]==(uint)CompositeMode.Clear?0u:Pack(new(
++                    PixelBuffer.Multiply(color.R,color.A),PixelBuffer.Multiply(color.G,color.A),PixelBuffer.Multiply(color.B,color.A),color.A));
++                output[5]=words[3];output[6]=output[7]=0;
++            }
+             else words.CopyTo(output);
+         }
+         paramOffset=paramBase+header+count*stride;
+diff --git a/src/SimdSkia.Pdf/packages.lock.json b/src/SimdSkia.Pdf/packages.lock.json
+index 16994f9..5fc7027 100644
+--- a/src/SimdSkia.Pdf/packages.lock.json
++++ b/src/SimdSkia.Pdf/packages.lock.json
+@@ -152,12 +152,12 @@
+       "simdskia.compatibility": {
+         "type": "Project",
+         "dependencies": {
+-          "SimdSkia.Core": "[0.1.2-preview.1, )",
+-          "SimdSkia.Cpu": "[0.1.2-preview.1, )",
+-          "SimdSkia.Gpu": "[0.1.2-preview.1, )",
+-          "SimdSkia.Gpu.Direct2D": "[0.1.2-preview.1, )",
+-          "SimdSkia.Imaging": "[0.1.2-preview.1, )",
+-          "SimdSkia.Text": "[0.1.2-preview.1, )"
++          "SimdSkia.Core": "[0.1.4, )",
++          "SimdSkia.Cpu": "[0.1.4, )",
++          "SimdSkia.Gpu": "[0.1.4, )",
++          "SimdSkia.Gpu.Direct2D": "[0.1.4, )",
++          "SimdSkia.Imaging": "[0.1.4, )",
++          "SimdSkia.Text": "[0.1.4, )"
+         }
+       },
+       "simdskia.core": {
+@@ -169,35 +169,35 @@
+       "simdskia.cpu": {
+         "type": "Project",
+         "dependencies": {
+-          "SimdSkia.Core": "[0.1.2-preview.1, )"
++          "SimdSkia.Core": "[0.1.4, )"
+         }
+       },
+       "simdskia.gpu": {
+         "type": "Project",
+         "dependencies": {
+-          "SimdSkia.Core": "[0.1.2-preview.1, )",
+-          "SimdSkia.Cpu": "[0.1.2-preview.1, )"
++          "SimdSkia.Core": "[0.1.4, )",
++          "SimdSkia.Cpu": "[0.1.4, )"
+         }
+       },
+       "simdskia.gpu.direct2d": {
+         "type": "Project",
+         "dependencies": {
+-          "SimdSkia.Core": "[0.1.2-preview.1, )",
+-          "SimdSkia.Cpu": "[0.1.2-preview.1, )",
+-          "SimdSkia.Gpu": "[0.1.2-preview.1, )"
++          "SimdSkia.Core": "[0.1.4, )",
++          "SimdSkia.Cpu": "[0.1.4, )",
++          "SimdSkia.Gpu": "[0.1.4, )"
+         }
+       },
+       "simdskia.imaging": {
+         "type": "Project",
+         "dependencies": {
+           "Sdcb.SimdCodecs": "[1.4.0, 1.4.0]",
+-          "SimdSkia.Core": "[0.1.2-preview.1, )"
++          "SimdSkia.Core": "[0.1.4, )"
+         }
+       },
+       "simdskia.text": {
+         "type": "Project",
+         "dependencies": {
+-          "SimdSkia.Core": "[0.1.2-preview.1, )"
++          "SimdSkia.Core": "[0.1.4, )"
+         }
+       }
+     }
+diff --git a/tests/AvaloniaControls/CompletionValidation.cs b/tests/AvaloniaControls/CompletionValidation.cs
+index 9301e43..dddbfa5 100644
+--- a/tests/AvaloniaControls/CompletionValidation.cs
++++ b/tests/AvaloniaControls/CompletionValidation.cs
+@@ -20,6 +20,22 @@ internal static class CompletionValidation
+         using var source=new WriteableBitmap(new(2,2),new(96,96),PixelFormats.Rgba8888,global::Avalonia.Platform.AlphaFormat.Premul);
+         using(var locked=source.Lock())Marshal.Copy(new byte[]{255,0,0,255,0,255,0,255,0,0,255,255,255,255,0,255},0,locked.Address,16);
+         using var target=factory.CreateRenderTargetBitmap(new(32,24),new(96,96));
++        using(var c=target.CreateDrawingContext())
++        {
++            c.Clear(Colors.Transparent);
++            c.PushOpacity(1,null);c.PushOpacity(.5,null);c.PushOpacity(1,null);
++            c.DrawRectangle(Brushes.Red,null,new Rect(0,0,8,8));
++            c.PopOpacity();c.PopOpacity();
++            c.PushOpacity(1,null);c.DrawRectangle(Brushes.Blue,null,new Rect(12,0,8,8));c.PopOpacity();c.PopOpacity();
++        }
++        Check(Pixel(target,3,3).A==128&&Pixel(target,3,3).R==128,"Nested opaque scopes changed real opacity-layer restoration.");
++        Check(Pixel(target,14,3)==Colors.Blue,"Opaque scope retained stale layer state.");
++        using(var c=target.CreateDrawingContext())
++        {
++            c.PushOpacity(1,null);bool rejected=false;
++            try{c.PopOpacityMask();}catch(InvalidOperationException){rejected=true;}
++            Check(rejected,"Mismatched lightweight group scope was accepted.");c.PopOpacity();
++        }
+         foreach(var mode in Enum.GetValues<TileMode>())
+         {
+             var brush=new ImageBrush(source){Stretch=Stretch.Fill,TileMode=mode,DestinationRect=new(0,0,4,4,RelativeUnit.Absolute)};
+diff --git a/tests/AvaloniaControls/Validation.cs b/tests/AvaloniaControls/Validation.cs
+index 3cd1db4..68bfd66 100644
+--- a/tests/AvaloniaControls/Validation.cs
++++ b/tests/AvaloniaControls/Validation.cs
+@@ -25,7 +25,7 @@ internal static class Validation
+     {try{action();}catch(T){assertions++;return;}throw new InvalidOperationException(message);}
+     internal static void Run(Window host,Control scene,RenderTargetBitmap bitmap,string font,string output)
+     {
+-        RunDrawingChecks();RunCompositorOracle();RunGeometry();RunShaping(font);RunLifetime();assertions+=GlyphValidation.Run();assertions+=CompletionValidation.Run();assertions+=CollectionValidation.Run(font);assertions+=FeatureProbe.ValidateTileFixtures(output);assertions+=MemoryValidation.Run();assertions+=TileRowValidation.Run();
++        RunDrawingChecks();RunCompositorOracle();RunGeometry();RunShaping(font);RunLifetime();assertions+=GlyphValidation.Run();assertions+=CompletionValidation.Run();assertions+=CollectionValidation.Run(font);assertions+=FontStreamValidation.Run(font);assertions+=FeatureProbe.ValidateTileFixtures(output);assertions+=MemoryValidation.Run();assertions+=TileRowValidation.Run();
+         AvaloniaHeadlessPlatform.ForceRenderTimerTick(2);using var frame=host.CaptureRenderedFrame();Assert(frame is not null&&frame.PixelSize.Width>0,"Real window compositor did not present a framebuffer.");
+         var button=scene.GetVisualDescendants().OfType<Button>().First();int clicked=0;button.Click+=(_,_)=>clicked++;
+         var point=button.TranslatePoint(new Point(button.Bounds.Width/2,button.Bounds.Height/2),host)??throw new InvalidOperationException("Button coordinate mapping failed.");
+diff --git a/tests/CodecIntegration/Program.cs b/tests/CodecIntegration/Program.cs
+index bd32ed8..9f907a3 100644
+--- a/tests/CodecIntegration/Program.cs
++++ b/tests/CodecIntegration/Program.cs
+@@ -38,6 +38,58 @@ foreach(var format in new[]{SKEncodedImageFormat.Png,SKEncodedImageFormat.Jpeg,S
+     using var decoded=SKBitmap.Decode(encoded.AsSpan());Check(decoded.Width==11&&decoded.Height==7,"SK bitmap encoded roundtrip");
+     using var image=SKImage.FromBitmap(bitmap);using var bytes=image.Encode(format,90);Check(bytes.Size>0,"SKImage encoding");
+ }
++// Temporary codecs may transfer their RGBA storage. Persistent codec decodes
++// must remain independent, and returned bitmaps must outlive all input owners.
++foreach(var format in new[]{SKEncodedImageFormat.Png,SKEncodedImageFormat.Jpeg,SKEncodedImageFormat.Bmp})
++foreach(int width in new[]{1,7,8,9,31,32,33})
++{
++    const int decodeHeight=4;
++    using var original=new SKBitmap(new SKImageInfo(width,decodeHeight,SKColorType.Rgba8888,SKAlphaType.Unpremul));
++    for(int y=0;y<decodeHeight;y++)for(int x=0;x<width;x++)original.SetPixel(x,y,new((byte)(x*23),(byte)(y*41),173,(byte)(x*17+y*29)));
++    byte[] bytes;using(var encoded=original.Encode(format,90))bytes=encoded.ToArray();
++    using var data=SKData.CreateCopy(bytes);
++    using var codec=SKCodec.Create(data)??throw new Exception("Missing codec");
++    var info=new SKImageInfo(width,decodeHeight,SKColorType.Rgba8888,SKAlphaType.Unpremul);
++    using var expected=SKBitmap.Decode(codec,info);
++    using var spanResult=SKBitmap.Decode(bytes.AsSpan(),info);
++    using var dataResult=SKBitmap.Decode(data,info);
++    Check(expected.GetPixelSpan().SequenceEqual(spanResult.GetPixelSpan()),"Transferred decode preserves RGBA");
++    Check(expected.GetPixelSpan().SequenceEqual(dataResult.GetPixelSpan()),"SKData decode matches persistent codec");
++    data.Dispose();
++    spanResult.SetPixel(0,0,SKColors.Magenta);
++    using var repeated=SKBitmap.Decode(codec,info);
++    Check(expected.GetPixelSpan().SequenceEqual(repeated.GetPixelSpan()),"Decoded bitmap mutation cannot alter codec storage");
++    Check(expected.GetPixelSpan().SequenceEqual(dataResult.GetPixelSpan()),"Transferred outputs own independent leases");
++    codec.Dispose();expected.Dispose();spanResult.Dispose();
++    using var later=SKBitmap.Decode(bytes,info);
++    Check(dataResult.GetPixelSpan().SequenceEqual(later.GetPixelSpan()),"Pool reuse cannot overwrite a live transferred image");
++    foreach(bool simd in new[]{false,true})
++    {
++        SimdSkia.Cpu.CpuOptions.EnableSimd=simd;
++        using var decoded=SKBitmap.Decode(bytes);
++        for(int y=0;y<decodeHeight;y++)for(int x=0;x<width;x++)
++        {
++            int offset=(y*width+x)*4;var rgba=later.GetPixelSpan();var stored=decoded.GetPixelSpan();byte a=rgba[offset+3];
++            Check(stored[offset]==PixelBuffer.Multiply(rgba[offset+2],a)&&stored[offset+1]==PixelBuffer.Multiply(rgba[offset+1],a)&&stored[offset+2]==PixelBuffer.Multiply(rgba[offset],a)&&stored[offset+3]==a,"Default BGRA decode preserves exact premultiplication");
++        }
++    }
++}
++SimdSkia.Cpu.CpuOptions.EnableSimd=true;
++using(var exhaustive=new SKBitmap(new SKImageInfo(256,256,SKColorType.Rgba8888,SKAlphaType.Unpremul)))
++{
++    for(int a=0;a<256;a++)for(int c=0;c<256;c++)exhaustive.SetPixel(c,a,new((byte)c,(byte)(255-c),(byte)(c*11+a),(byte)a));
++    using var encoded=exhaustive.Encode(SKEncodedImageFormat.Png,100);
++    foreach(bool simd in new[]{false,true})
++    {
++        SimdSkia.Cpu.CpuOptions.EnableSimd=simd;using var decoded=SKBitmap.Decode(encoded);
++        for(int a=0;a<256;a++)for(int c=0;c<256;c++)
++        {
++            int at=(a*256+c)*4;var p=decoded.GetPixelSpan();
++            Check(p[at]==PixelBuffer.Multiply((byte)(c*11+a),(byte)a)&&p[at+1]==PixelBuffer.Multiply((byte)(255-c),(byte)a)&&p[at+2]==PixelBuffer.Multiply((byte)c,(byte)a)&&p[at+3]==a,"Exhaustive premultiplication and channel order");
++        }
++    }
++}
++SimdSkia.Cpu.CpuOptions.EnableSimd=true;
+ foreach(string name in new[]{"disposal.gif","interlaced.gif"})
+ {
+     byte[] bytes=File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Fixtures",name));
+diff --git a/tests/FloatPaintSimd/Program.cs b/tests/FloatPaintSimd/Program.cs
+index 6fb16e0..1abdf9a 100644
+--- a/tests/FloatPaintSimd/Program.cs
++++ b/tests/FloatPaintSimd/Program.cs
+@@ -9,4 +9,24 @@ foreach(var format in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})foreach(v
+  CpuOptions.EnableSimd=false;using(var c=new RasterCanvas(scalar))c.Execute(command);CpuOptions.EnableSimd=true;using(var c=new RasterCanvas(simd))c.Execute(command);
+  var a=scalar.GetPixelSpan();var b=simd.GetPixelSpan();if(!a.SequenceEqual(b)){int at=0;while(a[at]==b[at])at++;throw new Exception($"Float SIMD mismatch {format}/{alpha}/{mode}/{width}, byte {at}: {a[at]}/{b[at]}");}checks++;
+ }
+-File.WriteAllText(Path.Combine(output,"result.json"),JsonSerializer.Serialize(new{checks,seed=1033194,avx2=System.Runtime.Intrinsics.X86.Avx2.IsSupported}));Console.WriteLine($"PASS {checks} exact scalar/SIMD float-paint buffers, all blends/formats/alpha/tails/stride");
++Vector4[] samples=[new(.1f,.2f,.3f,.4f),new(1.25f,-.25f,.5f,.125f),new(1,1,1,1),Vector4.Zero,new(float.NaN,.5f,float.PositiveInfinity,1),new(float.NegativeInfinity,.1f,.2f,float.NaN)];
++foreach(var format in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})foreach(var alpha in new[]{AlphaFormat.Premultiplied,AlphaFormat.Opaque})
++foreach(int width in new[]{1,2,3,7,8,9,127,128,129,257})foreach(byte opacity in new byte[]{0,1,137,255})foreach(bool path in new[]{false,true})
++{
++    using var scalar=new PixelBuffer(width,9,format,alpha,width*4+7);using var simd=new PixelBuffer(width,9,format,alpha,width*4+7);
++    random.NextBytes(scalar.GetPixelSpan());scalar.GetPixelSpan().CopyTo(simd.GetPixelSpan());
++    var paint=new Paint(new(255,255,255,opacity),CompositeMode.SourceOver,true,new VaryingShader(samples));
++    var command=path?new DrawingCommand(CommandKind.FillPath,default,Matrix3.Identity,paint){Path=new PathGeometry([new(PathVerb.Move,new(-1,.25f)),new(PathVerb.Line,new(width+1,1.25f)),new(PathVerb.Line,new(width-1,8.75f)),new(PathVerb.Line,new(0,7.25f)),new(PathVerb.Close,default)])}:
++        DrawingCommand.FillRectangle(new(-1,-1,width+1,10),new(1,0,.125f,0,1,-.25f,0,0,1),paint);
++    CpuOptions.EnableSimd=false;using(var canvas=new RasterCanvas(scalar))canvas.Execute(command);
++    CpuOptions.EnableSimd=true;using(var canvas=new RasterCanvas(simd))canvas.Execute(command);
++    if(!scalar.GetPixelSpan().SequenceEqual(simd.GetPixelSpan()))throw new Exception($"Varying shader SIMD mismatch {format}/{alpha}/{width}/{opacity}/{path}");
++    checks++;
++}
++File.WriteAllText(Path.Combine(output,"result.json"),JsonSerializer.Serialize(new{checks,seed=1033194,avx2=System.Runtime.Intrinsics.X86.Avx2.IsSupported}));Console.WriteLine($"PASS {checks} exact scalar/SIMD float-paint and varying-shader buffers, all blends/formats/alpha/tails/stride");
++
++sealed class VaryingShader(Vector4[] samples):IPremultipliedColorShader
++{
++    public Vector4 SamplePremultiplied(float x,float y)=>samples[(int)Math.Abs(MathF.Floor(x)+MathF.Floor(y)*13)%samples.Length];
++    public Rgba32 Sample(float x,float y)=>throw new InvalidOperationException("PMA sampling is required.");
++}
+diff --git a/tools/build-ordered-rectangle-shader.ps1 b/tools/build-ordered-rectangle-shader.ps1
+index 5713d36..7c14af8 100644
+--- a/tools/build-ordered-rectangle-shader.ps1
++++ b/tools/build-ordered-rectangle-shader.ps1
+@@ -5,5 +5,5 @@ $sourcePath=Join-Path $workspacePath 'src/SimdSkia.Gpu/Shaders/renderer-ordered.
+ $outputPath=Join-Path $workspacePath 'src/SimdSkia.Gpu/Shaders/renderer-ordered.spv'
+ & $Compiler -V --target-env vulkan1.0 $sourcePath -o $outputPath
+ if($LASTEXITCODE -ne 0){throw 'Ordered batch GLSL compilation failed.'}
+-$record=[ordered]@{Target='Vulkan 1.0 / SPIR-V 1.0';Compiler=(& $Compiler --version | Select-Object -First 1);CompilerSha256=(Get-FileHash -LiteralPath $Compiler).Hash;SourceSha256=(Get-FileHash -LiteralPath $sourcePath).Hash;SpirvSha256=(Get-FileHash -LiteralPath $outputPath).Hash;BatchDraws=64;ParameterStrideBytes=48;UniformRangeBytes=3104;RuntimeCompilerRequired=$false}
++$record=[ordered]@{Target='Vulkan 1.0 / SPIR-V 1.0';Compiler=(& $Compiler --version | Select-Object -First 1);CompilerSha256=(Get-FileHash -LiteralPath $Compiler).Hash;SourceSha256=(Get-FileHash -LiteralPath $sourcePath).Hash;SpirvSha256=(Get-FileHash -LiteralPath $outputPath).Hash;BatchDraws=64;ParameterStrideBytes=32;UniformRangeBytes=2080;RuntimeCompilerRequired=$false}
+ $record|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $workspacePath 'docs/shader-build-ordered.json') -Encoding utf8
+diff --git a/tools/run-avalonia-aot.py b/tools/run-avalonia-aot.py
+index b3564fe..33aa253 100644
+--- a/tools/run-avalonia-aot.py
++++ b/tools/run-avalonia-aot.py
+@@ -182,6 +182,7 @@ def main():
+     parser.add_argument("--warmup", type=float, default=2)
+     parser.add_argument("--isa", choices=("portable", "v3"), default="portable")
+     parser.add_argument("--package-version", help="Use this exact public SimdSkia NuGet version instead of source references")
++    parser.add_argument("--before-simd",type=Path,help="Frozen pre-optimization Native AOT executable")
+     options = parser.parse_args()
+     if sys.platform != "win32": raise RuntimeError("Windows x64 is required for this desktop AOT comparison")
+     if options.forks < 1 or not math.isfinite(options.seconds) or not .1 <= options.seconds <= 120:
+@@ -194,9 +195,15 @@ def main():
+             command = ["dotnet", "publish", f"examples/AvaloniaAot/{project}/AvaloniaAot.{project}.csproj", "-c", "Release", f"-p:ComparisonIsa={options.isa}", "-o", str(publish / variant)]
+             if options.package_version:
+                 command += ['-p:UsePackedSimdSkia=true',f'-p:SimdSkiaPackageVersion={options.package_version}']
++            else:
++                command += ['-p:UsePackedSimdSkia=false','-p:RestoreForce=true']
+             with (output / f"publish-{variant}.txt").open("w", encoding="utf-8") as log:
+                 subprocess.run(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT, check=True)
+     binaries = {"simd": publish / "simd/AvaloniaAot.SimdSkia.exe", "original": publish / "original/AvaloniaAot.Original.exe"}
++    variants=VARIANTS
++    if options.before_simd:
++        binaries['before']=options.before_simd.resolve()
++        variants+=('before',)
+     ram = physical_memory()
+     manifest = {"utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "os": platform.platform(),
+         "processors": os.cpu_count(), "physicalMemoryBytes": ram, "forks": options.forks,
+@@ -225,10 +232,10 @@ def main():
+     for case_index, (scene, scale, mode) in enumerate(CASES):
+         case = f"{scene}-{scale:g}-{mode}"
+         for fork in range(options.forks):
+-            offset = (case_index + fork) % len(VARIANTS)
+-            for variant in VARIANTS[offset:] + VARIANTS[:offset]:
++            offset = (case_index + fork) % len(variants)
++            for variant in variants[offset:] + variants[:offset]:
+                 destination = output / f"{case}/{variant}-{fork + 1}"
+-                binary = binaries["simd" if variant == "simd" else "original"]
++                binary = binaries[variant if variant in ('simd','before') else 'original']
+                 arguments = ["--hidden", "--output", str(destination), "--scene", scene, "--scale", str(scale),
+                              "--mode", mode, "--seconds", str(options.seconds), "--warmup", str(options.warmup)]
+                 if variant != "original-default": arguments += ["--full-opacity"]
+@@ -242,6 +249,12 @@ def main():
+     quality = []
+     for scene, scale, mode in CASES:
+         case = f"{scene}-{scale:g}-{mode}"
++        for variant in variants:
++            captures=[(output/f'{case}/{variant}-{fork+1}/scene.rgba').read_bytes() for fork in range(options.forks)]
++            if any(frame!=captures[0] for frame in captures):raise RuntimeError('Unstable fixed-pose pixels: '+case+'/'+variant)
++        if options.before_simd:
++            if (output/f'{case}/simd-1/scene.rgba').read_bytes()!=(output/f'{case}/before-1/scene.rgba').read_bytes():
++                raise RuntimeError('Optimization changed fixed-pose pixels: '+case)
+         for variant in ("original-default", "original-full"):
+             item = quality_compare(output / f"{case}/simd-1/scene.rgba", output / f"{case}/{variant}-1/scene.rgba",
+                                    int(1000 * scale), int(720 * scale))
+@@ -251,7 +264,7 @@ def main():
+     summary = []
+     for scene, scale, mode in CASES:
+         case = f"{scene}-{scale:g}-{mode}"
+-        for variant in VARIANTS:
++        for variant in variants:
+             matches = [r for r in rows if r["case"] == case and r["variant"] == variant]
+             item = {"case": case, "variant": variant, "forks": len(matches)}
+             for key, value in matches[0].items():
+diff --git a/tools/run-codec-skia-comparison.py b/tools/run-codec-skia-comparison.py
+index d774448..3765f73 100644
+--- a/tools/run-codec-skia-comparison.py
++++ b/tools/run-codec-skia-comparison.py
+@@ -18,12 +18,14 @@ p.add_argument('--output',type=Path,required=True)
+ p.add_argument('--fixtures',type=Path,default=ROOT/'artifacts/simdcodecs-evaluation-2026-11-01/fixtures')
+ p.add_argument('--forks',type=int,default=3)
+ p.add_argument('--seconds',type=float,default=2)
++p.add_argument('--before',type=Path,help='Frozen pre-optimization Managed.exe')
+ args=p.parse_args()
+ if args.forks<1 or not .1<=args.seconds<=60:raise ValueError('Invalid measurement settings')
+ out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
+ fixtures=args.fixtures.resolve()
+ programs={key:ROOT/f'benchmarks/CodecSkiaComparison/{folder}/bin/Release/net10.0/{folder}.exe'
+           for key,folder in [('original','Original'),('simd','Managed')]}
++if args.before:programs['before']=args.before.resolve()
+ operations=['decode-jpeg444','decode-jpeg420','decode-png','encode-jpeg444','encode-png']
+ def save(path,data):path.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+ def digest(path):return hashlib.sha256(path.read_bytes()).hexdigest()
+@@ -69,6 +71,7 @@ for scene in ['ui','texture']:
+                  'workingSetMiB','privateMiB','peakWorkingSetMiB','outputBytes']}
+             entry[key]['rangeMs']=[min(r['millisecondsPerImage'] for r in group),max(r['millisecondsPerImage'] for r in group)]
+         entry['simdTimeRatio']=entry['simd']['millisecondsPerImage']/entry['original']['millisecondsPerImage']
++        if args.before:entry['afterOverBefore']=entry['simd']['millisecondsPerImage']/entry['before']['millisecondsPerImage']
+         summary.append(entry)
+ save(out/'summary.json',summary)
+ 
+@@ -111,6 +114,7 @@ for scene in ['ui','texture']:
+                                 'jpegHeader':sampling(dest.read_bytes()) if extension=='.jpg' else None})
+             else:images[key]=dest.read_bytes()
+         delta=compare(images['original'],images['simd'])
++        if args.before and images['before']!=images['simd']:raise ValueError('Codec optimization changed decoded pixels')
+         lossless=operation.endswith('png')
+         exact=all(images[key]==raw for key in images) if lossless else None
+         if lossless and not exact:raise ValueError('Lossless PNG changed pixels')
+diff --git a/tools/run-final-api-benchmarks.py b/tools/run-final-api-benchmarks.py
+index 6e62612..c18142b 100644
+--- a/tools/run-final-api-benchmarks.py
++++ b/tools/run-final-api-benchmarks.py
+@@ -5,16 +5,18 @@ are end-of-scene diagnostics, not sampled peaks or per-operation retained bytes.
+ """
+ import argparse,hashlib,json,math,platform,statistics,subprocess
+ from pathlib import Path
+-p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path,required=True);a=p.parse_args()
++p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path,required=True);p.add_argument('--before',type=Path);a=p.parse_args()
+ if a.output.exists():raise SystemExit('Use a fresh directory.')
+ a.output.mkdir(parents=True)
+ save=lambda path,obj:path.write_text(json.dumps(obj,indent=2)+'\n',encoding='utf-8')
+ workers={v:Path(f'benchmarks/Api99/{v}/bin/Release/net10.0/{v}.dll').resolve() for v in ['Original','Managed']}
++if a.before:workers['Before']=a.before.resolve()
+ hashes={str(f):hashlib.sha256(f.read_bytes()).hexdigest() for w in workers.values() for f in w.parent.glob('*') if f.is_file()}
+ manifest=dict(method=__doc__,platform=platform.platform(),forks=3,warmupSeconds=.5,measureSeconds=.8,hashes=hashes,complete=False)
+ save(a.output/'manifest.json',manifest);runs=[]
+ for fork in range(3):
+- for variant in (['Original','Managed'] if fork%2==0 else ['Managed','Original']):
++ order=list(workers);order=order[fork%len(order):]+order[:fork%len(order)]
++ for variant in order:
+   dest=a.output/f'{variant}-{fork}'
+   with (a.output/(dest.name+'.log')).open('w',encoding='utf-8') as log:subprocess.run(['dotnet',str(workers[variant]),str(dest)],stdout=log,stderr=subprocess.STDOUT,check=True)
+   rows=json.loads((dest/'results.json').read_text(encoding='utf-8-sig'));runs.extend(dict(variant=variant,fork=fork,**row) for row in rows)
+@@ -32,5 +34,9 @@ for scene in dict.fromkeys(r['scene'] for r in runs):
+  d=[abs(u-v) for u,v in zip(x,y)];maximum=max(d);rmse=math.sqrt(sum(v*v for v in d)/len(d))
+  row['quality']=dict(maximum=maximum,rmse=rmse,passed=maximum<=3 and rmse<=.75)
+  row['managedOverOriginal']=row['Managed']['msPerFrame']/row['Original']['msPerFrame'];summary.append(row)
++ if a.before:
++  before=(a.output/'Before-0'/(scene+'.rgba')).read_bytes()
++  assert before==y,'Optimization changed fixed-scene pixels: '+scene
++  row['beforeAfterExact']=True;row['afterOverBefore']=row['Managed']['msPerFrame']/row['Before']['msPerFrame']
+ for path,digest in hashes.items():assert hashlib.sha256(Path(path).read_bytes()).hexdigest()==digest,'Worker changed during measurement.'
+ save(a.output/'summary.json',summary);manifest['complete']=True;save(a.output/'manifest.json',manifest)
+diff --git a/tools/run-gpu-parity.py b/tools/run-gpu-parity.py
+index a747bdb..4fa2632 100644
+--- a/tools/run-gpu-parity.py
++++ b/tools/run-gpu-parity.py
+@@ -19,6 +19,7 @@ p.add_argument("--output",type=Path,required=True)
+ p.add_argument("--forks",type=int,default=3)
+ p.add_argument("--seconds",type=float,default=5)
+ p.add_argument("--warmup",type=float,default=3)
++p.add_argument("--before-managed",type=Path,help="Frozen pre-optimization Managed.exe")
+ args=p.parse_args()
+ if args.output.exists():raise SystemExit("Choose a fresh output directory.")
+ args.output.mkdir(parents=True)
+@@ -27,9 +28,12 @@ original=base/"Original/bin/Release/net10.0/Original.exe"
+ managed=base/"Managed/bin/Release/net10.0/Managed.exe"
+ variants={"original-vulkan":(original,[]),"original-angle":(original,["--angle"]),
+           "vulkan":(managed,["--backend","vulkan"]),"direct2d":(managed,["--backend","direct2d"])}
++if args.before_managed:
++    before=args.before_managed.resolve()
++    variants.update({"before-vulkan":(before,["--backend","vulkan"]),"before-direct2d":(before,["--backend","direct2d"])})
+ cases=[("controls",1),("controls",1.5),("scroll",1)]
+ files={str(f.resolve()):hashlib.sha256(f.read_bytes()).hexdigest()
+-       for parent in [original.parent,managed.parent] for f in parent.rglob("*")
++       for parent in {exe.parent for exe,_ in variants.values()} for f in parent.rglob("*")
+        if f.is_file() and f.suffix in (".exe",".dll",".json")}
+ source={str(f.relative_to(ROOT)):hashlib.sha256(f.read_bytes()).hexdigest()
+         for directory in [ROOT/"src",base] for f in directory.rglob("*.cs") if not {"obj","bin"}.intersection(f.parts)}
+@@ -70,6 +74,11 @@ for scene,scale in cases:
+         entry[variant]={key:statistics.median(r[key] for r in group) for key in
+             ["meanMs","recordingMs","completionMs","p95Ms","cpuMsPerFrame","cpuPercentMachine","sampledMedianWorkingSetMiB","sampledMedianPrivateMiB","allocatedBytesPerFrame"]}
+     for variant in ["vulkan","direct2d"]:
++        if args.before_managed:
++            captures={v:Path(next(r['output'] for r in rows if (r['scene'],r['scale'],r['variant'])==(scene,scale,v)),'scene.rgba').read_bytes() for v in [variant,'before-'+variant]}
++            assert captures[variant]==captures['before-'+variant],f'Optimization changed {scene}/{scale}/{variant} pixels'
++            entry[variant+'BeforeAfterExact']=True
++            entry[variant+'RatioToBefore']=entry[variant]['meanMs']/entry['before-'+variant]['meanMs']
+         entry[variant+"RatioToVulkan"]=entry[variant]["meanMs"]/entry["original-vulkan"]["meanMs"]
+         entry[variant+"RatioToAngle"]=entry[variant]["meanMs"]/entry["original-angle"]["meanMs"]
+         for reference in ["original-vulkan","original-angle"]:

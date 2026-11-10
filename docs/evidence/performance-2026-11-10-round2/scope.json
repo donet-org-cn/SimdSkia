@@ -1,0 +1,20 @@
+{
+  "scope": "Second working-tree optimization after the preceding 2026-11-10 round; source assembly version 0.1.4, SkiaSharp 3.119.4, Avalonia 12.1.5",
+  "performanceProcesses": 318,
+  "regressionCommands": 85,
+  "passedCommands": 59,
+  "originalGateOrAuditNonSuccess": 26,
+  "hardware": "Windows x64 / i7-8700K / 12 logical processors / GTX 1050 Ti",
+  "rawDirectory": "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final",
+  "sourceHead": "1eceed6ee0effc45544badad895394a0ad772bc6",
+  "before": "Frozen full engine DLLs under artifacts/performance-2026-11-10-round2/before; previous local Native AOT publish",
+  "excludedExperiments": [
+    "Preliminary API and single-fork profile runs",
+    "Coordinate vectorization and affine branching candidates",
+    "PNG internal unfilter API candidate",
+    "Initial mixed-build investigation validation",
+    "Initial replay treating oracle-generated PNGs as worker outputs"
+  ],
+  "sourceSnapshotNote": "All 333 implementation files match timing and final validation. Initial AOT snapshot additionally retained an empty net10.0/win-x64 PDF lock entry, reconstructed with exact SHA256. AOT UI has no PDF dependency.",
+  "byteObjects": "Lossless gzip, named by raw SHA256"
+}

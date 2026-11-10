@@ -1,0 +1,80 @@
+[
+  {
+    "name": "retention-mixed-build-before",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "build",
+      "benchmarks/DecodeRetention/Managed",
+      "-c",
+      "Release",
+      "-m:1",
+      "-p:RestoreForce=true",
+      "-o",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10\\final\\retention-mixed-workers\\before",
+      "-p:FrozenEngineDirectory=F:\\SimdSkia\\artifacts\\performance-2026-11-10\\before-workers\\benchmarks\\Managed"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "retention-mixed-build-current",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "build",
+      "benchmarks/DecodeRetention/Managed",
+      "-c",
+      "Release",
+      "-m:1",
+      "-p:RestoreForce=true",
+      "-o",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10\\final\\retention-mixed-workers\\current"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "retention-mixed-build-original",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "build",
+      "benchmarks/DecodeRetention/Original",
+      "-c",
+      "Release",
+      "-m:1",
+      "-p:RestoreForce=true",
+      "-o",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10\\final\\retention-mixed-workers\\original"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "retention-verified",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/run-decode-retention.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10\\final\\retention-verified",
+      "--fixtures",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10\\final\\retention-fixtures",
+      "--before",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10\\final\\retention-mixed-workers\\before\\Managed.dll",
+      "--current",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10\\final\\retention-mixed-workers\\current\\Managed.dll",
+      "--original",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10\\final\\retention-mixed-workers\\original\\Original.dll"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "old-engine-replay-verified",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/check-optimization-regressions.py",
+      "--validation",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10\\final\\validation",
+      "--before-engine",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10\\before-workers\\benchmarks\\Managed",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10\\final\\old-engine-replay"
+    ],
+    "exitCode": 0
+  }
+]

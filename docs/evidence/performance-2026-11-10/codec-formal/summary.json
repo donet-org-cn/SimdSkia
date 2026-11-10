@@ -1,0 +1,482 @@
+[
+  {
+    "scene": "ui",
+    "operation": "decode-jpeg444",
+    "original": {
+      "millisecondsPerImage": 11.427992045454546,
+      "cpuMillisecondsPerImage": 11.363636363636363,
+      "cpuPercentMachine": 8.308594079033307,
+      "allocatedBytesPerImage": 296.22727272727275,
+      "workingSetMiB": 33.96875,
+      "privateMiB": 10.4140625,
+      "peakWorkingSetMiB": 40.09375,
+      "outputBytes": 8294400,
+      "rangeMs": [
+        11.33307966101695,
+        12.494532298136646
+      ]
+    },
+    "simd": {
+      "millisecondsPerImage": 4.275931196581197,
+      "cpuMillisecondsPerImage": 4.273504273504273,
+      "cpuPercentMachine": 8.328603519394669,
+      "allocatedBytesPerImage": 2225.1452991452993,
+      "workingSetMiB": 44.33203125,
+      "privateMiB": 20.94921875,
+      "peakWorkingSetMiB": 44.33203125,
+      "outputBytes": 8294400,
+      "rangeMs": [
+        4.26537974413646,
+        4.2942628755364805
+      ]
+    },
+    "before": {
+      "millisecondsPerImage": 6.775892567567567,
+      "cpuMillisecondsPerImage": 7.339857651245552,
+      "cpuPercentMachine": 9.091451952131525,
+      "allocatedBytesPerImage": 8499568.783783784,
+      "workingSetMiB": 53.13671875,
+      "privateMiB": 29.97265625,
+      "peakWorkingSetMiB": 104.03515625,
+      "outputBytes": 8294400,
+      "rangeMs": [
+        6.617454125412541,
+        7.138496441281139
+      ]
+    },
+    "simdTimeRatio": 0.37416294827418406,
+    "afterOverBefore": 0.6310506186369754
+  },
+  {
+    "scene": "ui",
+    "operation": "decode-jpeg420",
+    "original": {
+      "millisecondsPerImage": 9.49338009478673,
+      "cpuMillisecondsPerImage": 9.507665094339623,
+      "cpuPercentMachine": 8.25542005690637,
+      "allocatedBytesPerImage": 296.18957345971563,
+      "workingSetMiB": 33.828125,
+      "privateMiB": 10.2890625,
+      "peakWorkingSetMiB": 39.95703125,
+      "outputBytes": 8294400,
+      "rangeMs": [
+        9.470321698113208,
+        9.967626368159204
+      ]
+    },
+    "simd": {
+      "millisecondsPerImage": 3.799499430740038,
+      "cpuMillisecondsPerImage": 3.765417457305503,
+      "cpuPercentMachine": 8.258582316662574,
+      "allocatedBytesPerImage": 2225.0170777988615,
+      "workingSetMiB": 44.23828125,
+      "privateMiB": 20.9765625,
+      "peakWorkingSetMiB": 44.23828125,
+      "outputBytes": 8294400,
+      "rangeMs": [
+        3.729119180633147,
+        3.9514844181459563
+      ]
+    },
+    "before": {
+      "millisecondsPerImage": 5.916822123893805,
+      "cpuMillisecondsPerImage": 6.360619469026549,
+      "cpuPercentMachine": 8.979436758754522,
+      "allocatedBytesPerImage": 8464788.979351033,
+      "workingSetMiB": 52.7734375,
+      "privateMiB": 29.08984375,
+      "peakWorkingSetMiB": 103.578125,
+      "outputBytes": 8294400,
+      "rangeMs": [
+        5.902949557522124,
+        6.444842122186495
+      ]
+    },
+    "simdTimeRatio": 0.40022619897274786,
+    "afterOverBefore": 0.6421520456727239
+  },
+  {
+    "scene": "ui",
+    "operation": "decode-png",
+    "original": {
+      "millisecondsPerImage": 2.83790085106383,
+      "cpuMillisecondsPerImage": 2.8147163120567376,
+      "cpuPercentMachine": 8.265253262229601,
+      "allocatedBytesPerImage": 296.0567375886525,
+      "workingSetMiB": 33.8203125,
+      "privateMiB": 10.296875,
+      "peakWorkingSetMiB": 39.9375,
+      "outputBytes": 8294400,
+      "rangeMs": [
+        2.8079266479663394,
+        3.0327645454545458
+      ]
+    },
+    "simd": {
+      "millisecondsPerImage": 2.196315806805708,
+      "cpuMillisecondsPerImage": 2.178238199780461,
+      "cpuPercentMachine": 8.264742684965015,
+      "allocatedBytesPerImage": 9113.87047200878,
+      "workingSetMiB": 53.46875,
+      "privateMiB": 29.9921875,
+      "peakWorkingSetMiB": 53.46875,
+      "outputBytes": 8294400,
+      "rangeMs": [
+        2.1242872611464967,
+        2.400623381294964
+      ]
+    },
+    "before": {
+      "millisecondsPerImage": 4.738105437352246,
+      "cpuMillisecondsPerImage": 5.208333333333333,
+      "cpuPercentMachine": 8.902841085252554,
+      "allocatedBytesPerImage": 8318496.491725768,
+      "workingSetMiB": 73.66015625,
+      "privateMiB": 50.82421875,
+      "peakWorkingSetMiB": 111.49609375,
+      "outputBytes": 8294400,
+      "rangeMs": [
+        4.692040046838407,
+        5.1376689743589745
+      ]
+    },
+    "simdTimeRatio": 0.7739226710413035,
+    "afterOverBefore": 0.46354304180133565
+  },
+  {
+    "scene": "ui",
+    "operation": "encode-jpeg444",
+    "original": {
+      "millisecondsPerImage": 31.3784,
+      "cpuMillisecondsPerImage": 31.73828125,
+      "cpuPercentMachine": 8.343432120884055,
+      "allocatedBytesPerImage": 129802.875,
+      "workingSetMiB": 57.66015625,
+      "privateMiB": 34.80078125,
+      "peakWorkingSetMiB": 67.578125,
+      "outputBytes": 129451,
+      "rangeMs": [
+        30.106534328358208,
+        32.72244193548387
+      ]
+    },
+    "simd": {
+      "millisecondsPerImage": 7.485083582089553,
+      "cpuMillisecondsPerImage": 7.462686567164179,
+      "cpuPercentMachine": 8.308398168749283,
+      "allocatedBytesPerImage": 395605.78125,
+      "workingSetMiB": 105.76171875,
+      "privateMiB": 85.23046875,
+      "peakWorkingSetMiB": 105.76171875,
+      "outputBytes": 196847,
+      "rangeMs": [
+        7.001793006993007,
+        7.831236328125
+      ]
+    },
+    "before": {
+      "millisecondsPerImage": 7.389341328413284,
+      "cpuMillisecondsPerImage": 7.322416974169742,
+      "cpuPercentMachine": 8.137388151404561,
+      "allocatedBytesPerImage": 395600.08856088563,
+      "workingSetMiB": 103.56640625,
+      "privateMiB": 83.078125,
+      "peakWorkingSetMiB": 103.56640625,
+      "outputBytes": 196847,
+      "rangeMs": [
+        7.345384615384615,
+        8.032753012048193
+      ]
+    },
+    "simdTimeRatio": 0.23854255099334426,
+    "afterOverBefore": 1.0129568048654247
+  },
+  {
+    "scene": "ui",
+    "operation": "encode-png",
+    "original": {
+      "millisecondsPerImage": 60.39592058823529,
+      "cpuMillisecondsPerImage": 60.661764705882355,
+      "cpuPercentMachine": 8.370014083050895,
+      "allocatedBytesPerImage": 12922.588235294117,
+      "workingSetMiB": 48.34765625,
+      "privateMiB": 25.00390625,
+      "peakWorkingSetMiB": 48.34765625,
+      "outputBytes": 12569,
+      "rangeMs": [
+        59.03906470588235,
+        64.20785625
+      ]
+    },
+    "simd": {
+      "millisecondsPerImage": 10.52336282722513,
+      "cpuMillisecondsPerImage": 10.716623036649215,
+      "cpuPercentMachine": 8.486373931822834,
+      "allocatedBytesPerImage": 45094.32460732984,
+      "workingSetMiB": 60.5234375,
+      "privateMiB": 37.62109375,
+      "peakWorkingSetMiB": 60.5234375,
+      "outputBytes": 8099,
+      "rangeMs": [
+        10.133111616161615,
+        11.736790643274853
+      ]
+    },
+    "before": {
+      "millisecondsPerImage": 10.399631606217616,
+      "cpuMillisecondsPerImage": 10.60556994818653,
+      "cpuPercentMachine": 8.561112470927084,
+      "allocatedBytesPerImage": 45094.25906735751,
+      "workingSetMiB": 60.65625,
+      "privateMiB": 37.6171875,
+      "peakWorkingSetMiB": 60.65625,
+      "outputBytes": 8099,
+      "rangeMs": [
+        9.958516417910449,
+        11.809556470588236
+      ]
+    },
+    "simdTimeRatio": 0.17423962951025881,
+    "afterOverBefore": 1.0118976542335922
+  },
+  {
+    "scene": "texture",
+    "operation": "decode-jpeg444",
+    "original": {
+      "millisecondsPerImage": 19.770045098039216,
+      "cpuMillisecondsPerImage": 20.067401960784313,
+      "cpuPercentMachine": 8.458673151422818,
+      "allocatedBytesPerImage": 297.80392156862746,
+      "workingSetMiB": 34.38671875,
+      "privateMiB": 10.98828125,
+      "peakWorkingSetMiB": 40.515625,
+      "outputBytes": 8294400,
+      "rangeMs": [
+        19.520604854368933,
+        21.115194736842106
+      ]
+    },
+    "simd": {
+      "millisecondsPerImage": 9.091210454545454,
+      "cpuMillisecondsPerImage": 9.090909090909092,
+      "cpuPercentMachine": 8.319773350737632,
+      "allocatedBytesPerImage": 2226.4363636363637,
+      "workingSetMiB": 44.6484375,
+      "privateMiB": 21.2265625,
+      "peakWorkingSetMiB": 44.6484375,
+      "outputBytes": 8294400,
+      "rangeMs": [
+        9.064523529411765,
+        9.501614691943129
+      ]
+    },
+    "before": {
+      "millisecondsPerImage": 11.371428977272727,
+      "cpuMillisecondsPerImage": 12.340198863636363,
+      "cpuPercentMachine": 8.8842615124175,
+      "allocatedBytesPerImage": 9062310.5,
+      "workingSetMiB": 54.40234375,
+      "privateMiB": 30.69140625,
+      "peakWorkingSetMiB": 109.37109375,
+      "outputBytes": 8294400,
+      "rangeMs": [
+        11.032314285714286,
+        12.316846625766871
+      ]
+    },
+    "simdTimeRatio": 0.4598477347655174,
+    "afterOverBefore": 0.7994782777710185
+  },
+  {
+    "scene": "texture",
+    "operation": "decode-jpeg420",
+    "original": {
+      "millisecondsPerImage": 17.80096371681416,
+      "cpuMillisecondsPerImage": 18.113938053097346,
+      "cpuPercentMachine": 8.434816897721477,
+      "allocatedBytesPerImage": 297.62831858407077,
+      "workingSetMiB": 34.39453125,
+      "privateMiB": 10.984375,
+      "peakWorkingSetMiB": 40.515625,
+      "outputBytes": 8294400,
+      "rangeMs": [
+        17.778335398230087,
+        19.483601941747573
+      ]
+    },
+    "simd": {
+      "millisecondsPerImage": 8.182545714285714,
+      "cpuMillisecondsPerImage": 8.16326530612245,
+      "cpuPercentMachine": 8.313697626593962,
+      "allocatedBytesPerImage": 2226.1877551020407,
+      "workingSetMiB": 44.578125,
+      "privateMiB": 21.3046875,
+      "peakWorkingSetMiB": 44.578125,
+      "outputBytes": 8294400,
+      "rangeMs": [
+        7.981264541832669,
+        8.679493073593074
+      ]
+    },
+    "before": {
+      "millisecondsPerImage": 10.310258762886598,
+      "cpuMillisecondsPerImage": 10.873067010309278,
+      "cpuPercentMachine": 8.78822673963706,
+      "allocatedBytesPerImage": 9029651.614213198,
+      "workingSetMiB": 53.64453125,
+      "privateMiB": 30.53125,
+      "peakWorkingSetMiB": 109.03515625,
+      "outputBytes": 8294400,
+      "rangeMs": [
+        10.170052791878172,
+        11.491111428571429
+      ]
+    },
+    "simdTimeRatio": 0.45966869235044683,
+    "afterOverBefore": 0.7936314599338746
+  },
+  {
+    "scene": "texture",
+    "operation": "decode-png",
+    "original": {
+      "millisecondsPerImage": 20.328724242424244,
+      "cpuMillisecondsPerImage": 20.833333333333332,
+      "cpuPercentMachine": 8.485991843929009,
+      "allocatedBytesPerImage": 297.85858585858585,
+      "workingSetMiB": 36.15625,
+      "privateMiB": 12.65625,
+      "peakWorkingSetMiB": 42.2734375,
+      "outputBytes": 8294400,
+      "rangeMs": [
+        20.191185,
+        22.584862921348314
+      ]
+    },
+    "simd": {
+      "millisecondsPerImage": 42.2223125,
+      "cpuMillisecondsPerImage": 44.270833333333336,
+      "cpuPercentMachine": 8.620207620850488,
+      "allocatedBytesPerImage": 9179.5,
+      "workingSetMiB": 50.77734375,
+      "privateMiB": 26.5234375,
+      "peakWorkingSetMiB": 50.77734375,
+      "outputBytes": 8294400,
+      "rangeMs": [
+        40.99931632653061,
+        44.05549347826087
+      ]
+    },
+    "before": {
+      "millisecondsPerImage": 45.964763636363635,
+      "cpuMillisecondsPerImage": 47.58522727272727,
+      "cpuPercentMachine": 8.627120629689198,
+      "allocatedBytesPerImage": 10936691.826086957,
+      "workingSetMiB": 63.90234375,
+      "privateMiB": 40.19921875,
+      "peakWorkingSetMiB": 97.515625,
+      "outputBytes": 8294400,
+      "rangeMs": [
+        44.090739130434784,
+        48.75930476190476
+      ]
+    },
+    "simdTimeRatio": 2.076977974441002,
+    "afterOverBefore": 0.9185799982358028
+  },
+  {
+    "scene": "texture",
+    "operation": "encode-jpeg444",
+    "original": {
+      "millisecondsPerImage": 57.34126857142857,
+      "cpuMillisecondsPerImage": 57.589285714285715,
+      "cpuPercentMachine": 8.375819019528713,
+      "allocatedBytesPerImage": 720301.0285714286,
+      "workingSetMiB": 69.515625,
+      "privateMiB": 46.6328125,
+      "peakWorkingSetMiB": 80.171875,
+      "outputBytes": 719929,
+      "rangeMs": [
+        57.29716857142857,
+        62.76385
+      ]
+    },
+    "simd": {
+      "millisecondsPerImage": 9.487930331753555,
+      "cpuMillisecondsPerImage": 9.552725118483412,
+      "cpuPercentMachine": 8.330289861932277,
+      "allocatedBytesPerImage": 1500563.8315789474,
+      "workingSetMiB": 78,
+      "privateMiB": 57.4609375,
+      "peakWorkingSetMiB": 118.796875,
+      "outputBytes": 749217,
+      "rangeMs": [
+        9.410807981220657,
+        10.530161578947368
+      ]
+    },
+    "before": {
+      "millisecondsPerImage": 9.703811111111111,
+      "cpuMillisecondsPerImage": 9.66183574879227,
+      "cpuPercentMachine": 8.297286188352345,
+      "allocatedBytesPerImage": 1500607.6279069767,
+      "workingSetMiB": 77.05859375,
+      "privateMiB": 55.90625,
+      "peakWorkingSetMiB": 126.05859375,
+      "outputBytes": 749217,
+      "rangeMs": [
+        9.330643720930233,
+        10.143540909090909
+      ]
+    },
+    "simdTimeRatio": 0.16546425581664068,
+    "afterOverBefore": 0.9777529903575342
+  },
+  {
+    "scene": "texture",
+    "operation": "encode-png",
+    "original": {
+      "millisecondsPerImage": 444.27474,
+      "cpuMillisecondsPerImage": 446.875,
+      "cpuPercentMachine": 8.360515039830831,
+      "allocatedBytesPerImage": 2922024,
+      "workingSetMiB": 62.1640625,
+      "privateMiB": 39.72265625,
+      "peakWorkingSetMiB": 63.09375,
+      "outputBytes": 2921668,
+      "rangeMs": [
+        439.19244,
+        479.33495999999997
+      ]
+    },
+    "simd": {
+      "millisecondsPerImage": 162.69170769230772,
+      "cpuMillisecondsPerImage": 163.46153846153845,
+      "cpuPercentMachine": 8.365598642668006,
+      "allocatedBytesPerImage": 13720626.461538462,
+      "workingSetMiB": 91.21484375,
+      "privateMiB": 72.4140625,
+      "peakWorkingSetMiB": 107.0703125,
+      "outputBytes": 2637917,
+      "rangeMs": [
+        156.84464615384616,
+        164.89007692307692
+      ]
+    },
+    "before": {
+      "millisecondsPerImage": 156.0219923076923,
+      "cpuMillisecondsPerImage": 157.45192307692307,
+      "cpuPercentMachine": 8.40970775701131,
+      "allocatedBytesPerImage": 13720626.461538462,
+      "workingSetMiB": 91.23828125,
+      "privateMiB": 72.3984375,
+      "peakWorkingSetMiB": 107.08984375,
+      "outputBytes": 2637917,
+      "rangeMs": [
+        155.98903846153846,
+        166.94389166666667
+      ]
+    },
+    "simdTimeRatio": 0.36619616882181444,
+    "afterOverBefore": 1.0427485592637609
+  }
+]

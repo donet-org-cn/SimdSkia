@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks><RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <Description>Managed C# rendering/font services for Avalonia 12.x from 12.1.0. Windows/Linux/macOS installed-font discovery. Add SimdSkia.Avalonia.Desktop for OS window hosts and SimdSkia.Avalonia.Gpu for optional hardware drawing. Incomplete compatibility.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="/README.md" />
+    <!-- Avalonia's consumer ref assemblies deliberately prohibit implementing backend contracts.
+         Compile against the lowest supported runtime contract, not the consumer's
+         reference assemblies. Higher compatible 12.x versions can be selected by the app. -->
+    <PackageReference Include="Avalonia" Version="[12.1.0,13.0.0)" GeneratePathProperty="true" ExcludeAssets="compile" />
+    <Reference Include="$(PkgAvalonia)/lib/net8.0/*.dll" />
+    <PackageReference Include="Clipper2" Version="[2.0.0]" />
+    <ProjectReference Include="../SimdSkia.Core/SimdSkia.Core.csproj" />
+    <ProjectReference Include="../SimdSkia.Cpu/SimdSkia.Cpu.csproj" />
+    <ProjectReference Include="../SimdSkia.Text/SimdSkia.Text.csproj" />
+    <ProjectReference Include="../SimdSkia.Imaging/SimdSkia.Imaging.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="../../docs/licenses/Clipper2-BSL-1.0.txt" Link="licenses/Clipper2-BSL-1.0.txt" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="licenses" />
+    <None Include="../../docs/licenses/Avalonia-MIT.txt" Link="licenses/Avalonia-MIT.txt" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="licenses" />
+  </ItemGroup>
+</Project>

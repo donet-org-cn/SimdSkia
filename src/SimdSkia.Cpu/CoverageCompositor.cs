@@ -12,6 +12,8 @@ internal static partial class SpanCompositor
         if(paint.Blender is not null||paint.FloatingColor is not null){for(int i=0;i<coverage.Length;i++)Apply(pixels.Slice(i*4,4),format,alpha,paint,coverage[i]);return;}
         if(paint.ColorFilter is {} filter){var c=paint.Color;float a=c.A/255f;var source=paint.FilteredConstant?.Value??filter.Filter(new(c.R/255f*a,c.G/255f*a,c.B/255f*a,a));for(int i=0;i<coverage.Length;i++)if(coverage[i]!=0)BlendKernel.ApplyPremultiplied(pixels.Slice(i*4,4),format,alpha,source,255,paint.Composite,coverage[i]);return;}
         if(paint.Composite is not (CompositeMode.SourceOver or CompositeMode.Source or CompositeMode.Clear)){for(int i=0;i<coverage.Length;i++)if(coverage[i]!=0)BlendKernel.Apply(pixels.Slice(i*4,4),format,alpha,paint.Color,paint.Composite,coverage[i]);return;}
+        if(CpuOptions.EnableSimd&&Sse2.IsSupported&&alpha!=AlphaFormat.Straight&&paint.Composite==CompositeMode.SourceOver&&paint.Color==new Rgba32(0,0,0,255))
+        {ApplyOpaqueBlackCoverage(pixels,coverage);return;}
         int x=0;
         if(CpuOptions.EnableSimd&&Avx2.IsSupported&&alpha!=AlphaFormat.Straight)
         {
@@ -28,8 +30,8 @@ internal static partial class SpanCompositor
                 var expanded=Avx2.Shuffle(Vector256.Create(bytes,bytes),shuffle);
                 var covLow=Avx2.ConvertToVector256Int16(expanded.GetLower()).AsUInt16();
                 var covHigh=Avx2.ConvertToVector256Int16(expanded.GetUpper()).AsUInt16();
-                var aLow=Divide(Avx2.Add(Avx2.MultiplyLow(covLow,opacity),rounding));
-                var aHigh=Divide(Avx2.Add(Avx2.MultiplyLow(covHigh,opacity),rounding));
+                var aLow=c.A==255?covLow:Divide(Avx2.Add(Avx2.MultiplyLow(covLow,opacity),rounding));
+                var aHigh=c.A==255?covHigh:Divide(Avx2.Add(Avx2.MultiplyLow(covHigh,opacity),rounding));
                 var lowRemain=Avx2.Subtract(maximum,paint.Composite==CompositeMode.SourceOver?aLow:covLow);
                 var highRemain=Avx2.Subtract(maximum,paint.Composite==CompositeMode.SourceOver?aHigh:covHigh);
                 var destination=Vector256.LoadUnsafe(ref MemoryMarshal.GetReference(pixels),(nuint)(x*4));

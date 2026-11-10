@@ -18,12 +18,14 @@ p.add_argument('--output',type=Path,required=True)
 p.add_argument('--fixtures',type=Path,default=ROOT/'artifacts/simdcodecs-evaluation-2026-11-01/fixtures')
 p.add_argument('--forks',type=int,default=3)
 p.add_argument('--seconds',type=float,default=2)
+p.add_argument('--before',type=Path,help='Frozen pre-optimization Managed.exe')
 args=p.parse_args()
 if args.forks<1 or not .1<=args.seconds<=60:raise ValueError('Invalid measurement settings')
 out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
 fixtures=args.fixtures.resolve()
 programs={key:ROOT/f'benchmarks/CodecSkiaComparison/{folder}/bin/Release/net10.0/{folder}.exe'
           for key,folder in [('original','Original'),('simd','Managed')]}
+if args.before:programs['before']=args.before.resolve()
 operations=['decode-jpeg444','decode-jpeg420','decode-png','encode-jpeg444','encode-png']
 def save(path,data):path.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 def digest(path):return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -69,6 +71,7 @@ for scene in ['ui','texture']:
                  'workingSetMiB','privateMiB','peakWorkingSetMiB','outputBytes']}
             entry[key]['rangeMs']=[min(r['millisecondsPerImage'] for r in group),max(r['millisecondsPerImage'] for r in group)]
         entry['simdTimeRatio']=entry['simd']['millisecondsPerImage']/entry['original']['millisecondsPerImage']
+        if args.before:entry['afterOverBefore']=entry['simd']['millisecondsPerImage']/entry['before']['millisecondsPerImage']
         summary.append(entry)
 save(out/'summary.json',summary)
 
@@ -111,6 +114,7 @@ for scene in ['ui','texture']:
                                 'jpegHeader':sampling(dest.read_bytes()) if extension=='.jpg' else None})
             else:images[key]=dest.read_bytes()
         delta=compare(images['original'],images['simd'])
+        if args.before and images['before']!=images['simd']:raise ValueError('Codec optimization changed decoded pixels')
         lossless=operation.endswith('png')
         exact=all(images[key]==raw for key in images) if lossless else None
         if lossless and not exact:raise ValueError('Lossless PNG changed pixels')

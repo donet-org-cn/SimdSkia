@@ -1,0 +1,49 @@
+[
+  {
+    "name": "build-solution-final",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "build",
+      "SimdSkia.sln",
+      "-c",
+      "Release",
+      "-m:1",
+      "-p:UsePackedSimdSkia=false"
+    ],
+    "exitCode": 0,
+    "seconds": 49.565775632858276
+  },
+  {
+    "name": "validation-final",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/run-performance-validation.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final"
+    ],
+    "exitCode": 2,
+    "seconds": 632.1242351531982
+  },
+  {
+    "name": "old-engine-replay-final",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/check-optimization-regressions.py",
+      "--validation",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation-final",
+      "--before-engine",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\before\\Managed",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\old-engine-replay-final",
+      "--include-passing-shaders"
+    ],
+    "exitCode": 2,
+    "seconds": 27.692283391952515
+  },
+  {
+    "name": "old-engine-replay-corrected",
+    "exitCode": 0,
+    "summary": "old-engine-replay-final/summary.json",
+    "reason": "Oracle-derived PNG compared through its exact BGRA source"
+  }
+]

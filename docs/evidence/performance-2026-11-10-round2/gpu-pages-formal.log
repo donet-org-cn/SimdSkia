@@ -1,0 +1,69 @@
+original-vulkan controls/1 #0: 2.4321ms completed; CPU 5.91%; WS 148.3MiB
+original-angle controls/1 #0: 2.1380ms completed; CPU 9.58%; WS 139.7MiB
+vulkan controls/1 #0: 1.3244ms completed; CPU 3.98%; WS 141.4MiB
+direct2d controls/1 #0: 1.2624ms completed; CPU 11.56%; WS 131.6MiB
+before-vulkan controls/1 #0: 1.3167ms completed; CPU 3.62%; WS 156.1MiB
+before-direct2d controls/1 #0: 1.2746ms completed; CPU 11.12%; WS 145.1MiB
+original-vulkan controls/1.5 #0: 3.4383ms completed; CPU 6.54%; WS 160.2MiB
+original-angle controls/1.5 #0: 4.0915ms completed; CPU 9.03%; WS 152.4MiB
+vulkan controls/1.5 #0: 2.3916ms completed; CPU 3.54%; WS 160.4MiB
+direct2d controls/1.5 #0: 2.3134ms completed; CPU 10.44%; WS 148.5MiB
+before-vulkan controls/1.5 #0: 2.3939ms completed; CPU 3.46%; WS 167.2MiB
+before-direct2d controls/1.5 #0: 2.2948ms completed; CPU 10.26%; WS 156.0MiB
+original-vulkan scroll/1 #0: 2.2259ms completed; CPU 5.94%; WS 138.8MiB
+original-angle scroll/1 #0: 1.7787ms completed; CPU 9.40%; WS 124.6MiB
+vulkan scroll/1 #0: 1.3078ms completed; CPU 2.71%; WS 127.9MiB
+direct2d scroll/1 #0: 0.7520ms completed; CPU 12.16%; WS 116.6MiB
+before-vulkan scroll/1 #0: 1.3073ms completed; CPU 2.27%; WS 142.0MiB
+before-direct2d scroll/1 #0: 0.7603ms completed; CPU 11.80%; WS 130.9MiB
+original-angle controls/1 #1: 1.8147ms completed; CPU 9.87%; WS 139.2MiB
+vulkan controls/1 #1: 1.3198ms completed; CPU 3.62%; WS 141.6MiB
+direct2d controls/1 #1: 1.2958ms completed; CPU 11.22%; WS 131.6MiB
+before-vulkan controls/1 #1: 1.3205ms completed; CPU 3.72%; WS 155.5MiB
+before-direct2d controls/1 #1: 1.2827ms completed; CPU 11.12%; WS 145.0MiB
+original-vulkan controls/1 #1: 2.2042ms completed; CPU 6.56%; WS 148.1MiB
+original-angle controls/1.5 #1: 4.0354ms completed; CPU 9.03%; WS 152.6MiB
+vulkan controls/1.5 #1: 2.4091ms completed; CPU 3.44%; WS 160.3MiB
+direct2d controls/1.5 #1: 2.3666ms completed; CPU 10.26%; WS 148.6MiB
+before-vulkan controls/1.5 #1: 2.3889ms completed; CPU 3.51%; WS 167.0MiB
+before-direct2d controls/1.5 #1: 2.2954ms completed; CPU 10.23%; WS 155.9MiB
+original-vulkan controls/1.5 #1: 3.4599ms completed; CPU 6.43%; WS 160.3MiB
+original-angle scroll/1 #1: 1.8354ms completed; CPU 9.50%; WS 124.7MiB
+vulkan scroll/1 #1: 1.3061ms completed; CPU 1.82%; WS 127.8MiB
+direct2d scroll/1 #1: 0.7520ms completed; CPU 12.29%; WS 117.0MiB
+before-vulkan scroll/1 #1: 1.3095ms completed; CPU 2.79%; WS 141.9MiB
+before-direct2d scroll/1 #1: 0.7442ms completed; CPU 11.95%; WS 130.7MiB
+original-vulkan scroll/1 #1: 2.0611ms completed; CPU 6.07%; WS 138.5MiB
+vulkan controls/1 #2: 1.3188ms completed; CPU 3.54%; WS 141.3MiB
+direct2d controls/1 #2: 1.2672ms completed; CPU 11.25%; WS 131.2MiB
+before-vulkan controls/1 #2: 1.3294ms completed; CPU 3.57%; WS 152.2MiB
+before-direct2d controls/1 #2: 1.2796ms completed; CPU 11.30%; WS 145.5MiB
+original-vulkan controls/1 #2: 2.2212ms completed; CPU 6.48%; WS 148.1MiB
+original-angle controls/1 #2: 2.1362ms completed; CPU 9.60%; WS 139.2MiB
+vulkan controls/1.5 #2: 2.3747ms completed; CPU 3.57%; WS 160.4MiB
+direct2d controls/1.5 #2: 2.2545ms completed; CPU 10.34%; WS 148.7MiB
+before-vulkan controls/1.5 #2: 2.3918ms completed; CPU 3.62%; WS 161.9MiB
+before-direct2d controls/1.5 #2: 2.2907ms completed; CPU 10.47%; WS 150.9MiB
+original-vulkan controls/1.5 #2: 3.5294ms completed; CPU 6.66%; WS 160.2MiB
+original-angle controls/1.5 #2: 4.0949ms completed; CPU 8.93%; WS 152.4MiB
+vulkan scroll/1 #2: 1.3128ms completed; CPU 3.05%; WS 127.9MiB
+direct2d scroll/1 #2: 0.7491ms completed; CPU 11.85%; WS 117.0MiB
+before-vulkan scroll/1 #2: 1.3095ms completed; CPU 2.94%; WS 141.9MiB
+before-direct2d scroll/1 #2: 0.7558ms completed; CPU 12.19%; WS 130.9MiB
+original-vulkan scroll/1 #2: 2.1212ms completed; CPU 5.65%; WS 138.7MiB
+original-angle scroll/1 #2: 1.8152ms completed; CPU 9.45%; WS 124.7MiB
+{
+  "vulkan": {
+    "geometricMeanToFasterOriginal": 0.6751021557471423,
+    "worstRatio": 0.7205079696832011,
+    "performancePassed": true
+  },
+  "direct2d": {
+    "geometricMeanToFasterOriginal": 0.547717104793299,
+    "worstRatio": 0.6686237490242288,
+    "performancePassed": true
+  },
+  "qualityPassed": false,
+  "formalCollection": true,
+  "releaseEligible": false
+}

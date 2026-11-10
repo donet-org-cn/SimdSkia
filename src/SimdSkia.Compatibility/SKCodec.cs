@@ -59,14 +59,14 @@ public partial class SKCodec : SKObject
             }
             else
             {
-                still=ImageCodec.Decode(bytes);bool opaque=true;var pixels=still.GetPixelSpan();for(int i=3;i<pixels.Length;i+=4)if(pixels[i]!=255){opaque=false;break;}
+                still=ImageCodec.Decode(bytes);bool opaque=SimdSkia.Cpu.PixelTransferKernel.IsOpaque(still.GetPixelSpan(),SimdSkia.Cpu.CpuOptions.EnableSimd);
                 info=new(still.Width,still.Height,SKColorType.Bgra8888,opaque?SKAlphaType.Opaque:SKAlphaType.Unpremul);frames=[];
             }
         }
         else
         {
             format=CodecFormats.ToSkia(ImageCodec.DetectFormat(bytes));still=ImageCodec.Decode(bytes);
-            bool opaque=true;var span=still.GetPixelSpan();for(int i=3;i<span.Length;i+=4)if(span[i]!=255){opaque=false;break;}
+            bool opaque=SimdSkia.Cpu.PixelTransferKernel.IsOpaque(still.GetPixelSpan(),SimdSkia.Cpu.CpuOptions.EnableSimd);
             info=new(still.Width,still.Height,SKColorType.Bgra8888,opaque?SKAlphaType.Opaque:SKAlphaType.Unpremul);frames=[];
         }
     }
@@ -78,6 +78,27 @@ public partial class SKCodec : SKObject
     public bool GetFrameInfo(int index,out SKCodecFrameInfo frameInfo){ThrowIfDisposed();frameInfo=default;if((uint)index>=(uint)frames.Length)return false;frameInfo=frames[index];return true;}
     public byte[] Pixels {get{var result=GetPixels(out var pixels);if(result!=SKCodecResult.Success)throw new InvalidDataException(result.ToString());return pixels;}}
     public static SKCodec? Create(SKData data){ArgumentNullException.ThrowIfNull(data);return CreateBytes(data.AsSpan(),out _);}
+    internal static SKCodec? Create(ReadOnlySpan<byte> bytes)=>CreateBytes(bytes,out _);
+    // Only temporary codecs owned by SKBitmap.Decode use this transfer. A caller's
+    // persistent SKCodec must retain independent pixels for subsequent decodes.
+    internal SKBitmap? TakeRgbaBitmap(SKImageInfo bitmapInfo)
+    {
+        if(still is null||bitmapInfo.Width!=info.Width||bitmapInfo.Height!=info.Height||
+            bitmapInfo.ColorType!=SKColorType.Rgba8888||bitmapInfo.AlphaType!=SKAlphaType.Unpremul||
+            bitmapInfo.ColorSpace is {} space&&!space.IsSrgb)return null;
+        // A pool bucket can nearly double the memory retained by a long-lived
+        // bitmap. Transfer only compact buckets (at most 6.25% unused capacity).
+        // Other sizes receive a fully written, exact-size output allocation.
+        if(still.StorageCapacity-still.ByteCount>still.ByteCount/16)
+        {
+            var compact=still.CopyCompact();
+            try{return new SKBitmap(bitmapInfo,compact);}
+            catch{compact.Dispose();throw;}
+        }
+        var bitmap=new SKBitmap(bitmapInfo,still);
+        still=null;
+        return bitmap;
+    }
     public static SKCodec? Create(string filename)=>Create(filename,out _);
     public static SKCodec? Create(string filename,out SKCodecResult result)
     {

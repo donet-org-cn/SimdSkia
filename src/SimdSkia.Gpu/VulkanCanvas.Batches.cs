@@ -3,7 +3,7 @@ namespace SimdSkia.Gpu;
 public sealed unsafe partial class VulkanCanvas
 {
     private const int RectangleBatchSize=16,RectangleBatchUniformBytes=RectangleBatchSize*768;
-    private const int OrderedRectangleBatchSize=64,OrderedRectangleUniformBytes=32+OrderedRectangleBatchSize*48;
+    private const int OrderedRectangleBatchSize=64,OrderedRectangleUniformBytes=32+OrderedRectangleBatchSize*32;
     private ulong rectangleBatchPipeline;
     private ulong orderedRectanglePipeline;
     private readonly bool orderedRectanglesEnabled=!(AppContext.TryGetSwitch("SimdSkia.Vulkan.DisableOrderedRectangleBatches",out bool disabled)&&disabled);
@@ -57,12 +57,24 @@ public sealed unsafe partial class VulkanCanvas
         // path when sequential work per pixel cannot amortize that area.
         double unionArea=(double)(union.Right-union.Left)*(union.Bottom-union.Top);
         if(ordered&&(unionArea>area*2||unionArea>128*1024))return 0;
-        EnsureRectangleBatchPipeline();int paramBase=(paramOffset+255)&~255,header=ordered?32:0,stride=ordered?48:768;
+        EnsureRectangleBatchPipeline();int paramBase=(paramOffset+255)&~255,header=ordered?32:0,stride=ordered?32:768;
         if(ordered){var info=MemoryMarshal.Cast<byte,uint>(paramsArena!.Bytes.Slice(paramBase,32));info[0]=(uint)union.Left;info[1]=(uint)union.Top;info[2]=(uint)count;info[3]=target.Format==PixelFormat.Bgra8888?1u:0u;info[4]=(uint)target.Width;info[5]=(uint)target.Height;info[6]=(uint)(union.Right-union.Left);info[7]=(uint)(union.Bottom-union.Top);}
         for(int i=0;i<count;i++)
         {
-            Prepare(pending[start+i],words);var output=MemoryMarshal.Cast<byte,uint>(paramsArena!.Bytes.Slice(paramBase+header+i*stride,ordered?48:640));
-            if(ordered){words.Slice(33,4).CopyTo(output);words.Slice(8,4).CopyTo(output[4..]);output[8]=words[4];output[9]=words[3];output[10]=output[11]=0;}
+            Prepare(pending[start+i],words);var output=MemoryMarshal.Cast<byte,uint>(paramsArena!.Bytes.Slice(paramBase+header+i*stride,ordered?32:640));
+            if(ordered)
+            {
+                var floats=MemoryMarshal.Cast<uint,float>(words);
+                var boundsOutput=MemoryMarshal.Cast<uint,float>(output);
+                boundsOutput[0]=Math.Max(floats[33],floats[8]);
+                boundsOutput[1]=Math.Max(floats[34],floats[9]);
+                boundsOutput[2]=Math.Min(floats[35],floats[10]);
+                boundsOutput[3]=Math.Min(floats[36],floats[11]);
+                var color=pending[start+i].Command.Paint.Color;
+                output[4]=words[3]==(uint)CompositeMode.Clear?0u:Pack(new(
+                    PixelBuffer.Multiply(color.R,color.A),PixelBuffer.Multiply(color.G,color.A),PixelBuffer.Multiply(color.B,color.A),color.A));
+                output[5]=words[3];output[6]=output[7]=0;
+            }
             else words.CopyTo(output);
         }
         paramOffset=paramBase+header+count*stride;

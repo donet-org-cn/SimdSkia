@@ -1,0 +1,465 @@
+[
+  {
+    "name": "validation",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/run-performance-validation.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation"
+    ],
+    "exitCode": 2,
+    "seconds": 625.9806416034698
+  },
+  {
+    "name": "replay",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/check-optimization-regressions.py",
+      "--validation",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\validation",
+      "--before-engine",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\before\\Managed",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\old-engine-replay"
+    ],
+    "exitCode": 0,
+    "seconds": 23.412312269210815
+  },
+  {
+    "name": "publish-test-numeric",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "publish",
+      "tests/RuntimeNumeric",
+      "-c",
+      "Release",
+      "-r",
+      "win-x64",
+      "-m:1",
+      "-p:RestoreForce=true",
+      "-o",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\aot-tests\\numeric",
+      "-p:PublishAot=true"
+    ],
+    "exitCode": 0,
+    "seconds": 11.551244735717773
+  },
+  {
+    "name": "native-test-numeric",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\aot-tests\\numeric\\SimdSkia.RuntimeNumeric.Tests.exe",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\aot-tests\\numeric\\results"
+    ],
+    "exitCode": 0,
+    "seconds": 0.40497803688049316
+  },
+  {
+    "name": "publish-test-sampling-portable",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "publish",
+      "tests/SamplingAot",
+      "-c",
+      "Release",
+      "-r",
+      "win-x64",
+      "-m:1",
+      "-p:RestoreForce=true",
+      "-o",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\aot-tests\\sampling-portable"
+    ],
+    "exitCode": 0,
+    "seconds": 7.23930287361145
+  },
+  {
+    "name": "native-test-sampling-portable",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\aot-tests\\sampling-portable\\SamplingAot.exe",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\aot-tests\\sampling-portable\\results"
+    ],
+    "exitCode": 0,
+    "seconds": 0.5521574020385742
+  },
+  {
+    "name": "publish-test-sampling-v3",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "publish",
+      "tests/SamplingAot",
+      "-c",
+      "Release",
+      "-r",
+      "win-x64",
+      "-m:1",
+      "-p:RestoreForce=true",
+      "-o",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\aot-tests\\sampling-v3",
+      "-p:IlcInstructionSet=x86-64-v3"
+    ],
+    "exitCode": 0,
+    "seconds": 6.430078744888306
+  },
+  {
+    "name": "native-test-sampling-v3",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\aot-tests\\sampling-v3\\SamplingAot.exe",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\aot-tests\\sampling-v3\\results"
+    ],
+    "exitCode": 0,
+    "seconds": 0.47154688835144043
+  },
+  {
+    "name": "publish-test-completion",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "publish",
+      "tests/CompletionAot",
+      "-c",
+      "Release",
+      "-r",
+      "win-x64",
+      "-m:1",
+      "-p:RestoreForce=true",
+      "-o",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\aot-tests\\completion"
+    ],
+    "exitCode": 0,
+    "seconds": 20.929800510406494
+  },
+  {
+    "name": "native-test-completion",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\aot-tests\\completion\\CompletionAot.exe",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\aot-tests\\completion\\results"
+    ],
+    "exitCode": 0,
+    "seconds": 0.2297043800354004
+  },
+  {
+    "name": "native-test-completion-scalar",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\aot-tests\\completion\\CompletionAot.exe",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\aot-tests\\completion\\scalar",
+      "--scalar"
+    ],
+    "exitCode": 0,
+    "seconds": 0.06642508506774902
+  },
+  {
+    "name": "publish-aot-simd",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "publish",
+      "examples/AvaloniaAot/SimdSkia/AvaloniaAot.SimdSkia.csproj",
+      "-c",
+      "Release",
+      "-m:1",
+      "-p:UsePackedSimdSkia=false",
+      "-p:FrozenEngineDirectory=",
+      "-p:RestoreForce=true",
+      "-o",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\aot-publish\\simd"
+    ],
+    "exitCode": 0,
+    "seconds": 31.56000781059265
+  },
+  {
+    "name": "build-Managed",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "build",
+      "benchmarks/Managed",
+      "-c",
+      "Release",
+      "-m:1",
+      "-p:FrozenEngineDirectory=",
+      "-p:RestoreForce=true"
+    ],
+    "exitCode": 0,
+    "seconds": 3.431509256362915
+  },
+  {
+    "name": "build-Reference",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "build",
+      "benchmarks/Reference",
+      "-c",
+      "Release",
+      "-m:1",
+      "-p:FrozenEngineDirectory=",
+      "-p:RestoreForce=true"
+    ],
+    "exitCode": 0,
+    "seconds": 1.4816136360168457
+  },
+  {
+    "name": "build-Api99-Managed",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "build",
+      "benchmarks/Api99/Managed",
+      "-c",
+      "Release",
+      "-m:1",
+      "-p:FrozenEngineDirectory=",
+      "-p:RestoreForce=true"
+    ],
+    "exitCode": 0,
+    "seconds": 2.7039079666137695
+  },
+  {
+    "name": "build-Api99-Original",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "build",
+      "benchmarks/Api99/Original",
+      "-c",
+      "Release",
+      "-m:1",
+      "-p:FrozenEngineDirectory=",
+      "-p:RestoreForce=true"
+    ],
+    "exitCode": 0,
+    "seconds": 1.6792097091674805
+  },
+  {
+    "name": "build-CodecSkiaComparison-Managed",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "build",
+      "benchmarks/CodecSkiaComparison/Managed",
+      "-c",
+      "Release",
+      "-m:1",
+      "-p:FrozenEngineDirectory=",
+      "-p:RestoreForce=true"
+    ],
+    "exitCode": 0,
+    "seconds": 2.5378470420837402
+  },
+  {
+    "name": "build-CodecSkiaComparison-Original",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "build",
+      "benchmarks/CodecSkiaComparison/Original",
+      "-c",
+      "Release",
+      "-m:1",
+      "-p:FrozenEngineDirectory=",
+      "-p:RestoreForce=true"
+    ],
+    "exitCode": 0,
+    "seconds": 1.6317598819732666
+  },
+  {
+    "name": "build-GpuManaged",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "build",
+      "benchmarks/GpuManaged",
+      "-c",
+      "Release",
+      "-m:1",
+      "-p:FrozenEngineDirectory=",
+      "-p:RestoreForce=true"
+    ],
+    "exitCode": 0,
+    "seconds": 2.755645751953125
+  },
+  {
+    "name": "build-GpuReference",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "build",
+      "benchmarks/GpuReference",
+      "-c",
+      "Release",
+      "-m:1",
+      "-p:FrozenEngineDirectory=",
+      "-p:RestoreForce=true"
+    ],
+    "exitCode": 0,
+    "seconds": 1.6495702266693115
+  },
+  {
+    "name": "build-AvaloniaGpuParity-Managed",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "build",
+      "benchmarks/AvaloniaGpuParity/Managed",
+      "-c",
+      "Release",
+      "-m:1",
+      "-p:FrozenEngineDirectory=",
+      "-p:RestoreForce=true"
+    ],
+    "exitCode": 0,
+    "seconds": 3.1791419982910156
+  },
+  {
+    "name": "build-AvaloniaGpuParity-Original",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "build",
+      "benchmarks/AvaloniaGpuParity/Original",
+      "-c",
+      "Release",
+      "-m:1",
+      "-p:FrozenEngineDirectory=",
+      "-p:RestoreForce=true"
+    ],
+    "exitCode": 0,
+    "seconds": 1.9027092456817627
+  },
+  {
+    "name": "api-formal",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/run-final-api-benchmarks.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\api-formal",
+      "--before",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\before\\Api99\\Managed\\Managed.dll"
+    ],
+    "exitCode": 0,
+    "seconds": 73.19562935829163
+  },
+  {
+    "name": "cpu-formal",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/run-cpu-optimization.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\cpu-formal",
+      "--before",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\before\\Managed\\SimdSkia.Benchmark.Managed.dll"
+    ],
+    "exitCode": 0,
+    "seconds": 331.99517822265625
+  },
+  {
+    "name": "codec-formal",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/run-codec-skia-comparison.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\codec-formal",
+      "--before",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\before\\CodecSkiaComparison\\Managed\\Managed.exe"
+    ],
+    "exitCode": 0,
+    "seconds": 321.4683187007904
+  },
+  {
+    "name": "gpu-micro-formal",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/run-gpu-slow-cases.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\gpu-micro-formal",
+      "--before",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\before\\GpuManaged\\SimdSkia.Benchmark.GpuManaged.dll"
+    ],
+    "exitCode": 0,
+    "seconds": 118.34631109237671
+  },
+  {
+    "name": "gpu-pages-formal",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/run-gpu-parity.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\gpu-pages-formal",
+      "--before-managed",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\before\\AvaloniaGpuParity\\Managed\\Managed.exe"
+    ],
+    "exitCode": 2,
+    "seconds": 510.87378907203674
+  },
+  {
+    "name": "aot-pages-formal",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/run-avalonia-aot.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\aot-pages-formal",
+      "--publish",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\aot-publish",
+      "--no-build",
+      "--before-simd",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10\\final\\aot-publish\\simd\\AvaloniaAot.SimdSkia.exe"
+    ],
+    "exitCode": 2,
+    "seconds": 461.72243189811707
+  },
+  {
+    "name": "retention-build-before",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "build",
+      "benchmarks/DecodeRetention/Managed",
+      "-c",
+      "Release",
+      "-m:1",
+      "-p:RestoreForce=true",
+      "-o",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\retention-workers\\before",
+      "-p:FrozenEngineDirectory=F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\before\\Managed"
+    ],
+    "exitCode": 0,
+    "seconds": 3.8581929206848145
+  },
+  {
+    "name": "retention-build-current",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "build",
+      "benchmarks/DecodeRetention/Managed",
+      "-c",
+      "Release",
+      "-m:1",
+      "-p:RestoreForce=true",
+      "-o",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\retention-workers\\current"
+    ],
+    "exitCode": 0,
+    "seconds": 9.580755472183228
+  },
+  {
+    "name": "retention-build-original",
+    "command": [
+      "F:\\SimdSkia\\artifacts\\dotnet-sdk-10.0.403\\dotnet.exe",
+      "build",
+      "benchmarks/DecodeRetention/Original",
+      "-c",
+      "Release",
+      "-m:1",
+      "-p:RestoreForce=true",
+      "-o",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\retention-workers\\original"
+    ],
+    "exitCode": 0,
+    "seconds": 4.725107431411743
+  },
+  {
+    "name": "retention-verified",
+    "command": [
+      "D:\\Program Files\\Python\\Python313\\python.exe",
+      "tools/run-decode-retention.py",
+      "--output",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\retention-verified",
+      "--fixtures",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10\\final\\retention-fixtures",
+      "--before",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\retention-workers\\before\\Managed.dll",
+      "--current",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\retention-workers\\current\\Managed.dll",
+      "--original",
+      "F:\\SimdSkia\\artifacts\\performance-2026-11-10-round2\\final\\retention-workers\\original\\Original.dll"
+    ],
+    "exitCode": 0,
+    "seconds": 16.00774383544922
+  }
+]

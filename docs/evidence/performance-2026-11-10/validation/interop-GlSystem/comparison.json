@@ -1,0 +1,105 @@
+{
+  "project": "GlSystem",
+  "metadata": 2,
+  "differences": [],
+  "extraCases": [],
+  "cases": [
+    {
+      "kind": "system-gl",
+      "scene": 0,
+      "transform": 0,
+      "offset": 0,
+      "length": 6912,
+      "maximum": 1,
+      "rmse": 0.02689571768199595,
+      "passed": true
+    },
+    {
+      "kind": "system-gl",
+      "scene": 1,
+      "transform": 0,
+      "offset": 6912,
+      "length": 6912,
+      "maximum": 1,
+      "rmse": 0.02689571768199595,
+      "passed": true
+    },
+    {
+      "kind": "system-gl",
+      "scene": 2,
+      "transform": 0,
+      "offset": 13824,
+      "length": 6912,
+      "maximum": 1,
+      "rmse": 0.02689571768199595,
+      "passed": true
+    },
+    {
+      "kind": "system-gl",
+      "scene": 3,
+      "transform": 0,
+      "offset": 20736,
+      "length": 6912,
+      "maximum": 1,
+      "rmse": 0.02689571768199595,
+      "passed": true
+    },
+    {
+      "kind": "system-gl",
+      "scene": 0,
+      "transform": 1,
+      "offset": 27648,
+      "length": 6912,
+      "maximum": 1,
+      "rmse": 0.02689571768199595,
+      "passed": true
+    },
+    {
+      "kind": "system-gl",
+      "scene": 1,
+      "transform": 1,
+      "offset": 34560,
+      "length": 6912,
+      "maximum": 1,
+      "rmse": 0.02689571768199595,
+      "passed": true
+    },
+    {
+      "kind": "system-gl",
+      "scene": 2,
+      "transform": 1,
+      "offset": 41472,
+      "length": 6912,
+      "maximum": 1,
+      "rmse": 0.02689571768199595,
+      "passed": true
+    },
+    {
+      "kind": "system-gl",
+      "scene": 3,
+      "transform": 1,
+      "offset": 48384,
+      "length": 6912,
+      "maximum": 1,
+      "rmse": 0.02689571768199595,
+      "passed": true
+    }
+  ],
+  "local": [
+    {
+      "checks": 16,
+      "nativeAot": false,
+      "runtime": "10.0.14"
+    },
+    {
+      "checks": 18,
+      "nativeAot": false,
+      "runtime": "10.0.14"
+    }
+  ],
+  "gate": {
+    "maximum": 3,
+    "rmse": 0.75
+  },
+  "passed": true
+}

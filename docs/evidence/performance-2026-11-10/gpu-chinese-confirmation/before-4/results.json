@@ -1,0 +1,191 @@
+{
+  "Settings": {
+    "Engine": "simd",
+    "Output": "F:\\SimdSkia\\artifacts\\performance-2026-11-10\\final\\gpu-chinese-confirmation\\before-4",
+    "FixtureDirectory": "F:\\SimdSkia\\artifacts\\performance-gpu\\fixtures",
+    "FontPath": "F:\\SimdSkia\\baseline\\fonts\\ZCOOLXiaoWei-Regular.ttf",
+    "Fork": 4,
+    "Samples": 7,
+    "SampleMilliseconds": 500,
+    "WarmupMilliseconds": 1500,
+    "Seed": 20261012,
+    "Sizes": "1024x768",
+    "Scenes": "chinese-changing"
+  },
+  "Runtime": {
+    "Framework": ".NET 10.0.14",
+    "OS": "Microsoft Windows 10.0.26300",
+    "Architecture": "X64",
+    "Cpu": "Intel(R) Core(TM) i7-8700K CPU @ 3.70GHz",
+    "LogicalProcessors": 12,
+    "ServerGc": false,
+    "AssemblyIdentity": "SimdSkia.Compatibility, Version=0.1.4.0, Culture=neutral, PublicKeyToken=null",
+    "AssemblySha256": "9BCB2C920C595C6D86FC546D31E430A2C653D7F0D19313D10E6AE7C5FA257176",
+    "FontSha256": "A42B620140F493DB42F741351DFBF343C0936D58588EE8004B8B2A218D997FF1",
+    "ExplicitSimd": "SimdSkia Vulkan compute (NVIDIA GeForce GTX 1050 Ti)",
+    "TieredCompilation": "0",
+    "ReadyToRun": "0",
+    "StopwatchFrequency": 10000000
+  },
+  "Workloads": [
+    {
+      "Scene": "chinese-changing",
+      "Width": 1024,
+      "Height": 768,
+      "PixelFormat": "Rgba8888",
+      "AlphaType": "Premul",
+      "OperationsPerFrame": 4,
+      "AllowedPixelError": 32,
+      "CompressionComparable": true,
+      "IterationsPerSample": 733,
+      "SetupMilliseconds": 184.7802,
+      "BeforeSetup": {
+        "ManagedLiveBytes": 470656,
+        "ManagedHeapBytes": 470680,
+        "PrivateBytes": 39010304,
+        "WorkingSetBytes": 63856640,
+        "ProcessPeakWorkingSetBytes": 74047488
+      },
+      "WarmResident": {
+        "ManagedLiveBytes": 5417208,
+        "ManagedHeapBytes": 5417280,
+        "PrivateBytes": 103755776,
+        "WorkingSetBytes": 96514048,
+        "ProcessPeakWorkingSetBytes": 96514048
+      },
+      "AfterGc": {
+        "ManagedLiveBytes": 5459656,
+        "ManagedHeapBytes": 5459728,
+        "PrivateBytes": 101085184,
+        "WorkingSetBytes": 95354880,
+        "ProcessPeakWorkingSetBytes": 96555008
+      },
+      "Samples": [
+        {
+          "Operations": 733,
+          "TotalMilliseconds": 489.7596,
+          "AllocatedBytes": 124248,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 5601656,
+            "ManagedHeapBytes": 5417280,
+            "PrivateBytes": 104337408,
+            "WorkingSetBytes": 96555008,
+            "ProcessPeakWorkingSetBytes": 96555008
+          },
+          "CpuUtilizationPercent": 51.04545168690925,
+          "CpuMilliseconds": 250
+        },
+        {
+          "Operations": 733,
+          "TotalMilliseconds": 486.5643,
+          "AllocatedBytes": 123144,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 5725016,
+            "ManagedHeapBytes": 5417280,
+            "PrivateBytes": 103784448,
+            "WorkingSetBytes": 96546816,
+            "ProcessPeakWorkingSetBytes": 96555008
+          },
+          "CpuUtilizationPercent": 51.38067055063431,
+          "CpuMilliseconds": 250
+        },
+        {
+          "Operations": 733,
+          "TotalMilliseconds": 495.2557,
+          "AllocatedBytes": 123144,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 5856600,
+            "ManagedHeapBytes": 5417280,
+            "PrivateBytes": 101027840,
+            "WorkingSetBytes": 95289344,
+            "ProcessPeakWorkingSetBytes": 96555008
+          },
+          "CpuUtilizationPercent": 50.47897480029003,
+          "CpuMilliseconds": 250
+        },
+        {
+          "Operations": 733,
+          "TotalMilliseconds": 506.1771,
+          "AllocatedBytes": 123144,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 5979960,
+            "ManagedHeapBytes": 5417280,
+            "PrivateBytes": 101027840,
+            "WorkingSetBytes": 95289344,
+            "ProcessPeakWorkingSetBytes": 96555008
+          },
+          "CpuUtilizationPercent": 49.3898281846413,
+          "CpuMilliseconds": 250
+        },
+        {
+          "Operations": 733,
+          "TotalMilliseconds": 486.5438,
+          "AllocatedBytes": 123144,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 6111544,
+            "ManagedHeapBytes": 5417280,
+            "PrivateBytes": 101027840,
+            "WorkingSetBytes": 95289344,
+            "ProcessPeakWorkingSetBytes": 96555008
+          },
+          "CpuUtilizationPercent": 51.382835419956024,
+          "CpuMilliseconds": 250
+        },
+        {
+          "Operations": 733,
+          "TotalMilliseconds": 486.6682,
+          "AllocatedBytes": 123144,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 6234904,
+            "ManagedHeapBytes": 5417280,
+            "PrivateBytes": 101027840,
+            "WorkingSetBytes": 95289344,
+            "ProcessPeakWorkingSetBytes": 96555008
+          },
+          "CpuUtilizationPercent": 48.15909484120803,
+          "CpuMilliseconds": 234.375
+        },
+        {
+          "Operations": 733,
+          "TotalMilliseconds": 486.0272,
+          "AllocatedBytes": 123144,
+          "Gen0": 0,
+          "Gen1": 0,
+          "Gen2": 0,
+          "Memory": {
+            "ManagedLiveBytes": 6366488,
+            "ManagedHeapBytes": 5417280,
+            "PrivateBytes": 101027840,
+            "WorkingSetBytes": 95289344,
+            "ProcessPeakWorkingSetBytes": 96555008
+          },
+          "CpuUtilizationPercent": 51.4374504142978,
+          "CpuMilliseconds": 250
+        }
+      ],
+      "LatencyFile": "chinese-changing-1024x768.ticks",
+      "PixelsFile": "chinese-changing-1024x768.rgba",
+      "EncodedBytes": 0,
+      "InputEncodedBytes": 0,
+      "InputSha256": ""
+    }
+  ]
+}
