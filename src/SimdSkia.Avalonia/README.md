@@ -4,16 +4,16 @@
 
 SimdSkia 是一个 .NET 2D 渲染引擎，绘图无需加载 Google Skia 原生库。在控制台或服务端，可以用 `SKCanvas` 画图并输出 PNG。在 Avalonia 项目里，可以通过调整包引用和启动代码来切换后端，继续使用原有的 XAML 和视图模型。
 
-简体中文 · [English](https://github.com/donet-org-cn/SimdSkia/blob/main/README.en.md) · .NET 10 · [正式版 0.1.4](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-0.1.4.md) · [MIT](https://github.com/donet-org-cn/SimdSkia/blob/main/LICENSE)
+简体中文 · [English](https://github.com/donet-org-cn/SimdSkia/blob/main/README.en.md) · .NET 10 · [正式版 0.1.5](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-0.1.5.md) · [MIT](https://github.com/donet-org-cn/SimdSkia/blob/main/LICENSE)
 
 ## 按用途开始
 
 | 你要做什么 | 安装哪个包 | 从哪里开始 |
 | --- | --- | --- |
-| 在 .NET 程序里画图、生成 PNG | [SimdSkia](https://www.nuget.org/packages/SimdSkia/0.1.4) | [运行绘图示例](#生成-png) |
-| 为 Windows、Linux 或 macOS 上的 Avalonia 应用切换后端 | [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.4) | [迁移现有项目](#迁移现有项目) · [运行窗口示例](#运行桌面窗口示例) |
-| 为 Avalonia Android 应用接入 CPU 渲染 | [SimdSkia.Avalonia.Android](https://www.nuget.org/packages/SimdSkia.Avalonia.Android/0.1.4) | [配置 Android 启动项目](#avalonia-android) |
-| 将现有 PDF 的页面转成图片 | [SimdSkia.Pdf](https://www.nuget.org/packages/SimdSkia.Pdf/0.1.4) | [读取和渲染 PDF](https://github.com/donet-org-cn/SimdSkia/blob/main/src/SimdSkia.Pdf/README.md) |
+| 在 .NET 程序里画图、生成 PNG | [SimdSkia](https://www.nuget.org/packages/SimdSkia/0.1.5) | [运行绘图示例](#生成-png) |
+| 为 Windows、Linux 或 macOS 上的 Avalonia 应用切换后端 | [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.5) | [迁移现有项目](#迁移现有项目) · [运行窗口示例](#运行桌面窗口示例) |
+| 为 Avalonia Android 应用接入 CPU 渲染 | [SimdSkia.Avalonia.Android](https://www.nuget.org/packages/SimdSkia.Avalonia.Android/0.1.5) | [配置 Android 启动项目](#avalonia-android) |
+| 将现有 PDF 的页面转成图片 | [SimdSkia.Pdf](https://www.nuget.org/packages/SimdSkia.Pdf/0.1.5) | [读取和渲染 PDF](https://github.com/donet-org-cn/SimdSkia/blob/main/src/SimdSkia.Pdf/README.md) |
 
 同一个项目直接引用多个 `SimdSkia.*` 包时，请统一版本。
 
@@ -24,7 +24,7 @@ SimdSkia 是一个 .NET 2D 渲染引擎，绘图无需加载 Google Skia 原生�
 ```sh
 dotnet new console --framework net10.0 -o SimdSkiaDemo
 cd SimdSkiaDemo
-dotnet add package SimdSkia --version 0.1.4
+dotnet add package SimdSkia --version 0.1.5
 ```
 
 将 `Program.cs` 替换为以下代码。`SkiaSharp` 是 SimdSkia 兼容层提供的命名空间。
@@ -49,11 +49,41 @@ png.SaveTo(output);
 
 运行 `dotnet run` 后，当前目录会生成 `hello-simdskia.png`。
 
+### 逐帧写入 GIF 动画
+
+0.1.5 新增了 `GifAnimationWriter`。把每次绘制得到的 `SKBitmap` 直接写入动画，可重用同一张位图。
+
+```csharp
+using SimdSkia.Imaging;
+using SkiaSharp;
+
+using var output = File.Create("captcha.gif");
+using var gif = new GifAnimationWriter(output, 220, 72, loopCount: 3);
+using var frame = new SKBitmap(220, 72);
+using var canvas = new SKCanvas(frame);
+using var paint = new SKPaint { Color = SKColors.Black, IsAntialias = true };
+for (int i = 0; i < 4; i++)
+{
+    canvas.Clear(SKColors.Transparent);
+    canvas.DrawCircle(24 + 24 * i, 36, 12, paint);
+    gif.AddFrame(frame, TimeSpan.FromMilliseconds(100));
+}
+gif.Complete();
+```
+
+`loopCount` 是总播放次数（`0` 无限循环，`1` 只播一次）。默认在每帧显示完后恢复背景，也可指定保留或恢复上一画面。GIF 只有二值透明度。若希望跨播放器保持透明背景，让首帧也包含透明像素；若要保留半透明文字的边缘，可先把文字画在不透明背景上。
+
+### 选择中文字体
+
+选用含所需中文字形、使用 `glyf` 轮廓的静态 TrueType 字体，例如测试使用的 [站酷小薇体](https://github.com/google/fonts/tree/dac28ca2a883c27a817104b72bfa8d5e7e973954/ofl/zcoolxiaowei)。思源黑体的 CFF 版（如 `SourceHanSansCN-Regular.otf`）目前不支持；扩展名本身不能判断轮廓格式。
+
+从 0.1.5 开始，TrueType 字形的微调指令执行失败时，会使用未微调的轮廓继续绘制。已用 `actionj.ttf` 验证。本版使用 Sdcb.SimdCodecs 2.0.0。
+
 ## Avalonia 桌面
 
 ### 迁移现有项目
 
-1. 在启动项目中运行 `dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.4`，并将 Avalonia 系列包统一为同一个已验证版本。下方示例使用 `12.1.5`。
+1. 在启动项目中运行 `dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.5`，并将 Avalonia 系列包统一为同一个已验证版本。下方示例使用 `12.1.5`。
 2. 移除直接引用的 `Avalonia.Desktop`、`Avalonia.Skia` 和 `Avalonia.Fonts.Inter`（如有）。同时检查第三方控件是否依赖原版 Skia 后端或 `ISkiaSharpApiLeaseFeature`。
 3. 添加 `using SimdSkia.Avalonia;`，把启动链中的 `.UsePlatformDetect()` 替换为 `.UseSimdSkiaDesktop()`。如果原来调用了 `.WithInterFont()`，也一并移除。
 
@@ -69,7 +99,7 @@ png.SaveTo(output);
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SimdSkia.Avalonia.Desktop" Version="0.1.4" />
+    <PackageReference Include="SimdSkia.Avalonia.Desktop" Version="0.1.5" />
     <PackageReference Include="Avalonia" Version="[12.1.5]" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.5]" />
   </ItemGroup>
@@ -144,6 +174,8 @@ Android 当前使用 CPU/SIMD 渲染。发布记录分别列出了 Android 16 AR
 
 ## 兼容性与性能
 
+- **2026-11-10 第二轮源码优化。** 运行时效果耗时下降约 86%，图集约 27%，网格约 14%。固定字体 AOT 示例的私有内存下降约 15.6 MiB，整页耗时、系统字体场景及原版画质分别评估。本轮为工作区源码优化。[性能、CPU 与内存对照](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PERFORMANCE-2026-11-10-ROUND2.md) · [测试与剩余差距](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/VALIDATION-PERFORMANCE-2026-11-10-ROUND2.md)
+- **2026-11-10 源码优化复测。** CPU、Vulkan、Direct2D、真实 AOT 窗口和长期图片内存共完成 294 个性能工作进程，另执行 82 个有效回归命令。报告逐项列出耗时、CPU、分配、内存与原版画质差异。[性能报告与图表](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PERFORMANCE-2026-11-10.md) · [完整测试记录](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/VALIDATION-PERFORMANCE-2026-11-10.md)
 - **渲染实现。** CPU 光栅化支持 SIMD 加速，字体处理、基础文字排版和图像编解码也由 C# 实现。[架构](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/ARCHITECTURE.md) · [第三方依赖](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/DEPENDENCIES.md)
 - **SkiaSharp 源码兼容。** 以 SkiaSharp `3.119.4` 为基线，签名审计匹配了 3,235 项中的 3,230 项。迁移时应重新编译依赖 `SK*` 类型的代码，并检查原生句柄、像素输出和自定义控件的行为。兼容层与原版 `SkiaSharp.dll` 的程序集标识不同。[API 审计](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PUBLIC-API-FINAL-2026-11-07.md) · [兼容性报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/COMPATIBILITY.md)
 - **文档处理。** `SKDocument.CreatePdf` 可导出多页栅格 PDF。需要读取和渲染 PDF 页面时，另装基于 PdfPig 0.1.16 的 `SimdSkia.Pdf`，其读取能力限于文档列出的子集。[PDF 使用说明](https://github.com/donet-org-cn/SimdSkia/blob/main/src/SimdSkia.Pdf/README.md) · [文档示例](https://github.com/donet-org-cn/SimdSkia/blob/main/examples/Documents/README.md)

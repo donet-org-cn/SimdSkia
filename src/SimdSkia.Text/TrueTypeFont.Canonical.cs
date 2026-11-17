@@ -10,6 +10,7 @@ public sealed partial class TrueTypeFont
     private readonly object canonicalGate=new();
     private long canonicalBytes;
     private TrueTypeProgramInterpreter? canonicalInterpreter;
+    private bool invalidHintSetup;
     private const long CanonicalBudget=4*1024*1024;
     internal (int Count,long Bytes) CanonicalCacheUsage {get{lock(canonicalGate)return(canonicalGlyphs.Count,canonicalBytes);}}
     internal void PurgeCanonicalGlyphCache(){lock(canonicalGate){canonicalGlyphs.Clear();canonicalOrder.Clear();canonicalBytes=0;canonicalInterpreter=null;}}
@@ -37,9 +38,32 @@ public sealed partial class TrueTypeFont
         int[] cvt=[];
         if(tables.TryGetValue("cvt ",out var cv))
         {
-            if(cv.Length%2!=0||cv.Length>1024*1024)throw new InvalidDataException("Invalid font control value table.");cvt=new int[cv.Length/2];var data=bytes.Read(cv.Offset,cv.Length).Span;for(int i=0;i<cvt.Length;i++)cvt[i]=BinaryPrimitives.ReadInt16BigEndian(data[(i*2)..]);
+            if(cv.Length%2!=0||cv.Length>1024*1024)throw new InvalidTrueTypeFontException("Invalid font control value table.");cvt=new int[cv.Length/2];var data=bytes.Read(cv.Offset,cv.Length).Span;for(int i=0;i<cvt.Length;i++)cvt[i]=BinaryPrimitives.ReadInt16BigEndian(data[(i*2)..]);
         }
         vm.SetControlValueTable(cvt,1,UnitsPerEm,Program("prep"));canonicalInterpreter=vm;return vm;
+    }
+    private static bool IsHintFailure(Exception e)=>
+        e is InvalidFontException or IndexOutOfRangeException or OverflowException or DivideByZeroException;
+    private void TryHint(GlyphPointF[] points,ushort[] ends,byte[] instructions,int minX,int maxY,int advance,int bearing)
+    {
+        if(invalidHintSetup)return;
+        TrueTypeProgramInterpreter vm;
+        try{vm=CanonicalInterpreter();}
+        catch(Exception e)when(IsHintFailure(e)){invalidHintSetup=true;return;}
+
+        // Work on a copy. A rejected program may have already changed points,
+        // the CVT, or storage. Keep the parsed outline and discard that VM.
+        var input=new GlyphPointF[points.Length+4];points.CopyTo(input,0);
+        float left=minX-bearing;input[^4]=new(left,0,true);input[^3]=new(left+advance,0,true);input[^2]=new(0,maxY,true);input[^1]=input[^2];
+        try
+        {
+            vm.HintGlyph(input,ends,instructions);
+            foreach(var p in input)
+                if(!float.IsFinite(p.X)||!float.IsFinite(p.Y))
+                    throw new InvalidTrueTypeFontException("Font program produced nonfinite points.");
+            Array.Copy(input,points,points.Length);
+        }
+        catch(Exception e)when(IsHintFailure(e)){canonicalInterpreter=null;}
     }
     private CanonicalGlyph Canonical(ushort glyph,HashSet<ushort> active,int depth)
     {
@@ -80,13 +104,8 @@ public sealed partial class TrueTypeFont
                 }while((flags&32)!=0);
                 if((flags&256)!=0)instructions=reader.ReadBytes(reader.UShort());points=all.ToArray();ends=contours.ToArray();
             }
-            if(instructions.Length!=0)
-            {
-                var input=new GlyphPointF[points.Length+4];points.CopyTo(input,0);float left=minX-bearing;input[^4]=new(left,0,true);input[^3]=new(left+advance,0,true);input[^2]=new(0,maxY,true);input[^1]=input[^2];
-                try{CanonicalInterpreter().HintGlyph(input,ends,instructions);}catch(Exception e)when(e is InvalidFontException or IndexOutOfRangeException or OverflowException or DivideByZeroException){throw new InvalidDataException($"Invalid TrueType program in glyph {glyph}.",e);}
-                Array.Copy(input,points,points.Length);
-            }
-            foreach(var p in points)if(!float.IsFinite(p.X)||!float.IsFinite(p.Y))throw new InvalidDataException("Font program produced nonfinite points.");
+            if(instructions.Length!=0)TryHint(points,ends,instructions,minX,maxY,advance,bearing);
+            foreach(var p in points)if(!float.IsFinite(p.X)||!float.IsFinite(p.Y))throw new InvalidDataException("Invalid glyph coordinates.");
             var geometry=CanonicalPath(points,ends);long size=(long)geometry.Segments.Length*32+points.LongLength*12+ends.LongLength*2+64;var result=new CanonicalGlyph(points,ends,geometry,size);
             if(size<=CanonicalBudget&&Volatile.Read(ref FontCacheRegistry.ByteLimit)>0&&Volatile.Read(ref FontCacheRegistry.CountLimit)>0)
             {

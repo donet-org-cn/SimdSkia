@@ -1,7 +1,7 @@
 <Project>
   <Import Project="../Directory.Build.props" />
   <PropertyGroup>
-    <Version Condition="'$(Version)' == ''">0.1.4</Version>
+    <Version Condition="'$(Version)' == ''">0.1.5</Version>
     <Authors>hnlyf168</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/donet-org-cn/SimdSkia</PackageProjectUrl>
@@ -11,7 +11,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Description>Managed C# 2D rendering components. Version 0.1 supports the documented subset; SkiaSharp source and rendering equivalence remain incomplete. No Google Skia rendering dependency.</Description>
     <PackageTags>SimdSkia;graphics;rendering;managed;2d</PackageTags>
-    <PackageReleaseNotes>0.1.4正式版：新增SimdSkia.Avalonia.Android NuGet包与UseSimdSkiaAndroid入口，固定Avalonia 12.1.5，采用C# CPU/通用SIMD绘图。Android16 ARM64源码真机通过中文、输入、按钮、动画和前后台恢复；新NuGet包另做独立缓存Release/Mono AOT消费构建。官方窗口宿主固定哈希校验后移除默认Skia/HarfBuzz注册，APK不携带其绘图/字体库。修复示例AppCompat主题启动退出，补充Android系统静态TrueType字体发现与OFL中文字体示例。桌面继续支持Avalonia12.1.0–12.1.5回归矩阵，十三包统一版本。iOS呈现适配、Android GPU及可变/CFF字体待完善，既有画质与性能差距见报告。依赖用途、使用方法和更新记录见README.md及CHANGELOG.md。</PackageReleaseNotes>
+    <PackageReleaseNotes>0.1.5 正式版。新增 GifAnimationWriter，支持逐帧写入 GIF、每帧延迟、循环、透明与帧处置（#3）。修复 actionj.ttf 字形微调指令异常，失败时使用未微调轮廓继续绘制（#2）。CFF 轮廓尚未支持，README 提供静态 TrueType 字体建议。Sdcb.SimdCodecs 升级至 2.0.0。纳入像素处理、绘制及 Avalonia 内存优化。十三包统一版本，详细更新见 CHANGELOG.md。</PackageReleaseNotes>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>

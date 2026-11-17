@@ -1,5 +1,6 @@
 using Sdcb.SimdCodecs.Webp;
 using Sdcb.SimdCodecs.Abstractions;
+using CodecPixelFormat=Sdcb.SimdCodecs.Abstractions.PixelFormat;
 namespace SimdSkia.Imaging;
 public static class WebpCodec
 {
@@ -9,6 +10,6 @@ public static class WebpCodec
         using var source=new EncodingPixels(pixels,true);
         // WebP quality scales are encoder-specific. Lossless quality maps to
         // compression effort; it never quantizes the visible source pixels.
-        return lossless?WebpEncoder.EncodeLossless(source.Span,pixels.Width,pixels.Height,ImagePixelFormat.Rgba32,new WebpLosslessEncodeOptions{Effort=(int)MathF.Round(quality*.06f),Exact=false}):WebpEncoder.EncodeLossy(source.Span,pixels.Width,pixels.Height,ImagePixelFormat.Rgba32,new WebpLossyEncodeOptions{Quality=(int)MathF.Round(quality),AlphaQuality=100});
+        return lossless?WebpEncoder.EncodeLossless(source.Span,pixels.Width,pixels.Height,CodecPixelFormat.Rgba32,new WebpLosslessEncodeOptions{Effort=(int)MathF.Round(quality*.06f),Exact=false}):WebpEncoder.EncodeLossy(source.Span,pixels.Width,pixels.Height,CodecPixelFormat.Rgba32,new WebpLossyEncodeOptions{Quality=(int)MathF.Round(quality),AlphaQuality=100});
     }
 }

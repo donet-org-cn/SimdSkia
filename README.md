@@ -4,16 +4,16 @@
 
 SimdSkia 是一个 .NET 2D 渲染引擎，绘图无需加载 Google Skia 原生库。在控制台或服务端，可以用 `SKCanvas` 画图并输出 PNG。在 Avalonia 项目里，可以通过调整包引用和启动代码来切换后端，继续使用原有的 XAML 和视图模型。
 
-简体中文 · [English](README.en.md) · .NET 10 · [正式版 0.1.4](docs/RELEASE-0.1.4.md) · [MIT](LICENSE)
+简体中文 · [English](README.en.md) · .NET 10 · [正式版 0.1.5](docs/RELEASE-0.1.5.md) · [MIT](LICENSE)
 
 ## 按用途开始
 
 | 你要做什么 | 安装哪个包 | 从哪里开始 |
 | --- | --- | --- |
-| 在 .NET 程序里画图、生成 PNG | [SimdSkia](https://www.nuget.org/packages/SimdSkia/0.1.4) | [运行绘图示例](#生成-png) |
-| 为 Windows、Linux 或 macOS 上的 Avalonia 应用切换后端 | [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.4) | [迁移现有项目](#迁移现有项目) · [运行窗口示例](#运行桌面窗口示例) |
-| 为 Avalonia Android 应用接入 CPU 渲染 | [SimdSkia.Avalonia.Android](https://www.nuget.org/packages/SimdSkia.Avalonia.Android/0.1.4) | [配置 Android 启动项目](#avalonia-android) |
-| 将现有 PDF 的页面转成图片 | [SimdSkia.Pdf](https://www.nuget.org/packages/SimdSkia.Pdf/0.1.4) | [读取和渲染 PDF](src/SimdSkia.Pdf/README.md) |
+| 在 .NET 程序里画图、生成 PNG | [SimdSkia](https://www.nuget.org/packages/SimdSkia/0.1.5) | [运行绘图示例](#生成-png) |
+| 为 Windows、Linux 或 macOS 上的 Avalonia 应用切换后端 | [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.5) | [迁移现有项目](#迁移现有项目) · [运行窗口示例](#运行桌面窗口示例) |
+| 为 Avalonia Android 应用接入 CPU 渲染 | [SimdSkia.Avalonia.Android](https://www.nuget.org/packages/SimdSkia.Avalonia.Android/0.1.5) | [配置 Android 启动项目](#avalonia-android) |
+| 将现有 PDF 的页面转成图片 | [SimdSkia.Pdf](https://www.nuget.org/packages/SimdSkia.Pdf/0.1.5) | [读取和渲染 PDF](src/SimdSkia.Pdf/README.md) |
 
 同一个项目直接引用多个 `SimdSkia.*` 包时，请统一版本。
 
@@ -24,7 +24,7 @@ SimdSkia 是一个 .NET 2D 渲染引擎，绘图无需加载 Google Skia 原生�
 ```sh
 dotnet new console --framework net10.0 -o SimdSkiaDemo
 cd SimdSkiaDemo
-dotnet add package SimdSkia --version 0.1.4
+dotnet add package SimdSkia --version 0.1.5
 ```
 
 将 `Program.cs` 替换为以下代码。`SkiaSharp` 是 SimdSkia 兼容层提供的命名空间。
@@ -49,11 +49,41 @@ png.SaveTo(output);
 
 运行 `dotnet run` 后，当前目录会生成 `hello-simdskia.png`。
 
+### 逐帧写入 GIF 动画
+
+0.1.5 新增了 `GifAnimationWriter`。把每次绘制得到的 `SKBitmap` 直接写入动画，可重用同一张位图。
+
+```csharp
+using SimdSkia.Imaging;
+using SkiaSharp;
+
+using var output = File.Create("captcha.gif");
+using var gif = new GifAnimationWriter(output, 220, 72, loopCount: 3);
+using var frame = new SKBitmap(220, 72);
+using var canvas = new SKCanvas(frame);
+using var paint = new SKPaint { Color = SKColors.Black, IsAntialias = true };
+for (int i = 0; i < 4; i++)
+{
+    canvas.Clear(SKColors.Transparent);
+    canvas.DrawCircle(24 + 24 * i, 36, 12, paint);
+    gif.AddFrame(frame, TimeSpan.FromMilliseconds(100));
+}
+gif.Complete();
+```
+
+`loopCount` 是总播放次数（`0` 无限循环，`1` 只播一次）。默认在每帧显示完后恢复背景，也可指定保留或恢复上一画面。GIF 只有二值透明度。若希望跨播放器保持透明背景，让首帧也包含透明像素；若要保留半透明文字的边缘，可先把文字画在不透明背景上。
+
+### 选择中文字体
+
+选用含所需中文字形、使用 `glyf` 轮廓的静态 TrueType 字体，例如测试使用的 [站酷小薇体](https://github.com/google/fonts/tree/dac28ca2a883c27a817104b72bfa8d5e7e973954/ofl/zcoolxiaowei)。思源黑体的 CFF 版（如 `SourceHanSansCN-Regular.otf`）目前不支持；扩展名本身不能判断轮廓格式。
+
+从 0.1.5 开始，TrueType 字形的微调指令执行失败时，会使用未微调的轮廓继续绘制。已用 `actionj.ttf` 验证。本版使用 Sdcb.SimdCodecs 2.0.0。
+
 ## Avalonia 桌面
 
 ### 迁移现有项目
 
-1. 在启动项目中运行 `dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.4`，并将 Avalonia 系列包统一为同一个已验证版本。下方示例使用 `12.1.5`。
+1. 在启动项目中运行 `dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.5`，并将 Avalonia 系列包统一为同一个已验证版本。下方示例使用 `12.1.5`。
 2. 移除直接引用的 `Avalonia.Desktop`、`Avalonia.Skia` 和 `Avalonia.Fonts.Inter`（如有）。同时检查第三方控件是否依赖原版 Skia 后端或 `ISkiaSharpApiLeaseFeature`。
 3. 添加 `using SimdSkia.Avalonia;`，把启动链中的 `.UsePlatformDetect()` 替换为 `.UseSimdSkiaDesktop()`。如果原来调用了 `.WithInterFont()`，也一并移除。
 
@@ -69,7 +99,7 @@ png.SaveTo(output);
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SimdSkia.Avalonia.Desktop" Version="0.1.4" />
+    <PackageReference Include="SimdSkia.Avalonia.Desktop" Version="0.1.5" />
     <PackageReference Include="Avalonia" Version="[12.1.5]" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.5]" />
   </ItemGroup>

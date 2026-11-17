@@ -58,7 +58,7 @@ public sealed class GifImage : IDisposable
         }
         if(frames.Count==0)throw new InvalidDataException("GIF contains no image frames.");
         if(frames.Count==1)RepetitionCount=-1;
-        if(!Sdcb.SimdCodecs.SimdCodecs.TryOpenFrames(encoded.ToArray(),out var frameReader))throw new InvalidDataException("Sdcb rejected GIF frames.");
+        if(!Sdcb.SimdCodecs.ImageCodecs.TryOpenFrames(encoded.ToArray(),out var frameReader))throw new InvalidDataException("Sdcb rejected GIF frames.");
         this.reader=frameReader;
         if(frameReader.FrameCount!=frames.Count){frameReader.Dispose();throw new InvalidDataException("GIF frame count differs from metadata.");}
     }
@@ -67,7 +67,7 @@ public sealed class GifImage : IDisposable
     {
         ObjectDisposedException.ThrowIf(disposed,this);if((uint)index>=(uint)frames.Count)throw new ArgumentOutOfRangeException(nameof(index));
         canvas??=PixelBuffer.RentRgba(Width,Height);
-        if(!reader!.TryDecodeFrameInto(index,canvas.GetPixelSpan(),canvas.RowBytes,Sdcb.SimdCodecs.Abstractions.ImagePixelFormat.Rgba32))
+        if(!reader!.TryDecodeFrameInto(index,canvas.GetPixelSpan(),canvas.RowBytes,Sdcb.SimdCodecs.Abstractions.PixelFormat.Rgba32))
             throw new InvalidDataException("GIF frame decode failed.");
         return canvas;
     }

@@ -38,6 +38,7 @@ foreach(var format in new[]{SKEncodedImageFormat.Png,SKEncodedImageFormat.Jpeg,S
     using var decoded=SKBitmap.Decode(encoded.AsSpan());Check(decoded.Width==11&&decoded.Height==7,"SK bitmap encoded roundtrip");
     using var image=SKImage.FromBitmap(bitmap);using var bytes=image.Encode(format,90);Check(bytes.Size>0,"SKImage encoding");
 }
+GifAnimationValidation.Run(output, Check);
 // Temporary codecs may transfer their RGBA storage. Persistent codec decodes
 // must remain independent, and returned bitmaps must outlive all input owners.
 foreach(var format in new[]{SKEncodedImageFormat.Png,SKEncodedImageFormat.Jpeg,SKEncodedImageFormat.Bmp})
@@ -146,6 +147,6 @@ Check(PngStreamValidation.Run(),"Fragmented PNG IDAT, sliced input, empty chunks
 #if NATIVE_AOT
 Check(aot,"Actual Native AOT execution");
 #endif
-File.WriteAllText(Path.Combine(output,"result.json"),$"{{\"checks\":{checks},\"nativeAot\":{aot.ToString().ToLowerInvariant()},\"codec\":\"Sdcb.SimdCodecs 1.4.0\"}}");
+File.WriteAllText(Path.Combine(output,"result.json"),$"{{\"checks\":{checks},\"nativeAot\":{aot.ToString().ToLowerInvariant()},\"codec\":\"Sdcb.SimdCodecs 2.0.0\"}}");
 Console.WriteLine($"PASS {checks} full codec integration assertions; NativeAot={aot}");
 static SKColor ToSkia(Rgba32 c)=>new(c.R,c.G,c.B,c.A);

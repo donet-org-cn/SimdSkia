@@ -10,7 +10,7 @@ permissions:
 jobs:
   desktop:
     env:
-      RELEASE_VERSION: 0.1.4
+      RELEASE_VERSION: 0.1.5
     strategy:
       fail-fast: false
       matrix:

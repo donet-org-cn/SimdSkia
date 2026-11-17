@@ -1,4 +1,8 @@
-# SimdSkia 0.1.4 Android NuGet 接入
+# SimdSkia 0.1.5 多帧 GIF 和 TrueType 字形修复
+
+新增 `GifAnimationWriter`，可将位图逐帧写入 GIF，并设置延迟、循环、透明和帧处置。修复 `actionj.ttf` 的绘制中断，字形微调失败时使用未微调轮廓。编解码依赖升级到 Sdcb.SimdCodecs 2.0.0。十三包统一为 0.1.5，面向 .NET 10。可选 PDF 依赖为 PdfPig 0.1.16。[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-0.1.5.md) · [GIF 示例](https://github.com/donet-org-cn/SimdSkia#逐帧写入-gif-动画)
+
+## SimdSkia 0.1.4 Android NuGet 接入
 
 十三包统一0.1.4正式版，新增SimdSkia.Avalonia.Android，固定Avalonia12.1.5，使用C# CPU/通用SIMD。此前Android16 ARM64源码真机通过中文、触摸、输入、动画和前后台恢复，新增包另做独立缓存Release/Mono AOT消费构建。完整使用方法、字体和主题配置见[Android说明](https://github.com/donet-org-cn/SimdSkia/blob/main/examples/Mobile.Android/README.md)，更新与验收见[0.1.4发行说明](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-0.1.4.md)和包内CHANGELOG.md。iOS呈现适配、Android GPU及可变/CFF字体待完善。桌面版本矩阵12.1.0–12.1.5，既有画质/性能差距见报告。可选PDF依赖为PdfPig 0.1.16。
 
@@ -25,7 +29,7 @@ native font library is used for PDF rendering. PDF Flate streams use the managed
 The optional parser is not pulled in by ordinary Avalonia or compatibility users. Keep all direct SimdSkia package versions aligned.
 
 ```shell
-dotnet add package SimdSkia.Pdf --version 0.1.4
+dotnet add package SimdSkia.Pdf --version 0.1.5
 ```
 
 Every package includes `CHANGELOG.md` and NuGet release notes. This release is a

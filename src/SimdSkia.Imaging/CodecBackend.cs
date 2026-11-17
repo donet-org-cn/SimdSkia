@@ -1,12 +1,13 @@
 using System.Buffers;
 using Sdcb.SimdCodecs.Abstractions;
+using CodecPixelFormat=Sdcb.SimdCodecs.Abstractions.PixelFormat;
 using Sdcb.SimdCodecs.Bmp;
 using Sdcb.SimdCodecs.Gif;
 using Sdcb.SimdCodecs.Ico;
 using Sdcb.SimdCodecs.Pnm;
 using Sdcb.SimdCodecs.Qoi;
 using Sdcb.SimdCodecs.Tiff;
-using Facade=Sdcb.SimdCodecs.SimdCodecs;
+using Facade=Sdcb.SimdCodecs.ImageCodecs;
 
 namespace SimdSkia.Imaging;
 
@@ -39,7 +40,7 @@ internal static class CodecBackend
         var output=PixelBuffer.RentRgba(width,height);
         try
         {
-            if(!Facade.TryDecodeIntoRgba8(data,output.GetPixelSpan()))throw new InvalidDataException("Sdcb.SimdCodecs rejected the image payload.");
+            if(!Facade.TryDecodeInto(data,output.GetPixelSpan(),output.RowBytes,CodecPixelFormat.Rgba32))throw new InvalidDataException("Sdcb.SimdCodecs rejected the image payload.");
             return output;
         }
         catch{output.Dispose();throw;}
@@ -49,20 +50,21 @@ internal static class CodecBackend
         var info=ReadInfo(data);
         // The fidelity API supplies ICC/transfer metadata; the display API alone
         // cannot turn a wide-gamut/HDR image into sRGB correctly.
-        if(!Facade.TryDecode(data,out var image))throw new InvalidDataException("Invalid image payload.");
+        if(!Facade.TryDecode(data,out var decoded))throw new InvalidDataException("Invalid image payload.");
+        using var image=decoded;
         ValidateDimensions(image.Width,image.Height);
         if(image.Width!=info.Width||image.Height!=info.Height)throw new InvalidDataException("Header and decoded dimensions differ.");
         if(image.SampleFormat==SampleFormat.Float32)throw new NotSupportedException("Floating-point/HDR images require an explicit tone-mapping policy.");
         var encoding=image.ColorEncoding;
-        if(image.IccProfile.IsEmpty&&encoding!=ColorEncoding.AssumedSrgb)throw new NotSupportedException("Non-sRGB image signalling requires a supported colour transform.");
+        if(image.Metadata.Icc.IsEmpty&&encoding!=ColorEncoding.AssumedSrgb)throw new NotSupportedException("Non-sRGB image signalling requires a supported colour transform.");
         var output=PixelBuffer.RentRgba(info.Width,info.Height);
         try
         {
             int sourceRow=checked(image.Width*image.Channels*(image.SampleFormat==SampleFormat.UInt16?2:1));
             if(image.Pixels.Length!=checked(sourceRow*image.Height))throw new InvalidDataException("Invalid decoded sample buffer length.");
-            for(int y=0;y<image.Height;y++)PixelConverter.ConvertRow(image.Pixels.Slice(y*sourceRow,sourceRow),image.Channels,image.SampleFormat,output.GetRowSpan(y),ImagePixelFormat.Rgba32,image.Width);
-            if(!image.IccProfile.IsEmpty)
-            {var profile=new IccProfile(image.IccProfile);if(profile.InputChannels==4)throw new NotSupportedException("Raw CMYK samples are required for this ICC profile.");profile.Transform(output);}
+            for(int y=0;y<image.Height;y++)PixelConverter.ConvertRow(image.Pixels.Slice(y*sourceRow,sourceRow),image.Channels,image.SampleFormat,output.GetRowSpan(y),CodecPixelFormat.Rgba32,image.Width);
+            if(!image.Metadata.Icc.IsEmpty)
+            {var profile=new IccProfile(image.Metadata.Icc.Span);if(profile.InputChannels==4)throw new NotSupportedException("Raw CMYK samples are required for this ICC profile.");profile.Transform(output);}
             return output;
         }
         catch{output.Dispose();throw;}
@@ -75,10 +77,10 @@ internal static class CodecBackend
         return format switch
         {
             ImageFileFormat.Gif=>GifEncoder.Encode(source.Span,pixels.Width,pixels.Height,4),
-            ImageFileFormat.Bmp=>BmpEncoder.Encode(source.Span,pixels.Width,pixels.Height,ImagePixelFormat.Rgba32,new BmpEncodeOptions{Format=BmpEncodeFormat.Argb32}),
+            ImageFileFormat.Bmp=>BmpEncoder.Encode(source.Span,pixels.Width,pixels.Height,CodecPixelFormat.Rgba32,new BmpEncodeOptions{Format=BmpEncodeFormat.Argb32}),
             ImageFileFormat.Ico=>IcoEncoder.Encode(source.Span,pixels.Width,pixels.Height),
-            ImageFileFormat.Qoi=>QoiEncoder.Encode(source.Span,pixels.Width,pixels.Height,ImagePixelFormat.Rgba32),
-            ImageFileFormat.Netpbm=>PnmEncoder.Encode(source.Span,pixels.Width,pixels.Height,ImagePixelFormat.Rgba32),
+            ImageFileFormat.Qoi=>QoiEncoder.Encode(source.Span,pixels.Width,pixels.Height,CodecPixelFormat.Rgba32),
+            ImageFileFormat.Netpbm=>PnmEncoder.Encode(source.Span,pixels.Width,pixels.Height,CodecPixelFormat.Rgba32),
             ImageFileFormat.Tiff=>EncodeTiff(source.Span,pixels.Width,pixels.Height),
             _=>throw new NotSupportedException($"Encoding {format} is not available; decode-only formats are not silently changed to PNG.")
         };

@@ -3,7 +3,7 @@ namespace SimdSkia.Imaging;
 public static class ImageCodec
 {
     public static ImageFrames OpenFrames(ReadOnlySpan<byte> data)=>new(data);
-    public static ImageFileFormat DetectFormat(ReadOnlySpan<byte> data)=>Sdcb.SimdCodecs.SimdCodecs.DetectFormat(data) switch
+    public static ImageFileFormat DetectFormat(ReadOnlySpan<byte> data)=>Sdcb.SimdCodecs.ImageCodecs.DetectFormat(data) switch
     {
         Sdcb.SimdCodecs.Abstractions.ImageFormat.Png=>ImageFileFormat.Png,
         Sdcb.SimdCodecs.Abstractions.ImageFormat.Jpeg=>ImageFileFormat.Jpeg,

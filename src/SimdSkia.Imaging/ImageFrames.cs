@@ -1,5 +1,6 @@
 using Sdcb.SimdCodecs.Abstractions;
-using Facade=Sdcb.SimdCodecs.SimdCodecs;
+using CodecPixelFormat=Sdcb.SimdCodecs.Abstractions.PixelFormat;
+using Facade=Sdcb.SimdCodecs.ImageCodecs;
 
 namespace SimdSkia.Imaging;
 
@@ -30,18 +31,19 @@ public sealed class ImageFrames : IDisposable
     {
         var dimensions=GetFrameInfo(index);
         if(format is ImageFileFormat.Png or ImageFileFormat.Jpeg)return ImageCodec.Decode(encoded!);
-        if(!reader!.TryDecodeFrame(index,out var image))throw new InvalidDataException("Frame decode failed.");
+        if(!reader!.TryDecodeFrame(index,out var decoded))throw new InvalidDataException("Frame decode failed.");
+        using var image=decoded;
         if(image.Width!=dimensions.Width||image.Height!=dimensions.Height)throw new InvalidDataException("Frame dimensions differ.");
-        if(image.SampleFormat==SampleFormat.Float32||image.IccProfile.IsEmpty&&image.ColorEncoding!=ColorEncoding.AssumedSrgb)
+        if(image.SampleFormat==SampleFormat.Float32||image.Metadata.Icc.IsEmpty&&image.ColorEncoding!=ColorEncoding.AssumedSrgb)
             throw new NotSupportedException("The frame needs an explicit HDR/colour conversion policy.");
         var output=PixelBuffer.RentRgba(image.Width,image.Height);
         try
         {
             int sourceRow=checked(image.Width*image.Channels*(image.SampleFormat==SampleFormat.UInt16?2:1));
             if(image.Pixels.Length!=checked(sourceRow*image.Height))throw new InvalidDataException("Invalid frame pixel buffer.");
-            for(int y=0;y<image.Height;y++)PixelConverter.ConvertRow(image.Pixels.Slice(y*sourceRow,sourceRow),image.Channels,image.SampleFormat,output.GetRowSpan(y),ImagePixelFormat.Rgba32,image.Width);
-            if(!image.IccProfile.IsEmpty)
-            {var profile=new IccProfile(image.IccProfile);if(profile.InputChannels==4)throw new NotSupportedException("Raw CMYK samples are required for this ICC profile.");profile.Transform(output);}
+            for(int y=0;y<image.Height;y++)PixelConverter.ConvertRow(image.Pixels.Slice(y*sourceRow,sourceRow),image.Channels,image.SampleFormat,output.GetRowSpan(y),CodecPixelFormat.Rgba32,image.Width);
+            if(!image.Metadata.Icc.IsEmpty)
+            {var profile=new IccProfile(image.Metadata.Icc.Span);if(profile.InputChannels==4)throw new NotSupportedException("Raw CMYK samples are required for this ICC profile.");profile.Transform(output);}
             return output;
         }
         catch{output.Dispose();throw;}

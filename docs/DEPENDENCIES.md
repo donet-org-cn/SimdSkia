@@ -1,5 +1,7 @@
 # 依赖与许可证
 
+当前源码固定引用 [Sdcb.SimdCodecs 2.0.0](https://www.nuget.org/packages/Sdcb.SimdCodecs/2.0.0)，仍是十五个同版本的 MIT 托管包，未引入可选 HEIF 包。下文保留历史发行版本的依赖记录。
+
 ## 2026-11-09 Android 源码接入
 
 | 依赖 | 用途 | 许可证 | 平台组件 |

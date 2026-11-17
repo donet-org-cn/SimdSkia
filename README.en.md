@@ -4,16 +4,16 @@
 
 SimdSkia is a .NET 2D rendering engine that runs without Google's native Skia library. In a console app or service, use `SKCanvas` to draw and save a PNG. In an Avalonia app, change the package references and startup code to switch the renderer while keeping your XAML and view models.
 
-[简体中文](README.md) · English · .NET 10 · [Release 0.1.4](docs/RELEASE-0.1.4.md) · [MIT](LICENSE)
+[简体中文](README.md) · English · .NET 10 · [Release 0.1.5](docs/RELEASE-0.1.5.md) · [MIT](LICENSE)
 
 ## Choose your starting point
 
 | What you want to do | Package to install | Where to start |
 | --- | --- | --- |
-| Draw and generate a PNG in a .NET app | [SimdSkia](https://www.nuget.org/packages/SimdSkia/0.1.4) | [Run the drawing example](#generate-a-png) |
-| Switch the Avalonia renderer on Windows, Linux, or macOS | [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.4) | [Migrate an existing app](#migrate-an-existing-app) · [Run the window example](#run-the-desktop-window-example) |
-| Render an Avalonia Android app on the CPU | [SimdSkia.Avalonia.Android](https://www.nuget.org/packages/SimdSkia.Avalonia.Android/0.1.4) | [Set up the Android project](#avalonia-android) |
-| Convert pages from an existing PDF to images | [SimdSkia.Pdf](https://www.nuget.org/packages/SimdSkia.Pdf/0.1.4) | [Read and render PDFs](src/SimdSkia.Pdf/README.md) |
+| Draw and generate a PNG in a .NET app | [SimdSkia](https://www.nuget.org/packages/SimdSkia/0.1.5) | [Run the drawing example](#generate-a-png) |
+| Switch the Avalonia renderer on Windows, Linux, or macOS | [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.5) | [Migrate an existing app](#migrate-an-existing-app) · [Run the window example](#run-the-desktop-window-example) |
+| Render an Avalonia Android app on the CPU | [SimdSkia.Avalonia.Android](https://www.nuget.org/packages/SimdSkia.Avalonia.Android/0.1.5) | [Set up the Android project](#avalonia-android) |
+| Convert pages from an existing PDF to images | [SimdSkia.Pdf](https://www.nuget.org/packages/SimdSkia.Pdf/0.1.5) | [Read and render PDFs](src/SimdSkia.Pdf/README.md) |
 
 If your project directly references multiple `SimdSkia.*` packages, use the same version for each.
 
@@ -24,7 +24,7 @@ Install `SimdSkia` to run this example. It draws a rounded rectangle and a circl
 ```sh
 dotnet new console --framework net10.0 -o SimdSkiaDemo
 cd SimdSkiaDemo
-dotnet add package SimdSkia --version 0.1.4
+dotnet add package SimdSkia --version 0.1.5
 ```
 
 Replace `Program.cs` with the following code. SimdSkia's compatibility layer provides the `SkiaSharp` namespace.
@@ -49,11 +49,41 @@ png.SaveTo(output);
 
 Run `dotnet run` to create `hello-simdskia.png` in the current directory.
 
+### Write an animated GIF frame by frame
+
+Version 0.1.5 adds `GifAnimationWriter`. Pass each rendered `SKBitmap` directly to the writer; you can reuse the same bitmap for each frame.
+
+```csharp
+using SimdSkia.Imaging;
+using SkiaSharp;
+
+using var output = File.Create("captcha.gif");
+using var gif = new GifAnimationWriter(output, 220, 72, loopCount: 3);
+using var frame = new SKBitmap(220, 72);
+using var canvas = new SKCanvas(frame);
+using var paint = new SKPaint { Color = SKColors.Black, IsAntialias = true };
+for (int i = 0; i < 4; i++)
+{
+    canvas.Clear(SKColors.Transparent);
+    canvas.DrawCircle(24 + 24 * i, 36, 12, paint);
+    gif.AddFrame(frame, TimeSpan.FromMilliseconds(100));
+}
+gif.Complete();
+```
+
+`loopCount` is the total number of plays (`0` means forever; `1` means once). By default the canvas is restored to the background after each frame; you can also keep the frame or restore the previous canvas. GIF has one-bit transparency. For a transparent background across viewers, include transparent pixels in the first frame. Draw text onto an opaque background if you need to preserve smooth, partially transparent edges.
+
+### Choose a Chinese font
+
+Use a static TrueType font with `glyf` outlines and the characters you need, such as [ZCOOL XiaoWei](https://github.com/google/fonts/tree/dac28ca2a883c27a817104b72bfa8d5e7e973954/ofl/zcoolxiaowei), which the tests use. CFF builds of Source Han Sans such as `SourceHanSansCN-Regular.otf` are currently unsupported. The file extension alone does not identify its outline format.
+
+Starting in 0.1.5, drawing falls back to the original outline if a TrueType glyph's hinting instructions fail. This was verified with `actionj.ttf`. The release uses Sdcb.SimdCodecs 2.0.0.
+
 ## Avalonia Desktop
 
 ### Migrate an existing app
 
-1. Run `dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.4` in your startup project and align your Avalonia packages to the same tested version. The example below uses `12.1.5`.
+1. Run `dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.5` in your startup project and align your Avalonia packages to the same tested version. The example below uses `12.1.5`.
 2. Remove any direct references to `Avalonia.Desktop`, `Avalonia.Skia`, and `Avalonia.Fonts.Inter`. Check whether third-party controls depend on the original Skia backend or `ISkiaSharpApiLeaseFeature`.
 3. Add `using SimdSkia.Avalonia;` and replace `.UsePlatformDetect()` with `.UseSimdSkiaDesktop()` in your startup code. Remove `.WithInterFont()` if present.
 
@@ -69,7 +99,7 @@ Create `Demo.csproj` in an empty directory.
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SimdSkia.Avalonia.Desktop" Version="0.1.4" />
+    <PackageReference Include="SimdSkia.Avalonia.Desktop" Version="0.1.5" />
     <PackageReference Include="Avalonia" Version="[12.1.5]" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.5]" />
   </ItemGroup>

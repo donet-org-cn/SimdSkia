@@ -1,5 +1,14 @@
 # SimdSkia 更新日志 / Release notes
 
+## 0.1.5 正式版 — 多帧 GIF 和 TrueType 字形修复（2026-11-17）
+
+- 新增 `GifAnimationWriter`，逐帧将 `SKBitmap` 或 `PixelBuffer` 写入 GIF 流，支持各帧延迟、总播放次数、二值透明和帧处置。可复用同一张位图。[#3](https://github.com/donet-org-cn/SimdSkia/issues/3)
+- TrueType 字形微调指令失败时，使用未微调的轮廓继续绘制。使用报告中的原始 `actionj.ttf` 验证了 `A7B9` 渲染。CFF 轮廓仍未支持，README 给出静态 `glyf` 中文字体建议。[#2](https://github.com/donet-org-cn/SimdSkia/issues/2)
+- 升级到 Sdcb.SimdCodecs 2.0.0，并适配图像解码、ICC 元数据和编解码选项。[上游迁移说明](https://github.com/sdcb/SimdCodecs/blob/v2.0.0/docs/migrating-to-2.0.md)
+- 纳入 0.1.4 以来的像素访问、采样、字形缓存和 Avalonia 内存优化。具体场景和对照结果见[性能报告](PERFORMANCE-2026-11-10.md)。
+
+十三个 NuGet 包统一为 0.1.5，面向 .NET 10。安装和验证范围见[发行说明](RELEASE-0.1.5.md)。
+
 ## 0.1.4 正式版 Android 接入 — 2026-11-09
 
 - 新增SimdSkia.Avalonia.Android NuGet包，十三包统一0.1.4。固定Avalonia 12.1.5，C# CPU/通用SIMD，提供UseSimdSkiaAndroid、完整主题/字体/生命周期示例及包消费检查。iOS呈现适配待完善。

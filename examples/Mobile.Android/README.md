@@ -1,4 +1,6 @@
-# SimdSkia.Avalonia.Android 0.1.4
+# SimdSkia.Avalonia.Android 0.1.5
+
+0.1.5 新增多帧 GIF 编码，修复 `actionj.ttf` 的字形微调异常，并升级到 Sdcb.SimdCodecs 2.0.0。[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-0.1.5.md)
 
 该源码示例使用 Avalonia 12.1.5 和 SimdSkia 的 C# CPU/通用 SIMD 光栅化。Android 官方宿主负责 Activity、触摸、输入法和帧缓冲显示。
 
@@ -9,7 +11,7 @@
 目标框架使用 `net10.0-android36.0`，Avalonia 家族包统一为12.1.5。在 Android 启动项目中安装以下包。
 
 ```powershell
-dotnet add package SimdSkia.Avalonia.Android --version 0.1.4
+dotnet add package SimdSkia.Avalonia.Android --version 0.1.5
 dotnet add package Avalonia.Themes.Fluent --version 12.1.5
 ```
 
@@ -133,7 +135,7 @@ return AppBuilder.Configure<App>()
 
 引擎新增 `/system/fonts`、`/product/fonts`、`/system/product/fonts` 静态 TrueType 发现路径。部分手机的中文字体采用可变字体或 CFF，当前字体解析器会排除这些格式。示例显式携带固定 SHA256 的 OFL 站酷小薇体，使中文显示可复现。字体和许可证通过 `fetch-avalonia-font.ps1` 获取。
 
-Android 本批使用 CPU/通用 SIMD 绘图，帧缓冲由系统显示。真机 Mono 运行时报告 `Vector=True`、`AdvSimd=False`，对应实现通过已有向量和标量分支执行。GPU 移动端绘图、更多系统版本和机型列入后续验证范围。0.1.4 更新记录随包保存在 CHANGELOG.md。
+Android 本批使用 CPU/通用 SIMD 绘图，帧缓冲由系统显示。真机 Mono 运行时报告 `Vector=True`、`AdvSimd=False`，对应实现通过已有向量和标量分支执行。GPU 移动端绘图、更多系统版本和机型列入后续验证范围。更新记录随包保存在 CHANGELOG.md。
 
 动画在 Activity 暂停时停止，恢复后继续。诊断文件保存在测试应用的外部文件目录 `/sdcard/Android/data/org.simdskia.androidsample/files`。
 
