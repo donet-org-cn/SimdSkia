@@ -1,5 +1,11 @@
 # NuGet 发布记录
 
+## 0.1.5 正式版
+
+0.1.5 的 13 个包已可从 NuGet.org 下载。发布流水线逐包核对了公开下载与 CI 产物的程序集、宿主、包元数据和发行文档。Windows、Linux、macOS 均通过 Avalonia 12.1.0–12.1.5 窗口和最低/最新 Native AOT 测试，Android 包通过独立安装和 Release APK 构建。[发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/44001092015) · [GitHub Release](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.5) · [NuGet](https://www.nuget.org/packages/SimdSkia/0.1.5)
+
+本版新增逐帧 GIF，修复 `actionj.ttf` 绘制中断，并升级到 Sdcb.SimdCodecs 2.0.0。标签 `v0.1.5` 指向 `90474dbefbeddf1a1f3e9098285c88a7aaa259ce`。[完整更新说明](RELEASE-0.1.5.md) · [#2 字体回复](https://github.com/donet-org-cn/SimdSkia/issues/2#issuecomment-6936268861) · [#3 GIF 回复](https://github.com/donet-org-cn/SimdSkia/issues/3#issuecomment-6936269365)
+
 ## 0.1.4 正式版 十三包已公开并回复 issue
 
 十三个0.1.4正式包已公开下载，全部DLL、nuspec、宿主和发行文档与CI产物一致。[发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/42625109230)全部成功，代码及标签`v0.1.4`固定在`9804732bf5cfbde9764c014fe7cf1f46e5c65b56`。[GitHub正式发行](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.4)与[issue #1回复](https://github.com/donet-org-cn/SimdSkia/issues/1#issuecomment-6741702624)已发布。
