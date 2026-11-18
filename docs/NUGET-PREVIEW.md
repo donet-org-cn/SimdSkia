@@ -1,5 +1,13 @@
 # NuGet 发布记录
 
+## 0.1.6 正式版
+
+2026-11-18 发布了 13 个正式 NuGet 包。公开包的程序集、宿主、包元数据、README 和更新日志逐包与发布流水线的产物对照一致。本机使用全新缓存从 NuGet.org 安装，绘制和解码通过，实际加载的九个 SimdSkia 程序集与流水线产物的 SHA-256 一致。[NuGet](https://www.nuget.org/packages/SimdSkia/0.1.6) · [发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/44231943845)
+
+`v0.1.6` 指向 `3c6fad7f0753da68d2a969cce58fa6b8bea9a57e`。Windows、Linux 和 macOS 的 Avalonia 12.1.0–12.1.5 窗口矩阵与最低、最新版本的 Native AOT 验证通过。Android 包通过独立安装和 Release APK 构建。[GitHub Release](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.6)
+
+以公开的 0.1.5 为基线，本机混合负载耗时下降 20.6%，CPU 用时下降 19.9%，累计托管分配下降 53.8%，结束时私有内存增加 20.8%。[发行说明](RELEASE-0.1.6.md) · [性能报告与逐轮数据](PERFORMANCE-2026-11-18.md)
+
 ## 0.1.5 正式版
 
 0.1.5 的 13 个包已可从 NuGet.org 下载。发布流水线逐包核对了公开下载与 CI 产物的程序集、宿主、包元数据和发行文档。Windows、Linux、macOS 均通过 Avalonia 12.1.0–12.1.5 窗口和最低/最新 Native AOT 测试，Android 包通过独立安装和 Release APK 构建。[发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/44001092015) · [GitHub Release](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.5) · [NuGet](https://www.nuget.org/packages/SimdSkia/0.1.5)
