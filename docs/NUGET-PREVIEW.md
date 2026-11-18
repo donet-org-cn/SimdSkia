@@ -1,5 +1,13 @@
 # NuGet 发布记录
 
+## 0.1.8 正式版
+
+2026-11-18 发布了 13 个正式 NuGet 包。公开下载与 CI 产物的程序集、宿主、元数据和发行文档一致。本机用独立缓存从 NuGet.org 安装后，绘制和 PNG 解码通过，实际加载的九个程序集通过哈希校验。[NuGet 0.1.8](https://www.nuget.org/packages/SimdSkia/0.1.8) · [发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/44310460441)
+
+`v0.1.8` 指向 `4a481050a6fab5f913410d78a2e43758a549f690`。桌面在 Windows、Linux 和 macOS 通过 Avalonia 12.1.0–12.1.6 窗口矩阵及两个端点的 NativeAOT 验证。Android 用 Avalonia 12.1.6 通过独立消费与 ARM64 Mono AOT Release APK 构建。[GitHub Release](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.8)
+
+本版移除 Avalonia 版本上限并包含 0.1.7 的性能优化。0.1.7 的发布流程在 macOS 验证期间遇到 NuGet DNS 解析故障，NuGet 发布步骤未执行。[版本兼容策略](AVALONIA-VERSION-COMPATIBILITY.md) · [性能与内存报告](PERFORMANCE-AOT-CPU-MEMORY-2026-11-18.md) · [0.1.7 日志](https://github.com/donet-org-cn/SimdSkia/actions/runs/44305590297)
+
 ## 0.1.6 正式版
 
 2026-11-18 发布了 13 个正式 NuGet 包。公开包的程序集、宿主、包元数据、README 和更新日志逐包与发布流水线的产物对照一致。本机使用全新缓存从 NuGet.org 安装，绘制和解码通过，实际加载的九个 SimdSkia 程序集与流水线产物的 SHA-256 一致。[NuGet](https://www.nuget.org/packages/SimdSkia/0.1.6) · [发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/44231943845)
