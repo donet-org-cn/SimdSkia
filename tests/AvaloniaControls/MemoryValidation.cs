@@ -19,6 +19,23 @@ internal static class MemoryValidation
         byte[] Bytes(IReadableBitmapImpl bitmap)
         {using var locked=bitmap.Lock();var bytes=new byte[locked.RowBytes*locked.Size.Height];Marshal.Copy(locked.Address,bytes,0,bytes.Length);return bytes;}
         using var reused=factory.CreateRenderTargetBitmap(new(64,48),new(96,96));
+        using (var encoded = new MemoryStream())
+        {
+            using (var context = reused.CreateDrawingContext()) context.Clear(Colors.Lime);
+            reused.Save(encoded, PngBitmapEncoderOptions.Default);
+            var file = new byte[checked((int)encoded.Length + 31)];
+            encoded.GetBuffer().AsSpan(0, (int)encoded.Length).CopyTo(file.AsSpan(18));
+            foreach (bool exposeBuffer in new[] { false, true })
+            {
+                using var input = new MemoryStream(file, 7, 11 + (int)encoded.Length, false, exposeBuffer);
+                input.Position = 11;
+                using var loaded = factory.LoadWriteableBitmap(input);
+                var pixels = Bytes(loaded);
+                Check(input.Position == input.Length && loaded.PixelSize == reused.PixelSize &&
+                    pixels[0] == 0 && pixels[1] == 255 && pixels[2] == 0 && pixels[3] == 255,
+                    "Bitmap loading must honor the stream origin, position and length.");
+            }
+        }
         foreach(GradientBrush brush in new GradientBrush[]{new LinearGradientBrush(),new RadialGradientBrush(),new ConicGradientBrush()})
         {
             brush.GradientStops.Add(new GradientStop(Colors.Red,0));brush.GradientStops.Add(new GradientStop(Colors.Blue,1));
@@ -102,6 +119,45 @@ internal static class MemoryValidation
         var clone=(SimdSkia.Avalonia.Geometry)geometry.Clone();
         Check(clone.Bounds==geometry.Bounds,"Cloned geometry lost its bounds.");
         Parallel.For(0,64,_=>{if(clone.Bounds!=new Rect(-5,-3,25,17))throw new InvalidOperationException("Concurrent bounds query changed geometry.");});checks++;
+        using var reference=factory.CreateRenderTargetBitmap(new(64,48),new(96,96));
+        var changingPen=new Pen(Brushes.Navy,1);
+        for(int i=0;i<80;i++)
+        {
+            var a=new Point(3.25+i%5,4.75+i%7);var b=new Point(52.5-i%9,30.75+i%11);
+            if((i&1)!=0)(a,b)=(b,a);
+            changingPen.Thickness=1+i%4;
+            changingPen.LineCap=(PenLineCap)(i%3);
+            changingPen.DashStyle=i%5==0?new DashStyle([2d,1d],i%3):null;
+            var box=new Rect(7.25,9.5,34+i%3,23);
+            using(var draw=reused.CreateDrawingContext())
+            {draw.Clear(Colors.Transparent);draw.DrawRectangle(Brushes.Gold,changingPen,box);draw.DrawLine(changingPen,a,b);}
+            using(var draw=reference.CreateDrawingContext())
+            {
+                draw.Clear(Colors.Transparent);draw.DrawRectangle(Brushes.Gold,null,box);
+                draw.DrawGeometry(null,changingPen,factory.CreateRectangleGeometry(box));
+                draw.DrawGeometry(null,changingPen,factory.CreateLineGeometry(a,b));
+            }
+            Check(Bytes(reused).AsSpan().SequenceEqual(Bytes(reference)),"Cached outlines diverged from the explicit geometry.");
+        }
+        Parallel.For(0,64,i=>
+        {
+            var pen=new ImmutablePen(Brushes.Black,1+i%4);
+            if(((SimdSkia.Avalonia.Geometry)clone.GetWidenedGeometry(pen)).Bounds.Width<=0)
+                throw new InvalidOperationException("Concurrent stroke queries lost geometry.");
+        });checks++;
+        const int stripeWidth=65,stripeHeight=13;
+        var stripes=new List<SimdSkia.PathSegment>();
+        for(int x=0;x<stripeWidth;x+=2)
+        {
+            stripes.Add(new(PathVerb.Move,new(x,0)));
+            stripes.Add(new(PathVerb.Line,new(x+1,0)));
+            stripes.Add(new(PathVerb.Line,new(x+1,stripeHeight)));
+            stripes.Add(new(PathVerb.Line,new(x,stripeHeight)));
+            stripes.Add(new(PathVerb.Close,default));
+        }
+        var noDraw=Cpu.RasterCanvas.CreateClipForBounds(new(stripes),Matrix3.Identity,stripeWidth,stripeHeight,true);
+        for(int x=0;x<stripeWidth;x++)
+            Check(noDraw.At(x,5)==((x&1)==0?255:0),"No-draw canvas lost dense path clip coverage.");
         return checks;
     }
 

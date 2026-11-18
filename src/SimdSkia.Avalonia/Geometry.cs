@@ -15,10 +15,21 @@ internal class Geometry : IGeometryImpl
     internal SPath Path {get;set;}
     internal SPath StrokePath {get;set;}
     private readonly record struct StrokeKey(double Width,PenLineCap Cap,PenLineJoin Join,double Miter,ImmutableDashStyle? Dash);
-    private readonly Dictionary<StrokeKey,Geometry> strokes=[];
+    private readonly object strokeGate=new();
+    private sealed class FirstStroke(StrokeKey key,Geometry geometry)
+    {
+        internal readonly StrokeKey Key=key;
+        internal readonly Geometry Geometry=geometry;
+        internal Dictionary<StrokeKey,Geometry>? Other;
+    }
+    private FirstStroke? strokes;
+    private WeakReference<PointF[][]>? hitContours;
     private sealed record CachedBounds(SPath Path,Rect Bounds);
     private CachedBounds? bounds;
-    internal void Replace(SPath path,SPath stroke){Path=path;StrokePath=stroke;strokes.Clear();Volatile.Write(ref bounds,null);}
+    internal void Replace(SPath path,SPath stroke)
+    {
+        lock(strokeGate){Path=path;StrokePath=stroke;strokes=null;hitContours=null;Volatile.Write(ref bounds,null);}
+    }
     internal Geometry(SPath path,SPath? stroke=null){Path=path;StrokePath=stroke??path;}
     internal virtual void Validate() { }
     public Rect Bounds
@@ -43,20 +54,34 @@ internal class Geometry : IGeometryImpl
         if(!double.IsFinite(pen.MiterLimit)||pen.MiterLimit<0)throw new ArgumentOutOfRangeException(nameof(pen));
         var dashSnapshot=pen.DashStyle is ImmutableDashStyle immutable?immutable:pen.DashStyle is {} mutable?new ImmutableDashStyle(mutable.Dashes,mutable.Offset):null;
         var key=new StrokeKey(pen.Thickness,pen.LineCap,pen.LineJoin,pen.MiterLimit,dashSnapshot);
-        if(strokes.TryGetValue(key,out var cached))return cached;
+        lock(strokeGate)
+        {
+            if(strokes is {} first)
+            {
+                if(key==first.Key)return first.Geometry;
+                if(first.Other is {} other&&other.TryGetValue(key,out var cached))return cached;
+            }
+            var result=CreateStroke(key);
+            if(strokes is null||strokes.Other?.Count>=31)strokes=new(key,result);
+            else (strokes.Other??=[]).Add(key,result);
+            return result;
+        }
+    }
+    private Geometry CreateStroke(StrokeKey key)
+    {
         var paths=new PathsD();
-        if(pen.Thickness>0)foreach(var contour in Contours)
+        if(key.Width>0)foreach(var contour in Contours)
         {
             if(contour.Length<2)continue;
             bool closed=contour[0]==contour[^1];
-            var input=new PathD(contour.Select(p=>new PointD(p.X,p.Y)));
-            var end=closed?EndType.Joined:pen.LineCap switch {PenLineCap.Flat=>EndType.Butt,PenLineCap.Round=>EndType.Round,PenLineCap.Square=>EndType.Square,_=>throw new NotSupportedException("Unknown line cap.")};
-            var join=pen.LineJoin switch {PenLineJoin.Miter=>JoinType.Miter,PenLineJoin.Round=>JoinType.Round,PenLineJoin.Bevel=>JoinType.Bevel,_=>throw new NotSupportedException("Unknown line join.")};
-            var pieces=dashSnapshot is {Dashes.Count:>0} dash?Dash(input,dash,pen.Thickness,closed,pen.LineCap):new PathsD{input};
-            if(pen.DashStyle is {Dashes.Count:>0})end=pen.LineCap switch {PenLineCap.Flat=>EndType.Butt,PenLineCap.Round=>EndType.Round,_=>EndType.Square};
-            paths.AddRange(Clipper.InflatePaths(pieces,pen.Thickness/2,join,end,pen.MiterLimit,5,0.015625));
+            var input=ToPathD(contour);
+            var end=closed?EndType.Joined:key.Cap switch {PenLineCap.Flat=>EndType.Butt,PenLineCap.Round=>EndType.Round,PenLineCap.Square=>EndType.Square,_=>throw new NotSupportedException("Unknown line cap.")};
+            var join=key.Join switch {PenLineJoin.Miter=>JoinType.Miter,PenLineJoin.Round=>JoinType.Round,PenLineJoin.Bevel=>JoinType.Bevel,_=>throw new NotSupportedException("Unknown line join.")};
+            var pieces=key.Dash is {Dashes.Count:>0} dash?Dash(input,dash,key.Width,closed,key.Cap):new PathsD{input};
+            if(key.Dash is {Dashes.Count:>0})end=key.Cap switch {PenLineCap.Flat=>EndType.Butt,PenLineCap.Round=>EndType.Round,_=>EndType.Square};
+            paths.AddRange(Clipper.InflatePaths(pieces,key.Width/2,join,end,key.Miter,5,0.015625));
         }
-        var result=new Geometry(FromPaths(Clipper.Union(paths,CFill.NonZero)));if(strokes.Count>=32)strokes.Clear();strokes.Add(key,result);return result;
+        return new Geometry(FromPaths(Clipper.Union(paths,CFill.NonZero)));
     }
     private static PathsD Dash(PathD path,IDashStyle dash,double width,bool closed,PenLineCap cap)
     {
@@ -81,7 +106,19 @@ internal class Geometry : IGeometryImpl
         if(closed&&result.Count>1&&result[0][0]==result[^1][^1]){result[^1].AddRange(result[0].Skip(1));result.RemoveAt(0);}
         return result;
     }
-    internal static PathsD Polygons(SPath path)=>new(path.Flatten(Matrix3.Identity,0.015625f).Where(p=>p.Length>=3).Select(p=>new PathD(p.Select(v=>new PointD(v.X,v.Y)))));
+    private static PathD ToPathD(PointF[] contour)
+    {
+        var path=new PathD(contour.Length);
+        foreach(var point in contour)path.Add(new PointD(point.X,point.Y));
+        return path;
+    }
+    internal static PathsD Polygons(SPath path)
+    {
+        var paths=new PathsD();
+        foreach(var contour in path.Flatten(Matrix3.Identity,0.015625f))
+            if(contour.Length>=3)paths.Add(ToPathD(contour));
+        return paths;
+    }
     internal static SPath FromPaths(PathsD paths)
     {
         var list=new List<PathSegment>();foreach(var p in paths){if(p.Count==0)continue;list.Add(new(PathVerb.Move,new((float)p[0].x,(float)p[0].y)));for(int i=1;i<p.Count;i++)list.Add(new(PathVerb.Line,new((float)p[i].x,(float)p[i].y)));list.Add(new(PathVerb.Close,default));}return new(list);
@@ -93,14 +130,37 @@ internal class Geometry : IGeometryImpl
     }
     public bool FillContains(Point point)
     {
-        Validate();var paths=Polygons(Path);int winding=0;bool odd=false;
-        foreach(var path in paths)for(int i=0;i<path.Count;i++)
+        Validate();
+        var contours=GetHitContours(out var rule);int winding=0;bool odd=false;
+        foreach(var contour in contours)
         {
-            var a=path[i];var b=path[(i+1)%path.Count];double cross=(b.x-a.x)*(point.Y-a.y)-(point.X-a.x)*(b.y-a.y);
-            if(Math.Abs(cross)<1e-8&&point.X>=Math.Min(a.x,b.x)&&point.X<=Math.Max(a.x,b.x)&&point.Y>=Math.Min(a.y,b.y)&&point.Y<=Math.Max(a.y,b.y))return true;
-            if(a.y<=point.Y&&b.y>point.Y&&cross>0){winding++;odd=!odd;}else if(a.y>point.Y&&b.y<=point.Y&&cross<0){winding--;odd=!odd;}
+            if(contour.Length<3)continue;
+            var previous=contour[^1];
+            foreach(var current in contour)
+            {
+                double ax=previous.X,ay=previous.Y,bx=current.X,by=current.Y;
+                double cross=(bx-ax)*(point.Y-ay)-(point.X-ax)*(by-ay);
+                if(Math.Abs(cross)<1e-8&&point.X>=Math.Min(ax,bx)&&point.X<=Math.Max(ax,bx)&&point.Y>=Math.Min(ay,by)&&point.Y<=Math.Max(ay,by))return true;
+                if(ay<=point.Y&&by>point.Y&&cross>0){winding++;odd=!odd;}
+                else if(ay>point.Y&&by<=point.Y&&cross<0){winding--;odd=!odd;}
+                previous=current;
+            }
         }
-        return Path.FillRule==SimdSkia.FillRule.EvenOdd?odd:winding!=0;
+        return rule==SimdSkia.FillRule.EvenOdd?odd:winding!=0;
+    }
+    private PointF[][] GetHitContours(out SimdSkia.FillRule rule)
+    {
+        lock(strokeGate)
+        {
+            rule=Path.FillRule;
+            if(hitContours is not null&&hitContours.TryGetTarget(out var cached))return cached;
+            // Nearby pointer events share the identical subdivision. The UI can
+            // keep the geometry alive without permanently retaining its contour arrays.
+            var contours=Path.Flatten(Matrix3.Identity,0.015625f);
+            if(hitContours is null)hitContours=new(contours);
+            else hitContours.SetTarget(contours);
+            return contours;
+        }
     }
     public IGeometryImpl? Intersect(IGeometryImpl geometry)=>new Geometry(Combine(Path,((Geometry)geometry).Path,GeometryCombineMode.Intersect));
     public bool StrokeContains(IPen? pen,Point point)=>pen is not null&&GetWidenedGeometry(pen).FillContains(point);
@@ -132,7 +192,9 @@ internal class Geometry : IGeometryImpl
     {
         public IGeometryImpl SourceGeometry {get;}
         public Matrix Transform {get;}
-        internal Transformed(Geometry source,Matrix transform):base(source.Path.Transform(ConvertTo.Matrix(transform)),source.StrokePath.Transform(ConvertTo.Matrix(transform))){SourceGeometry=source;Transform=transform;}
+        internal Transformed(Geometry source,Matrix transform):base(source.Path.Transform(ConvertTo.Matrix(transform)),
+            ReferenceEquals(source.Path,source.StrokePath)?null:source.StrokePath.Transform(ConvertTo.Matrix(transform)))
+        {SourceGeometry=source;Transform=transform;}
     }
     internal static Geometry Rectangle(Rect rect)=>new(SPath.Rectangle(ConvertTo.Rect(rect)));
     internal static Geometry Ellipse(Rect r)

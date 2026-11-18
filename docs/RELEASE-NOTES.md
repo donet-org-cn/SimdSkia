@@ -1,5 +1,14 @@
 # SimdSkia 更新日志 / Release notes
 
+## 0.1.7 正式版 · 连续位图、Avalonia 与 NativeAOT（2026-11-18）
+
+- Direct2D 按 Avalonia 位图的写入版本更新纹理。轮换 960×720 位图时，每帧托管分配从 2,765,322 B 降至 303 B，120 帧内 Gen 2 回收从 13 次降至 0 次。
+- 优化 Avalonia 字体匹配、字体流加载、描边缓存和几何命中测试。Win64 NativeAOT 控件页每帧分配从 NuGet 0.1.6 的 5,620 B 降至 3,366 B，CPU 中位数均为 0.519 ms/帧。
+- 优化 CPU 双线性采样、竖向渐变和不透明像素合成，减少 PNG 滤镜的中间分配。Vulkan 在创建管线后释放着色器资源的托管副本。
+- 同配置 Win64 Avalonia NativeAOT EXE 相比 NuGet 0.1.6 缩小约 29 KiB。体积优先配置下 EXE 为 19.19 MiB，示例工作集增加约 4 MiB。
+
+十三个 NuGet 包统一为 0.1.7，目标框架为 .NET 10，编解码依赖为 Sdcb.SimdCodecs 2.0.0。[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.7/docs/RELEASE-0.1.7.md) · [CPU、内存与 NativeAOT 实测](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.7/docs/PERFORMANCE-AOT-CPU-MEMORY-2026-11-18.md)
+
 ## 0.1.6 正式版 — 图像、滤镜和 Vulkan 上传性能（2026-11-18）
 
 - 降低 GIF 首帧解码与连续播放的分配，复用当前合成帧，并减少 ICO 与 WebP 解码的中间缓冲。

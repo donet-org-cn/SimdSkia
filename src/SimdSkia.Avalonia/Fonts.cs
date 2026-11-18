@@ -81,6 +81,7 @@ internal sealed class FontManager:IFontManagerImpl
 {
     private readonly FontEntry[] fonts;
     private readonly string defaultFamily;
+    private FaceOrder? fallbackOrder;
     internal int LoadedFaceCount=>fonts.Count(f=>f.IsLoaded);
     internal FontManager(IEnumerable<string> paths,string? defaultFamily=null,bool supportedFacesOnly=false)
     {
@@ -89,7 +90,8 @@ internal sealed class FontManager:IFontManagerImpl
         {
             if(supportedFacesOnly){loaded.AddRange(FontEntry.ReadSystemFile(path));continue;}
             var data=File.ReadAllBytes(path);
-            for(int i=0;i<FontCollection.Count(data);i++)
+            int faces=FontCollection.Count(data);
+            for(int i=0;i<faces;i++)
                 loaded.Add(new FontEntry(new FontData(data,i,true)));
         }
         fonts=loaded.ToArray();
@@ -100,11 +102,64 @@ internal sealed class FontManager:IFontManagerImpl
     }
     public string GetDefaultFontFamilyName()=>defaultFamily;
     public string[] GetInstalledFontFamilyNames(bool checkForUpdates=false)=>fonts.Select(f=>f.Family).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
-    private IEnumerable<FontEntry> Order(FontStyle style,FontWeight weight,FontStretch stretch)=>fonts.OrderBy(f=>f.Style==style?0:1).ThenBy(f=>Math.Abs((int)f.Stretch-(int)stretch)).ThenBy(f=>Math.Abs((int)f.Weight-(int)weight));
+    private readonly record struct FaceRequest(FontStyle Style,FontWeight Weight,FontStretch Stretch)
+    {
+        internal int Compare(FontEntry a,FontEntry b)
+        {
+            int result=(b.Style==Style).CompareTo(a.Style==Style);
+            if(result==0)result=Math.Abs((int)a.Stretch-(int)Stretch).CompareTo(Math.Abs((int)b.Stretch-(int)Stretch));
+            if(result==0)result=Math.Abs((int)a.Weight-(int)Weight).CompareTo(Math.Abs((int)b.Weight-(int)Weight));
+            return result;
+        }
+    }
+    private sealed class FaceOrder
+    {
+        internal readonly FaceRequest Request;
+        internal readonly int[] Indices;
+        internal FaceOrder(FontEntry[] faces,FaceRequest request)
+        {
+            Request=request;
+            Indices=new int[faces.Length];
+            for(int i=0;i<Indices.Length;i++)Indices[i]=i;
+            Array.Sort(Indices,(a,b)=>
+            {
+                int result=request.Compare(faces[a],faces[b]);
+                return result!=0?result:a.CompareTo(b);
+            });
+        }
+    }
     public bool TryCreateGlyphTypeface(string familyName,FontStyle style,FontWeight weight,FontStretch stretch,[NotNullWhen(true)]out IPlatformTypeface? typeface)
-    {var match=Order(style,weight,stretch).FirstOrDefault(f=>f.Family.Equals(familyName,StringComparison.OrdinalIgnoreCase));typeface=match is null?null:new PlatformTypeface(match.Data);return typeface is not null;}
+    {
+        var request=new FaceRequest(style,weight,stretch);FontEntry? match=null;
+        foreach(var face in fonts)
+        {
+            if(!face.Family.Equals(familyName,StringComparison.OrdinalIgnoreCase))continue;
+            if(match is null||request.Compare(face,match)<0)match=face;
+            if(face.Style==style&&face.Weight==weight&&face.Stretch==stretch)break;
+        }
+        typeface=match is null?null:new PlatformTypeface(match.Data);return typeface is not null;
+    }
     public bool TryMatchCharacter(int codepoint,FontStyle style,FontWeight weight,FontStretch stretch,string? family,CultureInfo? culture,[NotNullWhen(true)]out IPlatformTypeface? typeface)
-    {var match=Order(style,weight,stretch).OrderBy(f=>f.Family.Equals(family,StringComparison.OrdinalIgnoreCase)?0:1).FirstOrDefault(f=>f.Data.Font.GetGlyph(codepoint)!=0);typeface=match is null?null:new PlatformTypeface(match.Data);return typeface is not null;}
+    {
+        var request=new FaceRequest(style,weight,stretch);
+        var order=Volatile.Read(ref fallbackOrder);
+        if(order is null||order.Request!=request)
+        {
+            order=new FaceOrder(fonts,request);
+            Volatile.Write(ref fallbackOrder,order);
+        }
+        // Search the preferred family first, preserving registration order on ties.
+        // Opening Data can touch a font file; only probe candidates up to the first match.
+        for(int pass=family is null?1:0;pass<=1;pass++)
+            foreach(int index in order.Indices)
+            {
+                var face=fonts[index];
+                if(face.Family.Equals(family,StringComparison.OrdinalIgnoreCase)!=(pass==0))continue;
+                var data=face.Data;
+                if(data.Font.GetGlyph(codepoint)!=0){typeface=new PlatformTypeface(data);return true;}
+            }
+        typeface=null;return false;
+    }
     public bool TryCreateGlyphTypeface(Stream stream,FontSimulations simulations,[NotNullWhen(true)]out IPlatformTypeface? typeface)
     {
         ArgumentNullException.ThrowIfNull(stream);
@@ -114,17 +169,37 @@ internal sealed class FontManager:IFontManagerImpl
         // EmbeddedFontCollection can reopen a file already registered in
         // FontFiles. Hash a seekable stream before making a font-sized snapshot,
         // avoiding a temporary growable LOH buffer on every matching open.
+        if(stream.GetType()==typeof(MemoryStream)&&((MemoryStream)stream).TryGetBuffer(out var segment))
+        {
+            var memory=(MemoryStream)stream;
+            int length=(int)Math.Max(0,memory.Length-memory.Position);
+            var contents=length==0?ReadOnlySpan<byte>.Empty:segment.AsSpan((int)memory.Position,length);
+            if(length!=0)memory.Position=memory.Length;
+            typeface=new PlatformTypeface(FindLoaded(SHA256.HashData(contents))??new FontData(contents));
+            return true;
+        }
+        int capacity=0;
         if(stream.CanSeek)
         {
             long start=stream.Position;var digest=SHA256.HashData(stream);
             var existing=FindLoaded(digest);
             if(existing is not null){typeface=new PlatformTypeface(existing);return true;}
             stream.Position=start;
+            if(stream.GetType()==typeof(FileStream)||stream.GetType()==typeof(MemoryStream))
+            {
+                long remaining=stream.Length-start;
+                if(remaining is >0 and <=64*1024*1024)capacity=(int)remaining;
+            }
         }
-        using var memory=new MemoryStream();stream.CopyTo(memory);var data=memory.GetBuffer().AsSpan(0,(int)memory.Length);
+        using var snapshot=new MemoryStream(capacity);stream.CopyTo(snapshot);
+        var buffer=snapshot.GetBuffer();var data=buffer.AsSpan(0,(int)snapshot.Length);
         // An external stream need not load unrelated installed fallback files.
         var shared=stream.CanSeek?null:FindLoaded(SHA256.HashData(data));
-        typeface=new PlatformTypeface(shared??new FontData(data));return true;
+        // Hand over only exact, privately owned standalone files. TTC input still
+        // exports the selected standalone face through the existing validation path.
+        typeface=new PlatformTypeface(shared??(data.Length==buffer.Length&&data.Length>=4&&
+            BinaryPrimitives.ReadUInt32BigEndian(data)!=0x74746366?new FontData(buffer,0,true):new FontData(data)));
+        return true;
     }
     private FontData? FindLoaded(ReadOnlySpan<byte> digest)
     {foreach(var font in fonts)if(font.IsLoaded&&font.Data.Digest.AsSpan().SequenceEqual(digest))return font.Data;return null;}

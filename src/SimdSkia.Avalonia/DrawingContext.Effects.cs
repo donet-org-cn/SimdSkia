@@ -79,21 +79,25 @@ internal sealed partial class DrawingContext
             renderer.Execute(new(CommandKind.FillPath,default,local,new(new(255,255,255,255),shadow.IsInset?CompositeMode.Clear:CompositeMode.SourceOver,true)){Path=geometry.Path,CurveTolerance=.015625f});
         }
         using var blurred=ManagedFilters.Blur(mask,sigma.X,sigma.Y);
-        CoverageClip boxClip;
+        CoverageClip? boxClip=null;
+        int boxLeft=0,boxTop=0,boxRight=0,boxBottom=0;
         if(!rect.IsRounded&&m.M01==0&&m.M10==0)
         {
             var bounds=baseGeometry.Path.GetTightBounds(m);int x0=(int)MathF.Floor(bounds.Left+.5f),y0=(int)MathF.Floor(bounds.Top+.5f),x1=(int)MathF.Floor(bounds.Right+.5f),y1=(int)MathF.Floor(bounds.Bottom+.5f);
-            x0=Math.Clamp(x0,left,right);y0=Math.Clamp(y0,top,bottom);x1=Math.Clamp(x1,x0,right);y1=Math.Clamp(y1,y0,bottom);
-            var coverage=new byte[(x1-x0)*(y1-y0)];coverage.AsSpan().Fill(255);boxClip=new(x0,y0,x1-x0,y1-y0,coverage);
+            boxLeft=Math.Clamp(x0,left,right)-left;boxRight=Math.Clamp(x1,left,right)-left;
+            boxTop=Math.Clamp(y0,top,bottom)-top;boxBottom=Math.Clamp(y1,top,bottom)-top;
         }
         else boxClip=CreateCoverageClip(baseGeometry.Path,m,true);
         var color=ConvertTo.Color(shadow.Color);int ri=target.Format==PixelFormat.Rgba8888?0:2;
         for(int y=0;y<blurred.Height;y++)
         {
             var row=blurred.GetRowSpan(y);
+            bool inBoxRow=y>=boxTop&&y<boxBottom;
             for(int x=0;x<blurred.Width;x++)
             {
-                byte clipAlpha=boxClip.At(left+x,top+y);if(!shadow.IsInset)clipAlpha=(byte)(255-clipAlpha);
+                byte clipAlpha=boxClip is not null?boxClip.At(left+x,top+y):
+                    inBoxRow&&x>=boxLeft&&x<boxRight?(byte)255:(byte)0;
+                if(!shadow.IsInset)clipAlpha=(byte)(255-clipAlpha);
                 byte a=PixelBuffer.Multiply(PixelBuffer.Multiply(row[x*4+3],color.A),clipAlpha);
                 row[x*4+ri]=PixelBuffer.Multiply(color.R,a);row[x*4+1]=PixelBuffer.Multiply(color.G,a);row[x*4+2-ri]=PixelBuffer.Multiply(color.B,a);row[x*4+3]=a;
             }

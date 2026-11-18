@@ -34,7 +34,19 @@ internal sealed class RenderInterface(Func<PixelBuffer,ICanvasBackend>? backendF
     public IGlyphRunImpl CreateGlyphRun(GlyphTypeface typeface,double size,IReadOnlyList<GlyphInfo> infos,Point origin)=>new GlyphRun(typeface,size,infos,origin);
     public IRenderTargetBitmapImpl CreateRenderTargetBitmap(PixelSize size,Vector dpi)=>new Bitmap(new(size.Width,size.Height,PixelFormat.Bgra8888,AlphaFormat.Premultiplied),dpi);
     public IWriteableBitmapImpl CreateWriteableBitmap(PixelSize size,Vector dpi,AFormat format,AAlpha alpha)=>new Bitmap(new(size.Width,size.Height,ConvertTo.Format(format),ConvertTo.Alpha(alpha)),dpi);
-    private static Bitmap Decode(Stream stream){using var memory=new MemoryStream();stream.CopyTo(memory);return new(ImageCodec.Decode(memory.GetBuffer().AsSpan(0,(int)memory.Length)),new(96,96));}
+    private static Bitmap Decode(Stream stream)
+    {
+        if (stream.GetType() == typeof(MemoryStream) && stream is MemoryStream memory &&
+            memory.TryGetBuffer(out var segment) && memory.Position <= segment.Count)
+        {
+            int start = (int)memory.Position;
+            memory.Position = segment.Count;
+            return new(ImageCodec.Decode(segment.AsSpan(start)), new(96,96));
+        }
+        using var copy = new MemoryStream();
+        stream.CopyTo(copy);
+        return new(ImageCodec.Decode(copy.GetBuffer().AsSpan(0,(int)copy.Length)),new(96,96));
+    }
     public IBitmapImpl LoadBitmap(string path){using var stream=File.OpenRead(path);return Decode(stream);}
     public IBitmapImpl LoadBitmap(Stream stream)=>Decode(stream);
     public IWriteableBitmapImpl LoadWriteableBitmap(string path){using var stream=File.OpenRead(path);return Decode(stream);}

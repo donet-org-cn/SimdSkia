@@ -76,17 +76,25 @@ internal sealed unsafe class GlDevice:IDisposable
     {if(images.Count>=256)images.RemoveAll(weak=>!weak.TryGetTarget(out var value)||value.IsDisposed);images.Add(new(image));}
     internal void AbandonImages(bool releaseResources)
     {foreach(var weak in images)if(weak.TryGetTarget(out var image))image.ReleaseDeviceResource(releaseResources);images.Clear();}
-    internal uint Upload(PixelBuffer source,bool mipmapped=false)
+    internal uint Upload(PixelBuffer source,bool mipmapped=false,uint existingTexture=0)
     {
-        Check();using var rgba=PixelBuffer.Rent(source.Width,source.Height,PixelFormat.Rgba8888,AlphaFormat.Premultiplied);
-        for(int y=0;y<source.Height;y++)
+        Check();
+        bool direct = source.Format == PixelFormat.Rgba8888 && source.Alpha == AlphaFormat.Premultiplied &&
+            source.RowBytes == source.Width * 4;
+        using var converted = direct ? null : PixelBuffer.RentForOverwrite(source.Width, source.Height, PixelFormat.Rgba8888);
+        if (converted is not null)
+            Cpu.PixelTransferKernel.CopyToPremultiplied(source, converted.GetPixelSpan(), converted.Format);
+        using var pin = (converted ?? source).Pin();
+        if (existingTexture != 0)
         {
-            var row=rgba.GetRowSpan(y);var from=source.GetRowSpan(y)[..(source.Width*source.BytesPerPixel)];
-            if(source.Format!=PixelFormat.Alpha8&&source.Alpha!=AlphaFormat.Straight)
-            {if(source.Format==PixelFormat.Rgba8888)from.CopyTo(row);else SimdSkia.Cpu.PixelTransferKernel.SwapRedBlue(from,row,SimdSkia.Cpu.CpuOptions.EnableSimd);if(source.Alpha==AlphaFormat.Opaque)for(int x=0;x<source.Width;x++)row[x*4+3]=255;}
-            else for(int x=0;x<source.Width;x++)rgba.WritePixel(x,y,source.ReadPixel(x,y));
+            BindTexture(0, existingTexture);
+            PixelStorage(false);
+            ((delegate* unmanaged[Stdcall]<uint,int,int,int,int,int,uint,uint,nint,void>)P("glTexSubImage2D"))(
+                0x0DE1, 0, 0, 0, source.Width, source.Height, 0x1908, 0x1401, pin.Address);
+            CheckError();
+            return existingTexture;
         }
-        using var pin=rgba.Pin();uint texture=Texture(source.Width,source.Height,0x1908,pin.Address);
+        uint texture=Texture(source.Width,source.Height,0x1908,pin.Address);
         try{if(mipmapped){((delegate* unmanaged[Stdcall]<uint,void>)P("glGenerateMipmap"))(0x0DE1);CheckError();}return texture;}catch{DeleteTexture(ref texture);throw;}
     }
     internal void CheckError(){uint error=((delegate* unmanaged[Stdcall]<uint>)P("glGetError"))();if(error!=0)throw new InvalidOperationException($"OpenGL operation failed: 0x{error:X}.");}

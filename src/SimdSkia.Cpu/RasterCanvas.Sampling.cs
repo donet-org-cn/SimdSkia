@@ -38,16 +38,23 @@ public sealed partial class RasterCanvas
         var key=new ClipCoverageCache.Key(geometry,transform,target.Width,target.Height,antialias,curveTolerance);
         if(ClipCoverageCache.TryGet(key,out var cached))return cached;
         var command=new DrawingCommand(CommandKind.FillPath,default,transform,new(default,CompositeMode.Source,antialias)){CurveTolerance=curveTolerance};
-        var mask=GetMask(geometry,command);var data=new byte[checked(mask.Width*mask.Height)];
-        if(mask.Dense)mask.Data.CopyTo(data,0);
-        else foreach(var run in mask.Runs)data.AsSpan((run.Y-mask.Top)*mask.Width+run.X-mask.Left,run.Length).Fill(run.Coverage);
-        return ClipCoverageCache.Add(key,new(mask.Left,mask.Top,mask.Width,mask.Height,data));
+        return ClipCoverageCache.Add(key,ToClip(GetMask(geometry,command)));
     }
     internal static CoverageClip CreateClipForBounds(PathGeometry geometry,Matrix3 transform,int width,int height,bool antialias)
     {
         if((long)width*height>16_777_216)throw new NotSupportedException("Pixel-accurate no-draw path clips are limited to 16 million pixels.");
         var mask=PathRasterizer.Rasterize(geometry.Flatten(transform,.015625f),geometry.FillRule,width,height,antialias,compactRuns:true);
-        var data=new byte[checked(mask.Width*mask.Height)];foreach(var run in mask.Runs)data.AsSpan((run.Y-mask.Top)*mask.Width+run.X-mask.Left,run.Length).Fill(run.Coverage);return new(mask.Left,mask.Top,mask.Width,mask.Height,data);
+        return ToClip(mask);
+    }
+    private static CoverageClip ToClip(CoverageMask mask)
+    {
+        var data=mask.Data;
+        if(data.Length!=checked(mask.Width*mask.Height))
+        {
+            data=new byte[checked(mask.Width*mask.Height)];
+            foreach(var run in mask.Runs)data.AsSpan((run.Y-mask.Top)*mask.Width+run.X-mask.Left,run.Length).Fill(run.Coverage);
+        }
+        return CoverageClip.BorrowImmutable(mask.Left,mask.Top,mask.Width,mask.Height,data);
     }
     private static byte ClipCoverage(byte coverage,int x,int y,CoverageClip? clip)=>clip is null?coverage:PixelBuffer.Multiply(coverage,clip.At(x,y));
     private static int ClipRun(CoverageClip clip,int x,int y,int maximum,out byte coverage)
@@ -113,7 +120,6 @@ public sealed partial class RasterCanvas
             }
         }
     }
-    internal readonly record struct ImageTap(int First,int Second,float Fraction);
     private bool TryDrawAxisSampled(in DrawingCommand command,RectF source,PixelBuffer image,Matrix3 inverse)
     {
         var m=command.Transform;if(m.M01!=0||m.M10!=0||command.Sampling==ImageSampling.Mitchell)return false;
@@ -130,21 +136,27 @@ public sealed partial class RasterCanvas
         if(analyticCoverage){x0=(int)Math.Clamp(MathF.Floor(left),0,target.Width)*n;x1=(int)Math.Clamp(MathF.Ceiling(right),0,target.Width)*n;y0=(int)Math.Clamp(MathF.Floor(top),0,target.Height)*n;y1=(int)Math.Clamp(MathF.Ceiling(bottom),0,target.Height)*n;}
         int start=x0/n,end=(x1+n-1)/n;if(start>=end||y0>=y1)return true;
         int minX=(int)MathF.Floor(source.Left),maxX=(int)MathF.Ceiling(source.Right)-1,minY=(int)MathF.Floor(source.Top),maxY=(int)MathF.Ceiling(source.Bottom)-1;
-        var taps=System.Buffers.ArrayPool<ImageTap>.Shared.Rent(end-start);
+        bool nearest=command.Sampling==ImageSampling.Nearest;
+        bool bufferRows=(command.Paint.Composite==CompositeMode.SourceOver||command.Paint.Composite==CompositeMode.Source&&command.Paint.Color.A==255)&&target.Alpha!=AlphaFormat.Straight;
+        bool vectorBilinear=!nearest&&bufferRows&&CpuOptions.EnableSimd&&System.Runtime.Intrinsics.X86.Sse2.IsSupported;
+        bool avx2=vectorBilinear&&System.Runtime.Intrinsics.X86.Avx2.IsSupported;
+        int width=end-start,count=checked(width*(nearest?1:3)+(avx2?width/8:0));
+        int[]? rented=null;
+        Span<int> storage=count<=384?stackalloc int[count]:(rented=System.Buffers.ArrayPool<int>.Shared.Rent(count)).AsSpan(0,count);
+        var taps=new BilinearSampler.Taps(storage,width,nearest);
         // Sample once into a reusable PMA scanline, then composite constant
         // coverage spans with the same integer kernel as unscaled images.
-        byte[]? sampled=(command.Paint.Composite==CompositeMode.SourceOver||command.Paint.Composite==CompositeMode.Source&&command.Paint.Color.A==255)&&target.Alpha!=AlphaFormat.Straight
-            ?System.Buffers.ArrayPool<byte>.Shared.Rent(checked((end-start)*4)):null;
+        byte[]? sampled=bufferRows?System.Buffers.ArrayPool<byte>.Shared.Rent(checked(width*4)):null;
         float sx=(source.Right-source.Left)/(rect.Right-rect.Left),sy=(source.Bottom-source.Top)/(rect.Bottom-rect.Top);
-        bool nearest=command.Sampling==ImageSampling.Nearest;
-        bool vectorBilinear=!nearest&&sampled is not null&&CpuOptions.EnableSimd&&System.Runtime.Intrinsics.X86.Sse2.IsSupported;
         try
         {
             for(int x=start;x<end;x++)
             {
                 var p=inverse.Map(x+.5f,.5f);float u=(command.LatticeRectangleEdges?p.X*sx+(source.Left-rect.Left*sx):source.Left+(p.X-rect.Left)*sx)-.5f;int ix=(int)MathF.Floor(u);
-                taps[x-start]=nearest?new(Math.Clamp(lowerBoundary?(command.LatticeRectangleEdges?(int)MathF.Floor(MathF.BitDecrement(u+.5f)):LowerTexel(u)):(int)MathF.Floor(u+.5f),minX,maxX),0,0):new(Math.Clamp(ix,minX,maxX),Math.Clamp(ix+1,minX,maxX),u-ix);
+                if(nearest)taps.First[x-start]=Math.Clamp(lowerBoundary?(command.LatticeRectangleEdges?(int)MathF.Floor(MathF.BitDecrement(u+.5f)):LowerTexel(u)):(int)MathF.Floor(u+.5f),minX,maxX);
+                else taps.Set(x-start,Math.Clamp(ix,minX,maxX),Math.Clamp(ix+1,minX,maxX),u-ix);
             }
+            if(avx2)taps.FindConsecutiveTaps();
             int ri=image.Format==PixelFormat.Rgba8888?0:2;bool straight=image.Alpha==AlphaFormat.Straight,opaque=image.Alpha==AlphaFormat.Opaque;
             Rgba32 Read(ReadOnlySpan<byte> row,int x)
             {
@@ -169,25 +181,26 @@ public sealed partial class RasterCanvas
                 bool reuse=sampled is not null&&rowIndex0==lastRow0&&(nearest||(rowIndex1==lastRow1&&fy==lastFraction));
                 for(int x=start;!reuse&&x<end;x++)
                 {
-                    if(vectorBilinear&&System.Runtime.Intrinsics.X86.Avx2.IsSupported&&x<=end-8)
+                    if(avx2&&x<=end-8)
                     {
-                        BilinearSampler.Sample8(row0,row1,taps.AsSpan(x-start,8),fy,opaque,straight,image.Format!=target.Format,sampled!.AsSpan((x-start)*4,32));
+                        BilinearSampler.Sample8(row0,row1,taps,x-start,fy,opaque,straight,image.Format!=target.Format,sampled!.AsSpan((x-start)*4,32));
                         x+=7;continue;
                     }
                     byte coverage=255;
                     if(sampled is null){coverage=Coverage(x);if(coverage==0)continue;}
-                    var tap=taps[x-start];Rgba32 color;
+                    int index=x-start,first=taps.First[index];Rgba32 color;
                     if(vectorBilinear&&!straight)
                     {
-                        uint pixel=BilinearSampler.Sample(row0,row1,tap.First,tap.Second,tap.Fraction,fy,opaque);
+                        uint pixel=BilinearSampler.Sample(row0,row1,first,taps.Second[index],taps.Fraction[index],fy,opaque);
                         if(image.Format!=target.Format)pixel=(pixel&0xff00ff00)|((pixel&0xff)<<16)|((pixel>>16)&0xff);
                         System.Buffers.Binary.BinaryPrimitives.WriteUInt32LittleEndian(sampled!.AsSpan((x-start)*4,4),pixel);
                         continue;
                     }
-                    if(nearest)color=Read(row0,tap.First);
+                    if(nearest)color=Read(row0,first);
                     else
                     {
-                        var c00=Read(row0,tap.First);var c10=Read(row0,tap.Second);var c01=Read(row1,tap.First);var c11=Read(row1,tap.Second);float fx=tap.Fraction;
+                        int second=taps.Second[index];float fx=taps.Fraction[index];
+                        var c00=Read(row0,first);var c10=Read(row0,second);var c01=Read(row1,first);var c11=Read(row1,second);
                         float w00=(1-fx)*(1-fy),w10=fx*(1-fy),w01=(1-fx)*fy,w11=fx*fy;
                         static float Mix(byte a,byte b,byte c,byte d,float w0,float w1,float w2,float w3)=>a*w0+b*w1+c*w2+d*w3;
                         byte alpha=(byte)Math.Clamp((int)MathF.Round(Mix(c00.A,c10.A,c01.A,c11.A,w00,w10,w01,w11)),0,255);
@@ -224,7 +237,7 @@ public sealed partial class RasterCanvas
                 lastRow0=rowIndex0;lastRow1=rowIndex1;lastFraction=fy;
             }
         }
-        finally{System.Buffers.ArrayPool<ImageTap>.Shared.Return(taps);if(sampled is not null)System.Buffers.ArrayPool<byte>.Shared.Return(sampled);}return true;
+        finally{if(rented is not null)System.Buffers.ArrayPool<int>.Shared.Return(rented);if(sampled is not null)System.Buffers.ArrayPool<byte>.Shared.Return(sampled);}return true;
     }
     private bool TryBlit(in DrawingCommand command,RectF source,PixelBuffer image)
     {

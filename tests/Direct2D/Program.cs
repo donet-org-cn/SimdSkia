@@ -89,6 +89,61 @@ foreach (var format in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})
     var threadError = Task.Run(() => { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); try { canvas.Flush(); return false; } catch (InvalidOperationException) { return true; } }).GetAwaiter().GetResult();
     Check(threadError, "Context thread ownership is enforced.");
     checks+=TextureCacheValidation.Run(canvas,pixels,()=>OperatingSystem.IsWindows()?canvas.UploadedTextures:throw new PlatformNotSupportedException(),()=>OperatingSystem.IsWindows()?canvas.TextureCacheHits:throw new PlatformNotSupportedException());
+    {
+        const int frameSize = 192;
+        using var stream = PixelBuffer.Rent(frameSize, frameSize);
+        var frameDraw = new DrawingCommand(CommandKind.DrawImage, new(0, 0, 4, 4), Matrix3.Identity,
+            new(new(255, 255, 255, 255), CompositeMode.SourceOver))
+        {
+            ImageSource = new(0, 0, 1, 1),
+            Sampling = ImageSampling.Nearest,
+        };
+        var first = new Rgba32(231, 12, 27, 255);
+        var second = new Rgba32(15, 209, 31, 255);
+        stream.WritePixel(0, 0, first);
+        canvas.Execute(frameDraw with { Image = stream });
+        stream.WritePixel(0, 0, second);
+        canvas.Execute(frameDraw with { Image = stream, Rectangle = new(4, 0, 8, 4) });
+        canvas.Flush();
+        Check(pixels.ReadPixel(2, 2) == first && pixels.ReadPixel(6, 2) == second,
+            "Two writes to the same frame in one batch must preserve both draws.");
+
+        long before = GC.GetAllocatedBytesForCurrentThread();
+        for (int frame = 0; frame < 16; frame++)
+        {
+            stream.WritePixel(0, 0, new((byte)frame, 10, 20, 255));
+            canvas.Execute(frameDraw with { Image = stream });
+            canvas.Flush();
+        }
+        Check(GC.GetAllocatedBytesForCurrentThread() - before < stream.ByteCount,
+            "Changing a cached frame must reuse its large snapshot.");
+        Check(pixels.ReadPixel(2, 2) == new Rgba32(15, 10, 20, 255) && pixels.ReadPixel(6, 2) == second,
+            "Updating a submitted texture must draw current pixels and retain the rest of the target.");
+
+        // The producer disposes each view as soon as Execute has captured it.
+        for (int slot = 0; slot < 5; slot++)
+        {
+            using var frame = PixelBuffer.Rent(frameSize, frameSize);
+            frame.WritePixel(0, 0, new((byte)(200 + slot), 50, 45, 255));
+            int x = 8 + slot * 4;
+            canvas.Execute(frameDraw with { Image = frame, Rectangle = new(x, 0, x + 4, 4) });
+        }
+        canvas.Flush();
+        for (int slot = 0; slot < 5; slot++)
+            Check(pixels.ReadPixel(10 + slot * 4, 2) == new Rgba32((byte)(200 + slot), 50, 45, 255),
+                "Reusing a disposed frame entry must preserve pixels from earlier draws in the same batch.");
+        for (int frame = -4; frame < 16; frame++)
+        {
+            if (frame == 0) before = GC.GetAllocatedBytesForCurrentThread();
+            using var view = PixelBuffer.Rent(frameSize, frameSize);
+            view.WritePixel(0, 0, new(25, (byte)frame, 50, 255));
+            canvas.Execute(frameDraw with { Image = view, Rectangle = new(12, 0, 16, 4) });
+            canvas.Flush();
+        }
+        Check(GC.GetAllocatedBytesForCurrentThread() - before < stream.ByteCount,
+            "Disposable same-size frame views must reuse the cached snapshot after warm-up.");
+        Check(pixels.ReadPixel(14, 2) == new Rgba32(25, 15, 50, 255), "The final recycled frame reaches the target.");
+    }
     canvas.Dispose();Check(canvas.CachedGradientBrushes==0,"Dispose releases all cached gradient COM brushes");canvas.Dispose();
     try { canvas.Flush(); throw new InvalidOperationException("Expected disposed error."); } catch (ObjectDisposedException) { checks++; }
     Console.WriteLine($"GPU={canvas.DeviceName}; format={format}; completed={canvas.CompletedBatches}");

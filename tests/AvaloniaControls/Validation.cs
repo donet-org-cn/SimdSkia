@@ -152,6 +152,9 @@ internal static class Validation
         Assert(geometry.ContourLength>30&&geometry.ContourLength<32&&geometry.Bounds.Width>19,"Unfilled SVG elliptical arc lost its curve or bounds.");
         var clone=geometry.Clone();using(var edit=clone.Open()){edit.BeginFigure(new(3,3));edit.LineTo(new(5,3));edit.LineTo(new(5,5));edit.EndFigure(true);}Assert(clone.FillContains(new(4.5,3.5))&&geometry.ContourLength>30,"Editing cloned geometry changed the original.");
         clone.GetWidenedGeometry(new Pen(Brushes.Black,1));using(var edit=clone.Open()){edit.BeginFigure(new(20,20));edit.LineTo(new(25,20));edit.EndFigure(false);}Assert(clone.GetWidenedGeometry(new Pen(Brushes.Black,1)).FillContains(new(22,20)),"Editing a geometry did not invalidate its stroke cache.");
+        Assert(!clone.FillContains(new(4.5,3.5)),"Hit testing reused contours from an earlier edit.");
+        GC.Collect();GC.WaitForPendingFinalizers();
+        Assert(cut.FillContains(new(1,1))&&!cut.FillContains(new(15,15)),"Rebuilding hit contours after GC changed a hole.");
     }
     private static void RunShaping(string font)
     {

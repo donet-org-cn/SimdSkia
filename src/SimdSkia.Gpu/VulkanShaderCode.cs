@@ -1,19 +1,38 @@
+using System.Buffers.Binary;
+using System.Runtime.InteropServices;
+
 namespace SimdSkia.Gpu;
 
-// SPIR-V is produced offline. Keep one immutable copy per process instead of
-// allocating a MemoryStream and another array for every window/device/resize.
-internal static class VulkanShaderCode
+public sealed unsafe partial class VulkanCanvas
 {
-    internal static readonly byte[] Renderer=Read("renderer.spv");
-    internal static readonly byte[] RectangleBatch=Read("renderer-batch.spv");
-    internal static readonly byte[] OrderedRectangles=Read("renderer-ordered.spv");
-    private static byte[] Read(string name)
+    private ulong CreateShaderModule(string resource)
     {
-        using var stream=typeof(VulkanCanvas).Assembly.GetManifestResourceStream("SimdSkia.Gpu.Shaders."+name)
-            ??throw new InvalidOperationException("Embedded SPIR-V resource missing: "+name);
-        if(stream.Length<20||stream.Length%4!=0||stream.Length>4*1024*1024)throw new InvalidDataException("Invalid SPIR-V size.");
-        var bytes=new byte[checked((int)stream.Length)];stream.ReadExactly(bytes);
-        if(System.Buffers.Binary.BinaryPrimitives.ReadUInt32LittleEndian(bytes)!=0x07230203)throw new InvalidDataException("Invalid SPIR-V magic.");
-        return bytes;
+        using var stream=typeof(VulkanCanvas).Assembly.GetManifestResourceStream(resource)
+            ??throw new InvalidOperationException("Embedded SPIR-V resource missing: "+resource);
+        if(stream.Length is <20 or >4*1024*1024||stream.Length%4!=0)throw new InvalidDataException("Invalid SPIR-V size.");
+        int length=(int)stream.Length;
+
+        // vkCreateShaderModule consumes its input synchronously. The open stream
+        // owns the assembly mapping until the call returns.
+        if(stream is UnmanagedMemoryStream mapped)
+        {
+            byte* address;
+            try{address=mapped.PositionPointer;}
+            catch(NotSupportedException){address=null;} // SafeBuffer-backed stream
+            if(address!=null&&((nuint)address&3)==0)return Create((uint*)address);
+        }
+        var words=GC.AllocateUninitializedArray<uint>(length/4);
+        stream.ReadExactly(MemoryMarshal.AsBytes(words.AsSpan()));
+        fixed(uint* address=words)return Create(address);
+
+        ulong Create(uint* code)
+        {
+            if(BinaryPrimitives.ReadUInt32LittleEndian(new ReadOnlySpan<byte>(code,4))!=0x07230203)
+                throw new InvalidDataException("Invalid SPIR-V magic.");
+            var info=new Vk.ShaderInfo{Type=16,CodeSize=(nuint)length,Code=code};
+            ulong module=0;
+            Check(Vk.vkCreateShaderModule(device,&info,null,&module));
+            return module;
+        }
     }
 }

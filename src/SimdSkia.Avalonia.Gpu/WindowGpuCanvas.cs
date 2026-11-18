@@ -74,8 +74,9 @@ internal sealed class WindowGpuCanvas : ICanvasBackend
             if((long)(right-left)*(bottom-top)*2<(long)image.Width*image.Height)
             {
                 image.ThrowIfDisposed();using var crop=PixelBuffer.Rent(right-left,bottom-top,image.Format,image.Alpha);
-                for(int y=0;y<crop.Height;y++)image.GetRowSpan(top+y).Slice(left*4,crop.Width*4).CopyTo(crop.GetRowSpan(y));
-                Execute(command with{Image=crop,ImageSource=new(source.Left-left,source.Top-top,source.Right-left,source.Bottom-top),ImageIsImmutable=true});return;
+                int pixelBytes = image.BytesPerPixel;
+                for(int y=0;y<crop.Height;y++)image.GetRowSpan(top+y).Slice(left*pixelBytes,crop.Width*pixelBytes).CopyTo(crop.GetRowSpan(y));
+                Execute(command with{Image=crop,ImageSource=new(source.Left-left,source.Top-top,source.Right-left,source.Bottom-top),ImageContentVersion=0,ImageIsImmutable=true});return;
             }
         }
         if(textMode==SimdSkiaGpuTextMode.ManagedGlyphAtlas&&command.Kind==CommandKind.DrawGlyphRun&&command.TextPixelGeometry is not (1 or 2)&&command.Paint.Blender is null&&command.Paint.FloatingColor is null&&!command.Paint.Dither&&command.Paint.Shader is null&&command.Paint.ColorFilter is null&&command.Paint.ImageFilter is null&&command.Paint.MaskFilter is null&&command.Paint.Composite==CompositeMode.SourceOver&&DrawTextAtlas(command))return;
@@ -163,7 +164,7 @@ internal sealed class WindowGpuCanvas : ICanvasBackend
                     // Bake device coverage per glyph and key the cache by mask + origin.
                     byte[] coverage=new byte[checked(width*height)];
                     for(int y=0;y<height;y++)for(int x=0;x<width;x++)coverage[y*width+x]=clip.At(ix+left+x,iy+top+y);
-                    baked=new CoverageClip(0,0,width,height,coverage);
+                    baked=CoverageClip.BorrowImmutable(0,0,width,height,coverage);
                 }
                 raster.Execute(normalized with{Transform=local with{M02=local.M02-left,M12=local.M12-top},CoverageClip=baked});
                 entry=new(bitmap,left,top,run,bytes);

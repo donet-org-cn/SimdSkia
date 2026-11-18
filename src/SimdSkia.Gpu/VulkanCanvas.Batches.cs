@@ -22,13 +22,12 @@ public sealed unsafe partial class VulkanCanvas
     private void EnsureRectangleBatchPipeline()
     {
         if(rectangleBatchPipeline!=0)return;
-        rectangleBatchPipeline=CreateRectanglePipeline(VulkanShaderCode.RectangleBatch);
-        if(orderedRectanglesEnabled)orderedRectanglePipeline=CreateRectanglePipeline(VulkanShaderCode.OrderedRectangles);
+        rectangleBatchPipeline=CreateRectanglePipeline("SimdSkia.Gpu.Shaders.renderer-batch.spv");
+        if(orderedRectanglesEnabled)orderedRectanglePipeline=CreateRectanglePipeline("SimdSkia.Gpu.Shaders.renderer-ordered.spv");
     }
-    private ulong CreateRectanglePipeline(byte[] bytes)
+    private ulong CreateRectanglePipeline(string resource)
     {
-        ulong module=0;
-        fixed(byte* code=bytes){var shader=new Vk.ShaderInfo{Type=16,CodeSize=(nuint)bytes.Length,Code=(uint*)code};Check(Vk.vkCreateShaderModule(device,&shader,null,&module));}
+        ulong module=CreateShaderModule(resource);
         try{byte* name=stackalloc byte[5]{(byte)'m',(byte)'a',(byte)'i',(byte)'n',0};uint kind=1;var entry=new Vk.SpecializationEntry{Size=4};var specialization=new Vk.SpecializationInfo{Count=1,Entries=&entry,Size=4,Data=&kind};var info=new Vk.ComputePipelineInfo{Type=29,Stage=new(){Type=18,Stage=32,Module=module,Name=name,Specialization=&specialization},Layout=pipelineLayout,BaseIndex=-1};ulong result=0;Check(Vk.vkCreateComputePipelines(device,0,1,&info,null,&result));PreparedPipelineCount++;return result;}
         finally{Vk.vkDestroyShaderModule(device,module,null);}
     }

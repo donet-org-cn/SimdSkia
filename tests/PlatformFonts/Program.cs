@@ -2,6 +2,16 @@ using System.Buffers.Binary;
 using SimdSkia.Avalonia;
 using SimdSkia.Text;
 
+if(args is ["--footprint",var fontFile])
+{
+    FootprintBench.Run(fontFile);
+    return;
+}
+if(args is ["--installed-fallback"])
+{
+    FootprintBench.Installed();
+    return;
+}
 string fixture = Path.GetFullPath(args.FirstOrDefault() ?? "baseline/fonts/ZCOOLXiaoWei-Regular.ttf");
 byte[] bytes = File.ReadAllBytes(fixture);
 var font = new TrueTypeFont(bytes);
@@ -64,6 +74,28 @@ try
     using(var bold=Select(lazy,global::Avalonia.Media.FontWeight.Bold))
         Check(bold.Weight==global::Avalonia.Media.FontWeight.Bold,"Lazy style selection loads the actual bold face.");
     Check(lazy.LoadedFaceCount==2,"Both requested styles are now loaded.");
+    foreach(var requested in new[]{global::Avalonia.Media.FontWeight.Bold,global::Avalonia.Media.FontWeight.Normal})
+    foreach(string? family in new string?[]{null,found.DefaultFamily,"missing-family"})
+    {
+        Check(lazy.TryMatchCharacter('中',global::Avalonia.Media.FontStyle.Normal,requested,global::Avalonia.Media.FontStretch.Normal,
+            family,null,out var match),"Character fallback must search all registered fonts.");
+        using(match)Check(match!.Weight==requested,"Fallback must retain the requested weight across cache changes.");
+    }
+    foreach(bool exposed in new[]{false,true})
+    {
+        var envelope=new byte[9+bytes.Length+1];
+        bytes.CopyTo(envelope,9);envelope[^1]=93;
+        using var slice=new MemoryStream(envelope,4,envelope.Length-4,false,exposed){Position=5};
+        Check(lazy.TryCreateGlyphTypeface(slice,global::Avalonia.Media.FontSimulations.None,out var created),
+            "Unregistered seekable streams with a segment origin and current position are supported.");
+        using(created)
+        {
+            Check(slice.Position==slice.Length,"Font load consumes the remaining bytes.");
+            envelope[^1]=17;
+            Check(created!.TryGetStream(out var copy),"The new face must export its standalone snapshot.");
+            using(copy){copy!.Seek(-1,SeekOrigin.End);Check(copy.Length==bytes.Length+1&&copy.ReadByte()==93,"Font bytes stay independent of the caller's buffer.");}
+        }
+    }
     // Actual file source versus immutable input: cross-page glyph reads,
     // concurrent readers, escaped table memory and streams, and TTC exports.
     var fileSource=FontSource.OpenInstalled(valid,bytes.Length,File.GetLastWriteTimeUtc(valid));

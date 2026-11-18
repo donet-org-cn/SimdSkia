@@ -56,7 +56,7 @@ internal static class PngValidation
         }
         finally{ArrayPool<byte>.Shared.Return(rows);}
     }
-    private sealed unsafe class IdatStream(byte* encoded,int length,int chunk,int chunks,int compressedLength):Stream
+    internal sealed unsafe class IdatStream(byte* encoded,int length,int chunk,int chunks,int compressedLength):Stream
     {
         private int position=chunk,remainingChunks=chunks,remaining,consumed;
         public override bool CanRead=>true;

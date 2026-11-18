@@ -10,6 +10,15 @@ internal static class LinearGradientKernel
     {
         if(!float.IsFinite(gradient.Start.X)||!float.IsFinite(gradient.Start.Y)||!float.IsFinite(gradient.End.X)||!float.IsFinite(gradient.End.Y))throw new ArgumentException("Gradient coordinates must be finite.");
         double dx=(double)gradient.End.X-gradient.Start.X,dy=(double)gradient.End.Y-gradient.Start.Y,den=dx*dx+dy*dy;
+        if(dx==0&&inverse.IsAffine&&inverse.M10==0)
+        {
+            for(int y=top;y<bottom;y++)
+            {
+                var point=inverse.Map(left+.5f,y+.5f);
+                ClearKernel.FillRectangle(target,gradient.Sample(point.X,point.Y),left,y,right,y+1,CpuOptions.EnableSimd);
+            }
+            return;
+        }
         var a=gradient.StartColor;var b=gradient.EndColor;bool rgba=target.Format==PixelFormat.Rgba8888;
         Span<int> indices=stackalloc int[Vector<float>.Count];for(int i=0;i<indices.Length;i++)indices[i]=i;
         var lanes=new Vector<int>(indices);var step=new Vector<int>(Vector<float>.Count);
@@ -20,7 +29,7 @@ internal static class LinearGradientKernel
         for(int y=top;y<bottom;y++)
         {
             var bytes=target.GetRowSpan(y).Slice(left*4,(right-left)*4);int x=left;
-            if(CpuOptions.EnableSimd&&Vector.IsHardwareAccelerated&&BitConverter.IsLittleEndian)
+            if(CpuOptions.EnableSimd&&Vector.IsHardwareAccelerated&&BitConverter.IsLittleEndian&&inverse.IsAffine&&inverse.M01==0&&inverse.M10==0)
             {
                 var row=MemoryMarshal.Cast<byte,uint>(bytes);var positions=new Vector<int>(left)+lanes;
                 float ly=inverse.M11*(y+.5f)+inverse.M12;

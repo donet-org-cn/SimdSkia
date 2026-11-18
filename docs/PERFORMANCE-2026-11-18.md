@@ -1,5 +1,11 @@
 # SimdSkia 0.1.6 与 NuGet 0.1.5 性能对比
 
+0.1.6 发布后的可变位图、GC 和 CPU 对照另有记录。[以 0.1.6 为基线的后续复测](PERFORMANCE-POST-0.1.6-2026-11-18.md)
+
+通用控件、CPU 栅格、GPU、编解码与存活堆的进一步测量见[引擎与 Avalonia 渲染后端报告](PERFORMANCE-ENGINE-AVALONIA-2026-11-18.md)。
+
+本地候选的 Win64 NativeAOT 发布体积、进程 CPU、存活堆和工作集另有同机对照。[CPU、内存与 NativeAOT 体积复测](PERFORMANCE-AOT-CPU-MEMORY-2026-11-18.md)
+
 2026-11-18 · Windows x64 · i7-12700（AVX2）· RTX 3060 · .NET 10.0.14
 
 基线使用从 NuGet.org 下载的 0.1.5 正式包。独立的 `PackageReference` 项目完成包还原、绘制与解码，实际加载的九个 SimdSkia DLL 的 SHA-256 与下载包一致。待发布的 0.1.6 使用同一工作负载和外部依赖，编解码器为 Sdcb.SimdCodecs 2.0.0，Avalonia 为 12.1.5。[NuGet 0.1.5](https://www.nuget.org/packages/SimdSkia/0.1.5) · [包与程序集哈希](evidence/nuget-0.1.6-performance-2026-11-18/provenance.json) · [独立项目实际加载的程序集](evidence/nuget-0.1.6-performance-2026-11-18/package-smoke.json)

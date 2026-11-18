@@ -56,7 +56,7 @@ public sealed partial class RasterCanvas : ICanvasBackend
     }
     private void FillRectangle(in DrawingCommand command)
     {
-        if(PrepareShader(command,out var prepared)){FillRectangle(prepared);return;}
+        if(command.Paint.Shader is PremultipliedTransformedShader transform&&PrepareShader(command,transform,out var prepared)){FillRectangle(prepared);return;}
         if(command.CoverageClip is not null){FillPath(command with {Kind=CommandKind.FillPath,Path=RectangleGeometry(command.Rectangle)});return;}
         var rect=command.Rectangle;var matrix=command.Transform;
         if(!rect.IsFinite)throw new ArgumentException("Rectangle coordinates must be finite.");
@@ -125,6 +125,13 @@ public sealed partial class RasterCanvas : ICanvasBackend
         if(command.Clip is {} clip){left=MathF.Max(left,clip.Left);right=MathF.Min(right,clip.Right);top=MathF.Max(top,clip.Top);bottom=MathF.Min(bottom,clip.Bottom);}
         if(left>=right||top>=bottom)return;
         int first=SampleGrid(left,target.Width),end=SampleGrid(right,target.Width),firstY=SampleGrid(top,target.Height),endY=SampleGrid(bottom,target.Height);
+        var paint=command.Paint;
+        if(((first|end|firstY|endY)&15)==0&&paint.Blender is null&&paint.ColorFilter is null&&paint.FloatingColor is null&&!paint.Dither&&
+            (paint.Composite is CompositeMode.Source or CompositeMode.Clear||paint.Composite==CompositeMode.SourceOver&&paint.Color.A==255))
+        {
+            ClearKernel.FillRectangle(target,paint.Composite==CompositeMode.Clear?default:paint.Color,first>>4,firstY>>4,end>>4,endY>>4,CpuOptions.EnableSimd);
+            return;
+        }
         int fullStart=(first+15)/16,fullEnd=end/16;
         bool contiguous=first==0&&end==checked(target.Width*16)&&target.RowBytes==target.Width*4;
         int fullTop=(firstY+15)/16,fullBottom=endY/16;
@@ -197,7 +204,7 @@ public sealed partial class RasterCanvas : ICanvasBackend
     }
     private void FillMask(CoverageMask mask,in DrawingCommand command,int dx,int dy,bool independentClip)
     {
-        if(PrepareShader(command,out var prepared)){FillMask(mask,prepared,dx,dy,independentClip);return;}
+        if(command.Paint.Shader is PremultipliedTransformedShader transform&&PrepareShader(command,transform,out var prepared)){FillMask(mask,prepared,dx,dy,independentClip);return;}
         int left=0,top=0,right=target.Width,bottom=target.Height;
         if(independentClip&&command.Clip is {} clip){left=SampleEdge(clip.Left,target.Width);top=SampleEdge(clip.Top,target.Height);right=SampleEdge(clip.Right,target.Width);bottom=SampleEdge(clip.Bottom,target.Height);}
         Matrix3 inverse=default;

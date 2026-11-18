@@ -157,9 +157,7 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
         var bindings=stackalloc Vk.LayoutBinding[5];for(uint i=0;i<5;i++)bindings[i]=new(){Binding=i,DescriptorType=i==3?1u:i==2?6u:7u,Count=1,Stages=32};
         var layoutInfo=new Vk.DescriptorLayoutInfo {Type=32,Count=5,Bindings=bindings};ulong handle=0;Check(Vk.vkCreateDescriptorSetLayout(device,&layoutInfo,null,&handle));descriptorLayout=handle;
         ulong descriptorHandle=descriptorLayout;var pLayout=new Vk.PipelineLayoutInfo {Type=30,Count=1,Layouts=&descriptorHandle};Check(Vk.vkCreatePipelineLayout(device,&pLayout,null,&handle));pipelineLayout=handle;
-        byte[] code=VulkanShaderCode.Renderer;
-        ulong module=0;
-        fixed(byte* bytes=code){var shaderInfo=new Vk.ShaderInfo {Type=16,CodeSize=(nuint)code.Length,Code=(uint*)bytes};Check(Vk.vkCreateShaderModule(device,&shaderInfo,null,&module));}
+        ulong module=CreateShaderModule("SimdSkia.Gpu.Shaders.renderer.spv");
         try
         {
             byte* name=stackalloc byte[5]{(byte)'m',(byte)'a',(byte)'i',(byte)'n',0};
@@ -254,6 +252,8 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
             {
                 // The stale texture may still be referenced by queued commands in this batch;
                 // retire it instead of destroying it and free it once the GPU is idle after Flush.
+                // Only the CPU cache owns the comparison snapshot.
+                byte[]? reusableSnapshot = entry?.Snapshot;
                 if(entry is not null){retiredTextures.Add(entry.Texture);imageCache.Remove(image);}
                 var hash=new HashCode();for(int y=0;y<image.Height;y++)hash.AddBytes(image.GetRowSpan(y)[..(image.Width*4)]);int fingerprint=hash.ToHashCode();
                 PixelBuffer? duplicate=null;
@@ -275,7 +275,7 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
                         Flush();foreach(var victim in imageCache.OrderBy(e=>e.Value.Used).ToArray())
                         {if(imageCache.Count<MaximumCachedTextures&&bytes+size<=64*1024*1024)break;bytes-=victim.Value.Texture.Size;victim.Value.Texture.Dispose();imageCache.Remove(victim.Key);}
                     }
-                    entry = CreateTextureEntry(image, size, fingerprint);
+                    entry = CreateTextureEntry(image, size, fingerprint, reusableSnapshot);
                     imageCache.Add(image, entry);
                     UploadedTextures++;
                 }
@@ -608,11 +608,11 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
             {if(imageCache.Count<=MaximumCachedTextures&&bytes<=64*1024*1024)break;bytes-=entry.Value.Texture.Size;entry.Value.Texture.Dispose();imageCache.Remove(entry.Key);}
         TrimResourceCache();
     }
-    private ImageEntry CreateTextureEntry(PixelBuffer image, int size, int fingerprint)
+    private ImageEntry CreateTextureEntry(PixelBuffer image, int size, int fingerprint, byte[]? snapshot)
     {
         // Keep the original bytes for content-based cache hits. Convert the
         // upload directly into Vulkan's mapped staging buffer.
-        var snapshot = GC.AllocateUninitializedArray<byte>(size);
+        snapshot ??= GC.AllocateUninitializedArray<byte>(size);
         var texture = AllocateTexture(image.Width, image.Height);
         try
         {

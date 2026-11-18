@@ -6,6 +6,18 @@ internal static class SamplingValidation
     internal static int Run()
     {
         var random=new Random(9326);int checks=0;
+        foreach(var (srcWidth,dstWidth) in new[]{(8,8),(33,31),(35,36),(29,33),(36,31),(17,65),(79,17)})
+        foreach(bool opaque in new[]{false,true})foreach(bool swap in new[]{false,true})
+        {
+            int srcStride=srcWidth*4+7,dstStride=dstWidth*4+11;
+            var source=new byte[srcStride*13+9];random.NextBytes(source);
+            var expected=new byte[dstStride*17+3];Array.Fill(expected,(byte)191);
+            var actual=(byte[])expected.Clone();
+            PixelTransferKernel.ScaleLinear32(source.AsSpan(9),srcWidth,13,srcStride,expected.AsSpan(3),dstWidth,17,dstStride,opaque,swap,false);
+            PixelTransferKernel.ScaleLinear32(source.AsSpan(9),srcWidth,13,srcStride,actual.AsSpan(3),dstWidth,17,dstStride,opaque,swap,true);
+            if(!expected.AsSpan().SequenceEqual(actual))throw new InvalidOperationException("Contiguous and gathered bilinear taps must match scalar pixels and preserve padding.");
+            checks++;
+        }
         foreach(var sourceFormat in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})
         foreach(var destinationFormat in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})
         foreach(var alpha in Enum.GetValues<AlphaFormat>())

@@ -7,6 +7,9 @@ void Check(bool value){checks++;if(!value)throw new Exception("Metal context ass
 using var descriptor=new GRMtlBackendContext{DeviceHandle=host.Device,QueueHandle=host.Queue};using var context=GRContext.CreateMetal(descriptor);using var optionsContext=GRContext.CreateMetal(descriptor,new GRContextOptions());
 if(context is null||optionsContext is null){File.WriteAllText(Path.Combine(output,"capability.json"),JsonSerializer.Serialize(new{device=host.Name,defaultFactory=context is not null,optionsFactory=optionsContext is not null,status="unavailable",note="Creation returned null on this package/device; no same-backend timing or passing rendering result is available."}));Console.WriteLine("Metal context unavailable; see capability.json.");return 3;}
 Check(optionsContext.Backend==GRBackend.Metal);values["context-backend"]=context.Backend.ToString();values["initial-abandoned"]=context.IsAbandoned;
+#if SIMDSKIA
+checks += MutableBitmapUploadValidation.Run(context);
+#endif
 context.SetResourceCacheLimit(2*1024*1024);Check(context.GetResourceCacheLimit()==2*1024*1024);GRRecordingContext recording=context;Check(recording.GetMaxSurfaceSampleCount(SKColorType.Rgba8888)>=1);Check(context.MaxTextureSize>=1024);Check(context.MaxRenderTargetSize>=1024);
 
 for(int scene=0;scene<5;scene++)for(int transform=0;transform<2;transform++)

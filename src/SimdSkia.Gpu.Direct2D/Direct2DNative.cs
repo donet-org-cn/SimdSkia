@@ -84,6 +84,9 @@ internal static unsafe partial class D2DNative
     internal static void FillRect(nint context,RectF rectangle,nint brush)=>((delegate* unmanaged[Stdcall]<nint,RectF*,nint,void>)Slot(context,17))(context,&rectangle,brush);
     internal static void FillPath(nint context,nint path,nint brush)=>((delegate* unmanaged[Stdcall]<nint,nint,nint,nint,void>)Slot(context,23))(context,path,brush,0);
     internal static nint Bitmap(nint context,int width,int height,nint bytes,int stride){var size=new Size{Width=(uint)width,Height=(uint)height};var p=new BitmapProperties{Format=87,Alpha=1,DpiX=96,DpiY=96};nint r=0;Check(((delegate* unmanaged[Stdcall]<nint,Size,nint,uint,BitmapProperties*,nint*,int>)Slot(context,4))(context,size,bytes,(uint)stride,&p,&r));return r;}
+    // ID2D1Bitmap::CopyFromMemory, slot 10. A null rectangle replaces the whole bitmap.
+    internal static void UpdateBitmap(nint bitmap,nint bytes,int stride)
+        =>Check(((delegate* unmanaged[Stdcall]<nint,void*,nint,uint,int>)Slot(bitmap,10))(bitmap,null,bytes,(uint)stride));
     internal static void DrawBitmap(nint context,nint bitmap,RectF destination,RectF source,byte opacity,ImageSampling sampling)=>((delegate* unmanaged[Stdcall]<nint,nint,RectF*,float,uint,RectF*,void*,void>)Slot(context,85))(context,bitmap,&destination,opacity/255f,sampling==ImageSampling.Nearest?0u:1u,&source,null);
     internal static nint Path(nint factory){nint r=0;Check(((delegate* unmanaged[Stdcall]<nint,nint*,int>)Slot(factory,10))(factory,&r));return r;}
     internal static nint Open(nint geometry){nint r=0;Check(((delegate* unmanaged[Stdcall]<nint,nint*,int>)Slot(geometry,17))(geometry,&r));return r;}

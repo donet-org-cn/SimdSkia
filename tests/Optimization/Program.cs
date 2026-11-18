@@ -4,6 +4,7 @@ using SimdSkia.OptimizationReference;
 using SkiaSharp;
 using SimdSkia.Imaging;
 using System.Text.Json;
+using System.Runtime.CompilerServices;
 
 var random=new Random(20261012);
 int checks=BlendValidation.Run();
@@ -39,6 +40,26 @@ foreach(int width in new[]{1,7,8,9,15,16,17,255,257})
     var gradient=new LinearGradient(new(0,0),new(255,255),new(0,0,0,255),new(255,255,255,255));
     var command=DrawingCommand.FillRectangle(new(0,0,width,11),Matrix3.Identity,new(new(255,255,255,255),CompositeMode.Source,false,gradient));
     CpuOptions.EnableSimd=useSimd;reference.Execute(command);renderer.Execute(command);Equal(expected,actual,"gradient half-integer ties and vector tails");
+}
+// A vertical ramp is constant across a row only in shader space. An affine
+// shader matrix can shear a still axis-aligned rectangle.
+foreach(bool simd in new[]{false,true})
+foreach(var format in new[]{PixelFormat.Bgra8888,PixelFormat.Rgba8888})
+foreach(var shaderMatrix in new[]{Matrix3.Identity,new Matrix3(-2,.375f,16,.25f,1.25f,4,0,0,1)})
+foreach(var end in new[]{new PointF(2,17),new PointF(19,17),new PointF(2,3)})
+{
+    CpuOptions.EnableSimd=simd;
+    using var expected=new PixelBuffer(31,23,format,AlphaFormat.Premultiplied,129);
+    using var actual=new PixelBuffer(31,23,format,AlphaFormat.Premultiplied,129);
+    random.NextBytes(expected.GetPixelSpan());expected.GetPixelSpan().CopyTo(actual.GetPixelSpan());
+    var gradient=new LinearGradient(new(2,3),end,new(11,199,27,255),new(249,33,208,255));
+    if(!shaderMatrix.TryInvert(out var inverse))throw new InvalidOperationException();
+    for(int y=4;y<19;y++)for(int x=3;x<27;x++)
+    {var p=inverse.Map(x+.5f,y+.5f);expected.WritePixel(x,y,gradient.Sample(p.X,p.Y));}
+    using var renderer=new RasterCanvas(actual);
+    renderer.Execute(DrawingCommand.FillRectangle(new(0,0,31,23),Matrix3.Identity,
+        new(new(255,255,255,255),CompositeMode.Source,false,gradient)) with {ShaderTransform=shaderMatrix,Clip=new(3,4,27,19)});
+    Equal(expected,actual,"gradient shader space, clip and padding");
 }
 CpuOptions.EnableSimd=true;
 // Full-width AA spans may merge their fully covered rows, while fractional
@@ -343,6 +364,7 @@ using(var red=new SKBitmap(128,96))using(var blue=new SKBitmap(128,96))
     });checks++;
 }
 checks+=CoverageRunValidation.Run();
+checks+=ValidateCoverageIntersection();
 checks+=SamplingValidation.Run();
 // Repainting a stable clipped/shaded rectangle must hit coverage caches, not
 // retain dozens of identical full masks under fresh geometry identities.
@@ -366,4 +388,51 @@ Directory.CreateDirectory("artifacts");
 File.WriteAllText($"artifacts/optimization-tests-{(System.Numerics.Vector.IsHardwareAccelerated?"hardware":"fallback")}.json",
     JsonSerializer.Serialize(new{Checks=checks,Passed=true,HardwareSimd=System.Numerics.Vector.IsHardwareAccelerated,Font=args.FirstOrDefault(),FixtureSha256=Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Fixtures/codecs.json"))))},new JsonSerializerOptions{WriteIndented=true}));
 Console.WriteLine($"PASS {checks} exact-byte optimization checks (frozen scalar renderer, stride, formats, alpha, clips, inverse fills, curves, cache eviction/mutation). Independent zlib/PNG fixtures and checksum rejection passed. SIMD hardware: {System.Numerics.Vector.IsHardwareAccelerated}");
+
+static int ValidateCoverageIntersection()
+{
+    // Three extra columns, unequal origins and an unaligned intersection
+    // exercise SIMD blocks and their scalar tails on every scanline.
+    const int width=259,height=256;
+    var columns=new byte[width*height];
+    var rows=new byte[width*height];
+    for(int y=0;y<height;y++)
+        for(int x=0;x<width;x++){columns[y*width+x]=(byte)x;rows[y*width+x]=(byte)y;}
+    var a=new CoverageClip(-2,4,width,height,columns);
+    var b=new CoverageClip(-1,4,width,height,rows);
+    Array.Clear(columns);
+    var intersection=CoverageClip.Intersect(a,b);
+    if(intersection.Left!=-1||intersection.Top!=4||intersection.Width!=258||intersection.Height!=256)
+        throw new Exception("Incorrect intersection bounds.");
+    for(int y=4;y<260;y++)
+        for(int x=-1;x<257;x++)
+            if(intersection.At(x,y)!=(((byte)(x+2)*(y-4)+127)/255))
+                throw new Exception("Offset clip coverage did not match scalar multiplication.");
+    var soft=new CoverageClip(1,1,1,1,[128]);
+    if(CoverageClip.Intersect(soft,soft).At(1,1)!=64)throw new Exception("Lost nested antialiasing.");
+    var cover=new CoverageClip(0,0,3,2,[0,0,0,0,255,0]);
+    if(!ReferenceEquals(CoverageClip.Intersect(soft,cover),soft)||!ReferenceEquals(CoverageClip.Intersect(cover,soft),soft))
+        throw new Exception("Opaque containing clips should share the enclosed immutable coverage.");
+    var farLeft=new CoverageClip(int.MinValue,0,1,1,[255]);
+    var farRight=new CoverageClip(int.MaxValue-1,0,1,1,[255]);
+    if(CoverageClip.Intersect(farLeft,farRight).Width!=0)throw new Exception("Distant clips must have an empty intersection.");
+    var weak=CheckLargeProduct();
+    GC.Collect();GC.WaitForPendingFinalizers();GC.Collect();
+    if(weak.Any(x=>x.IsAlive))throw new Exception("The clip cache retained an unused mask.");
+    return 7;
+}
+
+[MethodImpl(MethodImplOptions.NoInlining)]
+static WeakReference[] CheckLargeProduct()
+{
+    var values=new byte[512*192];
+    Array.Fill(values,(byte)117);
+    var a=new CoverageClip(0,0,512,192,values);
+    Array.Fill(values,(byte)193);
+    var b=new CoverageClip(0,0,512,192,values);
+    var product=CoverageClip.Intersect(a,b);
+    if(!ReferenceEquals(product,CoverageClip.Intersect(b,a))||product.At(1,1)!=(117*193+127)/255)
+        throw new Exception("Large immutable clips should reuse the same product in both orders.");
+    return [new(a),new(b),new(product)];
+}
 

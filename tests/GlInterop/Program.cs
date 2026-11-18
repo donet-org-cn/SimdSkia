@@ -22,6 +22,9 @@ static int Run(GRGlInterface api,string renderer,string output)
  void Capture(SKImage image,string kind,int scene,int transform){using var bitmap=new SKBitmap(new SKImageInfo(image.Width,image.Height,SKColorType.Rgba8888,SKAlphaType.Premul));Check(image.ReadPixels(bitmap.Info,bitmap.GetPixels(),bitmap.RowBytes,0,0),kind+" read");var pixels=bitmap.GetPixelSpan().ToArray();cases.Add(new{kind,scene,transform,offset=binary.Position,length=pixels.Length});binary.Write(pixels);}
  void DeviceCapture(uint texture,string kind,int scene,int transform){var pixels=Gl.Read(texture);cases.Add(new{kind,scene,transform,offset=binary.Position,length=pixels.Length});binary.Write(pixels);}
  using var context=GRContext.CreateGl(api)??throw new Exception("No GL context");using var space=SKColorSpace.CreateSrgb();using var props=new SKSurfaceProperties(SKPixelGeometry.Unknown);
+#if SIMDSKIA
+ checks += MutableBitmapUploadValidation.Run(context);
+#endif
  for(int index=0;index<Factories.ImageCases.Length;index++)for(int flip=0;flip<2;flip++)
  {
   var descriptor=Factories.ImageCases[index];uint name=Gl.Texture();using var backend=new GRBackendTexture(32,24,false,new GRGlTextureInfo(0x0DE1,name,0x8058));

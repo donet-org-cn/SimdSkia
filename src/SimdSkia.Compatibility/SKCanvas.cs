@@ -234,13 +234,14 @@ public partial class SKCanvas : SKObject
         Validate();ArgumentNullException.ThrowIfNull(path);if(!Enum.IsDefined(operation))throw new ArgumentOutOfRangeException(nameof(operation));
         if(forwarding is not null)foreach(var child in forwarding)child.ClipPath(path,operation,antialias);
         if(recording is not null){recording.Add(new(PictureCommands.Kind.Clip,matrix,Path:path.ToCore(),ClipOperation:operation,Antialias:antialias));return;}
-        using var clipper=new RasterCanvas(target);var next=noDraw?RasterCanvas.CreateClipForBounds(path.ToCore(),matrix,CanvasWidth,CanvasHeight,antialias):clipper.CreateClip(path.ToCore(),matrix,antialias);
+        using var clipper=noDraw?null:new RasterCanvas(target);
+        var next=noDraw?RasterCanvas.CreateClipForBounds(path.ToCore(),matrix,CanvasWidth,CanvasHeight,antialias):clipper!.CreateClip(path.ToCore(),matrix,antialias);
         if(operation==SKClipOperation.Intersect){coverageClip=coverageClip is null?next:CoverageClip.Intersect(coverageClip,next);return;}
         var extent=clip??new RectF(0,0,CanvasWidth,CanvasHeight);
         int l=(int)Math.Clamp(extent.Left,0,CanvasWidth),t=(int)Math.Clamp(extent.Top,0,CanvasHeight);
         int r=Math.Clamp((int)MathF.Min(CanvasWidth,extent.Right),l,CanvasWidth),b=Math.Clamp((int)MathF.Min(CanvasHeight,extent.Bottom),t,CanvasHeight);
         var bytes=new byte[checked((r-l)*(b-t))];
         for(int y=t;y<b;y++)for(int x=l;x<r;x++)bytes[(y-t)*(r-l)+x-l]=PixelBuffer.Multiply(coverageClip?.At(x,y)??255,(byte)(255-next.At(x,y)));
-        coverageClip=new(l,t,r-l,b-t,bytes);
+        coverageClip=CoverageClip.BorrowImmutable(l,t,r-l,b-t,bytes);
     }
 }

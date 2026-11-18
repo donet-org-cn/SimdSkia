@@ -9,15 +9,20 @@ namespace SimdSkia.Avalonia;
 internal sealed class Bitmap:IRenderTargetBitmapImpl,IWriteableBitmapImpl,IDrawingContextLayerImpl
 {
     private PixelBuffer? pixels;
-    private int version;
+    private long version;
+    private int openLocks, usedAsCanvas;
     private readonly object canvasGate=new();
     private RasterCanvas? reusableCanvas;
     private PixelBuffer? canvasPixels;
     private bool canvasInUse;
+    private Action<bool>? releaseCanvas;
+    private Action? unlock;
     internal PixelBuffer Pixels=>pixels??throw new ObjectDisposedException(nameof(Bitmap));
     public Vector Dpi {get;}
     public PixelSize PixelSize {get;}
-    public int Version=>Volatile.Read(ref version);
+    public int Version=>unchecked((int)Volatile.Read(ref version));
+    internal long ImageContentVersion => Volatile.Read(ref usedAsCanvas) != 0 ? 0 :
+        Volatile.Read(ref openLocks) != 0 ? -1 : Volatile.Read(ref version);
     public global::Avalonia.Platform.PixelFormat? Format=>ConvertTo.Format(Pixels.Format);
     public global::Avalonia.Platform.AlphaFormat? AlphaFormat=>ConvertTo.Alpha(Pixels.Alpha);
     public bool CanBlit=>true;
@@ -31,17 +36,33 @@ internal sealed class Bitmap:IRenderTargetBitmapImpl,IWriteableBitmapImpl,IDrawi
         if(options is not PngBitmapEncoderOptions png)throw new NotSupportedException("Managed encoding supports PNG and JPEG.");
         stream.Write(PngCodec.Encode(Pixels,png.CompressionLevel));
     }
-    public ILockedFramebuffer Lock()=>new Locked(Pixels,Dpi,()=>Interlocked.Increment(ref version));
+    public ILockedFramebuffer Lock()
+    {
+        var frame = new Locked(Pixels, Dpi, unlock ??= Unlock);
+        Interlocked.Increment(ref openLocks);
+        return frame;
+    }
+    private void Unlock()
+    {
+        Interlocked.Increment(ref version);
+        Interlocked.Decrement(ref openLocks);
+    }
     public IDrawingContextImpl CreateDrawingContext()
     {
         lock(canvasGate)
         {
-            var pixels=Pixels;Interlocked.Increment(ref version);
+            var pixels=Pixels;
+            // Drawing contexts may overlap or stay open between draws. Their
+            // writes use ordinary exact-content cache validation.
+            Volatile.Write(ref usedAsCanvas, 1);
+            Interlocked.Increment(ref version);
             // Overlapping contexts keep independent rasterizers. The common
             // sequential case retains scanline scratch and immutable caches.
             if(canvasInUse)return new DrawingContext(pixels,Dpi,ScaleToDpi);
             canvasPixels??=pixels.Share();reusableCanvas??=new RasterCanvas(canvasPixels);canvasInUse=true;
-            try{return new DrawingContext(pixels,Dpi,ScaleToDpi,ReleaseCanvas,reusableCanvas);}
+            // Dispose keeps this shared view alive until ReleaseCanvas, including
+            // when the owning bitmap is closed before the drawing context.
+            try{return new DrawingContext(canvasPixels,Dpi,ScaleToDpi,releaseCanvas??=ReleaseCanvas,reusableCanvas,flushBackend:true,borrowPixels:true);}
             catch{canvasInUse=false;throw;}
         }
     }

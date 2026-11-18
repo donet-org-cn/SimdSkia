@@ -22,6 +22,11 @@ internal static class ImageCompositor
             for(;at<=source.Length-32;at+=32)
             {
                 var s=Vector256.LoadUnsafe(ref System.Runtime.InteropServices.MemoryMarshal.GetReference(source), (nuint)at);
+                if(opacity==255&&Vector256.EqualsAll(s.AsUInt32()|Vector256.Create(0x00ffffffu),Vector256.Create(uint.MaxValue)))
+                {
+                    s.StoreUnsafe(ref System.Runtime.InteropServices.MemoryMarshal.GetReference(destination),(nuint)at);
+                    continue;
+                }
                 var d=Vector256.LoadUnsafe(ref System.Runtime.InteropServices.MemoryMarshal.GetReference(destination),(nuint)at);
                 if(sourceOpaque)s=Avx2.Or(s,Vector256.Create(0xff000000u).AsByte());
                 var zero=Vector256<byte>.Zero;
@@ -44,6 +49,11 @@ internal static class ImageCompositor
             for(;at<=source.Length-16;at+=16)
             {
                 var s=Vector128.LoadUnsafe(ref System.Runtime.InteropServices.MemoryMarshal.GetReference(source),(nuint)at);
+                if(opacity==255&&Vector128.EqualsAll(s.AsUInt32()|Vector128.Create(0x00ffffffu),Vector128.Create(uint.MaxValue)))
+                {
+                    s.StoreUnsafe(ref System.Runtime.InteropServices.MemoryMarshal.GetReference(destination),(nuint)at);
+                    continue;
+                }
                 var d=Vector128.LoadUnsafe(ref System.Runtime.InteropServices.MemoryMarshal.GetReference(destination),(nuint)at);
                 if(sourceOpaque)s=Sse2.Or(s,Vector128.Create(0xff000000u).AsByte());
                 var lo=Sse2.UnpackLow(s,zero).AsUInt16();var hi=Sse2.UnpackHigh(s,zero).AsUInt16();

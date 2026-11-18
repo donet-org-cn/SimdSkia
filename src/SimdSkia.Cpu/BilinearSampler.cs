@@ -1,5 +1,6 @@
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 
@@ -7,19 +8,63 @@ namespace SimdSkia.Cpu;
 
 internal static class BilinearSampler
 {
-    // Gather exactly eight validated texels per tap. Pointers are pinned only
-    // for the gathers; row indices were clamped when the mapping was built.
-    internal static unsafe void Sample8(ReadOnlySpan<byte> row0,ReadOnlySpan<byte> row1,
-        ReadOnlySpan<RasterCanvas.ImageTap> taps,float fy,bool opaque,bool straight,bool swap,Span<byte> output)
+    // Three consecutive columns keep each eight-pixel gather map contiguous.
+    // Both raster drawing and pixel transfers reuse it for every input row.
+    internal readonly ref struct Taps
     {
-        var first=Vector256.Create(taps[0].First,taps[1].First,taps[2].First,taps[3].First,taps[4].First,taps[5].First,taps[6].First,taps[7].First);
-        var second=Vector256.Create(taps[0].Second,taps[1].Second,taps[2].Second,taps[3].Second,taps[4].Second,taps[5].Second,taps[6].Second,taps[7].Second);
-        var fx=Vector256.Create(taps[0].Fraction,taps[1].Fraction,taps[2].Fraction,taps[3].Fraction,taps[4].Fraction,taps[5].Fraction,taps[6].Fraction,taps[7].Fraction);
+        internal readonly Span<int> First, Second;
+        internal readonly Span<float> Fraction;
+        internal readonly Span<int> ConsecutiveStarts;
+
+        internal Taps(Span<int> storage, int width, bool nearest=false)
+        {
+            First=storage[..width];
+            Second=nearest?[]:storage.Slice(width,width);
+            Fraction=nearest?[]:MemoryMarshal.Cast<int,float>(storage.Slice(2*width,width));
+            ConsecutiveStarts=nearest?[]:storage[(3*width)..];
+        }
+
+        internal void Set(int x,int first,int second,float fraction)
+        {First[x]=first;Second[x]=second;Fraction[x]=fraction;}
+
+        internal void FindConsecutiveTaps()
+        {
+            var lanes=Vector256.Create(0,1,2,3,4,5,6,7);
+            for(int block=0;block<ConsecutiveStarts.Length;block++)
+            {
+                int x=block*8,start=First[x];
+                var indices=Vector256.Create(start)+lanes;
+                // Clamped and mirrored taps must be checked lane by lane. Both
+                // eight-pixel loads must stay inside the validated source row.
+                bool consecutive=Vector256.EqualsAll(Vector256.Create<int>(First[x..]),indices)&&
+                    Vector256.EqualsAll(Vector256.Create<int>(Second[x..]),indices+Vector256<int>.One);
+                ConsecutiveStarts[block]=consecutive?start:-1;
+            }
+        }
+    }
+
+    // Load exactly eight validated texels per tap. Irregular mappings use a
+    // gather; neighboring texels can use an ordinary unaligned vector load.
+    internal static unsafe void Sample8(ReadOnlySpan<byte> row0,ReadOnlySpan<byte> row1,
+        in Taps taps,int x,float fy,bool opaque,bool straight,bool swap,Span<byte> output)
+    {
+        var fx=Vector256.Create<float>(taps.Fraction[x..]);
         Vector256<int> p00,p10,p01,p11;
         fixed(byte* top=row0)fixed(byte* bottom=row1)
         {
-            p00=Avx2.GatherVector256((int*)top,first,4);p10=Avx2.GatherVector256((int*)top,second,4);
-            p01=Avx2.GatherVector256((int*)bottom,first,4);p11=Avx2.GatherVector256((int*)bottom,second,4);
+            int start=taps.ConsecutiveStarts[x/8];
+            if(start>=0)
+            {
+                p00=Vector256.Load((int*)top+start);p10=Vector256.Load((int*)top+start+1);
+                p01=Vector256.Load((int*)bottom+start);p11=Vector256.Load((int*)bottom+start+1);
+            }
+            else
+            {
+                var first=Vector256.Create<int>(taps.First[x..]);
+                var second=Vector256.Create<int>(taps.Second[x..]);
+                p00=Avx2.GatherVector256((int*)top,first,4);p10=Avx2.GatherVector256((int*)top,second,4);
+                p01=Avx2.GatherVector256((int*)bottom,first,4);p11=Avx2.GatherVector256((int*)bottom,second,4);
+            }
         }
         var mask=Vector256.Create(255);var zero=Vector256<int>.Zero;
         var a00=opaque?mask:Avx2.ShiftRightLogical(p00,24);var a10=opaque?mask:Avx2.ShiftRightLogical(p10,24);
@@ -34,7 +79,7 @@ internal static class BilinearSampler
             sum=Avx.Add(sum,Avx.Multiply(Avx.ConvertToVector256Single(c11),w11));
             return Avx.ConvertToVector256Int32WithTruncation(Avx.RoundToNearestInteger(sum));
         }
-        var alpha=Avx2.Min(mask,Avx2.Max(zero,Mix(a00,a10,a01,a11)));
+        var alpha=opaque?mask:Avx2.Min(mask,Avx2.Max(zero,Mix(a00,a10,a01,a11)));
         Vector256<int> Premultiply(Vector256<int> color,Vector256<int> a)
         {
             if(!straight)return color;

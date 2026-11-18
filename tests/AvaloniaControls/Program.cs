@@ -38,6 +38,9 @@ if(nativeDefaultOpacity)throw new ArgumentException("Native default opacity meas
 const string engine="Avalonia.Skia";builder.UseSkia().UseHarfBuzz();
 #endif
 builder.SetupWithoutStarting();
+#if MANAGED
+if(args.Contains("--primitive-bench")){PrimitiveBenchmark.Run(output,frames);return;}
+#endif
 if(args.Contains("--tile-cache-probe")){TileCacheProbe.Run(output);return;}
 FontFamily selectedFamily;
 if(systemFamily.Length==0)

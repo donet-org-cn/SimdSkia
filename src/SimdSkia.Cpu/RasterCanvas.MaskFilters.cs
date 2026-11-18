@@ -35,7 +35,7 @@ public sealed partial class RasterCanvas
             {
                 int w=right-left,h=bottom-top;var raster=PathRasterizer.Rasterize(geometry.Flatten(shifted,command.CurveTolerance),geometry.FillRule,w,h,true);var input=new byte[checked(w*h)];
                 for(int y=0;y<raster.Height;y++)raster.Data.AsSpan(y*raster.Width,raster.Width).CopyTo(input.AsSpan((y+raster.Top)*w+raster.Left,raster.Width));
-                coverage=filter.Filter(new CoverageClip(left,top,w,h,input),command.Transform);
+                coverage=filter.Filter(CoverageClip.BorrowImmutable(left,top,w,h,input),command.Transform);
             }
             var data=new byte[checked(coverage.Width*coverage.Height)];for(int y=0;y<coverage.Height;y++)coverage.GetRow(coverage.Top+y).CopyTo(data.AsSpan(y*coverage.Width,coverage.Width));
             var mask=new CoverageMask(coverage.Left,coverage.Top,coverage.Width,coverage.Height,data,[],true);long bytes=data.LongLength+(long)geometry.Segments.Length*28;

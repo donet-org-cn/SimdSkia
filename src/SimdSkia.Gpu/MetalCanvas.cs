@@ -18,8 +18,8 @@ internal sealed unsafe class MetalCanvas:IGpuCanvas
     private readonly GpuCoverageCache coverageCache=new();
     private readonly Dictionary<CoverageClip,MaskEntry> masks=[];
     private readonly Dictionary<PixelBuffer,ImageEntry> images=[];
-    private sealed record MaskEntry(nint Buffer,int Bytes,long Touched);
-    private sealed record ImageEntry(nint Buffer,byte[] Snapshot,int Bytes,long Touched);
+    private readonly record struct MaskEntry(nint Buffer,int Bytes,long Touched);
+    private readonly record struct ImageEntry(nint Buffer,byte[] Snapshot,int Bytes,long Touched);
     private nint output,dummy,commands;
     private bool disposed,abandoned,faulted,cacheMasks=true;
     private long cacheLimit=96*1024*1024,maskBytes,imageBytes;
@@ -51,15 +51,15 @@ internal sealed unsafe class MetalCanvas:IGpuCanvas
     }
     private nint Upload(PixelBuffer source)
     {
-        using var canonical=PixelBuffer.Rent(source.Width,source.Height,PixelFormat.Rgba8888,AlphaFormat.Premultiplied);
-        for(int y=0;y<source.Height;y++)
+        int length = checked(source.Width * source.Height * 4);
+        nint buffer = device.CreateBuffer(length);
+        try
         {
-            var row=canonical.GetRowSpan(y);var input=source.GetRowSpan(y)[..(source.Width*source.BytesPerPixel)];
-            if(source.Format!=PixelFormat.Alpha8&&source.Alpha!=AlphaFormat.Straight)
-            {if(source.Format==PixelFormat.Rgba8888)input.CopyTo(row);else PixelTransferKernel.SwapRedBlue(input,row,CpuOptions.EnableSimd);if(source.Alpha==AlphaFormat.Opaque)for(int x=0;x<source.Width;x++)row[x*4+3]=255;}
-            else for(int x=0;x<source.Width;x++)canonical.WritePixel(x,y,source.ReadPixel(x,y));
+            var destination = new Span<byte>((void*)MetalApi.Call(buffer, "contents"), length);
+            PixelTransferKernel.CopyToPremultiplied(source, destination, PixelFormat.Rgba8888);
+            return buffer;
         }
-        return device.Upload(canonical.GetPixelSpan());
+        catch { MetalApi.Release(ref buffer); throw; }
     }
     private nint Mask(CoverageClip clip,out bool temporary)
     {
@@ -72,12 +72,31 @@ internal sealed unsafe class MetalCanvas:IGpuCanvas
     }
     private nint Image(PixelBuffer source,bool immutable,out bool temporary)
     {
-        temporary=false;if(images.TryGetValue(source,out var entry)&&(immutable||source.GetPixelSpan().SequenceEqual(entry.Snapshot))){images[source]=entry with{Touched=Stopwatch.GetTimestamp()};return entry.Buffer;}
+        temporary=false;
+        if (images.TryGetValue(source,out var entry))
+        {
+            if (!immutable && !source.GetPixelSpan().SequenceEqual(entry.Snapshot))
+            {
+                // Earlier command encoders retain their Metal buffer. Only the CPU
+                // comparison snapshot is shared with the new cache entry.
+                nint updated = Upload(source);
+                nint previous = entry.Buffer;
+                source.GetPixelSpan().CopyTo(entry.Snapshot);
+                entry = entry with { Buffer = updated };
+                MetalApi.Release(ref previous);
+            }
+            images[source] = entry with { Touched = Stopwatch.GetTimestamp() };
+            return entry.Buffer;
+        }
         int length=checked(source.Width*source.Height*4);nint buffer=Upload(source);
-        if(images.Remove(source,out var old)){nint value=old.Buffer;MetalApi.Release(ref value);imageBytes-=old.Bytes;}
         if(length>cacheLimit){temporary=true;return buffer;}
-        if(images.Count>=64||maskBytes+imageBytes+length>cacheLimit)PurgeCachedResources();
-        try{images.Add(source,new(buffer,source.CopyBytes(),length,Stopwatch.GetTimestamp()));imageBytes+=length;return buffer;}
+        try
+        {
+            if(images.Count>=64||maskBytes+imageBytes+length>cacheLimit)PurgeCachedResources();
+            images.Add(source,new(buffer,source.CopyBytes(),length,Stopwatch.GetTimestamp()));
+            imageBytes+=length;
+            return buffer;
+        }
         catch{MetalApi.Release(ref buffer);throw;}
     }
     private void Draw(in DrawingCommand command,CoverageClip? coverage)

@@ -40,7 +40,9 @@ public sealed partial class TrueTypeFont
         if(table is null){var created=new PairPositioning(this);table=Interlocked.CompareExchange(ref positioning,created,null)??created;}
         return table.Get(first,second);
     }
-    private readonly int[] offsets;
+    private readonly ReadOnlyMemory<byte> glyphLocations;
+    private readonly bool longLocations;
+    private readonly int glyphTableOffset;
     private readonly int cmapOffset,cmapLength,cmapFormat,metrics;
     private readonly ReadOnlyMemory<byte> characterMap,horizontalMetrics;
     public int UnitsPerEm {get;}
@@ -104,9 +106,17 @@ public sealed partial class TrueTypeFont
         Ascender=S16(hhea.Offset+4);Descender=S16(hhea.Offset+6);LineGap=S16(hhea.Offset+8);
         var hm=Table("hmtx",checked(metrics*4+(GlyphCount-metrics)*2));horizontalMetrics=bytes.Read(hm.Offset,hm.Length);var glyf=Table("glyf",0);
         int format=S16(head.Offset+50);if(format is not (0 or 1))throw new InvalidDataException("Invalid loca format.");
-        var loca=Table("loca",checked((GlyphCount+1)*(format==0?2:4)));offsets=new int[GlyphCount+1];
-        var locations=bytes.Read(loca.Offset,loca.Length).Span;
-        for(int i=0;i<offsets.Length;i++){int offset=format==0?BinaryPrimitives.ReadUInt16BigEndian(locations[(i*2)..])*2:checked((int)BinaryPrimitives.ReadUInt32BigEndian(locations[(i*4)..]));if(offset>glyf.Length||(i>0&&offset<offsets[i-1]))throw new InvalidDataException("Invalid glyph offsets.");offsets[i]=offset;}
+        longLocations=format==1;glyphTableOffset=glyf.Offset;
+        int locationBytes=(GlyphCount+1)*(longLocations?4:2);
+        var loca=Table("loca",locationBytes);
+        glyphLocations=bytes.Read(loca.Offset,locationBytes);
+        int previousOffset=0;
+        for(int i=0;i<=GlyphCount;i++)
+        {
+            int offset=GlyphOffset(i);
+            if(offset<previousOffset||offset>glyf.Length)throw new InvalidDataException("Invalid glyph offsets.");
+            previousOffset=offset;
+        }
         var cmap=Table("cmap",4);int records=U16(cmap.Offset+2);if(4+records*8>cmap.Length)throw new InvalidDataException("Truncated cmap records.");
         int selected=-1,best=0,lengthSelected=0,formatSelected=0;
         for(int i=0;i<records;i++)
@@ -172,9 +182,20 @@ public sealed partial class TrueTypeFont
         if(glyph>=GlyphCount)throw new InvalidDataException("cmap references invalid glyph.");return (ushort)glyph;
     }
     public int Advance(ushort glyph){if(glyph>=GlyphCount)throw new ArgumentOutOfRangeException(nameof(glyph));return BinaryPrimitives.ReadUInt16BigEndian(horizontalMetrics.Span[(Math.Min(glyph,metrics-1)*4)..]);}
+    private int GlyphOffset(int index)=>longLocations
+        ?checked((int)BinaryPrimitives.ReadUInt32BigEndian(glyphLocations.Span[(index*4)..]))
+        :BinaryPrimitives.ReadUInt16BigEndian(glyphLocations.Span[(index*2)..])*2;
+    private ReadOnlySpan<byte> GlyphData(ushort glyph,int maxLength=int.MaxValue)
+    {
+        int start=GlyphOffset(glyph),length=GlyphOffset(glyph+1)-start;
+        return bytes.Read(glyphTableOffset+start,Math.Min(length,maxLength)).Span;
+    }
     public RectF GetGlyphBounds(ushort glyph)
     {
-        if(glyph>=GlyphCount)throw new ArgumentOutOfRangeException(nameof(glyph));int length=offsets[glyph+1]-offsets[glyph];if(length==0)return default;if(length<10)throw new InvalidDataException("Truncated glyph header.");var header=bytes.Read(Table("glyf",0).Offset+offsets[glyph],10).Span;
+        if(glyph>=GlyphCount)throw new ArgumentOutOfRangeException(nameof(glyph));
+        var header=GlyphData(glyph,10);
+        if(header.IsEmpty)return default;
+        if(header.Length<10)throw new InvalidDataException("Truncated glyph header.");
         return new(BinaryPrimitives.ReadInt16BigEndian(header[2..]),BinaryPrimitives.ReadInt16BigEndian(header[4..]),BinaryPrimitives.ReadInt16BigEndian(header[6..]),BinaryPrimitives.ReadInt16BigEndian(header[8..]));
     }
     public PathGeometry Outline(ushort glyph)
@@ -205,8 +226,8 @@ public sealed partial class TrueTypeFont
         if(depth>32||!active.Add(glyph))throw new InvalidDataException("Cyclic/deep composite glyph.");
         try
         {
-            int size=offsets[glyph+1]-offsets[glyph];if(size==0)return new([]);
-            var reader=new GlyphReader(bytes.Read(Table("glyf",0).Offset+offsets[glyph],size).Span);int contours=reader.Short();reader.Skip(8);
+            var data=GlyphData(glyph);if(data.IsEmpty)return new([]);
+            var reader=new GlyphReader(data);int contours=reader.Short();reader.Skip(8);
             var segments=new List<PathSegment>();
             if(contours>=0)
             {

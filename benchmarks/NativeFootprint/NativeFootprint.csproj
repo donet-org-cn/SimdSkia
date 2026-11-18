@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <PublishAot>true</PublishAot>
+    <OptimizationPreference>Size</OptimizationPreference>
+    <FootprintBackend Condition="'$(FootprintBackend)' == ''">Cpu</FootprintBackend>
+    <DefineConstants Condition="'$(FootprintBackend)' == 'Vulkan'">$(DefineConstants);VULKAN</DefineConstants>
+    <DefineConstants Condition="'$(FootprintBackend)' == 'Direct2D'">$(DefineConstants);DIRECT2D</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(FrozenEngineDirectory)' == ''">
+    <ProjectReference Include="../../src/SimdSkia.Cpu/SimdSkia.Cpu.csproj" />
+    <ProjectReference Include="../../src/SimdSkia.Gpu/SimdSkia.Gpu.csproj" Condition="'$(FootprintBackend)' == 'Vulkan'" />
+    <ProjectReference Include="../../src/SimdSkia.Gpu.Direct2D/SimdSkia.Gpu.Direct2D.csproj" Condition="'$(FootprintBackend)' == 'Direct2D'" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(FrozenEngineDirectory)' != ''">
+    <Reference Include="$(FrozenEngineDirectory)/SimdSkia.Core.dll;$(FrozenEngineDirectory)/SimdSkia.Cpu.dll;$(FrozenEngineDirectory)/Clipper2Lib.dll" />
+    <Reference Include="$(FrozenEngineDirectory)/SimdSkia.Gpu.dll" Condition="'$(FootprintBackend)' == 'Vulkan' or '$(FootprintBackend)' == 'Direct2D'" />
+    <Reference Include="$(FrozenEngineDirectory)/SimdSkia.Gpu.Direct2D.dll" Condition="'$(FootprintBackend)' == 'Direct2D'" />
+  </ItemGroup>
+</Project>

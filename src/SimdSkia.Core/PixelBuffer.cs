@@ -30,16 +30,15 @@ public sealed class PixelBuffer : IDisposable
     // A returned frame can outlive the decoder. Reuse storage only if its size matches.
     internal static PixelBuffer RentRgbaExact(int width, int height) =>
         new(width, height, PixelFormat.Rgba8888, AlphaFormat.Straight, 0, true, exactSize: true);
+    // Internal upload scratch. The caller must fill the entire compact image before use.
+    internal static PixelBuffer RentForOverwrite(int width, int height, PixelFormat format) =>
+        new(width, height, format, AlphaFormat.Premultiplied, 0, true);
     /// <summary>Rents bounded reusable storage and initializes all bytes before exposing it.</summary>
     public static PixelBuffer Rent(int width,int height,PixelFormat format=PixelFormat.Bgra8888,AlphaFormat alpha=AlphaFormat.Premultiplied)
-    {
-        var buffer=new PixelBuffer(width,height,format,alpha,0,true);buffer.data!.AsSpan(0,checked(buffer.RowBytes*buffer.Height)).Clear();
-        if(alpha==AlphaFormat.Opaque)for(int y=0;y<height;y++)for(int x=0;x<width;x++)buffer.data![y*buffer.RowBytes+x*buffer.BytesPerPixel+buffer.BytesPerPixel-1]=255;
-        return buffer;
-    }
+        => new(width, height, format, alpha, 0, true, clearPooled: true);
 
     private PixelBuffer(int width, int height, PixelFormat format, AlphaFormat alpha, int rowBytes,
-        bool pooled, bool uninitialized = false, bool exactSize = false)
+        bool pooled, bool uninitialized = false, bool exactSize = false, bool clearPooled = false)
     {
         if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
         if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
@@ -52,8 +51,18 @@ public sealed class PixelBuffer : IDisposable
         int length=checked(rowBytes*height);
         if(pooled){storage=PixelStorage.Rent(length,exactSize);data=storage.Bytes;}
         else data = uninitialized?GC.AllocateUninitializedArray<byte>(length):new byte[length];
-        if (alpha == AlphaFormat.Opaque)
-            for (int y=0; y<height; y++) for (int x=0; x<width; x++) data[y*rowBytes+x*BytesPerPixel+BytesPerPixel-1] = 255;
+        if (alpha == AlphaFormat.Opaque && !uninitialized)
+        {
+            if (rowBytes == minimum) FillOpaqueBlack(data.AsSpan(0, length), format);
+            else for (int y = 0; y < height; y++) FillOpaqueBlack(data.AsSpan(y * rowBytes, minimum), format);
+        }
+        else if (clearPooled) data.AsSpan(0, length).Clear();
+    }
+
+    private static void FillOpaqueBlack(Span<byte> pixels, PixelFormat format)
+    {
+        if (format == PixelFormat.Alpha8) pixels.Fill(255);
+        else MemoryMarshal.Cast<byte, uint>(pixels).Fill(BitConverter.IsLittleEndian ? 0xff000000u : 0xffu);
     }
 
     // External framebuffer/video memory is represented by a bounded Span only at

@@ -71,10 +71,31 @@ internal sealed unsafe class GlCanvas:IGpuCanvas
     }
     private uint Image(PixelBuffer image,bool immutable)
     {
-        if(images.TryGetValue(image,out var entry)&&(immutable||image.GetPixelSpan().SequenceEqual(entry.Bytes))){images[image]=entry with{Touched=Stopwatch.GetTimestamp()};return entry.Texture;}
-        var bytes=image.CopyBytes();uint texture=gl.Upload(image);
-        if(images.Remove(image,out var old)){uint value=old.Texture;gl.DeleteTexture(ref value);imageBytes-=old.Bytes.Length;}
-        if(bytes.Length>limit){retired.Add(texture);return texture;}if(images.Count>=64||imageBytes+maskBytes+bytes.Length>limit)PurgeCachedResources();images.Add(image,(texture,bytes,Stopwatch.GetTimestamp()));imageBytes+=bytes.Length;return texture;
+        var pixels = image.GetPixelSpan();
+        if (images.TryGetValue(image, out var entry))
+        {
+            if (!immutable && !pixels.SequenceEqual(entry.Bytes))
+            {
+                // GL orders the subimage command after earlier draws on this context.
+                gl.Upload(image, existingTexture: entry.Texture);
+                pixels.CopyTo(entry.Bytes);
+            }
+            images[image] = entry with { Touched = Stopwatch.GetTimestamp() };
+            return entry.Texture;
+        }
+        uint texture = gl.Upload(image);
+        try
+        {
+            if (pixels.Length > limit) retired.Add(texture);
+            else
+            {
+                if (images.Count >= 64 || imageBytes + maskBytes + pixels.Length > limit) PurgeCachedResources();
+                images.Add(image, (texture, pixels.ToArray(), Stopwatch.GetTimestamp()));
+                imageBytes += pixels.Length;
+            }
+            return texture;
+        }
+        catch { gl.DeleteTexture(ref texture); throw; }
     }
     private uint Mask(CoverageClip mask)
     {

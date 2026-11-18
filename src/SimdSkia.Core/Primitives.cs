@@ -137,6 +137,9 @@ public readonly record struct DrawingCommand(CommandKind Kind, RectF Rectangle, 
     internal object? ImageResource {get;init;}
     /// <summary>Producer guarantees unchanged source bytes for its lifetime; permits cached GPU uploads without rescanning.</summary>
     public bool ImageIsImmutable {get;init;}
+    // Avalonia-owned writeable bitmap: positive after unlock, negative while a
+    // writer holds the buffer, zero for sources whose writes cannot be tracked.
+    internal long ImageContentVersion {get;init;}
     public Matrix3? ShaderTransform {get;init;}
     public Matrix3? ImageFilterTransform {get;init;}
     /// <summary>SaveLayer opacity applies after image filtering; ordinary draw opacity is part of the input.</summary>

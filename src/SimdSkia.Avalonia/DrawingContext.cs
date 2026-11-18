@@ -13,6 +13,7 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
     private readonly ICanvasBackend? rootBackend;
     private readonly bool flushBackend;
     private readonly PixelBuffer root;
+    private readonly bool ownsRoot;
     private readonly Matrix dpiTransform;
     private readonly Vector dpi;
     private readonly Action<bool>? completed;
@@ -54,10 +55,26 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
             lock(gate)if(pool.Count<8)pool.Push(value);
         }
     }
+    private enum ShapeKind { Rounded, Ellipse, Rectangle }
+    private readonly record struct ShapeKey(Rect Bounds, Vector TopLeft, Vector TopRight,
+        Vector BottomRight, Vector BottomLeft, ShapeKind Kind);
     private static readonly object shapeGate=new();
-    private static readonly Dictionary<(RoundedRect Rect,bool Ellipse),Geometry> shapes=[];
+    private static readonly Dictionary<ShapeKey,Geometry> shapes=[];
+    private static readonly Dictionary<(Point Start,Point End),Geometry> lines=[];
     internal DrawingContext(PixelBuffer pixels,Vector dpi,bool scaleToDpi=true,Action<bool>? completed=null,ICanvasBackend? backend=null,bool flushBackend=true)
-    {root=target=pixels.Share();rootBackend=backend;this.flushBackend=flushBackend;canvas=backend??new RasterCanvas(target);this.dpi=dpi;dpiTransform=scaleToDpi?Matrix.CreateScale(dpi.X/96,dpi.Y/96):Matrix.Identity;this.completed=completed;}
+        : this(pixels,dpi,scaleToDpi,completed,backend,flushBackend,borrowPixels:false) { }
+
+    internal DrawingContext(PixelBuffer pixels,Vector dpi,bool scaleToDpi,Action<bool>? completed,ICanvasBackend? backend,bool flushBackend,bool borrowPixels)
+    {
+        ownsRoot=!borrowPixels;
+        root=target=borrowPixels?pixels:pixels.Share();
+        rootBackend=backend;
+        this.flushBackend=flushBackend;
+        canvas=backend??new RasterCanvas(target);
+        this.dpi=dpi;
+        dpiTransform=scaleToDpi?Matrix.CreateScale(dpi.X/96,dpi.Y/96):Matrix.Identity;
+        this.completed=completed;
+    }
     public Matrix Transform {get=>transform;set{Check();if(!value.IsIdentity&&!ConvertTo.Matrix(value).IsFinite)throw new ArgumentException("Transform must be finite.");transform=value;}}
     private Matrix3 ApplyOrigin(Matrix matrix)
     {var value=ConvertTo.Matrix(matrix);return (originX|originY)==0?value:value with{M02=value.M02-originX,M12=value.M12-originY};}
@@ -78,17 +95,30 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
         area=Intersect(area,new(0,0,target.Width,target.Height));if(area.IsEmpty)return;
         dirty=dirty is {} old?new(Math.Min(area.Left,old.Left),Math.Min(area.Top,old.Top),Math.Max(area.Right,old.Right),Math.Max(area.Bottom,old.Bottom)):area;
     }
-    private static Geometry Shape(RoundedRect rect,bool ellipse=false)
+    private static Geometry Shape(RoundedRect rect,ShapeKind kind=ShapeKind.Rounded)
     {
-        lock(shapeGate){if(shapes.TryGetValue((rect,ellipse),out var result))return result;result=ellipse?Geometry.Ellipse(rect.Rect):Geometry.Rounded(rect);if(shapes.Count>=256)shapes.Clear();shapes.Add((rect,ellipse),result);return result;}
+        // RoundedRect uses object equality, which boxes on shape cache hits.
+        var key = new ShapeKey(rect.Rect, rect.RadiiTopLeft, rect.RadiiTopRight,
+            rect.RadiiBottomRight, rect.RadiiBottomLeft, kind);
+        lock (shapeGate)
+        {
+            if (shapes.TryGetValue(key, out var shape))
+                return shape;
+
+            shape = kind switch
+            {
+                ShapeKind.Rectangle => Geometry.Rectangle(rect.Rect),
+                ShapeKind.Ellipse => Geometry.Ellipse(rect.Rect),
+                _ => Geometry.Rounded(rect)
+            };
+            if (shapes.Count >= 256)
+                shapes.Clear();
+            shapes.Add(key, shape);
+            return shape;
+        }
     }
     public void Clear(Color color)
     {Check();if(clip is null&&coverageClip is null&&activeLayers==0)canvas.Execute(DrawingCommand.Clear(ConvertTo.Color(color)));else Execute(DrawingCommand.FillRectangle(new(0,0,target.Width,target.Height),Matrix3.Identity,new(ConvertTo.Color(color),CompositeMode.Source)));}
-    private void DrawPath(IBrush brush,Geometry geometry,Matrix3? matrix=null,bool text=false)
-    {
-        geometry.Validate();using var paint=CreatePaint(brush,geometry.Bounds,text?textOptions.TextRenderingMode!=TextRenderingMode.Alias:Antialias);
-        Execute(new(CommandKind.FillPath,default,matrix??DeviceMatrix,paint.Paint){Path=geometry.Path,CacheTextCoverage=true});
-    }
     public void DrawGeometry(IBrush? brush,IPen? pen,IGeometryImpl geometry)
     {
         Check();var g=geometry as Geometry??throw new ArgumentException("Foreign geometry backend.");g.Validate();
@@ -100,7 +130,25 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
         if(brush is not null)Execute(new(CommandKind.FillPath,default,DeviceMatrix,fill.Paint){Path=g.Path,CacheTextCoverage=true});
         if(stroke is not null)Execute(new(CommandKind.FillPath,default,DeviceMatrix,outline.Paint){Path=stroke.Path,CacheTextCoverage=true});
     }
-    public void DrawLine(IPen? pen,Point a,Point b)=>DrawGeometry(null,pen,new Geometry(new SimdSkia.PathGeometry([new(PathVerb.Move,ConvertTo.Point(a)),new(PathVerb.Line,ConvertTo.Point(b))])));
+    public void DrawLine(IPen? pen,Point a,Point b)
+    {
+        Check();
+        static Geometry Line(Point start,Point end)=>new(new SimdSkia.PathGeometry(
+            [new(PathVerb.Move,ConvertTo.Point(start)),new(PathVerb.Line,ConvertTo.Point(end))]));
+        Geometry geometry;
+        if(pen?.Brush is null||!(pen.Thickness>0)||pen.DashStyle is not null)geometry=Line(a,b);
+        else lock(shapeGate)
+        {
+            if(!lines.TryGetValue((a,b),out var existing))
+            {
+                existing=Line(a,b);
+                if(lines.Count>=64)lines.Clear();
+                lines.Add((a,b),existing);
+            }
+            geometry=existing;
+        }
+        DrawGeometry(null,pen,geometry);
+    }
     public void DrawRectangle(IBrush? brush,IPen? pen,RoundedRect rect,BoxShadows shadows=default)
     {
         Check();ValidateShadows(shadows);
@@ -108,14 +156,16 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
         if(shadows.Count>0){DrawShadowedRectangle(brush,pen,rect,shadows);return;}
         if(!rect.IsRounded)
         {
-            var stroke=pen?.Brush is not null&&pen.Thickness>0?(Geometry)Geometry.Rectangle(rect.Rect).GetWidenedGeometry(pen):null;
-            using var strokeValidation=stroke is not null?CreatePaint(pen!.Brush!,stroke.Bounds,Antialias):default;
+            var stroke=pen?.Brush is not null&&pen.Thickness>0
+                ?(Geometry)(pen.DashStyle is null?Shape(rect,ShapeKind.Rectangle):Geometry.Rectangle(rect.Rect)).GetWidenedGeometry(pen):null;
+            using var outline=stroke is not null?CreatePaint(pen!.Brush!,stroke.Bounds,Antialias):default;
             if(brush is not null){using var fill=CreatePaint(brush,rect.Rect,Antialias);Execute(DrawingCommand.FillRectangle(ConvertTo.Rect(rect.Rect),DeviceMatrix,fill.Paint));}
-            if(stroke is not null)DrawPath(pen!.Brush!,stroke);return;
+            if(stroke is not null)Execute(new(CommandKind.FillPath,default,DeviceMatrix,outline.Paint){Path=stroke.Path,CacheTextCoverage=true});
+            return;
         }
         DrawGeometry(brush,pen,Shape(rect));
     }
-    public void DrawEllipse(IBrush? brush,IPen? pen,Rect rect)=>DrawGeometry(brush,pen,Shape(new(rect),true));
+    public void DrawEllipse(IBrush? brush,IPen? pen,Rect rect)=>DrawGeometry(brush,pen,Shape(new(rect),ShapeKind.Ellipse));
     public void DrawRegion(IBrush? brush,IPen? pen,IPlatformRenderInterfaceRegion region)=>DrawGeometry(brush,pen,((Region)region).Geometry);
     public void DrawGlyphRun(IBrush? brush,IGlyphRunImpl run)
     {
@@ -132,7 +182,7 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
     internal static ImageSampling Sampling(BitmapInterpolationMode mode)=>mode switch {BitmapInterpolationMode.None=>ImageSampling.Nearest,BitmapInterpolationMode.Unspecified or BitmapInterpolationMode.LowQuality or BitmapInterpolationMode.MediumQuality=>ImageSampling.Bilinear,BitmapInterpolationMode.HighQuality=>ImageSampling.Mitchell,_=>throw new NotSupportedException("Unknown interpolation mode.")};
     public void DrawBitmap(IBitmapImpl source,double opacity,Rect sourceRect,Rect destRect)
     {
-        Check();var image=((Bitmap)source).Pixels;
+        Check();var bitmap=(Bitmap)source;var image=bitmap.Pixels;
         // Uniform image layout can subtract almost equal doubles and produce a
         // tiny negative origin. Normalize arithmetic roundoff before float conversion.
         // Genuine out-of-bounds rectangles still reach the backend's strict validation.
@@ -143,12 +193,12 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
         if(bottom>image.Height&&bottom<=image.Height+epsilon)bottom=image.Height;
         var crop=new RectF((float)left,(float)top,(float)right,(float)bottom);
         Execute(new(CommandKind.DrawImage,ConvertTo.Rect(destRect),DeviceMatrix,new(new(255,255,255,BrushFactory.Opacity(opacity)),BitmapComposite,Antialias))
-        {Image=image,ImageSource=crop,Sampling=Sampling(renderOptions.BitmapInterpolationMode),NearestLowerBoundary=nearestLowerBoundary&&Sampling(renderOptions.BitmapInterpolationMode)==ImageSampling.Nearest});
+        {Image=image,ImageContentVersion=bitmap.ImageContentVersion,ImageSource=crop,Sampling=Sampling(renderOptions.BitmapInterpolationMode),NearestLowerBoundary=nearestLowerBoundary&&Sampling(renderOptions.BitmapInterpolationMode)==ImageSampling.Nearest});
     }
     public void DrawBitmap(IBitmapImpl source,IBrush mask,Rect maskRect,Rect dest)
     {PushOpacityMask(mask,maskRect);try{DrawBitmap(source,1,new Rect(source.PixelSize.ToSize(1)),dest);}finally{PopOpacityMask();}}
     internal void BlitDevice(Bitmap source)=>Execute(new(CommandKind.DrawImage,new(0,0,source.PixelSize.Width,source.PixelSize.Height),new(1,0,-originX,0,1,-originY,0,0,1),new(new(255,255,255,255),CompositeMode.SourceOver))
-        {Image=source.Pixels,ImageSource=new(0,0,source.PixelSize.Width,source.PixelSize.Height),Sampling=ImageSampling.Nearest});
+        {Image=source.Pixels,ImageContentVersion=source.ImageContentVersion,ImageSource=new(0,0,source.PixelSize.Width,source.PixelSize.Height),Sampling=ImageSampling.Nearest});
     public IDrawingContextLayerImpl CreateLayer(PixelSize size)=>new Bitmap(PixelBuffer.Rent(size.Width,size.Height),dpi){ScaleToDpi=false};
     public void PushClip(Rect rect)
     {
@@ -255,7 +305,7 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
             {
                 if(!ReferenceEquals(target,root))target.Dispose();
                 foreach(var group in groups)if(group.Parent is not null){if(!ReferenceEquals(group.Canvas,rootBackend))group.Canvas?.Dispose();if(!ReferenceEquals(group.Parent,root))group.Parent.Dispose();}
-                groups.Clear();root.Dispose();
+                groups.Clear();if(ownsRoot)root.Dispose();
             }
             finally{try{completed?.Invoke(success);}finally{FrameScratch.Return(scratch);}}
         }

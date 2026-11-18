@@ -5,3 +5,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("SimdSkia.Geometry.Tests")]
 [assembly: InternalsVisibleTo("SimdSkia.Compatibility")]
 [assembly: InternalsVisibleTo("SimdSkia.Gpu")]
+[assembly: InternalsVisibleTo("SimdSkia.Gpu.Direct2D")]

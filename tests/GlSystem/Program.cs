@@ -9,6 +9,10 @@ for(int profile=0;profile<2;profile++)
  WglContext.Run(profile==1,(api,renderer)=>
  {
   values[$"renderer-{currentProfile}"]=renderer;
+#if SIMDSKIA
+  using (var context = GRContext.CreateGl(api)!)
+      checks += MutableBitmapUploadValidation.Run(context);
+#endif
   for(int factory=0;factory<4;factory++)
   {
    using var context=factory switch{0=>GRContext.CreateGl(),1=>GRContext.CreateGl(new GRContextOptions()),2=>GRContext.CreateGl(api),_=>GRContext.CreateGl(api,new GRContextOptions())};Check(context is not null);

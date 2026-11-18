@@ -46,28 +46,32 @@ public static partial class PixelTransferKernel
         Span<byte> destination,int width,int height,int stride,bool opaque,bool swap,bool enableSimd=true)
     {
         Validate(source,sourceWidth,sourceHeight,sourceStride,destination,width,height,stride);
-        RasterCanvas.ImageTap[]? rented=null;
-        Span<RasterCanvas.ImageTap> taps=width<=1024?stackalloc RasterCanvas.ImageTap[width]:(rented=ArrayPool<RasterCanvas.ImageTap>.Shared.Rent(width)).AsSpan(0,width);
+        int[]? rented=null;
+        bool avx2=enableSimd&&Avx2.IsSupported;
+        int count=checked(width*3+(avx2?width/8:0));
+        Span<int> storage=width<=1024?stackalloc int[count]:(rented=ArrayPool<int>.Shared.Rent(count)).AsSpan(0,count);
+        var taps=new BilinearSampler.Taps(storage,width);
         try
         {
             float sx=(float)sourceWidth/width,sy=(float)sourceHeight/height;
-            for(int x=0;x<width;x++){float p=(x+.5f)*sx-.5f;int i=(int)MathF.Floor(p);taps[x]=new(Math.Clamp(i,0,sourceWidth-1),Math.Clamp(i+1,0,sourceWidth-1),p-i);}
+            for(int x=0;x<width;x++){float p=(x+.5f)*sx-.5f;int i=(int)MathF.Floor(p);taps.Set(x,Math.Clamp(i,0,sourceWidth-1),Math.Clamp(i+1,0,sourceWidth-1),p-i);}
+            if(avx2)taps.FindConsecutiveTaps();
             for(int y=0;y<height;y++)
             {
                 float p=(y+.5f)*sy-.5f;int iy=(int)MathF.Floor(p);float fy=p-iy;
                 var top=source.Slice(Math.Clamp(iy,0,sourceHeight-1)*sourceStride,sourceWidth*4);var bottom=source.Slice(Math.Clamp(iy+1,0,sourceHeight-1)*sourceStride,sourceWidth*4);
                 var dst=destination.Slice(y*stride,width*4);int x=0;
-                if(enableSimd&&Avx2.IsSupported)
-                    for(;x<=width-8;x+=8)BilinearSampler.Sample8(top,bottom,taps.Slice(x,8),fy,opaque,false,swap,dst.Slice(x*4,32));
+                if(avx2)
+                    for(;x<=width-8;x+=8)BilinearSampler.Sample8(top,bottom,taps,x,fy,opaque,false,swap,dst.Slice(x*4,32));
                 for(;x<width;x++)
                 {
-                    var tap=taps[x];uint pixel=SampleScalar(top,bottom,tap.First,tap.Second,tap.Fraction,fy,opaque);
+                    uint pixel=SampleScalar(top,bottom,taps.First[x],taps.Second[x],taps.Fraction[x],fy,opaque);
                     if(swap)pixel=(pixel&0xff00ff00)|((pixel&255)<<16)|((pixel>>16)&255);
                     BinaryPrimitives.WriteUInt32LittleEndian(dst.Slice(x*4,4),pixel);
                 }
             }
         }
-        finally{if(rented is not null)ArrayPool<RasterCanvas.ImageTap>.Shared.Return(rented);}
+        finally{if(rented is not null)ArrayPool<int>.Shared.Return(rented);}
     }
     private static uint SampleScalar(ReadOnlySpan<byte> top,ReadOnlySpan<byte> bottom,int first,int second,float fx,float fy,bool opaque)
     {

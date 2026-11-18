@@ -71,8 +71,8 @@ public sealed partial class TrueTypeFont
         try
         {
             if(canonicalGlyphs.TryGetValue(glyph,out var hit)){canonicalOrder.Remove(hit);canonicalOrder.AddLast(hit);return hit.Value.Data;}
-            int length=offsets[glyph+1]-offsets[glyph];if(length==0)return new([],[],new([]),0);
-            var reader=new GlyphReader(bytes.Read(Table("glyf",0).Offset+offsets[glyph],length).Span);int contourCount=reader.Short();int minX=reader.Short();reader.Short();reader.Short();int maxY=reader.Short();
+            var glyphBytes=GlyphData(glyph);if(glyphBytes.IsEmpty)return new([],[],new([]),0);
+            var reader=new GlyphReader(glyphBytes);int contourCount=reader.Short();int minX=reader.Short();reader.Short();reader.Short();int maxY=reader.Short();
             GlyphPointF[] points;ushort[] ends;byte[] instructions=[];int advance=Advance(glyph),bearing=LeftBearing(glyph);
             if(contourCount>=0)
             {

@@ -82,7 +82,8 @@ internal static class Bench
         var options=new SimdSkiaOptions();if(backend!="cpu")options.UseGpu(backend=="vulkan"?SimdSkiaGpuBackend.Vulkan:SimdSkiaGpuBackend.Direct2D,true,SimdSkiaGpuPresentation.FramebufferReadback);
         using var canvas=backend=="cpu"?new SimdSkia.Cpu.RasterCanvas(pixels):options.CanvasBackendFactory!(pixels);
         var contextType=typeof(SimdSkiaOptions).Assembly.GetType("SimdSkia.Avalonia.DrawingContext",true)!;
-        var ctor=contextType.GetConstructors(BindingFlags.NonPublic|BindingFlags.Instance).Single();
+        var ctor=contextType.GetConstructor(BindingFlags.NonPublic|BindingFlags.Instance,null,
+            [typeof(PixelBuffer),typeof(Vector),typeof(bool),typeof(Action<bool>),typeof(ICanvasBackend),typeof(bool)],null)!;
         create=Expression.Lambda<Func<IDrawingContextImpl>>(Expression.New(ctor,
             Expression.Constant(pixels),Expression.Constant(dpi),Expression.Constant(true),Expression.Constant(null,typeof(Action<bool>)),
             Expression.Constant(canvas,typeof(ICanvasBackend)),Expression.Constant(false))).Compile();

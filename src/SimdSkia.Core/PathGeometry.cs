@@ -34,15 +34,21 @@ public sealed class PathGeometry
     public PathGeometry Transform(Matrix3 matrix)
     {
         if(!matrix.IsFinite||!matrix.IsAffine)throw new NotSupportedException("Path transforms require a finite affine matrix.");
-        PointF Map(PointF p){var v=matrix.Map(p.X,p.Y);return new(v.X,v.Y);}
-        return new(segments.Select(s=>new PathSegment(s.Verb,Map(s.A),Map(s.B),s.Verb==PathVerb.Conic?s.C:Map(s.C))),FillRule);
+        if(matrix==Matrix3.Identity)return this;
+        var transformed=new PathSegment[segments.Length];
+        for(int i=0;i<segments.Length;i++)transformed[i]=MapSegment(segments[i],matrix);
+        return new PathGeometry(transformed,FillRule);
     }
     public void AppendTransformedTo(List<PathSegment> destination,Matrix3 matrix)
     {
         ArgumentNullException.ThrowIfNull(destination);
         if(!matrix.IsFinite||!matrix.IsAffine)throw new NotSupportedException("Path transforms require a finite affine matrix.");
+        foreach(var segment in segments)destination.Add(MapSegment(segment,matrix));
+    }
+    private static PathSegment MapSegment(PathSegment segment,Matrix3 matrix)
+    {
         PointF Map(PointF p){var v=matrix.Map(p.X,p.Y);return new(v.X,v.Y);}
-        foreach(var s in segments)destination.Add(new(s.Verb,Map(s.A),Map(s.B),s.Verb==PathVerb.Conic?s.C:Map(s.C)));
+        return new(segment.Verb,Map(segment.A),Map(segment.B),segment.Verb==PathVerb.Conic?segment.C:Map(segment.C));
     }
     public RectF GetTightBounds(Matrix3 matrix)
     {
@@ -97,13 +103,23 @@ public sealed class PathGeometry
     }
     public PathGeometry(IEnumerable<PathSegment> segments,FillRule fillRule=FillRule.Winding)
     {
-        if(!Enum.IsDefined(fillRule)) throw new ArgumentOutOfRangeException(nameof(fillRule));
-        this.segments=segments.ToArray(); FillRule=fillRule;
-        foreach(var s in this.segments)
+        if(!Enum.IsDefined(fillRule))throw new ArgumentOutOfRangeException(nameof(fillRule));
+        this.segments=segments.ToArray();
+        FillRule=fillRule;
+        HasConics=ValidateSegments(this.segments);
+    }
+    // Internal producers hand over a private array. Public callers retain ownership of their input.
+    private PathGeometry(PathSegment[] owned,FillRule fillRule)
+    {segments=owned;FillRule=fillRule;HasConics=ValidateSegments(owned);}
+    private static bool ValidateSegments(PathSegment[] segments)
+    {
+        bool hasConics=false;
+        foreach(var s in segments)
         {
-            if(s.Verb==PathVerb.Conic)HasConics=true;
+            if(s.Verb==PathVerb.Conic)hasConics=true;
             if(!Finite(s.A)||!Finite(s.B)||!Finite(s.C)||s.Verb==PathVerb.Conic&&s.ConicWeight<=0) throw new ArgumentException("Path coordinates and positive conic weights must be finite.");
         }
+        return hasConics;
     }
     private RectF ComputeControlBounds()
     {
@@ -177,7 +193,7 @@ public sealed class PathGeometry
     }
     public static PathGeometry Rectangle(RectF rect)=>new([
         new(PathVerb.Move,new(rect.Left,rect.Top)),new(PathVerb.Line,new(rect.Right,rect.Top)),
-        new(PathVerb.Line,new(rect.Right,rect.Bottom)),new(PathVerb.Line,new(rect.Left,rect.Bottom)),new(PathVerb.Close,default)]);
+        new(PathVerb.Line,new(rect.Right,rect.Bottom)),new(PathVerb.Line,new(rect.Left,rect.Bottom)),new(PathVerb.Close,default)],FillRule.Winding);
 }
 
 public sealed record LinearGradient(PointF Start,PointF End,Rgba32 StartColor,Rgba32 EndColor):IColorShader

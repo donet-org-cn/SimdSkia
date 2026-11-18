@@ -95,6 +95,17 @@ foreach (var format in new[]{PixelFormat.Rgba8888,PixelFormat.Bgra8888})
             for(int y=5;y<34;y+=4)for(int x=4;x<41;x+=4){var a=target.ReadPixel(x,y);var b=expected.ReadPixel(x,y);Check(Math.Abs(a.R-b.R)<=2&&Math.Abs(a.G-b.G)<=2&&Math.Abs(a.B-b.B)<=2&&Math.Abs(a.A-b.A)<=2,"Cropped GPU uploads preserve fractional source bounds and sampling.");}
         }
     }
+    using (var maskImage = new PixelBuffer(23, 9, PixelFormat.Alpha8, AlphaFormat.Straight, 31))
+    {
+        for (int y = 0; y < maskImage.Height; y++)
+            for (int x = 0; x < maskImage.Width; x++) maskImage.GetRowSpan(y)[x] = (byte)(x + y * 17);
+        Both(DrawingCommand.Clear(default));
+        Both(new DrawingCommand(CommandKind.DrawImage, new(5,7,9,10), Matrix3.Identity, new(new(255,255,255,255), CompositeMode.SourceOver))
+            { Image = maskImage, ImageSource = new(18,3,22,6), Sampling = ImageSampling.Nearest });
+        gpu.Flush();
+        for (int y = 7; y < 10; y++)
+            for (int x = 5; x < 9; x++) Check(target.ReadPixel(x,y) == expected.ReadPixel(x,y), "Cropped Alpha8 masks preserve the source offset and stride.");
+    }
     Console.WriteLine($"PASS {backend} {format}: pixel ordering, glyph overlap, persistence and strict rejection");
 }
 Console.WriteLine($"PASS {checks} GPU integration assertions");

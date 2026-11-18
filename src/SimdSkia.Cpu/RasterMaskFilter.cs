@@ -37,7 +37,7 @@ public sealed partial class RasterMaskFilter : IMaskFilter
         var bounds=new RectF(source.Left-margin,source.Top-margin,source.Left+source.Width+margin,source.Top+source.Height+margin);
         using var blurred=ManagedFilters.CompatibleBlur(frame,s,s,bounds);var image=blurred.Pixels!;
         var blurredCoverage=new byte[checked(image.Width*image.Height)];for(int y=0;y<image.Height;y++){var row=image.GetRowSpan(y);for(int x=0;x<image.Width;x++)blurredCoverage[y*image.Width+x]=row[x*4+3];}
-        return ApplyStyle(source,new CoverageClip(blurred.Left,blurred.Top,image.Width,image.Height,blurredCoverage));
+        return ApplyStyle(source,CoverageClip.BorrowImmutable(blurred.Left,blurred.Top,image.Width,image.Height,blurredCoverage));
     }
     private CoverageClip ApplyStyle(CoverageClip source,CoverageClip blurred)
     {
@@ -52,6 +52,6 @@ public sealed partial class RasterMaskFilter : IMaskFilter
                 result[y*width+x]=style switch{1=>(byte)(original+PixelBuffer.Multiply(b,(byte)(255-original))),2=>PixelBuffer.Multiply(b,(byte)(255-original)),3=>PixelBuffer.Multiply(b,original),_=>b};
             }
         }
-        return new(left,top,width,height,result);
+        return CoverageClip.BorrowImmutable(left,top,width,height,result);
     }
 }

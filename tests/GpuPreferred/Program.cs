@@ -84,6 +84,35 @@ foreach(Exception error in new Exception[]{new ArgumentException("bad scene"),ne
 if(args.Contains("--hardware"))
 {
     if(!OperatingSystem.IsWindows())throw new PlatformNotSupportedException("This hardware test uses the current Windows Direct2D/Vulkan devices.");
+    using (var target = PixelBuffer.Rent(8, 1))
+    using (var gpu = new Direct2DCanvas(target))
+    using (var dc = new SimdSkia.Avalonia.DrawingContext(target, new(96,96), backend: gpu))
+    using (var bitmap = new RenderInterface().CreateWriteableBitmap(new(256,160), new(96,96), PixelFormats.Bgra8888, global::Avalonia.Platform.AlphaFormat.Premul))
+    {
+        void Draw(int x) => dc.DrawBitmap(bitmap, 1, new(0,0,1,1), new(x,0,1,1));
+        static void Red(ILockedFramebuffer frame, int value) => Marshal.WriteInt32(frame.Address, unchecked((int)0xff000000) | value << 16);
+        using (var outer = bitmap.Lock())
+        {
+            Red(outer, 21); Draw(0);
+            using (var inner = bitmap.Lock()) { Red(inner, 41); Draw(1); }
+            Red(outer, 61); Draw(2);
+        }
+        Draw(3);
+        long hits = gpu.TextureCacheHits;
+        Draw(4);
+        Check(gpu.TextureCacheHits == hits + 1, "Redrawing an unlocked WriteableBitmap reuses its version.");
+        using (var frame = bitmap.Lock()) Red(frame, 81);
+        Draw(5);
+        using (var drawing = ((IRenderTargetBitmapImpl)bitmap).CreateDrawingContext())
+        {
+            drawing.Clear(global::Avalonia.Media.Color.FromRgb(101,0,0)); Draw(6);
+            drawing.Clear(global::Avalonia.Media.Color.FromRgb(121,0,0)); Draw(7);
+        }
+        gpu.Flush();
+        int[] reds = [21,41,61,61,61,81,101,121];
+        for (int x = 0; x < reds.Length; x++)
+            Check(target.ReadPixel(x,0) == new Rgba32((byte)reds[x],0,0,255), "Locked, unlocked and drawing-context versions stay in submission order.");
+    }
     AppContext.SetSwitch("SimdSkia.Direct2D.ValidateCompletionEvent",true);
     AppContext.SetSwitch("SimdSkia.Direct2D.BlockingReadback",true);
     foreach(var format in new[]{PixelFormat.Bgra8888,PixelFormat.Rgba8888})
@@ -175,6 +204,25 @@ if(args.Contains("--hardware"))
         Check(queued.CompletionChecks==24&&queued.CompletionPolls==0,"Every queued completion event is verified by an independent GPU query without polling.");
         queued.Flush();
         Check(queuedPixels.ReadPixel(1,2)==new Rgba32(0,80,120,255)&&queuedPixels.ReadPixel(47,2)==new Rgba32(230,80,120,255),"GPU texture retains all 24 partial frames.");
+        queued.ConfigureCache(64 * 1024 * 1024, true);
+        using var streamed = PixelBuffer.Rent(192, 192);
+        var streamDraw = new DrawingCommand(CommandKind.DrawImage, default, Matrix3.Identity,
+            new Paint(new Rgba32(255, 255, 255, 255), CompositeMode.SourceOver))
+        {
+            Image = streamed,
+            ImageSource = new(0, 0, 1, 1),
+            Sampling = ImageSampling.Nearest,
+        };
+        for (int frame = 0; frame < 24; frame++)
+        {
+            streamed.WritePixel(0, 0, new((byte)(frame * 7), 161, 45, 255));
+            queued.Execute(streamDraw with { Rectangle = new(frame * 2, 41, frame * 2 + 2, 47) });
+            queued.QueuePresent();
+        }
+        queued.Flush();
+        for (int frame = 0; frame < 24; frame++)
+            Check(queuedPixels.ReadPixel(frame * 2 + 1, 43) == new Rgba32((byte)(frame * 7), 161, 45, 255),
+                "Updating a cached stream texture must preserve earlier asynchronous presents.");
         Throws<InvalidOperationException>(()=>Task.Run(()=>{if(OperatingSystem.IsWindows())queued.WaitForIdle();}).GetAwaiter().GetResult());
     }
     finally{AppContext.SetSwitch("SimdSkia.Direct2D.ValidateCompletionEvent",false);AppContext.SetSwitch("SimdSkia.Direct2D.LegacySwapchain",false);NativeWindow.DestroyWindow(hwnd);}
