@@ -1,3 +1,4 @@
+using SimdSkia;
 using SimdSkia.Imaging;
 using SkiaSharp;
 
@@ -39,6 +40,8 @@ internal static class GifAnimationValidation
             check(frames.FrameCount == 4 && frames.LoopCount == plays, "GIF frame and total play counts");
             using var gif = new GifImage(bytes);
             check(gif.Frames.Select(f => f.Disposal).SequenceEqual(new[] { 2, 1, 3, 2 }), "GIF disposal metadata");
+            check(gif.Frames.All(f => f.Palette.Length >= 6 && f.Compressed.Length > 0),
+                "Public GIF reader retains palette and compressed frame data");
             int[] delays = [100, 80, 50, 130];
             for (int i = 0; i < delays.Length; i++)
                 check(frames.GetFrameInfo(i).Duration?.TotalMilliseconds == delays[i], "GIF delay in hundredths");
@@ -52,6 +55,12 @@ internal static class GifAnimationValidation
             check(third.ReadPixel(1, 0).G == 255 && third.ReadPixel(2, 0).B == 255, "Keep preserves pixels behind the next frame");
             check(fourth.ReadPixel(1, 0).G == 255 && fourth.ReadPixel(2, 0).A == 0 &&
                 fourth.ReadPixel(0, 1).A == 255, "RestorePrevious restores the prior canvas");
+            using var retained = gif.DecodeFrame(0);
+            gif.Dispose();
+            using var separate = ImageCodec.Decode(bytes);
+            separate.WritePixel(0, 0, new Rgba32(0, 0, 255, 255));
+            check(retained.ReadPixel(0, 0) == new Rgba32(255, 0, 0, 255),
+                "Returned GIF pixels survive reader disposal and other decodes into pooled storage");
             check(destination.CanWrite, "Writer leaves destination open");
         }
     }

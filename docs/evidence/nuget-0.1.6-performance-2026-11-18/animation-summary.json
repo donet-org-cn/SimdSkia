@@ -1,0 +1,104 @@
+{
+  "sourceBaseline": "SimdSkia 0.1.5 downloaded from NuGet.org",
+  "fixtureSha256": "607ec61b45cca87dec55cec5baea46497286f2993e2b2967131e4789393c86e9",
+  "runtime": ".NET 10.0.14",
+  "avx2": true,
+  "avx512": false,
+  "allSamplesPinnedToOneLogicalCpu": true,
+  "independentProcessesPerVariantPerScenario": 3,
+  "scenarios": [
+    {
+      "scenario": "gif-decode-first",
+      "outputSha256": "1FBB397D7B4A12681C235B30B5860A5EC8937633FB813DC4D925EFA6CD67D17B",
+      "baseline": {
+        "milliseconds": 4.8987727272727275,
+        "allocated": 11217505,
+        "gc0": 49,
+        "gc1": 37,
+        "gc2": 37,
+        "privateBefore": 183435264,
+        "privateAfter": 108285952,
+        "peakWorkingSet": 233885696
+      },
+      "candidate": {
+        "milliseconds": 3.268982,
+        "allocated": 4562112.481927711,
+        "gc0": 32,
+        "gc1": 32,
+        "gc2": 32,
+        "privateBefore": 101298176,
+        "privateAfter": 99131392,
+        "peakWorkingSet": 173936640
+      },
+      "timeReductionPercent": 33.269368023530944,
+      "allocationReductionPercent": 59.33041721909007,
+      "pairedTimeReductionPercent": [
+        33.27,
+        32.9,
+        34.4
+      ]
+    },
+    {
+      "scenario": "gif-decode-sequence",
+      "outputSha256": "9D141736FED337B3330927D6F1AC5343D199049BBE260E13796C2C178A1C773C",
+      "baseline": {
+        "milliseconds": 3.150162745098039,
+        "allocated": 2765291.630769231,
+        "gc0": 31,
+        "gc1": 31,
+        "gc2": 31,
+        "privateBefore": 80637952,
+        "privateAfter": 71790592,
+        "peakWorkingSet": 108302336
+      },
+      "candidate": {
+        "milliseconds": 1.8138112359550562,
+        "allocated": 104,
+        "gc0": 0,
+        "gc1": 0,
+        "gc2": 0,
+        "privateBefore": 33763328,
+        "privateAfter": 32706560,
+        "peakWorkingSet": 54734848
+      },
+      "timeReductionPercent": 42.42166571306439,
+      "allocationReductionPercent": 99.996239094682,
+      "pairedTimeReductionPercent": [
+        41.13,
+        38.43,
+        42.42
+      ]
+    },
+    {
+      "scenario": "png-encode-opaque",
+      "outputSha256": "1786DE1A8E1893B9AB37582D554D8CA7FE646739ACA3CA03E8A3725D0A1C6332",
+      "baseline": {
+        "milliseconds": 19.523133333333334,
+        "allocated": 81776,
+        "gc0": 0,
+        "gc1": 0,
+        "gc2": 0,
+        "privateBefore": 35643392,
+        "privateAfter": 38256640,
+        "peakWorkingSet": 59068416
+      },
+      "candidate": {
+        "milliseconds": 16.7184,
+        "allocated": 81808,
+        "gc0": 0,
+        "gc1": 0,
+        "gc2": 0,
+        "privateBefore": 33366016,
+        "privateAfter": 36081664,
+        "peakWorkingSet": 57868288
+      },
+      "timeReductionPercent": 14.366204878315303,
+      "allocationReductionPercent": -0.03913128546273459,
+      "pairedTimeReductionPercent": [
+        15.89,
+        13.41,
+        6.23
+      ]
+    }
+  ]
+}

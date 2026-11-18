@@ -12,12 +12,14 @@ public sealed class ImageFrames : IDisposable
     private IImageFrameReader? reader;
     private byte[]? encoded;
     private readonly ImageFileFormat format;
+    private readonly bool decodeDirectly;
     public int FrameCount {get{Check();return reader!.FrameCount;}}
     /// <summary>Total plays including the first; zero is infinite; null denotes pages/stills.</summary>
     public int? LoopCount {get{Check();return reader!.LoopCount;}}
     internal ImageFrames(ReadOnlySpan<byte> data)
     {
-        CodecBackend.ReadInfo(data);format=ImageCodec.DetectFormat(data);encoded=data.ToArray();
+        var info=CodecBackend.ReadInfo(data);format=ImageCodec.DetectFormat(data);encoded=data.ToArray();
+        decodeDirectly=CodecBackend.CanDecodeDirectly(encoded,info);
         if(!Facade.TryOpenFrames(encoded,out reader))throw new InvalidDataException("Image frames could not be opened.");
         if(reader.FrameCount<=0||reader.FrameCount>100000){reader.Dispose();reader=null;throw new NotSupportedException("Image frame/page count exceeds the budget.");}
     }
@@ -31,6 +33,18 @@ public sealed class ImageFrames : IDisposable
     {
         var dimensions=GetFrameInfo(index);
         if(format is ImageFileFormat.Png or ImageFileFormat.Jpeg)return ImageCodec.Decode(encoded!);
+        if (decodeDirectly)
+        {
+            // The frame reader can write into an independently owned output buffer.
+            var frame = PixelBuffer.RentRgbaExact(dimensions.Width, dimensions.Height);
+            try
+            {
+                if (!reader!.TryDecodeFrameInto(index, frame.GetPixelSpan(), frame.RowBytes, CodecPixelFormat.Rgba32))
+                    throw new InvalidDataException("Frame decode failed.");
+                return frame;
+            }
+            catch { frame.Dispose(); throw; }
+        }
         if(!reader!.TryDecodeFrame(index,out var decoded))throw new InvalidDataException("Frame decode failed.");
         using var image=decoded;
         if(image.Width!=dimensions.Width||image.Height!=dimensions.Height)throw new InvalidDataException("Frame dimensions differ.");

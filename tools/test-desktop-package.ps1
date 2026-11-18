@@ -1,5 +1,5 @@
 param(
- [string]$Version='0.1.5',
+ [string]$Version='0.1.6',
  [string]$AvaloniaVersion='12.1.5',
  [string]$Packages='artifacts/nuget-preview',
  [string]$Output='artifacts/desktop-package-consumer',

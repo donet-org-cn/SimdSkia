@@ -1,5 +1,7 @@
 using System.Globalization;
 using System.Text;
+using Sdcb.SimdCodecs.Abstractions;
+using CodecPixelFormat = Sdcb.SimdCodecs.Abstractions.PixelFormat;
 
 namespace SimdSkia.Imaging;
 public sealed record PdfAnnotation(RectF Bounds,string Key,byte[] Value);
@@ -23,17 +25,9 @@ public sealed class PdfWriter
     public void AddPage(PixelBuffer pixels,float width,float height,int quality=101,IReadOnlyList<PdfAnnotation>? annotations=null)
     {
         if(closed)throw new InvalidOperationException("The PDF is closed.");pixels.ThrowIfDisposed();
-        int page=Reserve(),image=Reserve(),content=Reserve();byte[] data;string filter;
-        // PDF pages have a white backdrop. Flatten alpha explicitly in sRGB.
-        using var flattened=new PixelBuffer(pixels.Width,pixels.Height,PixelFormat.Rgba8888,AlphaFormat.Straight);
-        for(int y=0;y<pixels.Height;y++)for(int x=0;x<pixels.Width;x++)
-        {var c=pixels.ReadPixel(x,y);flattened.WritePixel(x,y,new((byte)(PixelBuffer.Multiply(c.R,c.A)+255-c.A),(byte)(PixelBuffer.Multiply(c.G,c.A)+255-c.A),(byte)(PixelBuffer.Multiply(c.B,c.A)+255-c.A),255));}
-        if(quality<=100){data=JpegCodec.Encode(flattened,quality);filter="DCTDecode";}
-        else
-        {
-            var rgb=new byte[checked(pixels.Width*pixels.Height*3)];var bytes=flattened.GetPixelSpan();
-            for(int i=0,j=0;i<bytes.Length;i+=4,j+=3)bytes.Slice(i,3).CopyTo(rgb.AsSpan(j,3));data=ManagedZlib.Encode(rgb);filter="FlateDecode";
-        }
+        int page=Reserve(),image=Reserve(),content=Reserve();
+        var data = EncodePagePixels(pixels, quality);
+        string filter = quality <= 100 ? "DCTDecode" : "FlateDecode";
         string w=width.ToString("R",CultureInfo.InvariantCulture),h=height.ToString("R",CultureInfo.InvariantCulture);
         ObjectStream(image,$"/Type /XObject /Subtype /Image /Width {pixels.Width} /Height {pixels.Height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /{filter}",data);
         ObjectStream(content,"",Encoding.ASCII.GetBytes($"q {w} 0 0 {h} 0 0 cm /Im0 Do Q\n"));
@@ -50,6 +44,48 @@ public sealed class PdfWriter
         string references=links.Count>0?$" /Annots [{string.Join(" ",links.Select(id=>$"{id} 0 R"))}]":"";string metadata=custom.Count>0?$" /SimdSkiaAnnotations [{string.Join(" ",custom)}]":"";
         Object(page,$"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 {w} {h}] /Resources << /XObject << /Im0 {image} 0 R >> >> /Contents {content} 0 R{references}{metadata} >>");pages.Add(page);
     }
+
+    private static byte[] EncodePagePixels(PixelBuffer pixels, int quality)
+    {
+        int rowBytes = checked(pixels.Width * 3);
+        var rgb = GC.AllocateUninitializedArray<byte>(checked(rowBytes * pixels.Height));
+        bool premultiplied = pixels.Alpha == AlphaFormat.Premultiplied;
+        int redIndex = pixels.Format == PixelFormat.Rgba8888 ? 0 : 2;
+        for (int y = 0; y < pixels.Height; y++)
+        {
+            ReadOnlySpan<byte> row = pixels.GetRowSpan(y);
+            var destination = rgb.AsSpan(y * rowBytes, rowBytes);
+            if (pixels.Format == PixelFormat.Alpha8)
+            {
+                for (int x = 0, d = 0; x < pixels.Width; x++, d += 3)
+                    destination[d] = destination[d + 1] = destination[d + 2] = (byte)(255 - row[x]);
+                continue;
+            }
+            row = row[..(pixels.Width * 4)];
+            if (PixelBuffer.HasOnlyOpaqueAlpha(row))
+            {
+                PixelConverter.ConvertRow(row, redIndex == 0 ? CodecPixelFormat.Rgba32 : CodecPixelFormat.Bgra32,
+                    destination, CodecPixelFormat.Rgb24, pixels.Width);
+                continue;
+            }
+            for (int s = 0, d = 0; s < row.Length; s += 4, d += 3)
+            {
+                byte a = row[s + 3];
+                destination[d] = OverWhite(row[s + redIndex], a, premultiplied);
+                destination[d + 1] = OverWhite(row[s + 1], a, premultiplied);
+                destination[d + 2] = OverWhite(row[s + 2 - redIndex], a, premultiplied);
+            }
+        }
+        return quality <= 100
+            ? JpegCodec.EncodeRgb24(rgb, pixels.Width, pixels.Height, quality)
+            : ManagedZlib.Encode(rgb);
+
+        // Unpremultiplying and multiplying again recovers a valid stored
+        // premultiplied sample. The white blend saturates samples above alpha.
+        static byte OverWhite(byte color, byte alpha, bool premultiplied) =>
+            (byte)((premultiplied ? Math.Min(color, alpha) : PixelBuffer.Multiply(color, alpha)) + 255 - alpha);
+    }
+
     public void Close(IReadOnlyDictionary<string,string> metadata)
     {
         if(closed)return;closed=true;

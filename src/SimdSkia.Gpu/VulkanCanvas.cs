@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+using SimdSkia.Cpu;
 
 namespace SimdSkia.Gpu;
 
@@ -183,7 +184,8 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
         var fenceInfo=new Vk.FenceInfo {Type=8};Check(Vk.vkCreateFence(device,&fenceInfo,null,&handle));fence=handle;
         int targetBytes=checked(target.Width*target.Height*4);
         output=Allocate(targetBytes,usage:35,deviceLocal:true);readback=Allocate(targetBytes,usage:2,preferCached:true);
-        empty=Allocate(16);empty.Bytes.Clear();emptyTexture=AllocateTexture(1,1,[0,0,0,0]);
+        empty=Allocate(16);empty.Bytes.Clear();
+        emptyTexture=AllocateTexture(1,1);emptyTexture.Staging!.Bytes.Clear();
         AllocateDescriptorSets(128);
     }
     // Flush is synchronous (fence waited before returning), so the GPU is idle here and
@@ -262,18 +264,20 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
                 {imageCache.Remove(duplicate);imageCache.Add(image,entry!);TextureCacheHits++;}
                 else
                 {
-                var data=new byte[checked(image.Width*image.Height*4)];
-                for(int y=0;y<image.Height;y++)for(int x=0;x<image.Width;x++)
-                {var color=image.ReadPixel(x,y);int offset=(y*image.Width+x)*4;data[offset]=color.R;data[offset+1]=color.G;data[offset+2]=color.B;data[offset+3]=image.Alpha==AlphaFormat.Opaque?(byte)255:color.A;}
-                if(data.Length>64*1024*1024)throw new NotSupportedException("A texture exceeds the configured 64 MiB image cache budget.");
-                long bytes=imageCache.Values.Sum(e=>(long)e.Texture.Size);
-                if(imageCache.Count>=MaximumCachedTextures||bytes+data.Length>64*1024*1024)
-                {
-                    Flush();foreach(var victim in imageCache.OrderBy(e=>e.Value.Used).ToArray())
-                    {if(imageCache.Count<MaximumCachedTextures&&bytes+data.Length<=64*1024*1024)break;bytes-=victim.Value.Texture.Size;victim.Value.Texture.Dispose();imageCache.Remove(victim.Key);}
-                }
-                var snapshot=new byte[data.Length];for(int y=0;y<image.Height;y++)image.GetRowSpan(y).Slice(0,image.Width*4).CopyTo(snapshot.AsSpan(y*image.Width*4,image.Width*4));
-                entry=new(){Texture=AllocateTexture(image.Width,image.Height,data),Snapshot=snapshot,Hash=fingerprint};imageCache.Add(image,entry);UploadedTextures++;
+                    if ((long)image.Width * image.Height * 4 > 64 * 1024 * 1024)
+                        throw new NotSupportedException("A texture exceeds the configured 64 MiB image cache budget.");
+                    int size = image.Width * image.Height * 4;
+                    long bytes = 0;
+                    foreach (var cached in imageCache.Values)
+                        bytes += cached.Texture.Size;
+                    if(imageCache.Count>=MaximumCachedTextures||bytes+size>64*1024*1024)
+                    {
+                        Flush();foreach(var victim in imageCache.OrderBy(e=>e.Value.Used).ToArray())
+                        {if(imageCache.Count<MaximumCachedTextures&&bytes+size<=64*1024*1024)break;bytes-=victim.Value.Texture.Size;victim.Value.Texture.Dispose();imageCache.Remove(victim.Key);}
+                    }
+                    entry = CreateTextureEntry(image, size, fingerprint);
+                    imageCache.Add(image, entry);
+                    UploadedTextures++;
                 }
             }
             else TextureCacheHits++;
@@ -604,12 +608,72 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
             {if(imageCache.Count<=MaximumCachedTextures&&bytes<=64*1024*1024)break;bytes-=entry.Value.Texture.Size;entry.Value.Texture.Dispose();imageCache.Remove(entry.Key);}
         TrimResourceCache();
     }
-    private Texture AllocateTexture(int width,int height,ReadOnlySpan<byte> data)
+    private ImageEntry CreateTextureEntry(PixelBuffer image, int size, int fingerprint)
+    {
+        // Keep the original bytes for content-based cache hits. Convert the
+        // upload directly into Vulkan's mapped staging buffer.
+        var snapshot = GC.AllocateUninitializedArray<byte>(size);
+        var texture = AllocateTexture(image.Width, image.Height);
+        try
+        {
+            int rowBytes = image.Width * 4;
+            var staging = texture.Staging!.Bytes;
+            bool simd = CpuOptions.EnableSimd;
+            for (int y = 0; y < image.Height; y++)
+            {
+                var row = image.GetRowSpan(y)[..rowBytes];
+                row.CopyTo(snapshot.AsSpan(y * rowBytes, rowBytes));
+                var destination = staging.Slice(y * rowBytes, rowBytes);
+                if (image.Format == PixelFormat.Alpha8)
+                {
+                    destination.Clear();
+                    for (int x = 0; x < image.Width; x++)
+                        destination[x * 4 + 3] = image.Alpha == AlphaFormat.Opaque ? (byte)255 : row[x];
+                    continue;
+                }
+                bool bgra = image.Format == PixelFormat.Bgra8888;
+                if (image.Alpha == AlphaFormat.Straight || PixelBuffer.HasOnlyOpaqueAlpha(row, simd))
+                {
+                    if (bgra)
+                        PixelTransferKernel.SwapRedBlue(row, destination, simd);
+                    else
+                        row.CopyTo(destination);
+                    continue;
+                }
+
+                int redIndex = bgra ? 2 : 0;
+                bool unpremultiply = image.Alpha == AlphaFormat.Premultiplied;
+                for (int x = 0; x < rowBytes; x += 4)
+                {
+                    byte r = row[x + redIndex], g = row[x + 1], b = row[x + 2 - redIndex];
+                    byte a = unpremultiply ? row[x + 3] : (byte)255;
+                    if (a != 255)
+                    {
+                        r = PixelBuffer.Unmultiply(r, a);
+                        g = PixelBuffer.Unmultiply(g, a);
+                        b = PixelBuffer.Unmultiply(b, a);
+                    }
+                    destination[x] = r;
+                    destination[x + 1] = g;
+                    destination[x + 2] = b;
+                    destination[x + 3] = a;
+                }
+            }
+            return new() { Texture = texture, Snapshot = snapshot, Hash = fingerprint };
+        }
+        catch
+        {
+            texture.Dispose();
+            throw;
+        }
+    }
+
+    private Texture AllocateTexture(int width,int height)
     {
         var result=new Texture(device,width,height);
         try
         {
-            result.Staging=Allocate(data.Length,1);data.CopyTo(result.Staging.Bytes);
+            result.Staging=Allocate(result.Size,1);
             var info=new Vk.ImageInfo {Type=14,ImageType=1,Format=37,Width=(uint)width,Height=(uint)height,Depth=1,Mips=1,Layers=1,Samples=1,Usage=6};
             ulong handle=0;Check(Vk.vkCreateImage(device,&info,null,&handle));result.Image=handle;Vk.MemoryRequirements requirements=default;Vk.vkGetImageMemoryRequirements(device,handle,&requirements);
             uint type=uint.MaxValue;var properties=memory;

@@ -1,0 +1,272 @@
+[
+  {
+    "scene": "tiff-encode",
+    "width": 2560,
+    "height": 1440,
+    "iterations": 6,
+    "pairs": 3,
+    "outputSha256": "5CD7DAF6BD1712B70EFFCE93BE60207BF97FCDF9409B65D0BB6348D60BC1B972",
+    "baseline": {
+      "perOpMs": 131.59943333333334,
+      "cpuPerOpMs": 125.0,
+      "allocPerOp": 55408094.666666664,
+      "peakMiB": 240.43359375,
+      "retainedWorkMiB": 238.87109375,
+      "retainedPrivateMiB": 238.36328125,
+      "retainedLiveMiB": 30.381195068359375,
+      "retainedCommitMiB": 223.9296875,
+      "encodedBytes": 4777850
+    },
+    "candidate": {
+      "perOpMs": 114.32131666666668,
+      "cpuPerOpMs": 109.375,
+      "allocPerOp": 15975946.666666666,
+      "peakMiB": 101.97265625,
+      "retainedWorkMiB": 85.5234375,
+      "retainedPrivateMiB": 66.74609375,
+      "retainedLiveMiB": 14.631256103515625,
+      "retainedCommitMiB": 54.1953125,
+      "encodedBytes": 4763120
+    }
+  },
+  {
+    "scene": "tiff-decode",
+    "width": 2560,
+    "height": 1440,
+    "iterations": 16,
+    "pairs": 3,
+    "outputSha256": "5CD7DAF6BD1712B70EFFCE93BE60207BF97FCDF9409B65D0BB6348D60BC1B972",
+    "baseline": {
+      "perOpMs": 23.61073125,
+      "cpuPerOpMs": 23.4375,
+      "allocPerOp": 14769772.5,
+      "peakMiB": 225.828125,
+      "retainedWorkMiB": 225.84375,
+      "retainedPrivateMiB": 206.2890625,
+      "retainedLiveMiB": 33.37169647216797,
+      "retainedCommitMiB": 189.17578125,
+      "encodedBytes": 0
+    },
+    "candidate": {
+      "perOpMs": 26.1986,
+      "cpuPerOpMs": 25.390625,
+      "allocPerOp": 29239.0,
+      "peakMiB": 72.3671875,
+      "retainedWorkMiB": 71.4140625,
+      "retainedPrivateMiB": 49.68359375,
+      "retainedLiveMiB": 34.140289306640625,
+      "retainedCommitMiB": 35.22265625,
+      "encodedBytes": 0
+    }
+  },
+  {
+    "scene": "jpeg-rotating",
+    "width": 2048,
+    "height": 1152,
+    "iterations": 18,
+    "pairs": 3,
+    "outputSha256": "F05724FF66CF3D4431E9B58355390D940DDAE26149B1DD479F1ABAD594580A3C",
+    "baseline": {
+      "perOpMs": 10.444533333333332,
+      "cpuPerOpMs": 10.416666666666666,
+      "allocPerOp": 5506223.555555556,
+      "peakMiB": 105.75,
+      "retainedWorkMiB": 99.40234375,
+      "retainedPrivateMiB": 132.30859375,
+      "retainedLiveMiB": 118.09777069091797,
+      "retainedCommitMiB": 120.53125,
+      "encodedBytes": 243149
+    },
+    "candidate": {
+      "perOpMs": 8.501505555555555,
+      "cpuPerOpMs": 8.680555555555555,
+      "allocPerOp": 845911.1111111111,
+      "peakMiB": 56.88671875,
+      "retainedWorkMiB": 56.96875,
+      "retainedPrivateMiB": 47.39453125,
+      "retainedLiveMiB": 31.10369873046875,
+      "retainedCommitMiB": 36.0703125,
+      "encodedBytes": 243149
+    }
+  },
+  {
+    "scene": "pdf-raster",
+    "width": 1536,
+    "height": 864,
+    "iterations": 4,
+    "pairs": 3,
+    "outputSha256": "2B442FB7B4E8463A06F27E029789EA88784715C4F15CAA638AF7263D2CEA989F A31A1A3779AF1DC6DBFF809264DF175A3FF1AE65ADF0BE9FCA7AA877BDB414A2",
+    "baseline": {
+      "perOpMs": 66.81035,
+      "cpuPerOpMs": 66.40625,
+      "allocPerOp": 20146988.0,
+      "peakMiB": 91.13671875,
+      "retainedWorkMiB": 74.2109375,
+      "retainedPrivateMiB": 58.07421875,
+      "retainedLiveMiB": 5.753776550292969,
+      "retainedCommitMiB": 45.98828125,
+      "encodedBytes": 1668872
+    },
+    "candidate": {
+      "perOpMs": 50.1294,
+      "cpuPerOpMs": 50.78125,
+      "allocPerOp": 14839324.0,
+      "peakMiB": 64.56640625,
+      "retainedWorkMiB": 43.953125,
+      "retainedPrivateMiB": 26.23828125,
+      "retainedLiveMiB": 5.7596893310546875,
+      "retainedCommitMiB": 13.95703125,
+      "encodedBytes": 1668872
+    }
+  },
+  {
+    "scene": "gpu-upload",
+    "width": 2560,
+    "height": 1440,
+    "iterations": 12,
+    "pairs": 3,
+    "outputSha256": "C7F7D12177D315A1677FB09CFA4A2A01162891A6E71FC446F6C38CAB96A0D035",
+    "baseline": {
+      "perOpMs": 49.498349999999995,
+      "cpuPerOpMs": 48.177083333333336,
+      "allocPerOp": 29491933.333333332,
+      "peakMiB": 261.66796875,
+      "retainedWorkMiB": 233.8203125,
+      "retainedPrivateMiB": 407.67578125,
+      "retainedLiveMiB": 28.684791564941406,
+      "retainedCommitMiB": 143.09375,
+      "encodedBytes": 0
+    },
+    "candidate": {
+      "perOpMs": 19.70405,
+      "cpuPerOpMs": 18.229166666666668,
+      "allocPerOp": 14746779.333333334,
+      "peakMiB": 247.8359375,
+      "retainedWorkMiB": 233.96875,
+      "retainedPrivateMiB": 407.3671875,
+      "retainedLiveMiB": 28.684730529785156,
+      "retainedCommitMiB": 143.11328125,
+      "encodedBytes": 0
+    }
+  },
+  {
+    "scene": "webp-encode",
+    "width": 1600,
+    "height": 900,
+    "iterations": 5,
+    "pairs": 3,
+    "outputSha256": "DB6D1EE75ADF70C13453D20E86C75A5DB9124CDD61A084CAFF59FCA7A8F0E29A",
+    "baseline": {
+      "perOpMs": 184.5179,
+      "cpuPerOpMs": 181.25,
+      "allocPerOp": 26040184.0,
+      "peakMiB": 132.8046875,
+      "retainedWorkMiB": 120.30078125,
+      "retainedPrivateMiB": 144.2734375,
+      "retainedLiveMiB": 110.93096923828125,
+      "retainedCommitMiB": 131.03515625,
+      "encodedBytes": 49266
+    },
+    "candidate": {
+      "perOpMs": 188.73032,
+      "cpuPerOpMs": 171.875,
+      "allocPerOp": 26040184.0,
+      "peakMiB": 127.05078125,
+      "retainedWorkMiB": 114.5390625,
+      "retainedPrivateMiB": 135.8828125,
+      "retainedLiveMiB": 102.9310073852539,
+      "retainedCommitMiB": 123.03125,
+      "encodedBytes": 49266
+    }
+  },
+  {
+    "scene": "png-encode",
+    "width": 2560,
+    "height": 1440,
+    "iterations": 5,
+    "pairs": 3,
+    "outputSha256": "CBE6DFCC08B2B821AF5FC84691FDF37FA56034EB548769DF68EC0E0585285578",
+    "baseline": {
+      "perOpMs": 211.0697,
+      "cpuPerOpMs": 206.25,
+      "allocPerOp": 5316281.6,
+      "peakMiB": 81.87109375,
+      "retainedWorkMiB": 80.234375,
+      "retainedPrivateMiB": 65.38671875,
+      "retainedLiveMiB": 30.513954162597656,
+      "retainedCommitMiB": 54.70703125,
+      "encodedBytes": 1094963
+    },
+    "candidate": {
+      "perOpMs": 202.7507,
+      "cpuPerOpMs": 200.0,
+      "allocPerOp": 5316313.6,
+      "peakMiB": 81.80859375,
+      "retainedWorkMiB": 78.25390625,
+      "retainedPrivateMiB": 62.1875,
+      "retainedLiveMiB": 28.576622009277344,
+      "retainedCommitMiB": 50.84375,
+      "encodedBytes": 1094963
+    }
+  },
+  {
+    "scene": "vertical",
+    "width": 1280,
+    "height": 720,
+    "iterations": 3,
+    "pairs": 3,
+    "outputSha256": "-9,-75,1280,880:46593D321123996DBF0BBFA2C4C403C353723080BD464F291995DCADE2CCF0F0",
+    "baseline": {
+      "perOpMs": 1232.6723666666667,
+      "cpuPerOpMs": 1197.9166666666667,
+      "allocPerOp": 589.3333333333334,
+      "peakMiB": 45.2265625,
+      "retainedWorkMiB": 44.18359375,
+      "retainedPrivateMiB": 24.51171875,
+      "retainedLiveMiB": 13.185379028320312,
+      "retainedCommitMiB": 14.30078125,
+      "encodedBytes": 0
+    },
+    "candidate": {
+      "perOpMs": 9.757266666666666,
+      "cpuPerOpMs": 10.416666666666666,
+      "allocPerOp": 437.3333333333333,
+      "peakMiB": 40.16015625,
+      "retainedWorkMiB": 39.171875,
+      "retainedPrivateMiB": 20.125,
+      "retainedLiveMiB": 8.107284545898438,
+      "retainedCommitMiB": 9.22265625,
+      "encodedBytes": 0
+    }
+  },
+  {
+    "scene": "morphology",
+    "width": 1280,
+    "height": 720,
+    "iterations": 2,
+    "pairs": 3,
+    "outputSha256": "-129,-155,1520,1040:FB54F86D9D581F5F20E84D6459270CD43FAB22C4432A58CD8EE767E7C10F904C",
+    "baseline": {
+      "perOpMs": 5363.33005,
+      "cpuPerOpMs": 5281.25,
+      "allocPerOp": 672.0,
+      "peakMiB": 49.7109375,
+      "retainedWorkMiB": 44.75390625,
+      "retainedPrivateMiB": 25.25390625,
+      "retainedLiveMiB": 17.726402282714844,
+      "retainedCommitMiB": 18.84375,
+      "encodedBytes": 0
+    },
+    "candidate": {
+      "perOpMs": 14.41375,
+      "cpuPerOpMs": 7.8125,
+      "allocPerOp": 672.0,
+      "peakMiB": 46.1796875,
+      "retainedWorkMiB": 45.19140625,
+      "retainedPrivateMiB": 26.12890625,
+      "retainedLiveMiB": 14.019432067871094,
+      "retainedCommitMiB": 15.1328125,
+      "encodedBytes": 0
+    }
+  }
+]

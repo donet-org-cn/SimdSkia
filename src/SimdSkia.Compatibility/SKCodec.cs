@@ -20,7 +20,7 @@ public partial class SKCodec : SKObject
         if(bytes.Length>=26&&bytes[..2].SequenceEqual("BM"u8))scanlineOrder=System.Buffers.Binary.BinaryPrimitives.ReadUInt32LittleEndian(bytes[14..])==12||System.Buffers.Binary.BinaryPrimitives.ReadInt32LittleEndian(bytes[22..])>0?SKCodecScanlineOrder.BottomUp:SKCodecScanlineOrder.TopDown;
         if(bytes.StartsWith("GIF87a"u8)||bytes.StartsWith("GIF89a"u8))
         {
-            gif=new(bytes);format=SKEncodedImageFormat.Gif;var first=gif.Frames[0];
+            gif=GifImage.OpenForCodec(bytes);format=SKEncodedImageFormat.Gif;var first=gif.Frames[0];
             info=new(gif.Width,gif.Height,SKColorType.Bgra8888,first.TransparentIndex<0&&first.Left==0&&first.Top==0&&first.Width>=gif.Width&&first.Height>=gif.Height?SKAlphaType.Opaque:SKAlphaType.Unpremul);
             frames=new SKCodecFrameInfo[gif.Frames.Count];
             for(int i=0;i<frames.Length;i++)

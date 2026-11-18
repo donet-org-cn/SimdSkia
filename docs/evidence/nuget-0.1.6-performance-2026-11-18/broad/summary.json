@@ -1,0 +1,1498 @@
+[
+  {
+    "group": "avalonia",
+    "scene": "controls",
+    "equality": true,
+    "baseline": {
+      "ms": 1.08005,
+      "bytes": 5624.744,
+      "workingSetMiB": 101.427734375,
+      "privateMiB": 63.98828125
+    },
+    "candidate": {
+      "ms": 1.177,
+      "bytes": 5624.744,
+      "workingSetMiB": 100.86328125,
+      "privateMiB": 62.78515625
+    }
+  },
+  {
+    "group": "avalonia",
+    "scene": "scroll",
+    "equality": true,
+    "baseline": {
+      "ms": 0.5633,
+      "bytes": 3267.4346666666665,
+      "workingSetMiB": 86.87109375,
+      "privateMiB": 54.6640625
+    },
+    "candidate": {
+      "ms": 0.54635,
+      "bytes": 3267.4346666666665,
+      "workingSetMiB": 86.73828125,
+      "privateMiB": 54.5546875
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "decode-Bmp",
+    "equality": true,
+    "baseline": {
+      "ms": 0.2808477766229613,
+      "bytes": 921927.824273757,
+      "workingSetMiB": 144.609375,
+      "privateMiB": 122.201171875
+    },
+    "candidate": {
+      "ms": 0.03333621256792182,
+      "bytes": 104.0,
+      "workingSetMiB": 91.984375,
+      "privateMiB": 69.267578125
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "decode-Gif",
+    "equality": true,
+    "baseline": {
+      "ms": 0.2557823611443143,
+      "bytes": 518954.81264334085,
+      "workingSetMiB": 78.572265625,
+      "privateMiB": 55.4921875
+    },
+    "candidate": {
+      "ms": 0.1772501246978475,
+      "bytes": 251722.96429779805,
+      "workingSetMiB": 89.892578125,
+      "privateMiB": 66.693359375
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "decode-Ico",
+    "equality": true,
+    "baseline": {
+      "ms": 0.07052197745693817,
+      "bytes": 147957.22198587225,
+      "workingSetMiB": 66.712890625,
+      "privateMiB": 43.474609375
+    },
+    "candidate": {
+      "ms": 0.005290488402316465,
+      "bytes": 344.0151694752735,
+      "workingSetMiB": 98.01171875,
+      "privateMiB": 74.94140625
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "decode-Jbig2",
+    "equality": true,
+    "baseline": {
+      "ms": 0.002680763653854788,
+      "bytes": 1832.0676929548836,
+      "workingSetMiB": 77.46875,
+      "privateMiB": 53.6875
+    },
+    "candidate": {
+      "ms": 0.0026589692942628382,
+      "bytes": 1832.0675990158156,
+      "workingSetMiB": 84.404296875,
+      "privateMiB": 59.75
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "decode-Jpeg",
+    "equality": true,
+    "baseline": {
+      "ms": 0.6959074257425742,
+      "bytes": 1000.0,
+      "workingSetMiB": 44.951171875,
+      "privateMiB": 20.994140625
+    },
+    "candidate": {
+      "ms": 0.6874668475157053,
+      "bytes": 1000.0,
+      "workingSetMiB": 44.228515625,
+      "privateMiB": 20.142578125
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "decode-Jpeg2000",
+    "equality": true,
+    "baseline": {
+      "ms": 0.040627793264307654,
+      "bytes": 39866.966641513456,
+      "workingSetMiB": 74.267578125,
+      "privateMiB": 50.67578125
+    },
+    "candidate": {
+      "ms": 0.03768547070926127,
+      "bytes": 39867.0506117099,
+      "workingSetMiB": 81.869140625,
+      "privateMiB": 57.4140625
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "decode-Netpbm",
+    "equality": true,
+    "baseline": {
+      "ms": 0.2583383818581781,
+      "bytes": 922148.06207058,
+      "workingSetMiB": 79.78125,
+      "privateMiB": 56.037109375
+    },
+    "candidate": {
+      "ms": 0.03833335385007153,
+      "bytes": 104.0,
+      "workingSetMiB": 77.048828125,
+      "privateMiB": 53.189453125
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "decode-Png",
+    "equality": true,
+    "baseline": {
+      "ms": 2.152265165441176,
+      "bytes": 3872.0,
+      "workingSetMiB": 38.146484375,
+      "privateMiB": 16.642578125
+    },
+    "candidate": {
+      "ms": 2.096952941176471,
+      "bytes": 3872.0,
+      "workingSetMiB": 38.15625,
+      "privateMiB": 16.7109375
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "decode-Qoi",
+    "equality": true,
+    "baseline": {
+      "ms": 0.7707341017677974,
+      "bytes": 922006.979721878,
+      "workingSetMiB": 77.31640625,
+      "privateMiB": 53.62109375
+    },
+    "candidate": {
+      "ms": 0.4861672844827586,
+      "bytes": 104.0,
+      "workingSetMiB": 80.955078125,
+      "privateMiB": 57.087890625
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "decode-Tiff",
+    "equality": true,
+    "baseline": {
+      "ms": 2.648348827586207,
+      "bytes": 926872.4380669636,
+      "workingSetMiB": 104.423828125,
+      "privateMiB": 81.048828125
+    },
+    "candidate": {
+      "ms": 2.629012962962963,
+      "bytes": 928055.1532045654,
+      "workingSetMiB": 93.564453125,
+      "privateMiB": 69.84375
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "decode-Webp",
+    "equality": true,
+    "baseline": {
+      "ms": 2.2594537878787877,
+      "bytes": 922285.2139072848,
+      "workingSetMiB": 64.07421875,
+      "privateMiB": 39.744140625
+    },
+    "candidate": {
+      "ms": 1.7447085365853658,
+      "bytes": 104.0,
+      "workingSetMiB": 55.80078125,
+      "privateMiB": 30.787109375
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "decode-Webp-animation",
+    "equality": true,
+    "baseline": {
+      "ms": 0.7139648153877887,
+      "bytes": 1037322.1193050141,
+      "workingSetMiB": 91.43359375,
+      "privateMiB": 67.376953125
+    },
+    "candidate": {
+      "ms": 0.48301396199859253,
+      "bytes": 518594.33166816307,
+      "workingSetMiB": 90.962890625,
+      "privateMiB": 66.28515625
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "document-pdf-open-render-read",
+    "equality": true,
+    "baseline": {
+      "ms": 1.5949016717325226,
+      "bytes": 1585736.3476874004,
+      "workingSetMiB": 185.31640625,
+      "privateMiB": 155.2109375
+    },
+    "candidate": {
+      "ms": 1.4110675470188077,
+      "bytes": 1585696.0482378853,
+      "workingSetMiB": 165.701171875,
+      "privateMiB": 135.263671875
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "document-pdf-write",
+    "equality": true,
+    "baseline": {
+      "ms": 3.165938537549407,
+      "bytes": 1426769.9285714286,
+      "workingSetMiB": 168.29296875,
+      "privateMiB": 137.447265625
+    },
+    "candidate": {
+      "ms": 1.9846807142857146,
+      "bytes": 1124201.5020519835,
+      "workingSetMiB": 133.552734375,
+      "privateMiB": 102.681640625
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "encode-Bmp",
+    "equality": true,
+    "baseline": {
+      "ms": 1.142941129032258,
+      "bytes": 922164.515052161,
+      "workingSetMiB": 83.302734375,
+      "privateMiB": 60.09375
+    },
+    "candidate": {
+      "ms": 0.7564234843285289,
+      "bytes": 922021.6928820757,
+      "workingSetMiB": 119.79296875,
+      "privateMiB": 96.71484375
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "encode-Gif",
+    "equality": true,
+    "baseline": {
+      "ms": 1.0513150623885918,
+      "bytes": 381561.6199376947,
+      "workingSetMiB": 140.994140625,
+      "privateMiB": 118.087890625
+    },
+    "candidate": {
+      "ms": 0.8842130341880342,
+      "bytes": 381609.3366999589,
+      "workingSetMiB": 93.111328125,
+      "privateMiB": 70.529296875
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "encode-Ico",
+    "equality": true,
+    "baseline": {
+      "ms": 0.3415080669224212,
+      "bytes": 452086.1944406101,
+      "workingSetMiB": 81.294921875,
+      "privateMiB": 58.142578125
+    },
+    "candidate": {
+      "ms": 0.26534247791405785,
+      "bytes": 452079.7828680348,
+      "workingSetMiB": 134.611328125,
+      "privateMiB": 111.45703125
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "encode-Jpeg",
+    "equality": true,
+    "baseline": {
+      "ms": 1.0859658256337361,
+      "bytes": 55408.0,
+      "workingSetMiB": 54.2734375,
+      "privateMiB": 30.263671875
+    },
+    "candidate": {
+      "ms": 0.7858492696629213,
+      "bytes": 55440.0,
+      "workingSetMiB": 53.49609375,
+      "privateMiB": 29.294921875
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "encode-Netpbm",
+    "equality": true,
+    "baseline": {
+      "ms": 1.1661453116457081,
+      "bytes": 922157.7861417742,
+      "workingSetMiB": 74.826171875,
+      "privateMiB": 51.48828125
+    },
+    "candidate": {
+      "ms": 0.752158740942029,
+      "bytes": 922215.5677636694,
+      "workingSetMiB": 79.8515625,
+      "privateMiB": 55.80859375
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "encode-Png",
+    "equality": true,
+    "baseline": {
+      "ms": 16.45702,
+      "bytes": 353560.0,
+      "workingSetMiB": 50.044921875,
+      "privateMiB": 27.611328125
+    },
+    "candidate": {
+      "ms": 15.603909999999999,
+      "bytes": 353592.0,
+      "workingSetMiB": 49.482421875,
+      "privateMiB": 26.96484375
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "encode-Qoi",
+    "equality": true,
+    "baseline": {
+      "ms": 1.6298918604651162,
+      "bytes": 700103.8784607959,
+      "workingSetMiB": 98.791015625,
+      "privateMiB": 75.123046875
+    },
+    "candidate": {
+      "ms": 1.243327616995074,
+      "bytes": 699994.0071684588,
+      "workingSetMiB": 82.89453125,
+      "privateMiB": 59.00390625
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "encode-Tiff",
+    "equality": true,
+    "baseline": {
+      "ms": 21.855200000000004,
+      "bytes": 7101248.4,
+      "workingSetMiB": 101.166015625,
+      "privateMiB": 78.37109375
+    },
+    "candidate": {
+      "ms": 19.3324125,
+      "bytes": 2958405.2,
+      "workingSetMiB": 92.140625,
+      "privateMiB": 68.693359375
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "encode-Webp",
+    "equality": true,
+    "baseline": {
+      "ms": 35.281,
+      "bytes": 4999192.0,
+      "workingSetMiB": 73.796875,
+      "privateMiB": 50.92578125
+    },
+    "candidate": {
+      "ms": 34.309725,
+      "bytes": 4999192.0,
+      "workingSetMiB": 73.654296875,
+      "privateMiB": 50.154296875
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "filter-blur-12",
+    "equality": true,
+    "baseline": {
+      "ms": 2.7699173076923076,
+      "bytes": 424.0,
+      "workingSetMiB": 77.1328125,
+      "privateMiB": 52.79296875
+    },
+    "candidate": {
+      "ms": 2.7166041310541313,
+      "bytes": 424.0,
+      "workingSetMiB": 72.638671875,
+      "privateMiB": 47.724609375
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "filter-blur-3",
+    "equality": true,
+    "baseline": {
+      "ms": 2.255035181451613,
+      "bytes": 424.0,
+      "workingSetMiB": 78.638671875,
+      "privateMiB": 54.20703125
+    },
+    "candidate": {
+      "ms": 2.2277703124999997,
+      "bytes": 424.0,
+      "workingSetMiB": 74.603515625,
+      "privateMiB": 49.6953125
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "filter-convolution",
+    "equality": true,
+    "baseline": {
+      "ms": 16.56939,
+      "bytes": 272.0,
+      "workingSetMiB": 62.41796875,
+      "privateMiB": 37.818359375
+    },
+    "candidate": {
+      "ms": 16.891170000000002,
+      "bytes": 272.0,
+      "workingSetMiB": 67.015625,
+      "privateMiB": 42.009765625
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "filter-dilate-16",
+    "equality": true,
+    "baseline": {
+      "ms": 109.5295,
+      "bytes": 424.0,
+      "workingSetMiB": 63.486328125,
+      "privateMiB": 39.2578125
+    },
+    "candidate": {
+      "ms": 2.194921994134897,
+      "bytes": 424.0,
+      "workingSetMiB": 68.890625,
+      "privateMiB": 43.8984375
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "filter-dilate-2",
+    "equality": true,
+    "baseline": {
+      "ms": 16.400660000000002,
+      "bytes": 424.0,
+      "workingSetMiB": 70.0,
+      "privateMiB": 45.705078125
+    },
+    "candidate": {
+      "ms": 1.7614651969981239,
+      "bytes": 424.0,
+      "workingSetMiB": 68.947265625,
+      "privateMiB": 44.048828125
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "filter-erode-16-crop",
+    "equality": true,
+    "baseline": {
+      "ms": 61.8593,
+      "bytes": 424.0,
+      "workingSetMiB": 62.400390625,
+      "privateMiB": 37.767578125
+    },
+    "candidate": {
+      "ms": 1.2996570538720538,
+      "bytes": 424.0,
+      "workingSetMiB": 68.890625,
+      "privateMiB": 43.8984375
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "path-intersection",
+    "equality": true,
+    "baseline": {
+      "ms": 2.2539,
+      "bytes": 2054903.3086419753,
+      "workingSetMiB": 110.69140625,
+      "privateMiB": 85.6015625
+    },
+    "candidate": {
+      "ms": 2.4346569327731094,
+      "bytes": 2054868.0023199935,
+      "workingSetMiB": 116.7109375,
+      "privateMiB": 91.466796875
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "pixel-scale-Linear",
+    "equality": true,
+    "baseline": {
+      "ms": 1.3825275171624714,
+      "bytes": 0.0,
+      "workingSetMiB": 64.677734375,
+      "privateMiB": 40.017578125
+    },
+    "candidate": {
+      "ms": 1.540219791666667,
+      "bytes": 0.0,
+      "workingSetMiB": 67.142578125,
+      "privateMiB": 42.16015625
+    }
+  },
+  {
+    "group": "extra",
+    "scene": "pixel-scale-Nearest",
+    "equality": true,
+    "baseline": {
+      "ms": 0.25923008200082,
+      "bytes": 0.0,
+      "workingSetMiB": 64.548828125,
+      "privateMiB": 39.875
+    },
+    "candidate": {
+      "ms": 0.2723132913677181,
+      "bytes": 0.0,
+      "workingSetMiB": 67.009765625,
+      "privateMiB": 41.939453125
+    }
+  },
+  {
+    "group": "gpu",
+    "scene": "blend-1024x768",
+    "equality": true,
+    "baseline": {
+      "ms": 1.4693570945945946,
+      "bytes": 4.691291291291291,
+      "workingSetMiB": 112.07421875,
+      "privateMiB": 83.484375
+    },
+    "candidate": {
+      "ms": 1.9071394468085106,
+      "bytes": 5.245276595744681,
+      "workingSetMiB": 109.11328125,
+      "privateMiB": 80.056640625
+    }
+  },
+  {
+    "group": "gpu",
+    "scene": "blend-256x256",
+    "equality": true,
+    "baseline": {
+      "ms": 0.293700123248573,
+      "bytes": 1.1512541082857637,
+      "workingSetMiB": 112.2578125,
+      "privateMiB": 85.630859375
+    },
+    "candidate": {
+      "ms": 0.37000260041966426,
+      "bytes": 0.9023581135091927,
+      "workingSetMiB": 108.79296875,
+      "privateMiB": 78.359375
+    }
+  },
+  {
+    "group": "gpu",
+    "scene": "chinese-1024x768",
+    "equality": true,
+    "baseline": {
+      "ms": 1.276131186440678,
+      "bytes": 4.631186440677966,
+      "workingSetMiB": 113.373046875,
+      "privateMiB": 87.1640625
+    },
+    "candidate": {
+      "ms": 1.1331200519409514,
+      "bytes": 3.651831601968289,
+      "workingSetMiB": 111.474609375,
+      "privateMiB": 81.705078125
+    }
+  },
+  {
+    "group": "gpu",
+    "scene": "chinese-256x256",
+    "equality": true,
+    "baseline": {
+      "ms": 0.26248665576379066,
+      "bytes": 1.0393917963224895,
+      "workingSetMiB": 110.912109375,
+      "privateMiB": 80.416015625
+    },
+    "candidate": {
+      "ms": 0.22758761711478012,
+      "bytes": 1.2398815881832332,
+      "workingSetMiB": 108.48828125,
+      "privateMiB": 77.509765625
+    }
+  },
+  {
+    "group": "gpu",
+    "scene": "chinese-changing-1024x768",
+    "equality": true,
+    "baseline": {
+      "ms": 1.1423138477801267,
+      "bytes": 554.4583509513742,
+      "workingSetMiB": 117.21484375,
+      "privateMiB": 90.408203125
+    },
+    "candidate": {
+      "ms": 1.2371124390243902,
+      "bytes": 811.0926829268292,
+      "workingSetMiB": 118.75390625,
+      "privateMiB": 89.85546875
+    }
+  },
+  {
+    "group": "gpu",
+    "scene": "chinese-changing-256x256",
+    "equality": true,
+    "baseline": {
+      "ms": 0.27067438065235094,
+      "bytes": 169.02445673138743,
+      "workingSetMiB": 118.5546875,
+      "privateMiB": 90.71875
+    },
+    "candidate": {
+      "ms": 0.32899379562043796,
+      "bytes": 169.08639091646393,
+      "workingSetMiB": 118.984375,
+      "privateMiB": 88.78125
+    }
+  },
+  {
+    "group": "gpu",
+    "scene": "clear-1024x768",
+    "equality": true,
+    "baseline": {
+      "ms": 1.2566000765306122,
+      "bytes": 3.8869387755102043,
+      "workingSetMiB": 111.0078125,
+      "privateMiB": 84.0234375
+    },
+    "candidate": {
+      "ms": 1.1986939406207826,
+      "bytes": 2.8186774628879894,
+      "workingSetMiB": 111.025390625,
+      "privateMiB": 81.6796875
+    }
+  },
+  {
+    "group": "gpu",
+    "scene": "clear-256x256",
+    "equality": true,
+    "baseline": {
+      "ms": 0.1850795570436813,
+      "bytes": 0.47659273821957365,
+      "workingSetMiB": 108.82421875,
+      "privateMiB": 80.298828125
+    },
+    "candidate": {
+      "ms": 0.23891875070805482,
+      "bytes": 0.6764019485668971,
+      "workingSetMiB": 104.630859375,
+      "privateMiB": 75.25
+    }
+  },
+  {
+    "group": "gpu",
+    "scene": "curve-aa-1024x768",
+    "equality": true,
+    "baseline": {
+      "ms": 1.2100850434782608,
+      "bytes": 3.572869565217391,
+      "workingSetMiB": 110.095703125,
+      "privateMiB": 81.744140625
+    },
+    "candidate": {
+      "ms": 1.137009574468085,
+      "bytes": 3.6425531914893616,
+      "workingSetMiB": 112.400390625,
+      "privateMiB": 84.720703125
+    }
+  },
+  {
+    "group": "gpu",
+    "scene": "curve-aa-256x256",
+    "equality": true,
+    "baseline": {
+      "ms": 0.32906681536271665,
+      "bytes": 0.8855472523003406,
+      "workingSetMiB": 109.833984375,
+      "privateMiB": 82.001953125
+    },
+    "candidate": {
+      "ms": 0.25126073510479796,
+      "bytes": 0.6512895433439891,
+      "workingSetMiB": 106.96484375,
+      "privateMiB": 75.955078125
+    }
+  },
+  {
+    "group": "gpu",
+    "scene": "curve-changing-1024x768",
+    "equality": true,
+    "baseline": {
+      "ms": 2.257070484949833,
+      "bytes": 192980.6769230769,
+      "workingSetMiB": 109.412109375,
+      "privateMiB": 84.662109375
+    },
+    "candidate": {
+      "ms": 2.099919365530303,
+      "bytes": 192748.8931818182,
+      "workingSetMiB": 112.509765625,
+      "privateMiB": 86.98046875
+    }
+  },
+  {
+    "group": "gpu",
+    "scene": "curve-changing-256x256",
+    "equality": true,
+    "baseline": {
+      "ms": 0.3161606500310195,
+      "bytes": 233.48695112704212,
+      "workingSetMiB": 109.12890625,
+      "privateMiB": 80.603515625
+    },
+    "candidate": {
+      "ms": 0.315960789627981,
+      "bytes": 232.59408167905133,
+      "workingSetMiB": 108.099609375,
+      "privateMiB": 79.52734375
+    }
+  },
+  {
+    "group": "gpu",
+    "scene": "evenodd-1024x768",
+    "equality": true,
+    "baseline": {
+      "ms": 1.2394827160493826,
+      "bytes": 2.334402063755298,
+      "workingSetMiB": 113.4609375,
+      "privateMiB": 87.484375
+    },
+    "candidate": {
+      "ms": 1.30273,
+      "bytes": 2.7514285714285713,
+      "workingSetMiB": 110.306640625,
+      "privateMiB": 82.5859375
+    }
+  },
+  {
+    "group": "gpu",
+    "scene": "evenodd-256x256",
+    "equality": true,
+    "baseline": {
+      "ms": 0.17705934576927213,
+      "bytes": 0.9295344586603591,
+      "workingSetMiB": 109.8046875,
+      "privateMiB": 81.392578125
+    },
+    "candidate": {
+      "ms": 0.17780751544269047,
+      "bytes": 1.375749256463052,
+      "workingSetMiB": 105.40625,
+      "privateMiB": 74.810546875
+    }
+  },
+  {
+    "group": "gpu",
+    "scene": "gradient-1024x768",
+    "equality": true,
+    "baseline": {
+      "ms": 1.2367823349056604,
+      "bytes": 3.7550943396226417,
+      "workingSetMiB": 114.0234375,
+      "privateMiB": 87.16015625
+    },
+    "candidate": {
+      "ms": 1.3496691379310346,
+      "bytes": 2.902528735632184,
+      "workingSetMiB": 110.3125,
+      "privateMiB": 80.482421875
+    }
+  },
+  {
+    "group": "gpu",
+    "scene": "gradient-256x256",
+    "equality": true,
+    "baseline": {
+      "ms": 0.189269166265447,
+      "bytes": 0.443042850264805,
+      "workingSetMiB": 99.072265625,
+      "privateMiB": 69.689453125
+    },
+    "candidate": {
+      "ms": 0.23159889944333795,
+      "bytes": 0.7344262295081967,
+      "workingSetMiB": 98.830078125,
+      "privateMiB": 69.513671875
+    }
+  },
+  {
+    "group": "gpu",
+    "scene": "image-1024x768",
+    "equality": true,
+    "baseline": {
+      "ms": 1.283836864864865,
+      "bytes": 4.025513513513514,
+      "workingSetMiB": 111.607421875,
+      "privateMiB": 84.5859375
+    },
+    "candidate": {
+      "ms": 1.3886783333333335,
+      "bytes": 3.282867383512545,
+      "workingSetMiB": 110.501953125,
+      "privateMiB": 83.203125
+    }
+  },
+  {
+    "group": "gpu",
+    "scene": "image-256x256",
+    "equality": true,
+    "baseline": {
+      "ms": 0.20693645380434783,
+      "bytes": 1.1552898550724637,
+      "workingSetMiB": 110.71484375,
+      "privateMiB": 81.1640625
+    },
+    "candidate": {
+      "ms": 0.1880431645879188,
+      "bytes": 1.894546343849352,
+      "workingSetMiB": 107.7578125,
+      "privateMiB": 79.466796875
+    }
+  },
+  {
+    "group": "gpu",
+    "scene": "rect-aa-1024x768",
+    "equality": true,
+    "baseline": {
+      "ms": 1.1556213346814963,
+      "bytes": 3.2312773845635325,
+      "workingSetMiB": 105.787109375,
+      "privateMiB": 80.39453125
+    },
+    "candidate": {
+      "ms": 1.2767399886557005,
+      "bytes": 4.078502552467385,
+      "workingSetMiB": 109.30859375,
+      "privateMiB": 80.76171875
+    }
+  },
+  {
+    "group": "gpu",
+    "scene": "rect-aa-256x256",
+    "equality": true,
+    "baseline": {
+      "ms": 0.2538048050331858,
+      "bytes": 0.824594395280236,
+      "workingSetMiB": 106.044921875,
+      "privateMiB": 77.482421875
+    },
+    "candidate": {
+      "ms": 0.23202386557769433,
+      "bytes": 0.5176930596285435,
+      "workingSetMiB": 108.208984375,
+      "privateMiB": 77.189453125
+    }
+  },
+  {
+    "group": "gpu",
+    "scene": "rectangles-1024x768",
+    "equality": true,
+    "baseline": {
+      "ms": 1.559203125,
+      "bytes": 3.821428571428571,
+      "workingSetMiB": 111.669921875,
+      "privateMiB": 85.716796875
+    },
+    "candidate": {
+      "ms": 1.3815641682479445,
+      "bytes": 4.4397216951296645,
+      "workingSetMiB": 110.287109375,
+      "privateMiB": 82.078125
+    }
+  },
+  {
+    "group": "gpu",
+    "scene": "rectangles-256x256",
+    "equality": true,
+    "baseline": {
+      "ms": 0.406652499447025,
+      "bytes": 1.4894639828946399,
+      "workingSetMiB": 107.666015625,
+      "privateMiB": 78.9921875
+    },
+    "candidate": {
+      "ms": 0.3321446237724642,
+      "bytes": 0.8276268724663444,
+      "workingSetMiB": 105.048828125,
+      "privateMiB": 73.71484375
+    }
+  },
+  {
+    "group": "gpu",
+    "scene": "stroke-1024x768",
+    "equality": true,
+    "baseline": {
+      "ms": 1.0529911655874191,
+      "bytes": 4.748936170212765,
+      "workingSetMiB": 112.44140625,
+      "privateMiB": 86.3515625
+    },
+    "candidate": {
+      "ms": 1.2369237212276216,
+      "bytes": 5.647058823529411,
+      "workingSetMiB": 109.697265625,
+      "privateMiB": 83.45703125
+    }
+  },
+  {
+    "group": "gpu",
+    "scene": "stroke-256x256",
+    "equality": true,
+    "baseline": {
+      "ms": 0.35958472555993465,
+      "bytes": 1.0824569835624338,
+      "workingSetMiB": 96.962890625,
+      "privateMiB": 70.251953125
+    },
+    "candidate": {
+      "ms": 0.2275924774056353,
+      "bytes": 1.017331206804891,
+      "workingSetMiB": 96.59765625,
+      "privateMiB": 66.640625
+    }
+  },
+  {
+    "group": "gradient",
+    "scene": "direct2d-gradient",
+    "equality": true,
+    "baseline": {
+      "ms": 0.46459781964927993,
+      "bytes": 0.19878291941195453,
+      "workingSetMiB": 71.173828125,
+      "privateMiB": 66.32421875
+    },
+    "candidate": {
+      "ms": 0.46237497512241177,
+      "bytes": 0.19751391986856048,
+      "workingSetMiB": 71.283203125,
+      "privateMiB": 67.373046875
+    }
+  },
+  {
+    "group": "gradient",
+    "scene": "vulkan-gradient",
+    "equality": true,
+    "baseline": {
+      "ms": 0.7864281386870533,
+      "bytes": 0.3365118792725476,
+      "workingSetMiB": 81.52734375,
+      "privateMiB": 58.45703125
+    },
+    "candidate": {
+      "ms": 1.480016248776604,
+      "bytes": 0.6332191632908679,
+      "workingSetMiB": 81.5078125,
+      "privateMiB": 58.45703125
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "blend-1024x768",
+    "equality": true,
+    "baseline": {
+      "ms": 3.464402614379085,
+      "bytes": 6.862745098039216,
+      "workingSetMiB": 63.11328125,
+      "privateMiB": 37.171875
+    },
+    "candidate": {
+      "ms": 3.693949558823529,
+      "bytes": 6.529411764705882,
+      "workingSetMiB": 63.224609375,
+      "privateMiB": 37.560546875
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "blend-256x256",
+    "equality": true,
+    "baseline": {
+      "ms": 0.43908771778584393,
+      "bytes": 0.8085299455535391,
+      "workingSetMiB": 64.4453125,
+      "privateMiB": 38.9375
+    },
+    "candidate": {
+      "ms": 0.4222567067945317,
+      "bytes": 0.7688226892470924,
+      "workingSetMiB": 64.53515625,
+      "privateMiB": 39.26171875
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "chinese-1024x768",
+    "equality": true,
+    "baseline": {
+      "ms": 0.29395071872493983,
+      "bytes": 0.7599358460304731,
+      "workingSetMiB": 51.890625,
+      "privateMiB": 25.943359375
+    },
+    "candidate": {
+      "ms": 0.2734407036992409,
+      "bytes": 0.8337968429931317,
+      "workingSetMiB": 51.98046875,
+      "privateMiB": 26.29296875
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "chinese-256x256",
+    "equality": true,
+    "baseline": {
+      "ms": 0.06267266963685542,
+      "bytes": 0.14850332005007413,
+      "workingSetMiB": 52.294921875,
+      "privateMiB": 26.306640625
+    },
+    "candidate": {
+      "ms": 0.05958192798931949,
+      "bytes": 0.18313081215840005,
+      "workingSetMiB": 52.359375,
+      "privateMiB": 26.619140625
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "chinese-changing-1024x768",
+    "equality": true,
+    "baseline": {
+      "ms": 0.9370368421052632,
+      "bytes": 153622.46315789473,
+      "workingSetMiB": 65.435546875,
+      "privateMiB": 39.419921875
+    },
+    "candidate": {
+      "ms": 0.29353765151515154,
+      "bytes": 173.09656565656564,
+      "workingSetMiB": 65.49609375,
+      "privateMiB": 39.767578125
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "chinese-changing-256x256",
+    "equality": true,
+    "baseline": {
+      "ms": 0.05664207370229685,
+      "bytes": 168.14639841085102,
+      "workingSetMiB": 64.03125,
+      "privateMiB": 38.103515625
+    },
+    "candidate": {
+      "ms": 0.0551848482198053,
+      "bytes": 168.15762858093925,
+      "workingSetMiB": 64.134765625,
+      "privateMiB": 38.462890625
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "clear-1024x768",
+    "equality": true,
+    "baseline": {
+      "ms": 0.15367747195187886,
+      "bytes": 0.2848742903487429,
+      "workingSetMiB": 52.61328125,
+      "privateMiB": 26.623046875
+    },
+    "candidate": {
+      "ms": 0.1780120756180258,
+      "bytes": 0.3038052569846367,
+      "workingSetMiB": 52.64453125,
+      "privateMiB": 26.900390625
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "clear-256x256",
+    "equality": true,
+    "baseline": {
+      "ms": 0.009339636679785964,
+      "bytes": 0.015601163624712826,
+      "workingSetMiB": 57.1640625,
+      "privateMiB": 31.255859375
+    },
+    "candidate": {
+      "ms": 0.008758339323423958,
+      "bytes": 0.01582495140380498,
+      "workingSetMiB": 57.267578125,
+      "privateMiB": 31.572265625
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "curve-aa-1024x768",
+    "equality": true,
+    "baseline": {
+      "ms": 0.3674159764557494,
+      "bytes": 1.1435778852217784,
+      "workingSetMiB": 57.384765625,
+      "privateMiB": 31.6953125
+    },
+    "candidate": {
+      "ms": 0.416012438157081,
+      "bytes": 1.215213358070501,
+      "workingSetMiB": 59.15625,
+      "privateMiB": 33.583984375
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "curve-aa-256x256",
+    "equality": true,
+    "baseline": {
+      "ms": 0.04836901623703971,
+      "bytes": 0.09310640603133041,
+      "workingSetMiB": 44.23046875,
+      "privateMiB": 20.220703125
+    },
+    "candidate": {
+      "ms": 0.05050175034907518,
+      "bytes": 0.08300338555115624,
+      "workingSetMiB": 44.318359375,
+      "privateMiB": 20.5859375
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "curve-changing-1024x768",
+    "equality": true,
+    "baseline": {
+      "ms": 0.8241422558922559,
+      "bytes": 184803.75744749076,
+      "workingSetMiB": 65.240234375,
+      "privateMiB": 39.77734375
+    },
+    "candidate": {
+      "ms": 0.8115376631393298,
+      "bytes": 184812.6085361552,
+      "workingSetMiB": 65.232421875,
+      "privateMiB": 39.740234375
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "curve-changing-256x256",
+    "equality": true,
+    "baseline": {
+      "ms": 0.19701670700816212,
+      "bytes": 50111.85167238953,
+      "workingSetMiB": 62.369140625,
+      "privateMiB": 36.748046875
+    },
+    "candidate": {
+      "ms": 0.19659283806883807,
+      "bytes": 50111.75721690922,
+      "workingSetMiB": 62.400390625,
+      "privateMiB": 36.90625
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "evenodd-1024x768",
+    "equality": true,
+    "baseline": {
+      "ms": 0.30239955222491155,
+      "bytes": 0.5216905604170545,
+      "workingSetMiB": 61.017578125,
+      "privateMiB": 34.970703125
+    },
+    "candidate": {
+      "ms": 0.38481618250377075,
+      "bytes": 0.6714932126696833,
+      "workingSetMiB": 59.08203125,
+      "privateMiB": 33.32421875
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "evenodd-256x256",
+    "equality": true,
+    "baseline": {
+      "ms": 0.027995273182527203,
+      "bytes": 0.05336853795359697,
+      "workingSetMiB": 59.349609375,
+      "privateMiB": 34.240234375
+    },
+    "candidate": {
+      "ms": 0.0268288404604127,
+      "bytes": 0.04649228790456246,
+      "workingSetMiB": 59.490234375,
+      "privateMiB": 34.150390625
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "gradient-1024x768",
+    "equality": true,
+    "baseline": {
+      "ms": 0.34766998592540466,
+      "bytes": 0.7037297677691767,
+      "workingSetMiB": 54.1953125,
+      "privateMiB": 29.060546875
+    },
+    "candidate": {
+      "ms": 0.3122444321124676,
+      "bytes": 0.5771365149833518,
+      "workingSetMiB": 54.154296875,
+      "privateMiB": 28.658203125
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "gradient-256x256",
+    "equality": true,
+    "baseline": {
+      "ms": 0.019666560980598137,
+      "bytes": 0.04835126014483996,
+      "workingSetMiB": 57.92578125,
+      "privateMiB": 32.892578125
+    },
+    "candidate": {
+      "ms": 0.020519246282730857,
+      "bytes": 0.041058437341770004,
+      "workingSetMiB": 58.0546875,
+      "privateMiB": 32.798828125
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "image-1024x768",
+    "equality": true,
+    "baseline": {
+      "ms": 1.4471003472222224,
+      "bytes": 2.583333333333333,
+      "workingSetMiB": 61.080078125,
+      "privateMiB": 35.958984375
+    },
+    "candidate": {
+      "ms": 1.3969291925465839,
+      "bytes": 2.528837622005324,
+      "workingSetMiB": 59.17578125,
+      "privateMiB": 33.896484375
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "image-256x256",
+    "equality": true,
+    "baseline": {
+      "ms": 0.581998078078078,
+      "bytes": 0.536036036036036,
+      "workingSetMiB": 60.86328125,
+      "privateMiB": 34.84765625
+    },
+    "candidate": {
+      "ms": 0.20854039324104864,
+      "bytes": 0.3345448921197123,
+      "workingSetMiB": 60.9296875,
+      "privateMiB": 35.189453125
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "png-decode-1024x768",
+    "equality": true,
+    "baseline": {
+      "ms": 7.012115,
+      "bytes": 5601.92,
+      "workingSetMiB": 52.083984375,
+      "privateMiB": 26.59375
+    },
+    "candidate": {
+      "ms": 7.466268333333333,
+      "bytes": 5602.471111111111,
+      "workingSetMiB": 52.099609375,
+      "privateMiB": 26.591796875
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "png-decode-256x256",
+    "equality": true,
+    "baseline": {
+      "ms": 0.7080276987718165,
+      "bytes": 2521.0313294548587,
+      "workingSetMiB": 66.298828125,
+      "privateMiB": 40.74609375
+    },
+    "candidate": {
+      "ms": 2.4186621515151514,
+      "bytes": 2522.9158787878787,
+      "workingSetMiB": 66.44921875,
+      "privateMiB": 41.154296875
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "png-encode-1024x768",
+    "equality": true,
+    "baseline": {
+      "ms": 41.775225000000006,
+      "bytes": 96608.8,
+      "workingSetMiB": 40.490234375,
+      "privateMiB": 19.96484375
+    },
+    "candidate": {
+      "ms": 38.89265,
+      "bytes": 96608.8,
+      "workingSetMiB": 40.376953125,
+      "privateMiB": 19.986328125
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "png-encode-256x256",
+    "equality": true,
+    "baseline": {
+      "ms": 3.7383977124183003,
+      "bytes": 22082.83660130719,
+      "workingSetMiB": 58.25390625,
+      "privateMiB": 32.251953125
+    },
+    "candidate": {
+      "ms": 4.0041617647058825,
+      "bytes": 22082.917647058825,
+      "workingSetMiB": 58.3125,
+      "privateMiB": 32.595703125
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "rect-aa-1024x768",
+    "equality": true,
+    "baseline": {
+      "ms": 0.3719692900849151,
+      "bytes": 0.6705794205794205,
+      "workingSetMiB": 65.439453125,
+      "privateMiB": 39.421875
+    },
+    "candidate": {
+      "ms": 0.6635327447889297,
+      "bytes": 0.7104571728849185,
+      "workingSetMiB": 65.529296875,
+      "privateMiB": 39.794921875
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "rect-aa-256x256",
+    "equality": true,
+    "baseline": {
+      "ms": 0.039997228844414645,
+      "bytes": 0.0762150479339163,
+      "workingSetMiB": 57.431640625,
+      "privateMiB": 31.7578125
+    },
+    "candidate": {
+      "ms": 0.04462184188510876,
+      "bytes": 0.07942345231455661,
+      "workingSetMiB": 59.212890625,
+      "privateMiB": 33.646484375
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "rectangles-1024x768",
+    "equality": true,
+    "baseline": {
+      "ms": 0.496797072072072,
+      "bytes": 0.945945945945946,
+      "workingSetMiB": 56.68359375,
+      "privateMiB": 30.677734375
+    },
+    "candidate": {
+      "ms": 0.441169708994709,
+      "bytes": 0.906084656084656,
+      "workingSetMiB": 56.751953125,
+      "privateMiB": 31.0390625
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "rectangles-256x256",
+    "equality": true,
+    "baseline": {
+      "ms": 0.08817495335460793,
+      "bytes": 0.1521926551200556,
+      "workingSetMiB": 58.251953125,
+      "privateMiB": 32.244140625
+    },
+    "candidate": {
+      "ms": 0.0869900320873953,
+      "bytes": 0.15352961348160485,
+      "workingSetMiB": 58.318359375,
+      "privateMiB": 32.619140625
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "stroke-1024x768",
+    "equality": true,
+    "baseline": {
+      "ms": 0.19858084638376694,
+      "bytes": 0.5506609413151469,
+      "workingSetMiB": 57.814453125,
+      "privateMiB": 32.1328125
+    },
+    "candidate": {
+      "ms": 0.20578136942675157,
+      "bytes": 0.5239559098363782,
+      "workingSetMiB": 59.587890625,
+      "privateMiB": 34.0234375
+    }
+  },
+  {
+    "group": "raster",
+    "scene": "stroke-256x256",
+    "equality": true,
+    "baseline": {
+      "ms": 0.02684865487645742,
+      "bytes": 0.06870548986548519,
+      "workingSetMiB": 48.4296875,
+      "privateMiB": 24.48828125
+    },
+    "candidate": {
+      "ms": 0.025995817950445567,
+      "bytes": 0.06442445694560457,
+      "workingSetMiB": 48.40234375,
+      "privateMiB": 24.42578125
+    }
+  }
+]

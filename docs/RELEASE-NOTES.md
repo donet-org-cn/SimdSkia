@@ -1,5 +1,15 @@
 # SimdSkia 更新日志 / Release notes
 
+## 0.1.6 正式版 — 图像、滤镜和 Vulkan 上传性能（2026-11-18）
+
+- 降低 GIF 首帧解码与连续播放的分配，复用当前合成帧，并减少 ICO 与 WebP 解码的中间缓冲。
+- TIFF 编码按较小分条处理像素。符合条件的分条 TIFF 可直接解码到目标缓冲，其他 TIFF 走通用路径。编码后的分条布局会变化，独立解码验证了像素一致。
+- 优化 CPU 膨胀和腐蚀滤镜的滑动窗口，减少 PDF 栅格页和 Vulkan 纹理上传的整图复制，并为 JPEG 编码跨线程复用有容量上限的像素缓冲。
+- 以 NuGet.org 的 0.1.5 为基线，Windows x64 混合负载总耗时下降 20.6%，CPU 用时下降 19.9%，累计托管分配下降 53.8%。峰值工作集从 215.6 MiB 降至 214.1 MiB，任务结束时私有内存从 136.8 MiB 增至 165.3 MiB。
+- 2560×1440 样本的 TIFF 编码峰值工作集从 240.4 MiB 降至 102.0 MiB。分条 TIFF 解码峰值从 225.8 MiB 降至 72.4 MiB，耗时增加 11.0%。Vulkan 上传变更纹理并读回从 49.498 ms 降至 19.704 ms。
+
+十三个 NuGet 包统一为 0.1.6，面向 .NET 10。包内编解码依赖为 Sdcb.SimdCodecs 2.0.0。[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.6/docs/RELEASE-0.1.6.md) · [性能报告与逐轮数据](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.6/docs/PERFORMANCE-2026-11-18.md)
+
 ## 0.1.5 正式版 — 多帧 GIF 和 TrueType 字形修复（2026-11-17）
 
 - 新增 `GifAnimationWriter`，逐帧将 `SKBitmap` 或 `PixelBuffer` 写入 GIF 流，支持各帧延迟、总播放次数、二值透明和帧处置。可复用同一张位图。[#3](https://github.com/donet-org-cn/SimdSkia/issues/3)

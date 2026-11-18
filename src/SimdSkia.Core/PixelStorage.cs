@@ -14,13 +14,14 @@ internal sealed class PixelStorage
     public byte[] Bytes {get;}
     private PixelStorage(byte[] bytes)=>Bytes=bytes;
 
-    public static PixelStorage Rent(int length)
+    public static PixelStorage Rent(int length, bool exactSize)
     {
+        long maximum = exactSize ? length : Math.Max(4096L, (long)length * 2);
         lock(Gate)
         {
             int best=-1;
             for(int i=0;i<Available.Count;i++)
-                if(Available[i].Length>=length&&(long)Available[i].Length<=Math.Max(4096L,(long)length*2)
+                if(Available[i].Length>=length&&Available[i].Length<=maximum
                     &&(best<0||Available[i].Length<Available[best].Length))best=i;
             if(best>=0)
             {

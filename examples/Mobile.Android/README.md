@@ -1,6 +1,6 @@
-# SimdSkia.Avalonia.Android 0.1.5
+# SimdSkia.Avalonia.Android 0.1.6
 
-0.1.5 新增多帧 GIF 编码，修复 `actionj.ttf` 的字形微调异常，并升级到 Sdcb.SimdCodecs 2.0.0。[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-0.1.5.md)
+0.1.6 优化了 GIF、TIFF、形态学滤镜及桌面 Vulkan 上传。随发行附上 Windows x64 性能对比。[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.6/docs/RELEASE-0.1.6.md) · [性能对比](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.6/docs/PERFORMANCE-2026-11-18.md)
 
 该源码示例使用 Avalonia 12.1.5 和 SimdSkia 的 C# CPU/通用 SIMD 光栅化。Android 官方宿主负责 Activity、触摸、输入法和帧缓冲显示。
 
@@ -11,7 +11,7 @@
 目标框架使用 `net10.0-android36.0`，Avalonia 家族包统一为12.1.5。在 Android 启动项目中安装以下包。
 
 ```powershell
-dotnet add package SimdSkia.Avalonia.Android --version 0.1.5
+dotnet add package SimdSkia.Avalonia.Android --version 0.1.6
 dotnet add package Avalonia.Themes.Fluent --version 12.1.5
 ```
 

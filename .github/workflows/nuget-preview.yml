@@ -2,13 +2,13 @@ name: NuGet release
 
 on:
   push:
-    tags: ['v*-preview.*', 'v0.1.0', 'v0.1.1', 'v0.1.2', 'v0.1.3', 'v0.1.4', 'v0.1.5']
+    tags: ['v*-preview.*', 'v0.1.0', 'v0.1.1', 'v0.1.2', 'v0.1.3', 'v0.1.4', 'v0.1.5', 'v0.1.6']
   workflow_dispatch:
     inputs:
       version:
         description: 'Approved release version'
         required: true
-        default: '0.1.5'
+        default: '0.1.6'
       publish:
         description: 'Publish verified stable/preview packages to NuGet.org using trusted publishing'
         type: boolean
@@ -49,7 +49,7 @@ jobs:
           if ($version -notmatch '^\d+\.\d+\.\d+(-preview\.\d+)?$') { throw 'Invalid stable/preview SemVer.' }
           "version=$version" >> $env:GITHUB_OUTPUT
       - name: Verify archived test and performance evidence bytes in Git
-        run: python tools/verify-evidence-git.py docs/evidence/api-final-2026-11-07 docs/evidence/api-final-package-consumption-2026-11-07 docs/evidence/api-final-ci-recheck-2026-11-07 docs/evidence/ui-preview3-2026-11-07 docs/evidence/nuget-0.1.2-preview.3-2026-11-07 docs/evidence/stable-0.1.2-preflight-2026-11-07 docs/evidence/hotspots-2026-11-07 docs/evidence/gpu-completion-2026-11-07 docs/evidence/gpu-preferred-2026-11-07 docs/evidence/stable-0.1.3-preflight-2026-11-07 docs/evidence/android-issue1-2026-11-09
+        run: python tools/verify-evidence-git.py docs/evidence/api-final-2026-11-07 docs/evidence/api-final-package-consumption-2026-11-07 docs/evidence/api-final-ci-recheck-2026-11-07 docs/evidence/ui-preview3-2026-11-07 docs/evidence/nuget-0.1.2-preview.3-2026-11-07 docs/evidence/stable-0.1.2-preflight-2026-11-07 docs/evidence/hotspots-2026-11-07 docs/evidence/gpu-completion-2026-11-07 docs/evidence/gpu-preferred-2026-11-07 docs/evidence/stable-0.1.3-preflight-2026-11-07 docs/evidence/android-issue1-2026-11-09 docs/evidence/nuget-0.1.6-performance-2026-11-18
       - name: Fetch pinned licensed test fonts
         shell: pwsh
         run: |
@@ -107,12 +107,12 @@ jobs:
           dotnet run --project tests/CodecIntegration -c Release --no-build
           exit $LASTEXITCODE
       - uses: actions/setup-java@v4
-        if: contains(fromJSON('["0.1.4", "0.1.5"]'), steps.version.outputs.version)
+        if: contains(fromJSON('["0.1.4", "0.1.5", "0.1.6"]'), steps.version.outputs.version)
         with:
           distribution: microsoft
           java-version: '21'
       - name: Prepare Android package build dependencies
-        if: contains(fromJSON('["0.1.4", "0.1.5"]'), steps.version.outputs.version)
+        if: contains(fromJSON('["0.1.4", "0.1.5", "0.1.6"]'), steps.version.outputs.version)
         shell: pwsh
         run: |
           dotnet workload install android --skip-manifest-update
@@ -152,7 +152,7 @@ jobs:
           PREVIEW_VERSION: ${{ steps.version.outputs.version }}
         run: ./tools/test-pdf-package.ps1 -Version $env:PREVIEW_VERSION -Packages artifacts/nuget-preview
       - name: Consume actual Android package and build Release APK
-        if: contains(fromJSON('["0.1.4", "0.1.5"]'), steps.version.outputs.version)
+        if: contains(fromJSON('["0.1.4", "0.1.5", "0.1.6"]'), steps.version.outputs.version)
         shell: pwsh
         env:
           RELEASE_VERSION: ${{ steps.version.outputs.version }}
@@ -281,7 +281,7 @@ jobs:
           set -euo pipefail
           mapfile -d '' packages < <(find artifacts -name '*.nupkg' -print0 | sort -z)
           expected=12
-          if [[ "$RELEASE_VERSION" == '0.1.4' || "$RELEASE_VERSION" == '0.1.5' ]]; then expected=13; fi
+          if [[ "$RELEASE_VERSION" == '0.1.4' || "$RELEASE_VERSION" == '0.1.5' || "$RELEASE_VERSION" == '0.1.6' ]]; then expected=13; fi
           if [ "${#packages[@]}" -ne "$expected" ]; then echo "Expected exactly $expected packages"; exit 1; fi
           for package in "${packages[@]}"; do
             dotnet nuget push "$package" --source https://api.nuget.org/v3/index.json --api-key "$NUGET_API_KEY" --skip-duplicate

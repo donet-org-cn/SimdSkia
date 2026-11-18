@@ -1,0 +1,942 @@
+[
+  {
+    "profile": "mixed",
+    "batches": 192,
+    "frames": 2304,
+    "decodes": 384,
+    "animatedFrames": 192,
+    "encodes": 48,
+    "imageFilters": 48,
+    "wallMs": 6003.6077,
+    "cpuMs": 5953.125,
+    "allocatedBytes": 771211664,
+    "collections": [
+      22,
+      20,
+      18
+    ],
+    "warm": {
+      "WorkingSet": 130256896,
+      "PrivateBytes": 105152512,
+      "ManagedLive": 38301176,
+      "PeakWorkingSet": 130256896
+    },
+    "end": {
+      "WorkingSet": 167116800,
+      "PrivateBytes": 143446016,
+      "ManagedLive": 48809664,
+      "PeakWorkingSet": 224268288
+    },
+    "retained": {
+      "WorkingSet": 167116800,
+      "PrivateBytes": 143486976,
+      "ManagedLive": 38302040,
+      "PeakWorkingSet": 224268288
+    },
+    "affinity": 1,
+    "runtime": "10.0.14",
+    "avx2": true,
+    "sha256": "1EE64336C3683BAE6D3F4567C47AA835025250303A01F5D9885201BFB999F5DE",
+    "sink": 1715735374,
+    "variant": "baseline",
+    "fork": 0,
+    "peakMiB": 213.87890625,
+    "endMiB": 159.375,
+    "privateMiB": 136.80078125,
+    "retainedMiB": 36.527671813964844,
+    "gen2": 18
+  },
+  {
+    "profile": "mixed",
+    "batches": 192,
+    "frames": 2304,
+    "decodes": 384,
+    "animatedFrames": 192,
+    "encodes": 48,
+    "imageFilters": 48,
+    "wallMs": 4452.3897,
+    "cpuMs": 4406.25,
+    "allocatedBytes": 356488848,
+    "collections": [
+      8,
+      6,
+      4
+    ],
+    "warm": {
+      "WorkingSet": 100175872,
+      "PrivateBytes": 74670080,
+      "ManagedLive": 37836704,
+      "PeakWorkingSet": 117231616
+    },
+    "end": {
+      "WorkingSet": 169664512,
+      "PrivateBytes": 144924672,
+      "ManagedLive": 54536976,
+      "PeakWorkingSet": 224481280
+    },
+    "retained": {
+      "WorkingSet": 169680896,
+      "PrivateBytes": 144965632,
+      "ManagedLive": 37837568,
+      "PeakWorkingSet": 224481280
+    },
+    "affinity": 1,
+    "runtime": "10.0.14",
+    "avx2": true,
+    "sha256": "1EE64336C3683BAE6D3F4567C47AA835025250303A01F5D9885201BFB999F5DE",
+    "sink": 321238952,
+    "variant": "candidate",
+    "fork": 0,
+    "peakMiB": 214.08203125,
+    "endMiB": 161.8046875,
+    "privateMiB": 138.2109375,
+    "retainedMiB": 36.084716796875,
+    "gen2": 4
+  },
+  {
+    "profile": "draw",
+    "batches": 192,
+    "frames": 2304,
+    "decodes": 0,
+    "animatedFrames": 0,
+    "encodes": 0,
+    "imageFilters": 0,
+    "wallMs": 2441.3489,
+    "cpuMs": 2390.625,
+    "allocatedBytes": 848,
+    "collections": [
+      0,
+      0,
+      0
+    ],
+    "warm": {
+      "WorkingSet": 48160768,
+      "PrivateBytes": 22597632,
+      "ManagedLive": 6135928,
+      "PeakWorkingSet": 48160768
+    },
+    "end": {
+      "WorkingSet": 47153152,
+      "PrivateBytes": 21540864,
+      "ManagedLive": 6135928,
+      "PeakWorkingSet": 48201728
+    },
+    "retained": {
+      "WorkingSet": 47153152,
+      "PrivateBytes": 21540864,
+      "ManagedLive": 6136728,
+      "PeakWorkingSet": 48201728
+    },
+    "affinity": 1,
+    "runtime": "10.0.14",
+    "avx2": true,
+    "sha256": "4E453497548408242CAA2E2C1F343B09706765D645C547BBC1298C6C3991BCA4",
+    "sink": 1914529280,
+    "variant": "baseline",
+    "fork": 0,
+    "peakMiB": 45.96875,
+    "endMiB": 44.96875,
+    "privateMiB": 20.54296875,
+    "retainedMiB": 5.852439880371094,
+    "gen2": 0
+  },
+  {
+    "profile": "draw",
+    "batches": 192,
+    "frames": 2304,
+    "decodes": 0,
+    "animatedFrames": 0,
+    "encodes": 0,
+    "imageFilters": 0,
+    "wallMs": 2437.2433,
+    "cpuMs": 2406.25,
+    "allocatedBytes": 848,
+    "collections": [
+      0,
+      0,
+      0
+    ],
+    "warm": {
+      "WorkingSet": 48119808,
+      "PrivateBytes": 22634496,
+      "ManagedLive": 6135992,
+      "PeakWorkingSet": 48119808
+    },
+    "end": {
+      "WorkingSet": 47112192,
+      "PrivateBytes": 21577728,
+      "ManagedLive": 6135992,
+      "PeakWorkingSet": 48160768
+    },
+    "retained": {
+      "WorkingSet": 47112192,
+      "PrivateBytes": 21577728,
+      "ManagedLive": 6136728,
+      "PeakWorkingSet": 48160768
+    },
+    "affinity": 1,
+    "runtime": "10.0.14",
+    "avx2": true,
+    "sha256": "4E453497548408242CAA2E2C1F343B09706765D645C547BBC1298C6C3991BCA4",
+    "sink": 1914529280,
+    "variant": "candidate",
+    "fork": 0,
+    "peakMiB": 45.9296875,
+    "endMiB": 44.9296875,
+    "privateMiB": 20.578125,
+    "retainedMiB": 5.852439880371094,
+    "gen2": 0
+  },
+  {
+    "profile": "mixed",
+    "batches": 192,
+    "frames": 2304,
+    "decodes": 384,
+    "animatedFrames": 192,
+    "encodes": 48,
+    "imageFilters": 48,
+    "wallMs": 4768.3829,
+    "cpuMs": 4640.625,
+    "allocatedBytes": 356472816,
+    "collections": [
+      8,
+      6,
+      4
+    ],
+    "warm": {
+      "WorkingSet": 121450496,
+      "PrivateBytes": 96292864,
+      "ManagedLive": 37824416,
+      "PeakWorkingSet": 127655936
+    },
+    "end": {
+      "WorkingSet": 208142336,
+      "PrivateBytes": 185106432,
+      "ManagedLive": 99494056,
+      "PeakWorkingSet": 222654464
+    },
+    "retained": {
+      "WorkingSet": 183566336,
+      "PrivateBytes": 159666176,
+      "ManagedLive": 37825280,
+      "PeakWorkingSet": 222654464
+    },
+    "affinity": 1,
+    "runtime": "10.0.14",
+    "avx2": true,
+    "sha256": "1EE64336C3683BAE6D3F4567C47AA835025250303A01F5D9885201BFB999F5DE",
+    "sink": 321238952,
+    "variant": "candidate",
+    "fork": 1,
+    "peakMiB": 212.33984375,
+    "endMiB": 198.5,
+    "privateMiB": 176.53125,
+    "retainedMiB": 36.072998046875,
+    "gen2": 4
+  },
+  {
+    "profile": "mixed",
+    "batches": 192,
+    "frames": 2304,
+    "decodes": 384,
+    "animatedFrames": 192,
+    "encodes": 48,
+    "imageFilters": 48,
+    "wallMs": 5694.4978,
+    "cpuMs": 5453.125,
+    "allocatedBytes": 771236440,
+    "collections": [
+      22,
+      20,
+      18
+    ],
+    "warm": {
+      "WorkingSet": 135901184,
+      "PrivateBytes": 110772224,
+      "ManagedLive": 38301176,
+      "PeakWorkingSet": 135901184
+    },
+    "end": {
+      "WorkingSet": 122392576,
+      "PrivateBytes": 97566720,
+      "ManagedLive": 75478128,
+      "PeakWorkingSet": 228646912
+    },
+    "retained": {
+      "WorkingSet": 122392576,
+      "PrivateBytes": 97607680,
+      "ManagedLive": 38302040,
+      "PeakWorkingSet": 228646912
+    },
+    "affinity": 1,
+    "runtime": "10.0.14",
+    "avx2": true,
+    "sha256": "1EE64336C3683BAE6D3F4567C47AA835025250303A01F5D9885201BFB999F5DE",
+    "sink": 1715735374,
+    "variant": "baseline",
+    "fork": 1,
+    "peakMiB": 218.0546875,
+    "endMiB": 116.72265625,
+    "privateMiB": 93.046875,
+    "retainedMiB": 36.527671813964844,
+    "gen2": 18
+  },
+  {
+    "profile": "draw",
+    "batches": 192,
+    "frames": 2304,
+    "decodes": 0,
+    "animatedFrames": 0,
+    "encodes": 0,
+    "imageFilters": 0,
+    "wallMs": 2402.8337,
+    "cpuMs": 2328.125,
+    "allocatedBytes": 848,
+    "collections": [
+      0,
+      0,
+      0
+    ],
+    "warm": {
+      "WorkingSet": 48095232,
+      "PrivateBytes": 22679552,
+      "ManagedLive": 6135992,
+      "PeakWorkingSet": 48095232
+    },
+    "end": {
+      "WorkingSet": 47087616,
+      "PrivateBytes": 21626880,
+      "ManagedLive": 6135992,
+      "PeakWorkingSet": 48136192
+    },
+    "retained": {
+      "WorkingSet": 47087616,
+      "PrivateBytes": 21626880,
+      "ManagedLive": 6136728,
+      "PeakWorkingSet": 48136192
+    },
+    "affinity": 1,
+    "runtime": "10.0.14",
+    "avx2": true,
+    "sha256": "4E453497548408242CAA2E2C1F343B09706765D645C547BBC1298C6C3991BCA4",
+    "sink": 1914529280,
+    "variant": "candidate",
+    "fork": 1,
+    "peakMiB": 45.90625,
+    "endMiB": 44.90625,
+    "privateMiB": 20.625,
+    "retainedMiB": 5.852439880371094,
+    "gen2": 0
+  },
+  {
+    "profile": "draw",
+    "batches": 192,
+    "frames": 2304,
+    "decodes": 0,
+    "animatedFrames": 0,
+    "encodes": 0,
+    "imageFilters": 0,
+    "wallMs": 3248.7167,
+    "cpuMs": 3187.5,
+    "allocatedBytes": 848,
+    "collections": [
+      0,
+      0,
+      0
+    ],
+    "warm": {
+      "WorkingSet": 48140288,
+      "PrivateBytes": 22654976,
+      "ManagedLive": 6135928,
+      "PeakWorkingSet": 48140288
+    },
+    "end": {
+      "WorkingSet": 47075328,
+      "PrivateBytes": 21598208,
+      "ManagedLive": 6135928,
+      "PeakWorkingSet": 48181248
+    },
+    "retained": {
+      "WorkingSet": 47079424,
+      "PrivateBytes": 21598208,
+      "ManagedLive": 6136728,
+      "PeakWorkingSet": 48181248
+    },
+    "affinity": 1,
+    "runtime": "10.0.14",
+    "avx2": true,
+    "sha256": "4E453497548408242CAA2E2C1F343B09706765D645C547BBC1298C6C3991BCA4",
+    "sink": 1914529280,
+    "variant": "baseline",
+    "fork": 1,
+    "peakMiB": 45.94921875,
+    "endMiB": 44.89453125,
+    "privateMiB": 20.59765625,
+    "retainedMiB": 5.852439880371094,
+    "gen2": 0
+  },
+  {
+    "profile": "mixed",
+    "batches": 192,
+    "frames": 2304,
+    "decodes": 384,
+    "animatedFrames": 192,
+    "encodes": 48,
+    "imageFilters": 48,
+    "wallMs": 6041.2291,
+    "cpuMs": 5796.875,
+    "allocatedBytes": 771129176,
+    "collections": [
+      17,
+      15,
+      13
+    ],
+    "warm": {
+      "WorkingSet": 129421312,
+      "PrivateBytes": 104296448,
+      "ManagedLive": 38301176,
+      "PeakWorkingSet": 129896448
+    },
+    "end": {
+      "WorkingSet": 214491136,
+      "PrivateBytes": 191741952,
+      "ManagedLive": 120049704,
+      "PeakWorkingSet": 226070528
+    },
+    "retained": {
+      "WorkingSet": 186331136,
+      "PrivateBytes": 162668544,
+      "ManagedLive": 38302040,
+      "PeakWorkingSet": 226070528
+    },
+    "affinity": 1,
+    "runtime": "10.0.14",
+    "avx2": true,
+    "sha256": "1EE64336C3683BAE6D3F4567C47AA835025250303A01F5D9885201BFB999F5DE",
+    "sink": 1715735374,
+    "variant": "baseline",
+    "fork": 2,
+    "peakMiB": 215.59765625,
+    "endMiB": 204.5546875,
+    "privateMiB": 182.859375,
+    "retainedMiB": 36.527671813964844,
+    "gen2": 13
+  },
+  {
+    "profile": "mixed",
+    "batches": 192,
+    "frames": 2304,
+    "decodes": 384,
+    "animatedFrames": 192,
+    "encodes": 48,
+    "imageFilters": 48,
+    "wallMs": 5298.4887,
+    "cpuMs": 5171.875,
+    "allocatedBytes": 356479824,
+    "collections": [
+      8,
+      6,
+      4
+    ],
+    "warm": {
+      "WorkingSet": 126615552,
+      "PrivateBytes": 101392384,
+      "ManagedLive": 37824416,
+      "PeakWorkingSet": 126615552
+    },
+    "end": {
+      "WorkingSet": 154472448,
+      "PrivateBytes": 129658880,
+      "ManagedLive": 77625872,
+      "PeakWorkingSet": 226521088
+    },
+    "retained": {
+      "WorkingSet": 146231296,
+      "PrivateBytes": 121344000,
+      "ManagedLive": 37825280,
+      "PeakWorkingSet": 226521088
+    },
+    "affinity": 1,
+    "runtime": "10.0.14",
+    "avx2": true,
+    "sha256": "1EE64336C3683BAE6D3F4567C47AA835025250303A01F5D9885201BFB999F5DE",
+    "sink": 321238952,
+    "variant": "candidate",
+    "fork": 2,
+    "peakMiB": 216.02734375,
+    "endMiB": 147.31640625,
+    "privateMiB": 123.65234375,
+    "retainedMiB": 36.072998046875,
+    "gen2": 4
+  },
+  {
+    "profile": "draw",
+    "batches": 192,
+    "frames": 2304,
+    "decodes": 0,
+    "animatedFrames": 0,
+    "encodes": 0,
+    "imageFilters": 0,
+    "wallMs": 2536.7028,
+    "cpuMs": 2437.5,
+    "allocatedBytes": 848,
+    "collections": [
+      0,
+      0,
+      0
+    ],
+    "warm": {
+      "WorkingSet": 48087040,
+      "PrivateBytes": 22593536,
+      "ManagedLive": 6135928,
+      "PeakWorkingSet": 48087040
+    },
+    "end": {
+      "WorkingSet": 47022080,
+      "PrivateBytes": 21536768,
+      "ManagedLive": 6135928,
+      "PeakWorkingSet": 48128000
+    },
+    "retained": {
+      "WorkingSet": 47026176,
+      "PrivateBytes": 21536768,
+      "ManagedLive": 6136728,
+      "PeakWorkingSet": 48128000
+    },
+    "affinity": 1,
+    "runtime": "10.0.14",
+    "avx2": true,
+    "sha256": "4E453497548408242CAA2E2C1F343B09706765D645C547BBC1298C6C3991BCA4",
+    "sink": 1914529280,
+    "variant": "baseline",
+    "fork": 2,
+    "peakMiB": 45.8984375,
+    "endMiB": 44.84375,
+    "privateMiB": 20.5390625,
+    "retainedMiB": 5.852439880371094,
+    "gen2": 0
+  },
+  {
+    "profile": "draw",
+    "batches": 192,
+    "frames": 2304,
+    "decodes": 0,
+    "animatedFrames": 0,
+    "encodes": 0,
+    "imageFilters": 0,
+    "wallMs": 2965.8788,
+    "cpuMs": 2921.875,
+    "allocatedBytes": 848,
+    "collections": [
+      0,
+      0,
+      0
+    ],
+    "warm": {
+      "WorkingSet": 48259072,
+      "PrivateBytes": 22757376,
+      "ManagedLive": 6135992,
+      "PeakWorkingSet": 48259072
+    },
+    "end": {
+      "WorkingSet": 47140864,
+      "PrivateBytes": 21700608,
+      "ManagedLive": 6135992,
+      "PeakWorkingSet": 48300032
+    },
+    "retained": {
+      "WorkingSet": 47144960,
+      "PrivateBytes": 21700608,
+      "ManagedLive": 6136792,
+      "PeakWorkingSet": 48300032
+    },
+    "affinity": 1,
+    "runtime": "10.0.14",
+    "avx2": true,
+    "sha256": "4E453497548408242CAA2E2C1F343B09706765D645C547BBC1298C6C3991BCA4",
+    "sink": 1914529280,
+    "variant": "candidate",
+    "fork": 2,
+    "peakMiB": 46.0625,
+    "endMiB": 44.95703125,
+    "privateMiB": 20.6953125,
+    "retainedMiB": 5.852500915527344,
+    "gen2": 0
+  },
+  {
+    "profile": "mixed",
+    "batches": 192,
+    "frames": 2304,
+    "decodes": 384,
+    "animatedFrames": 192,
+    "encodes": 48,
+    "imageFilters": 48,
+    "wallMs": 5336.7934,
+    "cpuMs": 5140.625,
+    "allocatedBytes": 356476336,
+    "collections": [
+      8,
+      6,
+      4
+    ],
+    "warm": {
+      "WorkingSet": 107827200,
+      "PrivateBytes": 82579456,
+      "ManagedLive": 37824416,
+      "PeakWorkingSet": 131260416
+    },
+    "end": {
+      "WorkingSet": 220966912,
+      "PrivateBytes": 198139904,
+      "ManagedLive": 118278048,
+      "PeakWorkingSet": 222830592
+    },
+    "retained": {
+      "WorkingSet": 196685824,
+      "PrivateBytes": 172535808,
+      "ManagedLive": 37825280,
+      "PeakWorkingSet": 222830592
+    },
+    "affinity": 1,
+    "runtime": "10.0.14",
+    "avx2": true,
+    "sha256": "1EE64336C3683BAE6D3F4567C47AA835025250303A01F5D9885201BFB999F5DE",
+    "sink": 321238952,
+    "variant": "candidate",
+    "fork": 3,
+    "peakMiB": 212.5078125,
+    "endMiB": 210.73046875,
+    "privateMiB": 188.9609375,
+    "retainedMiB": 36.072998046875,
+    "gen2": 4
+  },
+  {
+    "profile": "mixed",
+    "batches": 192,
+    "frames": 2304,
+    "decodes": 384,
+    "animatedFrames": 192,
+    "encodes": 48,
+    "imageFilters": 48,
+    "wallMs": 6542.4842,
+    "cpuMs": 6406.25,
+    "allocatedBytes": 771123472,
+    "collections": [
+      15,
+      13,
+      11
+    ],
+    "warm": {
+      "WorkingSet": 124866560,
+      "PrivateBytes": 99266560,
+      "ManagedLive": 38301176,
+      "PeakWorkingSet": 133529600
+    },
+    "end": {
+      "WorkingSet": 263012352,
+      "PrivateBytes": 241008640,
+      "ManagedLive": 53418152,
+      "PeakWorkingSet": 263012352
+    },
+    "retained": {
+      "WorkingSet": 238571520,
+      "PrivateBytes": 214994944,
+      "ManagedLive": 38302040,
+      "PeakWorkingSet": 263028736
+    },
+    "affinity": 1,
+    "runtime": "10.0.14",
+    "avx2": true,
+    "sha256": "1EE64336C3683BAE6D3F4567C47AA835025250303A01F5D9885201BFB999F5DE",
+    "sink": 1715735374,
+    "variant": "baseline",
+    "fork": 3,
+    "peakMiB": 250.828125,
+    "endMiB": 250.828125,
+    "privateMiB": 229.84375,
+    "retainedMiB": 36.527671813964844,
+    "gen2": 11
+  },
+  {
+    "profile": "draw",
+    "batches": 192,
+    "frames": 2304,
+    "decodes": 0,
+    "animatedFrames": 0,
+    "encodes": 0,
+    "imageFilters": 0,
+    "wallMs": 2845.0147,
+    "cpuMs": 2843.75,
+    "allocatedBytes": 848,
+    "collections": [
+      0,
+      0,
+      0
+    ],
+    "warm": {
+      "WorkingSet": 48214016,
+      "PrivateBytes": 22716416,
+      "ManagedLive": 6135992,
+      "PeakWorkingSet": 48214016
+    },
+    "end": {
+      "WorkingSet": 47222784,
+      "PrivateBytes": 21688320,
+      "ManagedLive": 6135992,
+      "PeakWorkingSet": 48259072
+    },
+    "retained": {
+      "WorkingSet": 47222784,
+      "PrivateBytes": 21688320,
+      "ManagedLive": 6136792,
+      "PeakWorkingSet": 48259072
+    },
+    "affinity": 1,
+    "runtime": "10.0.14",
+    "avx2": true,
+    "sha256": "4E453497548408242CAA2E2C1F343B09706765D645C547BBC1298C6C3991BCA4",
+    "sink": 1914529280,
+    "variant": "candidate",
+    "fork": 3,
+    "peakMiB": 46.0234375,
+    "endMiB": 45.03515625,
+    "privateMiB": 20.68359375,
+    "retainedMiB": 5.852500915527344,
+    "gen2": 0
+  },
+  {
+    "profile": "draw",
+    "batches": 192,
+    "frames": 2304,
+    "decodes": 0,
+    "animatedFrames": 0,
+    "encodes": 0,
+    "imageFilters": 0,
+    "wallMs": 2803.8548,
+    "cpuMs": 2781.25,
+    "allocatedBytes": 848,
+    "collections": [
+      0,
+      0,
+      0
+    ],
+    "warm": {
+      "WorkingSet": 48340992,
+      "PrivateBytes": 22827008,
+      "ManagedLive": 6135928,
+      "PeakWorkingSet": 48340992
+    },
+    "end": {
+      "WorkingSet": 47222784,
+      "PrivateBytes": 21774336,
+      "ManagedLive": 6135928,
+      "PeakWorkingSet": 48381952
+    },
+    "retained": {
+      "WorkingSet": 47226880,
+      "PrivateBytes": 21774336,
+      "ManagedLive": 6136728,
+      "PeakWorkingSet": 48381952
+    },
+    "affinity": 1,
+    "runtime": "10.0.14",
+    "avx2": true,
+    "sha256": "4E453497548408242CAA2E2C1F343B09706765D645C547BBC1298C6C3991BCA4",
+    "sink": 1914529280,
+    "variant": "baseline",
+    "fork": 3,
+    "peakMiB": 46.140625,
+    "endMiB": 45.03515625,
+    "privateMiB": 20.765625,
+    "retainedMiB": 5.852439880371094,
+    "gen2": 0
+  },
+  {
+    "profile": "mixed",
+    "batches": 192,
+    "frames": 2304,
+    "decodes": 384,
+    "animatedFrames": 192,
+    "encodes": 48,
+    "imageFilters": 48,
+    "wallMs": 5778.3666,
+    "cpuMs": 5687.5,
+    "allocatedBytes": 771187056,
+    "collections": [
+      22,
+      20,
+      18
+    ],
+    "warm": {
+      "WorkingSet": 127578112,
+      "PrivateBytes": 102539264,
+      "ManagedLive": 38301176,
+      "PeakWorkingSet": 130195456
+    },
+    "end": {
+      "WorkingSet": 150835200,
+      "PrivateBytes": 126242816,
+      "ManagedLive": 81837784,
+      "PeakWorkingSet": 225955840
+    },
+    "retained": {
+      "WorkingSet": 148086784,
+      "PrivateBytes": 123531264,
+      "ManagedLive": 38302040,
+      "PeakWorkingSet": 225955840
+    },
+    "affinity": 1,
+    "runtime": "10.0.14",
+    "avx2": true,
+    "sha256": "1EE64336C3683BAE6D3F4567C47AA835025250303A01F5D9885201BFB999F5DE",
+    "sink": 1715735374,
+    "variant": "baseline",
+    "fork": 4,
+    "peakMiB": 215.48828125,
+    "endMiB": 143.84765625,
+    "privateMiB": 120.39453125,
+    "retainedMiB": 36.527671813964844,
+    "gen2": 18
+  },
+  {
+    "profile": "mixed",
+    "batches": 192,
+    "frames": 2304,
+    "decodes": 384,
+    "animatedFrames": 192,
+    "encodes": 48,
+    "imageFilters": 48,
+    "wallMs": 4549.4235,
+    "cpuMs": 4453.125,
+    "allocatedBytes": 356480848,
+    "collections": [
+      8,
+      6,
+      4
+    ],
+    "warm": {
+      "WorkingSet": 126533632,
+      "PrivateBytes": 101355520,
+      "ManagedLive": 37824416,
+      "PeakWorkingSet": 126533632
+    },
+    "end": {
+      "WorkingSet": 196710400,
+      "PrivateBytes": 173309952,
+      "ManagedLive": 86961248,
+      "PeakWorkingSet": 226717696
+    },
+    "retained": {
+      "WorkingSet": 194232320,
+      "PrivateBytes": 170180608,
+      "ManagedLive": 37825280,
+      "PeakWorkingSet": 226717696
+    },
+    "affinity": 1,
+    "runtime": "10.0.14",
+    "avx2": true,
+    "sha256": "1EE64336C3683BAE6D3F4567C47AA835025250303A01F5D9885201BFB999F5DE",
+    "sink": 321238952,
+    "variant": "candidate",
+    "fork": 4,
+    "peakMiB": 216.21484375,
+    "endMiB": 187.59765625,
+    "privateMiB": 165.28125,
+    "retainedMiB": 36.072998046875,
+    "gen2": 4
+  },
+  {
+    "profile": "draw",
+    "batches": 192,
+    "frames": 2304,
+    "decodes": 0,
+    "animatedFrames": 0,
+    "encodes": 0,
+    "imageFilters": 0,
+    "wallMs": 3329.223,
+    "cpuMs": 3281.25,
+    "allocatedBytes": 848,
+    "collections": [
+      0,
+      0,
+      0
+    ],
+    "warm": {
+      "WorkingSet": 48414720,
+      "PrivateBytes": 22904832,
+      "ManagedLive": 6135928,
+      "PeakWorkingSet": 48414720
+    },
+    "end": {
+      "WorkingSet": 47296512,
+      "PrivateBytes": 21852160,
+      "ManagedLive": 6135928,
+      "PeakWorkingSet": 48455680
+    },
+    "retained": {
+      "WorkingSet": 47300608,
+      "PrivateBytes": 21852160,
+      "ManagedLive": 6136728,
+      "PeakWorkingSet": 48455680
+    },
+    "affinity": 1,
+    "runtime": "10.0.14",
+    "avx2": true,
+    "sha256": "4E453497548408242CAA2E2C1F343B09706765D645C547BBC1298C6C3991BCA4",
+    "sink": 1914529280,
+    "variant": "baseline",
+    "fork": 4,
+    "peakMiB": 46.2109375,
+    "endMiB": 45.10546875,
+    "privateMiB": 20.83984375,
+    "retainedMiB": 5.852439880371094,
+    "gen2": 0
+  },
+  {
+    "profile": "draw",
+    "batches": 192,
+    "frames": 2304,
+    "decodes": 0,
+    "animatedFrames": 0,
+    "encodes": 0,
+    "imageFilters": 0,
+    "wallMs": 2779.5366,
+    "cpuMs": 2718.75,
+    "allocatedBytes": 848,
+    "collections": [
+      0,
+      0,
+      0
+    ],
+    "warm": {
+      "WorkingSet": 48074752,
+      "PrivateBytes": 22593536,
+      "ManagedLive": 6135992,
+      "PeakWorkingSet": 48074752
+    },
+    "end": {
+      "WorkingSet": 47067136,
+      "PrivateBytes": 21536768,
+      "ManagedLive": 6135992,
+      "PeakWorkingSet": 48115712
+    },
+    "retained": {
+      "WorkingSet": 47067136,
+      "PrivateBytes": 21536768,
+      "ManagedLive": 6136792,
+      "PeakWorkingSet": 48115712
+    },
+    "affinity": 1,
+    "runtime": "10.0.14",
+    "avx2": true,
+    "sha256": "4E453497548408242CAA2E2C1F343B09706765D645C547BBC1298C6C3991BCA4",
+    "sink": 1914529280,
+    "variant": "candidate",
+    "fork": 4,
+    "peakMiB": 45.88671875,
+    "endMiB": 44.88671875,
+    "privateMiB": 20.5390625,
+    "retainedMiB": 5.852500915527344,
+    "gen2": 0
+  }
+]

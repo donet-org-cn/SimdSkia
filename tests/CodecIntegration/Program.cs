@@ -2,9 +2,14 @@ using System.Buffers.Binary;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using Sdcb.SimdCodecs.Bmp;
+using Sdcb.SimdCodecs.Tiff;
+using Sdcb.SimdCodecs.Webp;
 using SimdSkia;
 using SimdSkia.Imaging;
 using SkiaSharp;
+using CodecPixelFormat = Sdcb.SimdCodecs.Abstractions.PixelFormat;
+using Facade = Sdcb.SimdCodecs.ImageCodecs;
 
 string output=args.Length>0?args[0]:"artifacts/simdcodecs-integration-2026-11-01/tests";Directory.CreateDirectory(output);
 int checks=0;void Check(bool value,string message){checks++;if(!value)throw new Exception(message);}
@@ -30,6 +35,40 @@ using(var source=new PixelBuffer(13,9,PixelFormat.Bgra8888,AlphaFormat.Straight,
     }
     using var webp=ImageCodec.Decode(ImageCodec.Encode(source,ImageFileFormat.Webp));Check(webp.Width==source.Width&&webp.Height==source.Height,"WebP encoding produces a decodable image");
 }
+using (var source = new PixelBuffer(317, 215, PixelFormat.Bgra8888, AlphaFormat.Premultiplied, 1285))
+{
+    for (int y = 0; y < source.Height; y++)
+    {
+        source.GetRowSpan(y).Fill(0xad);
+        for (int x = 0; x < source.Width; x++)
+            source.WritePixel(x, y, new((byte)(x * 11), (byte)(y * 17), (byte)(x * 3 + y), (byte)(64 + (x + y) % 192)));
+    }
+    var tiff = ImageCodec.Encode(source, ImageFileFormat.Tiff);
+    var layout = TiffReader.ReadLayout(tiff);
+    Check(layout.RowsPerStrip > 0 && layout.RowsPerStrip < source.Height && source.Height % layout.RowsPerStrip != 0,
+        "TIFF stores bounded strips and a shorter final strip");
+    using var image = ImageCodec.Decode(tiff);
+    using var reader = ImageCodec.OpenFrames(tiff);
+    using var frame = reader.DecodeFrame(0);
+    Check(image.GetPixelSpan().SequenceEqual(frame.GetPixelSpan()), "TIFF strip and frame decode agree");
+    for (int y = 0; y < source.Height; y++)
+    for (int x = 0; x < source.Width; x++)
+        Check(image.ReadPixel(x, y) == source.ReadPixel(x, y), "TIFF strips preserve alpha, stride, and color");
+}
+foreach (var format in new[] { PixelFormat.Bgra8888, PixelFormat.Rgba8888 })
+{
+    using var source = new PixelBuffer(39, 7, format, AlphaFormat.Premultiplied, 163);
+    for (int y = 0; y < source.Height; y++)
+    {
+        source.GetRowSpan(y).Fill(0x87);
+        for (int x = 0; x < source.Width; x++)
+            source.WritePixel(x, y, new((byte)(x * 7), (byte)(y * 29), 175, (byte)(1 + (x * 17 + y * 7) % 255)));
+    }
+    using var decoded = ImageCodec.Decode(WebpCodec.Encode(source, lossless: true, quality: 50));
+    for (int y = 0; y < source.Height; y++)
+    for (int x = 0; x < source.Width; x++)
+        Check(decoded.ReadPixel(x, y) == source.ReadPixel(x, y), "WebP uses only visible input bytes and preserves straight color");
+}
 foreach(var format in new[]{SKEncodedImageFormat.Png,SKEncodedImageFormat.Jpeg,SKEncodedImageFormat.Gif,SKEncodedImageFormat.Bmp,SKEncodedImageFormat.Ico})
 {
     using var bitmap=new SKBitmap(11,7);using(var canvas=new SKCanvas(bitmap))canvas.Clear(SKColors.Red);
@@ -39,6 +78,27 @@ foreach(var format in new[]{SKEncodedImageFormat.Png,SKEncodedImageFormat.Jpeg,S
     using var image=SKImage.FromBitmap(bitmap);using var bytes=image.Encode(format,90);Check(bytes.Size>0,"SKImage encoding");
 }
 GifAnimationValidation.Run(output, Check);
+// Include a translucent pixel just beyond a vector boundary on a padded
+// premultiplied row. The opaque shortcut must never change its RGB or alpha.
+foreach (var format in new[] { PixelFormat.Rgba8888, PixelFormat.Bgra8888, PixelFormat.Alpha8 })
+{
+    int rowBytes = format == PixelFormat.Alpha8 ? 23 : 76;
+    using var source = new PixelBuffer(17, 3, format, AlphaFormat.Premultiplied, rowBytes);
+    for (int y = 0; y < source.Height; y++)
+    {
+        source.GetRowSpan(y).Fill(0x91);
+        for (int x = 0; x < source.Width; x++)
+        {
+            byte alpha = y == 1 && x == 16 ? (byte)67 : y == 2 && x == 3 ? (byte)0 : (byte)255;
+            source.WritePixel(x, y, new Rgba32((byte)(x * 13), (byte)(y * 85), 138, alpha));
+        }
+    }
+
+    using var decoded = PngCodec.Decode(PngCodec.Encode(source));
+    for (int y = 0; y < source.Height; y++)
+    for (int x = 0; x < source.Width; x++)
+        Check(decoded.ReadPixel(x, y) == source.ReadPixel(x, y), "PNG input uses visible pixels and exact straight alpha");
+}
 // Temporary codecs may transfer their RGBA storage. Persistent codec decodes
 // must remain independent, and returned bitmaps must outlive all input owners.
 foreach(var format in new[]{SKEncodedImageFormat.Png,SKEncodedImageFormat.Jpeg,SKEncodedImageFormat.Bmp})
@@ -91,6 +151,23 @@ using(var exhaustive=new SKBitmap(new SKImageInfo(256,256,SKColorType.Rgba8888,S
     }
 }
 SimdSkia.Cpu.CpuOptions.EnableSimd=true;
+using (var source = new PixelBuffer(3, 2, PixelFormat.Rgba8888, AlphaFormat.Straight))
+{
+    byte[] linearQoi = ImageCodec.Encode(source, ImageFileFormat.Qoi);
+    linearQoi[13] = 1; // QOI's linear RGB marker
+    Throws<NotSupportedException>(() => ImageCodec.Decode(linearQoi).Dispose());
+    using var reader = ImageCodec.OpenFrames(linearQoi);
+    Throws<NotSupportedException>(() => reader.DecodeFrame(0).Dispose());
+}
+byte[] ppm16 = [.. "P6\n3 1\n1023\n"u8, 0, 0, 0, 2, 0, 4, 1, 255, 2, 0, 3, 255, 0, 64, 0, 127, 3, 191];
+using (var still = ImageCodec.Decode(ppm16))
+using (var reader = ImageCodec.OpenFrames(ppm16))
+using (var frame = reader.DecodeFrame(0))
+{
+    ReadOnlySpan<byte> expected = [0, 0, 1, 255, 127, 128, 255, 255, 16, 31, 239, 255];
+    Check(still.GetPixelSpan().SequenceEqual(expected) && frame.GetPixelSpan().SequenceEqual(expected),
+        "Direct Netpbm decode preserves the 16-bit sample scaling");
+}
 foreach(string name in new[]{"disposal.gif","interlaced.gif"})
 {
     byte[] bytes=File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Fixtures",name));
@@ -133,9 +210,46 @@ using(var blank=ImageCodec.Decode(File.ReadAllBytes(Path.Combine(AppContext.Base
 using(var fixtures=JsonDocument.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory,"fixtures.json"))))
 foreach(var f in fixtures.RootElement.GetProperty("cases").EnumerateArray().Where(f=>f.GetProperty("name").GetString()=="png-display-p3-to-srgb-icc"))
 {
-    using var image=ImageCodec.Decode(Convert.FromBase64String(f.GetProperty("encoded").GetString()!));byte[] expected=Convert.FromBase64String(f.GetProperty("rgba").GetString()!);
+    byte[] png=Convert.FromBase64String(f.GetProperty("encoded").GetString()!);
+    using var image=ImageCodec.Decode(png);byte[] expected=Convert.FromBase64String(f.GetProperty("rgba").GetString()!);
     int max=0;double sum=0;var actual=image.GetPixelSpan();for(int i=0;i<actual.Length;i++){int d=Math.Abs(actual[i]-expected[i]);max=Math.Max(max,d);sum+=d*d;}
     Check(max<=f.GetProperty("max").GetInt32()&&Math.Sqrt(sum/actual.Length)<=f.GetProperty("rmse").GetDouble(),"ICC P3 conversion preserves original gate");
+
+    var raw = new byte[image.ByteCount];
+    if (!Facade.TryReadMetadata(png, out var metadata) || metadata.Icc.IsEmpty ||
+        !Facade.TryDecodeInto(png, raw, image.RowBytes, CodecPixelFormat.Rgba32))
+        throw new Exception("The P3 fixture must expose its original samples and ICC profile.");
+
+    var icc = metadata.Icc.ToArray();
+    using var tiff = new MemoryStream();
+    var writer = TiffWriter.Create(tiff);
+    try
+    {
+        writer.AddPageAsync(raw, image.Width, image.Height, new TiffPageOptions
+        {
+            SamplesPerPixel = 4,
+            ExtraSamples = TiffExtraSamples.UnassociatedAlpha,
+            IccProfile = icc,
+            RowsPerStrip = 1,
+        }).GetAwaiter().GetResult();
+        writer.FlushAsync().GetAwaiter().GetResult();
+    }
+    finally { writer.DisposeAsync().AsTask().GetAwaiter().GetResult(); }
+    byte[][] profiled = [
+        BmpEncoder.Encode(raw, image.Width, image.Height, CodecPixelFormat.Rgba32,
+            new BmpEncodeOptions { Format = BmpEncodeFormat.Argb32, IccProfile = icc }),
+        WebpEncoder.EncodeLossless(raw, image.Width, image.Height, CodecPixelFormat.Rgba32,
+            new WebpLosslessEncodeOptions { Exact = true, IccProfile = icc }),
+        tiff.ToArray(),
+    ];
+    foreach (var encoded in profiled)
+    {
+        using var converted = ImageCodec.Decode(encoded);
+        using var reader = ImageCodec.OpenFrames(encoded);
+        using var frame = reader.DecodeFrame(0);
+        Check(converted.GetPixelSpan().SequenceEqual(actual) && frame.GetPixelSpan().SequenceEqual(actual),
+            "BMP/WebP/TIFF still and frame APIs apply embedded ICC profiles");
+    }
 }
 // No allocations from a malicious header before the decoded image budget check.
 byte[] giantBmp=new byte[54];giantBmp[0]=(byte)'B';giantBmp[1]=(byte)'M';BinaryPrimitives.WriteInt32LittleEndian(giantBmp.AsSpan(2),54);BinaryPrimitives.WriteInt32LittleEndian(giantBmp.AsSpan(10),54);BinaryPrimitives.WriteInt32LittleEndian(giantBmp.AsSpan(14),40);BinaryPrimitives.WriteInt32LittleEndian(giantBmp.AsSpan(18),100000);BinaryPrimitives.WriteInt32LittleEndian(giantBmp.AsSpan(22),100000);giantBmp[26]=1;giantBmp[28]=24;

@@ -1,7 +1,7 @@
 <Project>
   <Import Project="../Directory.Build.props" />
   <PropertyGroup>
-    <Version Condition="'$(Version)' == ''">0.1.5</Version>
+    <Version Condition="'$(Version)' == ''">0.1.6</Version>
     <Authors>hnlyf168</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/donet-org-cn/SimdSkia</PackageProjectUrl>
@@ -11,7 +11,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Description>Managed C# 2D rendering components. Version 0.1 supports the documented subset; SkiaSharp source and rendering equivalence remain incomplete. No Google Skia rendering dependency.</Description>
     <PackageTags>SimdSkia;graphics;rendering;managed;2d</PackageTags>
-    <PackageReleaseNotes>0.1.5 正式版。新增 GifAnimationWriter，支持逐帧写入 GIF、每帧延迟、循环、透明与帧处置（#3）。修复 actionj.ttf 字形微调指令异常，失败时使用未微调轮廓继续绘制（#2）。CFF 轮廓尚未支持，README 提供静态 TrueType 字体建议。Sdcb.SimdCodecs 升级至 2.0.0。纳入像素处理、绘制及 Avalonia 内存优化。十三包统一版本，详细更新见 CHANGELOG.md。</PackageReleaseNotes>
+    <PackageReleaseNotes>0.1.6 正式版，优化 GIF、TIFF、Vulkan 纹理上传、形态学滤镜与 PDF 写入。对比 NuGet 0.1.5，本机混合负载耗时降低 20.6%，CPU 用时降低 19.9%，累计托管分配降低 53.8%，任务结束时私有内存增加 20.8%。十三包统一版本，测试范围和详细更新见 CHANGELOG.md。</PackageReleaseNotes>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>

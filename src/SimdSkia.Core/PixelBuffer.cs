@@ -1,3 +1,6 @@
+using System.Numerics;
+using System.Runtime.InteropServices;
+
 namespace SimdSkia;
 
 /// <summary>Owned, contiguous bytes. Rows may have padding. Access is single-threaded.</summary>
@@ -21,7 +24,12 @@ public sealed class PixelBuffer : IDisposable
         :this(width,height,format,alpha,rowBytes,false) { }
 
     // Only decoders that initialize every visible byte may rent uninitialized storage.
-    internal static PixelBuffer RentRgba(int width,int height)=>new(width,height,PixelFormat.Rgba8888,AlphaFormat.Straight,0,true);
+    internal static PixelBuffer RentRgba(int width, int height) =>
+        new(width, height, PixelFormat.Rgba8888, AlphaFormat.Straight, 0, true);
+
+    // A returned frame can outlive the decoder. Reuse storage only if its size matches.
+    internal static PixelBuffer RentRgbaExact(int width, int height) =>
+        new(width, height, PixelFormat.Rgba8888, AlphaFormat.Straight, 0, true, exactSize: true);
     /// <summary>Rents bounded reusable storage and initializes all bytes before exposing it.</summary>
     public static PixelBuffer Rent(int width,int height,PixelFormat format=PixelFormat.Bgra8888,AlphaFormat alpha=AlphaFormat.Premultiplied)
     {
@@ -30,7 +38,8 @@ public sealed class PixelBuffer : IDisposable
         return buffer;
     }
 
-    private PixelBuffer(int width,int height,PixelFormat format,AlphaFormat alpha,int rowBytes,bool pooled,bool uninitialized=false)
+    private PixelBuffer(int width, int height, PixelFormat format, AlphaFormat alpha, int rowBytes,
+        bool pooled, bool uninitialized = false, bool exactSize = false)
     {
         if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
         if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
@@ -41,7 +50,7 @@ public sealed class PixelBuffer : IDisposable
         if (rowBytes < minimum) throw new ArgumentOutOfRangeException(nameof(rowBytes));
         Width = width; Height = height; RowBytes = rowBytes; Format = format; Alpha = alpha;
         int length=checked(rowBytes*height);
-        if(pooled){storage=PixelStorage.Rent(length);data=storage.Bytes;}
+        if(pooled){storage=PixelStorage.Rent(length,exactSize);data=storage.Bytes;}
         else data = uninitialized?GC.AllocateUninitializedArray<byte>(length):new byte[length];
         if (alpha == AlphaFormat.Opaque)
             for (int y=0; y<height; y++) for (int x=0; x<width; x++) data[y*rowBytes+x*BytesPerPixel+BytesPerPixel-1] = 255;
@@ -93,7 +102,28 @@ public sealed class PixelBuffer : IDisposable
     }
 
     public unsafe Span<byte> GetPixelSpan() { ThrowIfDisposed(); return external is null?data.AsSpan(0,ByteCount):new Span<byte>((void*)external.Address,ByteCount); }
+    internal ReadOnlyMemory<byte> GetManagedMemory() { ThrowIfDisposed(); return data is null ? default : data.AsMemory(0, ByteCount); }
     public byte[] CopyBytes() => GetPixelSpan().ToArray();
+
+    // Expects complete four-byte pixels with alpha in the last byte.
+    internal static bool HasOnlyOpaqueAlpha(ReadOnlySpan<byte> pixels, bool enableSimd = true)
+    {
+        var words = MemoryMarshal.Cast<byte, uint>(pixels);
+        uint alpha = BitConverter.IsLittleEndian ? 0xff000000u : 0x000000ffu;
+        int index = 0;
+        if (enableSimd && Vector.IsHardwareAccelerated)
+        {
+            var mask = new Vector<uint>(alpha);
+            for (; index <= words.Length - Vector<uint>.Count; index += Vector<uint>.Count)
+                if (!Vector.EqualsAll(new Vector<uint>(words[index..]) & mask, mask))
+                    return false;
+        }
+        for (; index < words.Length; index++)
+            if ((words[index] & alpha) != alpha)
+                return false;
+        return true;
+    }
+
     public PixelBuffer Clone()
     {
         ThrowIfDisposed();

@@ -5,19 +5,8 @@ namespace SimdSkia.Cpu;
 
 public static partial class PixelTransferKernel
 {
-    internal static bool IsOpaque(ReadOnlySpan<byte> pixels,bool enableSimd)
-    {
-        var words=MemoryMarshal.Cast<byte,uint>(pixels);
-        int at=0;
-        if(enableSimd&&Vector.IsHardwareAccelerated)
-        {
-            var mask=new Vector<uint>(0xff000000);
-            for(;at<=words.Length-Vector<uint>.Count;at+=Vector<uint>.Count)
-                if(!Vector.EqualsAll(new Vector<uint>(words[at..])&mask,mask))return false;
-        }
-        for(;at<words.Length;at++)if((words[at]&0xff000000)!=0xff000000)return false;
-        return true;
-    }
+    internal static bool IsOpaque(ReadOnlySpan<byte> pixels,bool enableSimd) =>
+        PixelBuffer.HasOnlyOpaqueAlpha(pixels, enableSimd);
 
     internal static void Premultiply(Span<byte> pixels,bool swap,bool enableSimd)
     {

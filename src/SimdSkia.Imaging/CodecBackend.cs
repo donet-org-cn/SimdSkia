@@ -1,4 +1,5 @@
 using System.Buffers;
+using System.IO.Compression;
 using Sdcb.SimdCodecs.Abstractions;
 using CodecPixelFormat=Sdcb.SimdCodecs.Abstractions.PixelFormat;
 using Sdcb.SimdCodecs.Bmp;
@@ -7,6 +8,7 @@ using Sdcb.SimdCodecs.Ico;
 using Sdcb.SimdCodecs.Pnm;
 using Sdcb.SimdCodecs.Qoi;
 using Sdcb.SimdCodecs.Tiff;
+using Sdcb.SimdCodecs.Webp;
 using Facade=Sdcb.SimdCodecs.ImageCodecs;
 
 namespace SimdSkia.Imaging;
@@ -48,6 +50,9 @@ internal static class CodecBackend
     internal static PixelBuffer DecodeOther(ReadOnlySpan<byte> data)
     {
         var info=ReadInfo(data);
+        if (CanDecodeDirectly(data, info) || CanDecodeTiffDirectly(data, info))
+            return DecodeRaw(data, info.Width, info.Height);
+
         // The fidelity API supplies ICC/transfer metadata; the display API alone
         // cannot turn a wide-gamut/HDR image into sRGB correctly.
         if(!Facade.TryDecode(data,out var decoded))throw new InvalidDataException("Invalid image payload.");
@@ -69,10 +74,47 @@ internal static class CodecBackend
         }
         catch{output.Dispose();throw;}
     }
+    internal static bool CanDecodeDirectly(ReadOnlySpan<byte> data, ImageInfo info)
+    {
+        if (info.ColorEncoding != ColorEncoding.AssumedSrgb)
+            return false;
+
+        // These built-in decoders can write straight RGBA without a source raster.
+        // BMP and WebP may carry an ICC profile even when read-info reports sRGB.
+        return info.Format switch
+        {
+            ImageFormat.Gif => GifImageDecoder.CanDecode(data),
+            ImageFormat.Ico => IcoImageDecoder.CanDecode(data),
+            ImageFormat.Cur => CurImageDecoder.CanDecode(data),
+            ImageFormat.Qoi => QoiImageDecoder.CanDecode(data),
+            ImageFormat.Pnm => PnmImageDecoder.CanDecode(data),
+            ImageFormat.Bmp => BmpImageDecoder.CanDecode(data)
+                && BmpImageDecoder.TryReadMetadata(data, out var bmp) && bmp.Icc.IsEmpty,
+            ImageFormat.Webp => WebpImageDecoder.CanDecode(data)
+                && WebpImageDecoder.TryReadMetadata(data, out var webp) && webp.Icc.IsEmpty,
+            _ => false
+        };
+    }
+    private static bool CanDecodeTiffDirectly(ReadOnlySpan<byte> data, ImageInfo info)
+    {
+        if (info.Format != ImageFormat.Tiff || info.SampleFormat == SampleFormat.Float32 ||
+            info.ColorEncoding != ColorEncoding.AssumedSrgb || !TiffImageDecoder.CanDecode(data))
+            return false;
+
+        var layout = TiffReader.ReadLayout(data);
+        int rows = Math.Min(layout.Height, layout.IsTiled ? layout.TileHeight : layout.RowsPerStrip);
+        // The package rents a band per strip or tile row. Keep large single
+        // strips on the fidelity path to avoid retaining a full-image band.
+        long bandBytes = (long)rows * layout.Width * info.Channels * (info.SampleFormat == SampleFormat.UInt16 ? 2 : 1);
+        return bandBytes <= 512 * 1024 && TiffImageDecoder.TryReadMetadata(data, out var metadata) && metadata.Icc.IsEmpty;
+    }
+
     internal static byte[] EncodeOther(PixelBuffer pixels,ImageFileFormat format)
     {
         if(format is not (ImageFileFormat.Gif or ImageFileFormat.Bmp or ImageFileFormat.Ico or ImageFileFormat.Qoi or ImageFileFormat.Netpbm or ImageFileFormat.Tiff))
             throw new NotSupportedException($"Encoding {format} is not available; decode-only formats are not silently changed to PNG.");
+        if (format == ImageFileFormat.Tiff)
+            return EncodeTiff(pixels);
         using var source=new EncodingPixels(pixels,true);
         return format switch
         {
@@ -81,43 +123,178 @@ internal static class CodecBackend
             ImageFileFormat.Ico=>IcoEncoder.Encode(source.Span,pixels.Width,pixels.Height),
             ImageFileFormat.Qoi=>QoiEncoder.Encode(source.Span,pixels.Width,pixels.Height,CodecPixelFormat.Rgba32),
             ImageFileFormat.Netpbm=>PnmEncoder.Encode(source.Span,pixels.Width,pixels.Height,CodecPixelFormat.Rgba32),
-            ImageFileFormat.Tiff=>EncodeTiff(source.Span,pixels.Width,pixels.Height),
             _=>throw new NotSupportedException($"Encoding {format} is not available; decode-only formats are not silently changed to PNG.")
         };
     }
-    private static byte[] EncodeTiff(ReadOnlySpan<byte> pixels,int width,int height)
+    private static byte[] EncodeTiff(PixelBuffer pixels)
     {
-        using var stream=new MemoryStream();var writer=TiffWriter.Create(stream);
-        try{writer.AddPageAsync(pixels.ToArray(),width,height,new TiffPageOptions{SamplesPerPixel=4,ExtraSamples=TiffExtraSamples.UnassociatedAlpha}).GetAwaiter().GetResult();writer.FlushAsync().GetAwaiter().GetResult();return stream.ToArray();}
-        finally{writer.DisposeAsync().AsTask().GetAwaiter().GetResult();}
+        EncodingPixels.Validate(pixels);
+        int rowsPerStrip = Math.Min(pixels.Height, Math.Max(1, (256 * 1024) / (pixels.Width * 4)));
+        using var source = new TiffStrips(pixels, rowsPerStrip);
+        using var stream = new MemoryStream();
+        var writer = TiffWriter.Create(stream);
+        try
+        {
+            writer.AddPageAsync(source, new TiffPageOptions
+            {
+                SamplesPerPixel = 4,
+                ExtraSamples = TiffExtraSamples.UnassociatedAlpha,
+                RowsPerStrip = rowsPerStrip,
+            }).GetAwaiter().GetResult();
+            writer.FlushAsync().GetAwaiter().GetResult();
+            return stream.ToArray();
+        }
+        finally { writer.DisposeAsync().AsTask().GetAwaiter().GetResult(); }
+    }
+
+    private sealed class TiffStrips : IImageSource, IDisposable
+    {
+        private readonly PixelBuffer pixels;
+        private readonly int rowsPerStrip, rowBytes;
+        private readonly ReadOnlyMemory<byte> managed;
+        private readonly byte[]? scratch;
+        private readonly bool unpremultiply;
+        private readonly MemoryStream compressed = new();
+
+        internal TiffStrips(PixelBuffer pixels, int rowsPerStrip)
+        {
+            this.pixels = pixels;
+            this.rowsPerStrip = rowsPerStrip;
+            rowBytes = pixels.Width * 4;
+            unpremultiply = pixels.Alpha == AlphaFormat.Premultiplied;
+            if (pixels.Format == PixelFormat.Rgba8888 && pixels.RowBytes == rowBytes &&
+                (!unpremultiply || PixelBuffer.HasOnlyOpaqueAlpha(pixels.GetPixelSpan())))
+                managed = pixels.GetManagedMemory();
+            if (managed.IsEmpty)
+                scratch = ArrayPool<byte>.Shared.Rent(rowBytes * rowsPerStrip);
+        }
+
+        public int Width => pixels.Width;
+        public int Height => pixels.Height;
+        public int SegmentCount => (Height + rowsPerStrip - 1) / rowsPerStrip;
+        public TiffCompression Compression => TiffCompression.Deflate;
+        public TiffPhotometric Photometric => TiffPhotometric.Rgb;
+        public bool IsPreCompressed => true;
+
+        public ValueTask<ReadOnlyMemory<byte>> GetSegmentAsync(int index, CancellationToken ct = default)
+        {
+            ct.ThrowIfCancellationRequested();
+            int first = index * rowsPerStrip;
+            int rows = Math.Min(rowsPerStrip, Height - first);
+            int length = rows * rowBytes;
+            ReadOnlySpan<byte> input;
+            if (scratch is null)
+                input = managed.Span.Slice(first * rowBytes, length);
+            else
+            {
+                for (int y = 0; y < rows; y++)
+                    EncodingPixels.CopyRow(pixels, first + y, scratch.AsSpan(y * rowBytes, rowBytes), unpremultiply);
+                input = scratch.AsSpan(0, length);
+            }
+
+            // The writer awaits each segment write before requesting the next.
+            // Reuse the compressed buffer for the whole page.
+            compressed.Position = 0;
+            compressed.SetLength(0);
+            using (var zlib = new ZLibStream(compressed, CompressionLevel.Optimal, leaveOpen: true))
+                zlib.Write(input);
+            return new(compressed.GetBuffer().AsMemory(0, (int)compressed.Length));
+        }
+
+        public void Dispose()
+        {
+            if (scratch is not null)
+                ArrayPool<byte>.Shared.Return(scratch);
+            compressed.Dispose();
+        }
     }
 }
 
 /// <summary>Preserves padding, channel order and the PNG/JPEG alpha policies.</summary>
 internal readonly ref struct EncodingPixels
 {
-    private readonly byte[]? rented;
+    private readonly PixelStorage? storage;
     public ReadOnlySpan<byte> Span {get;}
+    internal static void Validate(PixelBuffer pixels)
+    {
+        ArgumentNullException.ThrowIfNull(pixels);
+        pixels.ThrowIfDisposed();
+        if ((long)pixels.Width * pixels.Height * 4 > CodecBackend.InputLimit)
+            throw new NotSupportedException("Encoding pixels exceed the 256 MiB budget.");
+    }
+
     public EncodingPixels(PixelBuffer pixels,bool straightAlpha)
     {
-        ArgumentNullException.ThrowIfNull(pixels);pixels.ThrowIfDisposed();
-        if((long)pixels.Width*pixels.Height*4>CodecBackend.InputLimit)throw new NotSupportedException("Encoding pixels exceed the 256 MiB budget.");
-        bool convertAlpha=straightAlpha&&pixels.Alpha==AlphaFormat.Premultiplied;
-        if(pixels.Format==PixelFormat.Rgba8888&&pixels.RowBytes==pixels.Width*4&&!convertAlpha){rented=null;Span=pixels.GetPixelSpan();return;}
-        rented=ArrayPool<byte>.Shared.Rent(checked(pixels.Width*pixels.Height*4));var destination=rented.AsSpan(0,pixels.Width*pixels.Height*4);
-        if(pixels.Format==PixelFormat.Alpha8){for(int y=0;y<pixels.Height;y++)for(int x=0;x<pixels.Width;x++){int at=(y*pixels.Width+x)*4;destination[at]=destination[at+1]=destination[at+2]=0;destination[at+3]=pixels.GetRowSpan(y)[x];}Span=destination;return;}
-        int ri=pixels.Format==PixelFormat.Rgba8888?0:2;
-        for(int y=0;y<pixels.Height;y++)
+        Validate(pixels);
+        int rowBytes = pixels.Width * 4;
+        bool rgba = pixels.Format == PixelFormat.Rgba8888;
+        bool convertAlpha = straightAlpha && pixels.Alpha == AlphaFormat.Premultiplied;
+        if (rgba && pixels.RowBytes == rowBytes)
         {
-            var row=pixels.GetRowSpan(y);var target=destination.Slice(y*pixels.Width*4,pixels.Width*4);
-            for(int x=0;x<pixels.Width;x++)
+            var source = pixels.GetPixelSpan();
+            if (!convertAlpha || PixelBuffer.HasOnlyOpaqueAlpha(source))
             {
-                int at=x*4;byte a=row[at+3],r=row[at+ri],g=row[at+1],b=row[at+2-ri];
-                if(convertAlpha){r=PixelBuffer.Unmultiply(r,a);g=PixelBuffer.Unmultiply(g,a);b=PixelBuffer.Unmultiply(b,a);}
-                target[at]=r;target[at+1]=g;target[at+2]=b;target[at+3]=a;
+                storage = null;
+                Span = source;
+                return;
             }
         }
-        Span=destination;
+
+        int length = rowBytes * pixels.Height;
+        storage = PixelStorage.Rent(length, exactSize: false);
+        var destination = storage.Bytes.AsSpan(0, length);
+        try
+        {
+            for (int y = 0; y < pixels.Height; y++)
+                CopyRow(pixels, y, destination.Slice(y * rowBytes, rowBytes), convertAlpha);
+        }
+        catch
+        {
+            storage.Release();
+            throw;
+        }
+        Span = destination;
     }
-    public void Dispose(){if(rented is not null)ArrayPool<byte>.Shared.Return(rented);}
+
+    internal static void CopyRow(PixelBuffer pixels, int y, Span<byte> target, bool unpremultiply)
+    {
+        var row = pixels.GetRowSpan(y);
+        if (pixels.Format == PixelFormat.Alpha8)
+        {
+            target.Clear();
+            for (int x = 0; x < pixels.Width; x++)
+                target[x * 4 + 3] = row[x];
+            return;
+        }
+        row = row[..target.Length];
+        bool rgba = pixels.Format == PixelFormat.Rgba8888;
+        if (unpremultiply && !PixelBuffer.HasOnlyOpaqueAlpha(row))
+            WriteStraightRow(row, target, rgba ? 0 : 2);
+        else if (rgba)
+            row.CopyTo(target);
+        else
+            PixelConverter.ConvertRow(row, CodecPixelFormat.Bgra32, target, CodecPixelFormat.Rgba32, pixels.Width);
+    }
+
+    private static void WriteStraightRow(ReadOnlySpan<byte> source, Span<byte> destination, int redIndex)
+    {
+        for (int offset = 0; offset < source.Length; offset += 4)
+        {
+            byte alpha = source[offset + 3];
+            byte red = source[offset + redIndex];
+            byte green = source[offset + 1];
+            byte blue = source[offset + 2 - redIndex];
+            if (alpha != 255)
+            {
+                red = PixelBuffer.Unmultiply(red, alpha);
+                green = PixelBuffer.Unmultiply(green, alpha);
+                blue = PixelBuffer.Unmultiply(blue, alpha);
+            }
+            destination[offset] = red;
+            destination[offset + 1] = green;
+            destination[offset + 2] = blue;
+            destination[offset + 3] = alpha;
+        }
+    }
+    public void Dispose() => storage?.Release();
 }

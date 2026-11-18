@@ -2,23 +2,6 @@ using System.Numerics;
 namespace SimdSkia.Cpu;
 public sealed partial class RasterImageFilter
 {
-    public static RasterImageFilter Morphology(float radiusX,float radiusY,bool dilate,RasterImageFilter? input=null,RectF? crop=null)
-    {
-        ValidateSigma(radiusX);ValidateSigma(radiusY);
-        return new((source,m,clip)=>
-        {
-            using var a=Input(input,source,m,clip);int rx=(int)MathF.Floor(MathF.Abs(m.M00)*radiusX+MathF.Abs(m.M01)*radiusY+.5f),ry=(int)MathF.Floor(MathF.Abs(m.M10)*radiusX+MathF.Abs(m.M11)*radiusY+.5f);
-            if(rx>1024||ry>1024)throw new NotSupportedException("Morphology radius exceeds 1024 device pixels.");
-            var bounds=Crop(dilate?Inflate(a.Bounds,rx,ry):a.Bounds,crop,m);using var temp=FilterFrame.Rent(Inflate(bounds,0,ry));var result=FilterFrame.Rent(bounds);
-            try
-            {
-                if(temp.Pixels is {} t)for(int y=0;y<t.Height;y++){var row=t.GetRowSpan(y);for(int x=0;x<t.Width;x++){var value=dilate?Vector4.Zero:Vector4.One;for(int k=-rx;k<=rx;k++){var v=Read(a,x+temp.Left+k,y+temp.Top);value=dilate?Vector4.Max(value,v):Vector4.Min(value,v);}Write(row,x,value);}}
-                if(result.Pixels is {} p)for(int y=0;y<p.Height;y++){var row=p.GetRowSpan(y);for(int x=0;x<p.Width;x++){var value=dilate?Vector4.Zero:Vector4.One;for(int k=-ry;k<=ry;k++){var v=Read(temp,x+result.Left,y+result.Top+k);value=dilate?Vector4.Max(value,v):Vector4.Min(value,v);}Write(row,x,value);}}
-                return result;
-            }
-            catch{result.Dispose();throw;}
-        },input);
-    }
     private sealed class Tint(Rgba32 color):IColorFilter
     {
         public Vector4 Filter(Vector4 p){float a=p.W*color.A/255f;return new(color.R/255f*a,color.G/255f*a,color.B/255f*a,a);}

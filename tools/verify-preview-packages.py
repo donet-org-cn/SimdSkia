@@ -15,13 +15,14 @@ args=parser.parse_args()
 if not re.fullmatch(r'\d+\.\d+\.\d+(?:-preview\.\d+)?',args.version):
     raise SystemExit('Expected a stable or preview SemVer.')
 ids=['SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Text','SimdSkia.Imaging','SimdSkia.Gpu','SimdSkia.Gpu.Direct2D','SimdSkia.Compatibility','SimdSkia.Avalonia','SimdSkia.Avalonia.Desktop','SimdSkia.Avalonia.Gpu','SimdSkia']
-modern=args.version in ('0.1.0-preview.10','0.1.0','0.1.1','0.1.2','0.1.3','0.1.4','0.1.5','0.1.2-preview.1','0.1.2-preview.2','0.1.2-preview.3')
-matrix=args.version in ('0.1.1','0.1.2','0.1.3','0.1.4','0.1.5','0.1.2-preview.1','0.1.2-preview.2','0.1.2-preview.3')
+modern=args.version in ('0.1.0-preview.10','0.1.0','0.1.1','0.1.2','0.1.3','0.1.4','0.1.5','0.1.6','0.1.2-preview.1','0.1.2-preview.2','0.1.2-preview.3')
+matrix=args.version in ('0.1.1','0.1.2','0.1.3','0.1.4','0.1.5','0.1.6','0.1.2-preview.1','0.1.2-preview.2','0.1.2-preview.3')
 if args.version=='0.1.0-preview.9' or modern:
     ids.append('SimdSkia.Pdf')
-if args.version in ('0.1.4','0.1.5') and not args.desktop_only:
+if args.version in ('0.1.4','0.1.5','0.1.6') and not args.desktop_only:
     ids.append('SimdSkia.Avalonia.Android')
 release_topics={
+    '0.1.6':(('GIF','TIFF','Vulkan','性能'),'0.1.6'),
     '0.1.5':(('GIF','actionj.ttf','Sdcb.SimdCodecs 2.0.0'),'0.1.5'),
     '0.1.4':(('Android','12.1.5','CPU','iOS','0.1.4'),'0.1.4'),
     '0.1.3':(('GPU','Vulkan','Direct2D','缓存','画质','UseCpu','12.1.0'),'0.1.3'),
@@ -71,10 +72,10 @@ for package_id in ids:
             assert not any(name.startswith('lib/net8.0/') for name in names),path
             assert 'JpegLibrary' not in dependencies,path
             if package_id=='SimdSkia.Imaging':
-                codec_version='2.0.0' if args.version=='0.1.5' else '1.4.0'
+                codec_version='2.0.0' if args.version in ('0.1.5','0.1.6') else '1.4.0'
                 assert dependencies.get('Sdcb.SimdCodecs')==f'[{codec_version}]',dependencies
                 assert 'licenses/Sdcb.SimdCodecs-MIT.txt' in names,path
-        if args.version in ('0.1.2-preview.3','0.1.2','0.1.3','0.1.4','0.1.5') and package_id!='SimdSkia.Avalonia.Android':
+        if args.version in ('0.1.2-preview.3','0.1.2','0.1.3','0.1.4','0.1.5','0.1.6') and package_id!='SimdSkia.Avalonia.Android':
             pdf_readme_versions=re.findall(r'PdfPig\s+(?:\*\*)?([0-9A-Za-z.+-]+)',readme)
             assert pdf_readme_versions and set(pdf_readme_versions)=={'0.1.16'},(path,'Incorrect PDF dependency version in README',pdf_readme_versions)
         if package_id=='SimdSkia.Pdf':
@@ -117,8 +118,8 @@ for package_id in ids:
                 else:
                     assert f'lib/{framework}/{host}' in names,(path,host)
         if package_id=='SimdSkia.Gpu.Direct2D':
-            assert set(dependencies)==({'SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Gpu'} if args.version in ('0.1.2','0.1.3','0.1.4','0.1.5','0.1.2-preview.1','0.1.2-preview.2','0.1.2-preview.3') else {'SimdSkia.Core'}),dependencies
-        if args.version in ('0.1.3','0.1.4','0.1.5') and package_id=='SimdSkia.Avalonia.Desktop':
+            assert set(dependencies)==({'SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Gpu'} if args.version in ('0.1.2','0.1.3','0.1.4','0.1.5','0.1.6','0.1.2-preview.1','0.1.2-preview.2','0.1.2-preview.3') else {'SimdSkia.Core'}),dependencies
+        if args.version in ('0.1.3','0.1.4','0.1.5','0.1.6') and package_id=='SimdSkia.Avalonia.Desktop':
             assert dependencies.get('SimdSkia.Avalonia.Gpu','').strip('[]')==args.version,(path,'GPU-preferred desktop dependency missing')
         if package_id=='SimdSkia.Avalonia.Android':
             assert dependencies.get('Avalonia')=='[12.1.5]',dependencies

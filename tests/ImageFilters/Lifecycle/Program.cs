@@ -47,4 +47,51 @@ foreach(var size in new[]{(1,1),(2,7),(9,3),(31,17)})foreach(float sigma in new[
     using var frame=new FilterFrame(p.Share(),-3,5);var filter=RasterImageFilter.Blur(sigma,sigma*.61f,3,null,frame.Bounds);CpuOptions.EnableSimd=false;using var scalar=filter.Apply(frame,Matrix3.Identity,frame.Bounds);CpuOptions.EnableSimd=true;using var vector=filter.Apply(frame,Matrix3.Identity,frame.Bounds);
     Check(scalar.Bounds==vector.Bounds,"Blur frame origin and cropping");var a=scalar.Pixels!.GetPixelSpan();var b=vector.Pixels!.GetPixelSpan();for(int i=0;i<a.Length;i++)Check(a[i]==b[i],"Fused ring/reciprocal division versus independent 64-bit three-pass scalar");
 }
+// Compare overlapping and partial windows against a direct byte-wise 2D reduction.
+foreach (var format in new[] { PixelFormat.Bgra8888, PixelFormat.Rgba8888 })
+foreach (var alpha in Enum.GetValues<AlphaFormat>())
+{
+    using var pixels = new PixelBuffer(17, 9, format, alpha, 73);
+    for (int y = 0; y < pixels.Height; y++)
+    for (int x = 0; x < pixels.Width; x++)
+        pixels.WritePixel(x, y, new((byte)(x * 13 + y * 29), (byte)(x * 79 + y * 11),
+            (byte)(x * 19 + y * 23), (byte)(x * 97 + y * 17)));
+    using var source = new FilterFrame(pixels.Share(), -3, 5);
+    var crop = new RectF(-5, 4, 12, 14);
+    foreach (var (rx, ry) in new[] { (0, 0), (2, 1), (1, 3), (4, 2), (34, 0), (0, 36) })
+    foreach (bool dilate in new[] { false, true })
+    {
+        var filter = RasterImageFilter.Morphology(rx, ry, dilate, crop: crop);
+        using var result = filter.Apply(source, Matrix3.Identity, crop);
+        var output = result.Pixels!;
+        int mx = dilate ? rx : 0, my = dilate ? ry : 0;
+        var expectedBounds = new RectF(Math.Max(crop.Left, source.Bounds.Left - mx),
+            Math.Max(crop.Top, source.Bounds.Top - my), Math.Min(crop.Right, source.Bounds.Right + mx),
+            Math.Min(crop.Bottom, source.Bounds.Bottom + my));
+        Check(result.Bounds == expectedBounds, "Morphology result bounds and origin");
+        for (int y = 0; y < output.Height; y++)
+        for (int x = 0; x < output.Width; x++)
+        for (int c = 0; c < 4; c++)
+        {
+            byte expected = dilate ? (byte)0 : (byte)255;
+            int centerX = result.Left + x - source.Left, centerY = result.Top + y - source.Top;
+            for (int dy = -ry; dy <= ry; dy++)
+            for (int dx = -rx; dx <= rx; dx++)
+            {
+                int sx = centerX + dx, sy = centerY + dy;
+                byte value = 0;
+                if ((uint)sx < (uint)pixels.Width && (uint)sy < (uint)pixels.Height)
+                {
+                    var input = pixels.GetRowSpan(sy).Slice(sx * 4, 4);
+                    int channel = format == PixelFormat.Rgba8888 && (c == 0 || c == 2) ? 2 - c : c;
+                    value = c == 3 && alpha == AlphaFormat.Opaque ? (byte)255 : input[channel];
+                    if (c < 3 && alpha == AlphaFormat.Straight)
+                        value = PixelBuffer.Multiply(value, input[3]);
+                }
+                expected = dilate ? Math.Max(expected, value) : Math.Min(expected, value);
+            }
+            Check(output.GetRowSpan(y)[x * 4 + c] == expected, "Morphology with stride, alpha, crop and transparent edges");
+        }
+    }
+}
 CpuOptions.EnableSimd=true;Console.WriteLine($"PASS {checks} image-filter lifetime, GPU rejection and scalar/SIMD checks");

@@ -24,24 +24,34 @@ public static class JpegCodec
     {
         ArgumentNullException.ThrowIfNull(pixels);if(quality is <0 or >100)throw new ArgumentOutOfRangeException(nameof(quality));
         using var source=new EncodingPixels(pixels,false);
-        return JpegEncoder.Encode(source.Span,pixels.Width,pixels.Height,4,new JpegEncodeOptions
+        return EncodeBaseline(source.Span,pixels.Width,pixels.Height,4,quality);
+    }
+    internal static byte[] EncodeRgb24(ReadOnlySpan<byte> rgb,int width,int height,int quality)
+    {
+        if(quality is <0 or >100)throw new ArgumentOutOfRangeException(nameof(quality));
+        if((long)width*height*4>CodecBackend.InputLimit)throw new NotSupportedException("Encoding pixels exceed the 256 MiB budget.");
+        return EncodeBaseline(rgb,width,height,3,quality);
+    }
+    private static byte[] EncodeBaseline(ReadOnlySpan<byte> pixels,int width,int height,int channels,int quality)
+    {
+        return JpegEncoder.Encode(pixels,width,height,channels,new JpegEncodeOptions
         {Quality=Math.Max(1,quality),Subsampling=JpegSubsampling.Chroma444,OptimizeHuffman=false,Progressive=false});
     }
     /// <summary>Explicit alpha and chroma policies for the compatibility encoder-options API.</summary>
     public static byte[] Encode(PixelBuffer pixels,int quality,bool subsample420,bool blendOnBlack)
     {
         ArgumentNullException.ThrowIfNull(pixels);pixels.ThrowIfDisposed();using var source=new EncodingPixels(pixels,false);
-        byte[]? rented=null;ReadOnlySpan<byte> input=source.Span;
+        PixelStorage? storage=null;ReadOnlySpan<byte> input=source.Span;
         try
         {
             if(blendOnBlack&&pixels.Alpha==AlphaFormat.Straight)
             {
-                rented=System.Buffers.ArrayPool<byte>.Shared.Rent(input.Length);input.CopyTo(rented);var converted=rented.AsSpan(0,input.Length);
+                storage=PixelStorage.Rent(input.Length,exactSize:false);var converted=storage.Bytes.AsSpan(0,input.Length);input.CopyTo(converted);
                 for(int p=0;p<converted.Length;p+=4){byte a=converted[p+3];for(int c=0;c<3;c++)converted[p+c]=PixelBuffer.Multiply(converted[p+c],a);}input=converted;
             }
             return JpegEncoder.Encode(input,pixels.Width,pixels.Height,4,new JpegEncodeOptions{Quality=Math.Clamp(quality,1,100),Subsampling=subsample420?JpegSubsampling.Chroma420:JpegSubsampling.Chroma444,OptimizeHuffman=false,Progressive=false});
         }
-        finally{if(rented is not null)System.Buffers.ArrayPool<byte>.Shared.Return(rented);}
+        finally{storage?.Release();}
     }
     private sealed record Metadata(int Transform,bool Rgb,byte[]? Profile);
     private static Metadata ReadMetadata(ReadOnlySpan<byte> data)

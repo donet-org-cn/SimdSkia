@@ -1,0 +1,409 @@
+{
+  "version": "0.1.5",
+  "published": "2026-11-17T02:27:47.27+00:00",
+  "registration": "https://api.nuget.org/v3/registration5-gz-semver2/simdskia/index.json",
+  "packages": [
+    {
+      "id": "SimdSkia",
+      "version": "0.1.5",
+      "url": "https://api.nuget.org/v3-flatcontainer/simdskia/0.1.5/simdskia.0.1.5.nupkg",
+      "sha256": "69a0b03ba47bec21f40e577f1b17363087b7c1d4183e3ab61a85a4d44d95e291",
+      "assemblies": {},
+      "dependencies": [
+        {
+          "id": "SimdSkia.Compatibility",
+          "version": "0.1.5",
+          "exclude": "Build,Analyzers"
+        }
+      ]
+    },
+    {
+      "id": "SimdSkia.Avalonia",
+      "version": "0.1.5",
+      "url": "https://api.nuget.org/v3-flatcontainer/simdskia.avalonia/0.1.5/simdskia.avalonia.0.1.5.nupkg",
+      "sha256": "12b6df0ee6745ecedcaee70072d7c8b117fdf7305d77c9959b09acff5cbb7158",
+      "assemblies": {
+        "SimdSkia.Avalonia.dll": "d239b86269c432dacc257f52ffbc9349512ce1701b60c49cb96358c9ad58f4ab"
+      },
+      "dependencies": [
+        {
+          "id": "SimdSkia.Core",
+          "version": "0.1.5",
+          "exclude": "Build,Analyzers"
+        },
+        {
+          "id": "SimdSkia.Cpu",
+          "version": "0.1.5",
+          "exclude": "Build,Analyzers"
+        },
+        {
+          "id": "SimdSkia.Imaging",
+          "version": "0.1.5",
+          "exclude": "Build,Analyzers"
+        },
+        {
+          "id": "SimdSkia.Text",
+          "version": "0.1.5",
+          "exclude": "Build,Analyzers"
+        },
+        {
+          "id": "Avalonia",
+          "version": "[12.1.0, 13.0.0)",
+          "exclude": "Compile,Build,Analyzers"
+        },
+        {
+          "id": "Clipper2",
+          "version": "[2.0.0]",
+          "exclude": "Build,Analyzers"
+        }
+      ]
+    },
+    {
+      "id": "SimdSkia.Compatibility",
+      "version": "0.1.5",
+      "url": "https://api.nuget.org/v3-flatcontainer/simdskia.compatibility/0.1.5/simdskia.compatibility.0.1.5.nupkg",
+      "sha256": "445f88fdb536473876a0ef83ced59bafb87ec9b95555fa95df786e60847fbc74",
+      "assemblies": {
+        "SimdSkia.Compatibility.dll": "8e2b5fe01afea043d005e57ccec7aa1685b9fda31c4c94434f21db2ce8819ed7"
+      },
+      "dependencies": [
+        {
+          "id": "SimdSkia.Core",
+          "version": "0.1.5",
+          "exclude": "Build,Analyzers"
+        },
+        {
+          "id": "SimdSkia.Cpu",
+          "version": "0.1.5",
+          "exclude": "Build,Analyzers"
+        },
+        {
+          "id": "SimdSkia.Gpu.Direct2D",
+          "version": "0.1.5",
+          "exclude": "Build,Analyzers"
+        },
+        {
+          "id": "SimdSkia.Gpu",
+          "version": "0.1.5",
+          "exclude": "Build,Analyzers"
+        },
+        {
+          "id": "SimdSkia.Imaging",
+          "version": "0.1.5",
+          "exclude": "Build,Analyzers"
+        },
+        {
+          "id": "SimdSkia.Text",
+          "version": "0.1.5",
+          "exclude": "Build,Analyzers"
+        }
+      ]
+    },
+    {
+      "id": "SimdSkia.Core",
+      "version": "0.1.5",
+      "url": "https://api.nuget.org/v3-flatcontainer/simdskia.core/0.1.5/simdskia.core.0.1.5.nupkg",
+      "sha256": "81f19156ca1981eefa08e96fd9ac304be93daa78861df9253f8634739c6116f0",
+      "assemblies": {
+        "SimdSkia.Core.dll": "568377a12b4bcd20ab8a8d8a029f847945b7fe80f55468904c1a175c9871d3e2"
+      },
+      "dependencies": [
+        {
+          "id": "Clipper2",
+          "version": "[2.0.0]",
+          "exclude": "Build,Analyzers"
+        }
+      ]
+    },
+    {
+      "id": "SimdSkia.Cpu",
+      "version": "0.1.5",
+      "url": "https://api.nuget.org/v3-flatcontainer/simdskia.cpu/0.1.5/simdskia.cpu.0.1.5.nupkg",
+      "sha256": "427b1776164ee850f3602277a528c25116e905d8c2e3e956637db60df3258f51",
+      "assemblies": {
+        "SimdSkia.Cpu.dll": "c6bb32b4192b3a9442f1d91d784934dfddbb5accaaef4ab3a9fa903cc20e9ad9"
+      },
+      "dependencies": [
+        {
+          "id": "SimdSkia.Core",
+          "version": "0.1.5",
+          "exclude": "Build,Analyzers"
+        }
+      ]
+    },
+    {
+      "id": "SimdSkia.Gpu",
+      "version": "0.1.5",
+      "url": "https://api.nuget.org/v3-flatcontainer/simdskia.gpu/0.1.5/simdskia.gpu.0.1.5.nupkg",
+      "sha256": "f6315a41d503270e3ee958b39f3e9bc7411fe55b4464a98f3bfd613cabd65c12",
+      "assemblies": {
+        "SimdSkia.Gpu.dll": "ee29163c69b9e63a057b924b42a8effbf948a8779254defe8ccdc701bb3a8d20"
+      },
+      "dependencies": [
+        {
+          "id": "SimdSkia.Core",
+          "version": "0.1.5",
+          "exclude": "Build,Analyzers"
+        },
+        {
+          "id": "SimdSkia.Cpu",
+          "version": "0.1.5",
+          "exclude": "Build,Analyzers"
+        }
+      ]
+    },
+    {
+      "id": "SimdSkia.Gpu.Direct2D",
+      "version": "0.1.5",
+      "url": "https://api.nuget.org/v3-flatcontainer/simdskia.gpu.direct2d/0.1.5/simdskia.gpu.direct2d.0.1.5.nupkg",
+      "sha256": "7aa73cccf39df87620dec1c50a9f253af549e0a7b610b75aef741c431efdfe78",
+      "assemblies": {
+        "SimdSkia.Gpu.Direct2D.dll": "4554770623a4147762e1aa7975f6f4be10429a66eeb0756d08009a8c81fc065d"
+      },
+      "dependencies": [
+        {
+          "id": "SimdSkia.Core",
+          "version": "0.1.5",
+          "exclude": "Build,Analyzers"
+        },
+        {
+          "id": "SimdSkia.Cpu",
+          "version": "0.1.5",
+          "exclude": "Build,Analyzers"
+        },
+        {
+          "id": "SimdSkia.Gpu",
+          "version": "0.1.5",
+          "exclude": "Build,Analyzers"
+        }
+      ]
+    },
+    {
+      "id": "SimdSkia.Imaging",
+      "version": "0.1.5",
+      "url": "https://api.nuget.org/v3-flatcontainer/simdskia.imaging/0.1.5/simdskia.imaging.0.1.5.nupkg",
+      "sha256": "ea06d5c665ca6b09176f5821bdaa668feaef9de8c24d115c966829f9db2d2781",
+      "assemblies": {
+        "SimdSkia.Imaging.dll": "8e43cede603bb383910dce868b25722c8e0c03357a0d0da8d21d12fcccb60021"
+      },
+      "dependencies": [
+        {
+          "id": "SimdSkia.Core",
+          "version": "0.1.5",
+          "exclude": "Build,Analyzers"
+        },
+        {
+          "id": "Sdcb.SimdCodecs",
+          "version": "[2.0.0]",
+          "exclude": "Build,Analyzers"
+        }
+      ]
+    },
+    {
+      "id": "SimdSkia.Pdf",
+      "version": "0.1.5",
+      "url": "https://api.nuget.org/v3-flatcontainer/simdskia.pdf/0.1.5/simdskia.pdf.0.1.5.nupkg",
+      "sha256": "933dd71737c0d99811e7d9bb13068e860b0232d5fb5b8f3353264bc4b920ec3f",
+      "assemblies": {
+        "SimdSkia.Pdf.dll": "f99dbbf80615b10e8e38b9b8bf67eab70a544dfd7afdd210b85d343abf338b4c"
+      },
+      "dependencies": [
+        {
+          "id": "SimdSkia.Compatibility",
+          "version": "0.1.5",
+          "exclude": "Build,Analyzers"
+        },
+        {
+          "id": "PdfPig",
+          "version": "[0.1.16]",
+          "exclude": "Build,Analyzers"
+        }
+      ]
+    },
+    {
+      "id": "SimdSkia.Text",
+      "version": "0.1.5",
+      "url": "https://api.nuget.org/v3-flatcontainer/simdskia.text/0.1.5/simdskia.text.0.1.5.nupkg",
+      "sha256": "1d6d7c390b118a76daefee48195b7a2b5863f4e2f12042104156fd69bfc2e8c8",
+      "assemblies": {
+        "SimdSkia.Text.dll": "f382ea58191b0c673138713d4dea533e9b8c350284805c41613896d5552861cb"
+      },
+      "dependencies": [
+        {
+          "id": "SimdSkia.Core",
+          "version": "0.1.5",
+          "exclude": "Build,Analyzers"
+        }
+      ]
+    }
+  ],
+  "deployed": {
+    "extra": {
+      "baseline": {
+        "SimdSkia.Compatibility.dll": "8e2b5fe01afea043d005e57ccec7aa1685b9fda31c4c94434f21db2ce8819ed7",
+        "SimdSkia.Core.dll": "568377a12b4bcd20ab8a8d8a029f847945b7fe80f55468904c1a175c9871d3e2",
+        "SimdSkia.Cpu.dll": "c6bb32b4192b3a9442f1d91d784934dfddbb5accaaef4ab3a9fa903cc20e9ad9",
+        "SimdSkia.Gpu.dll": "ee29163c69b9e63a057b924b42a8effbf948a8779254defe8ccdc701bb3a8d20",
+        "SimdSkia.Gpu.Direct2D.dll": "4554770623a4147762e1aa7975f6f4be10429a66eeb0756d08009a8c81fc065d",
+        "SimdSkia.Imaging.dll": "8e43cede603bb383910dce868b25722c8e0c03357a0d0da8d21d12fcccb60021",
+        "SimdSkia.Pdf.dll": "f99dbbf80615b10e8e38b9b8bf67eab70a544dfd7afdd210b85d343abf338b4c",
+        "SimdSkia.Text.dll": "f382ea58191b0c673138713d4dea533e9b8c350284805c41613896d5552861cb"
+      },
+      "candidate": {
+        "SimdSkia.Compatibility.dll": "059c0a41fcae946529efcacee271c5f54302fe8dd659eef65c986f15d89142b2",
+        "SimdSkia.Core.dll": "8eea672360b05c3b6414bd52762597aa43fc99def86e5988e7b27b24a5a3f1ac",
+        "SimdSkia.Cpu.dll": "563d75fc7c31b2d623aec93bac78c84cbc5677222e2c952263543bae26520f6d",
+        "SimdSkia.Gpu.dll": "0d6e25e807dd30241eb8c4e2e364bf024ebde287941e5840f23561a645e39f90",
+        "SimdSkia.Gpu.Direct2D.dll": "802bd492424369304ea429e4d6b2949c3b0ce2cbf7f491b3647119db622ade2d",
+        "SimdSkia.Imaging.dll": "ef5965c676baea05ed6995b43a67ea752b9dff57752d48e35329203f8a5ef63d",
+        "SimdSkia.Pdf.dll": "6c133eec882a12944a98949add0d07d8ca74801517870fbdfd2ae7ac6b337cbb",
+        "SimdSkia.Text.dll": "3d5177600c07e930ce95b060e3e008744a837be5273a65cd70e0530678692810"
+      }
+    },
+    "hostbench": {
+      "baseline": {
+        "SimdSkia.Compatibility.dll": "8e2b5fe01afea043d005e57ccec7aa1685b9fda31c4c94434f21db2ce8819ed7",
+        "SimdSkia.Core.dll": "568377a12b4bcd20ab8a8d8a029f847945b7fe80f55468904c1a175c9871d3e2",
+        "SimdSkia.Cpu.dll": "c6bb32b4192b3a9442f1d91d784934dfddbb5accaaef4ab3a9fa903cc20e9ad9",
+        "SimdSkia.Gpu.dll": "ee29163c69b9e63a057b924b42a8effbf948a8779254defe8ccdc701bb3a8d20",
+        "SimdSkia.Gpu.Direct2D.dll": "4554770623a4147762e1aa7975f6f4be10429a66eeb0756d08009a8c81fc065d",
+        "SimdSkia.Imaging.dll": "8e43cede603bb383910dce868b25722c8e0c03357a0d0da8d21d12fcccb60021",
+        "SimdSkia.Text.dll": "f382ea58191b0c673138713d4dea533e9b8c350284805c41613896d5552861cb"
+      },
+      "candidate": {
+        "SimdSkia.Compatibility.dll": "059c0a41fcae946529efcacee271c5f54302fe8dd659eef65c986f15d89142b2",
+        "SimdSkia.Core.dll": "8eea672360b05c3b6414bd52762597aa43fc99def86e5988e7b27b24a5a3f1ac",
+        "SimdSkia.Cpu.dll": "563d75fc7c31b2d623aec93bac78c84cbc5677222e2c952263543bae26520f6d",
+        "SimdSkia.Gpu.dll": "0d6e25e807dd30241eb8c4e2e364bf024ebde287941e5840f23561a645e39f90",
+        "SimdSkia.Gpu.Direct2D.dll": "802bd492424369304ea429e4d6b2949c3b0ce2cbf7f491b3647119db622ade2d",
+        "SimdSkia.Imaging.dll": "ef5965c676baea05ed6995b43a67ea752b9dff57752d48e35329203f8a5ef63d",
+        "SimdSkia.Text.dll": "3d5177600c07e930ce95b060e3e008744a837be5273a65cd70e0530678692810"
+      }
+    },
+    "probe": {
+      "baseline": {
+        "SimdSkia.Compatibility.dll": "8e2b5fe01afea043d005e57ccec7aa1685b9fda31c4c94434f21db2ce8819ed7",
+        "SimdSkia.Core.dll": "568377a12b4bcd20ab8a8d8a029f847945b7fe80f55468904c1a175c9871d3e2",
+        "SimdSkia.Cpu.dll": "c6bb32b4192b3a9442f1d91d784934dfddbb5accaaef4ab3a9fa903cc20e9ad9",
+        "SimdSkia.Gpu.dll": "ee29163c69b9e63a057b924b42a8effbf948a8779254defe8ccdc701bb3a8d20",
+        "SimdSkia.Gpu.Direct2D.dll": "4554770623a4147762e1aa7975f6f4be10429a66eeb0756d08009a8c81fc065d",
+        "SimdSkia.Imaging.dll": "8e43cede603bb383910dce868b25722c8e0c03357a0d0da8d21d12fcccb60021",
+        "SimdSkia.Text.dll": "f382ea58191b0c673138713d4dea533e9b8c350284805c41613896d5552861cb"
+      },
+      "candidate": {
+        "SimdSkia.Compatibility.dll": "059c0a41fcae946529efcacee271c5f54302fe8dd659eef65c986f15d89142b2",
+        "SimdSkia.Core.dll": "8eea672360b05c3b6414bd52762597aa43fc99def86e5988e7b27b24a5a3f1ac",
+        "SimdSkia.Cpu.dll": "563d75fc7c31b2d623aec93bac78c84cbc5677222e2c952263543bae26520f6d",
+        "SimdSkia.Gpu.dll": "0d6e25e807dd30241eb8c4e2e364bf024ebde287941e5840f23561a645e39f90",
+        "SimdSkia.Gpu.Direct2D.dll": "802bd492424369304ea429e4d6b2949c3b0ce2cbf7f491b3647119db622ade2d",
+        "SimdSkia.Imaging.dll": "ef5965c676baea05ed6995b43a67ea752b9dff57752d48e35329203f8a5ef63d",
+        "SimdSkia.Text.dll": "3d5177600c07e930ce95b060e3e008744a837be5273a65cd70e0530678692810"
+      }
+    },
+    "raster": {
+      "baseline": {
+        "SimdSkia.Compatibility.dll": "8e2b5fe01afea043d005e57ccec7aa1685b9fda31c4c94434f21db2ce8819ed7",
+        "SimdSkia.Core.dll": "568377a12b4bcd20ab8a8d8a029f847945b7fe80f55468904c1a175c9871d3e2",
+        "SimdSkia.Cpu.dll": "c6bb32b4192b3a9442f1d91d784934dfddbb5accaaef4ab3a9fa903cc20e9ad9",
+        "SimdSkia.Gpu.dll": "ee29163c69b9e63a057b924b42a8effbf948a8779254defe8ccdc701bb3a8d20",
+        "SimdSkia.Gpu.Direct2D.dll": "4554770623a4147762e1aa7975f6f4be10429a66eeb0756d08009a8c81fc065d",
+        "SimdSkia.Imaging.dll": "8e43cede603bb383910dce868b25722c8e0c03357a0d0da8d21d12fcccb60021",
+        "SimdSkia.Text.dll": "f382ea58191b0c673138713d4dea533e9b8c350284805c41613896d5552861cb"
+      },
+      "candidate": {
+        "SimdSkia.Compatibility.dll": "059c0a41fcae946529efcacee271c5f54302fe8dd659eef65c986f15d89142b2",
+        "SimdSkia.Core.dll": "8eea672360b05c3b6414bd52762597aa43fc99def86e5988e7b27b24a5a3f1ac",
+        "SimdSkia.Cpu.dll": "563d75fc7c31b2d623aec93bac78c84cbc5677222e2c952263543bae26520f6d",
+        "SimdSkia.Gpu.dll": "0d6e25e807dd30241eb8c4e2e364bf024ebde287941e5840f23561a645e39f90",
+        "SimdSkia.Gpu.Direct2D.dll": "802bd492424369304ea429e4d6b2949c3b0ce2cbf7f491b3647119db622ade2d",
+        "SimdSkia.Imaging.dll": "ef5965c676baea05ed6995b43a67ea752b9dff57752d48e35329203f8a5ef63d",
+        "SimdSkia.Text.dll": "3d5177600c07e930ce95b060e3e008744a837be5273a65cd70e0530678692810"
+      }
+    },
+    "gpu": {
+      "baseline": {
+        "SimdSkia.Compatibility.dll": "8e2b5fe01afea043d005e57ccec7aa1685b9fda31c4c94434f21db2ce8819ed7",
+        "SimdSkia.Core.dll": "568377a12b4bcd20ab8a8d8a029f847945b7fe80f55468904c1a175c9871d3e2",
+        "SimdSkia.Cpu.dll": "c6bb32b4192b3a9442f1d91d784934dfddbb5accaaef4ab3a9fa903cc20e9ad9",
+        "SimdSkia.Gpu.dll": "ee29163c69b9e63a057b924b42a8effbf948a8779254defe8ccdc701bb3a8d20",
+        "SimdSkia.Gpu.Direct2D.dll": "4554770623a4147762e1aa7975f6f4be10429a66eeb0756d08009a8c81fc065d",
+        "SimdSkia.Imaging.dll": "8e43cede603bb383910dce868b25722c8e0c03357a0d0da8d21d12fcccb60021",
+        "SimdSkia.Text.dll": "f382ea58191b0c673138713d4dea533e9b8c350284805c41613896d5552861cb"
+      },
+      "candidate": {
+        "SimdSkia.Compatibility.dll": "059c0a41fcae946529efcacee271c5f54302fe8dd659eef65c986f15d89142b2",
+        "SimdSkia.Core.dll": "8eea672360b05c3b6414bd52762597aa43fc99def86e5988e7b27b24a5a3f1ac",
+        "SimdSkia.Cpu.dll": "563d75fc7c31b2d623aec93bac78c84cbc5677222e2c952263543bae26520f6d",
+        "SimdSkia.Gpu.dll": "0d6e25e807dd30241eb8c4e2e364bf024ebde287941e5840f23561a645e39f90",
+        "SimdSkia.Gpu.Direct2D.dll": "802bd492424369304ea429e4d6b2949c3b0ce2cbf7f491b3647119db622ade2d",
+        "SimdSkia.Imaging.dll": "ef5965c676baea05ed6995b43a67ea752b9dff57752d48e35329203f8a5ef63d",
+        "SimdSkia.Text.dll": "3d5177600c07e930ce95b060e3e008744a837be5273a65cd70e0530678692810"
+      }
+    },
+    "avalonia": {
+      "baseline": {
+        "SimdSkia.Avalonia.dll": "d239b86269c432dacc257f52ffbc9349512ce1701b60c49cb96358c9ad58f4ab",
+        "SimdSkia.Core.dll": "568377a12b4bcd20ab8a8d8a029f847945b7fe80f55468904c1a175c9871d3e2",
+        "SimdSkia.Cpu.dll": "c6bb32b4192b3a9442f1d91d784934dfddbb5accaaef4ab3a9fa903cc20e9ad9",
+        "SimdSkia.Imaging.dll": "8e43cede603bb383910dce868b25722c8e0c03357a0d0da8d21d12fcccb60021",
+        "SimdSkia.Text.dll": "f382ea58191b0c673138713d4dea533e9b8c350284805c41613896d5552861cb"
+      },
+      "candidate": {
+        "SimdSkia.Avalonia.dll": "5d7ba818d5686a09dd4066a0d5be51449ad0c274e025fdb7dd80f036b3aa6707",
+        "SimdSkia.Core.dll": "8eea672360b05c3b6414bd52762597aa43fc99def86e5988e7b27b24a5a3f1ac",
+        "SimdSkia.Cpu.dll": "563d75fc7c31b2d623aec93bac78c84cbc5677222e2c952263543bae26520f6d",
+        "SimdSkia.Imaging.dll": "ef5965c676baea05ed6995b43a67ea752b9dff57752d48e35329203f8a5ef63d",
+        "SimdSkia.Text.dll": "3d5177600c07e930ce95b060e3e008744a837be5273a65cd70e0530678692810"
+      }
+    },
+    "gradient": {
+      "baseline": {
+        "SimdSkia.Core.dll": "568377a12b4bcd20ab8a8d8a029f847945b7fe80f55468904c1a175c9871d3e2",
+        "SimdSkia.Cpu.dll": "c6bb32b4192b3a9442f1d91d784934dfddbb5accaaef4ab3a9fa903cc20e9ad9",
+        "SimdSkia.Gpu.dll": "ee29163c69b9e63a057b924b42a8effbf948a8779254defe8ccdc701bb3a8d20",
+        "SimdSkia.Gpu.Direct2D.dll": "4554770623a4147762e1aa7975f6f4be10429a66eeb0756d08009a8c81fc065d"
+      },
+      "candidate": {
+        "SimdSkia.Core.dll": "8eea672360b05c3b6414bd52762597aa43fc99def86e5988e7b27b24a5a3f1ac",
+        "SimdSkia.Cpu.dll": "563d75fc7c31b2d623aec93bac78c84cbc5677222e2c952263543bae26520f6d",
+        "SimdSkia.Gpu.dll": "0d6e25e807dd30241eb8c4e2e364bf024ebde287941e5840f23561a645e39f90",
+        "SimdSkia.Gpu.Direct2D.dll": "802bd492424369304ea429e4d6b2949c3b0ce2cbf7f491b3647119db622ade2d"
+      }
+    },
+    "direct2d": {
+      "baseline": {
+        "SimdSkia.Core.dll": "568377a12b4bcd20ab8a8d8a029f847945b7fe80f55468904c1a175c9871d3e2",
+        "SimdSkia.Cpu.dll": "c6bb32b4192b3a9442f1d91d784934dfddbb5accaaef4ab3a9fa903cc20e9ad9",
+        "SimdSkia.Gpu.dll": "ee29163c69b9e63a057b924b42a8effbf948a8779254defe8ccdc701bb3a8d20",
+        "SimdSkia.Gpu.Direct2D.dll": "4554770623a4147762e1aa7975f6f4be10429a66eeb0756d08009a8c81fc065d"
+      },
+      "candidate": {
+        "SimdSkia.Core.dll": "8eea672360b05c3b6414bd52762597aa43fc99def86e5988e7b27b24a5a3f1ac",
+        "SimdSkia.Cpu.dll": "563d75fc7c31b2d623aec93bac78c84cbc5677222e2c952263543bae26520f6d",
+        "SimdSkia.Gpu.dll": "0d6e25e807dd30241eb8c4e2e364bf024ebde287941e5840f23561a645e39f90",
+        "SimdSkia.Gpu.Direct2D.dll": "802bd492424369304ea429e4d6b2949c3b0ce2cbf7f491b3647119db622ade2d"
+      }
+    },
+    "gifbench": {
+      "baseline": {
+        "SimdSkia.Compatibility.dll": "8e2b5fe01afea043d005e57ccec7aa1685b9fda31c4c94434f21db2ce8819ed7",
+        "SimdSkia.Core.dll": "568377a12b4bcd20ab8a8d8a029f847945b7fe80f55468904c1a175c9871d3e2",
+        "SimdSkia.Cpu.dll": "c6bb32b4192b3a9442f1d91d784934dfddbb5accaaef4ab3a9fa903cc20e9ad9",
+        "SimdSkia.Gpu.dll": "ee29163c69b9e63a057b924b42a8effbf948a8779254defe8ccdc701bb3a8d20",
+        "SimdSkia.Gpu.Direct2D.dll": "4554770623a4147762e1aa7975f6f4be10429a66eeb0756d08009a8c81fc065d",
+        "SimdSkia.Imaging.dll": "8e43cede603bb383910dce868b25722c8e0c03357a0d0da8d21d12fcccb60021",
+        "SimdSkia.Text.dll": "f382ea58191b0c673138713d4dea533e9b8c350284805c41613896d5552861cb"
+      },
+      "candidate": {
+        "SimdSkia.Compatibility.dll": "059c0a41fcae946529efcacee271c5f54302fe8dd659eef65c986f15d89142b2",
+        "SimdSkia.Core.dll": "8eea672360b05c3b6414bd52762597aa43fc99def86e5988e7b27b24a5a3f1ac",
+        "SimdSkia.Cpu.dll": "563d75fc7c31b2d623aec93bac78c84cbc5677222e2c952263543bae26520f6d",
+        "SimdSkia.Gpu.dll": "0d6e25e807dd30241eb8c4e2e364bf024ebde287941e5840f23561a645e39f90",
+        "SimdSkia.Gpu.Direct2D.dll": "802bd492424369304ea429e4d6b2949c3b0ce2cbf7f491b3647119db622ade2d",
+        "SimdSkia.Imaging.dll": "ef5965c676baea05ed6995b43a67ea752b9dff57752d48e35329203f8a5ef63d",
+        "SimdSkia.Text.dll": "3d5177600c07e930ce95b060e3e008744a837be5273a65cd70e0530678692810"
+      }
+    }
+  },
+  "head": "b4774b252c07d51860ed90d3cc265555c40ed94f"
+}
