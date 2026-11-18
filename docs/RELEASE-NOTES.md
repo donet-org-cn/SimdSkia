@@ -1,5 +1,13 @@
 # SimdSkia 更新日志 / Release notes
 
+## 0.1.8 正式版 · Avalonia 版本上限移除（2026-11-18）
+
+- Avalonia、Desktop 和 GPU 包接受 Avalonia 12.1.0 及更高版本。Android 包接受 Avalonia 12.1.5 及更高版本。
+- 桌面加入 12.1.6 的配套 Win32、X11 和 macOS 宿主。更新版本没有对应宿主时，构建选择随包最新宿主。
+- 版本矩阵扩展到 12.1.0–12.1.6，验证各版的实际 NuGet 消费与窗口渲染，最低和最高版本额外验证 NativeAOT。Android 样例针对 Avalonia 12.1.6 验证 Release 和 Mono AOT 构建。
+
+[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.8/docs/RELEASE-0.1.8.md) · [Avalonia 版本策略与矩阵](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.8/docs/AVALONIA-VERSION-COMPATIBILITY.md)
+
 ## 0.1.7 正式版 · 连续位图、Avalonia 与 NativeAOT（2026-11-18）
 
 - Direct2D 按 Avalonia 位图的写入版本更新纹理。轮换 960×720 位图时，每帧托管分配从 2,765,322 B 降至 303 B，120 帧内 Gen 2 回收从 13 次降至 0 次。

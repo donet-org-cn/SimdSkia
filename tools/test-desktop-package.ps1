@@ -1,6 +1,6 @@
 param(
- [string]$Version='0.1.7',
- [string]$AvaloniaVersion='12.1.5',
+ [string]$Version='0.1.8',
+ [string]$AvaloniaVersion='12.1.6',
  [string]$Packages='artifacts/nuget-preview',
  [string]$Output='artifacts/desktop-package-consumer',
  [ValidateSet('auto','cpu','direct2d','vulkan')][string]$Backend='auto',

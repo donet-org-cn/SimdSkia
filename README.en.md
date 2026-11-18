@@ -4,18 +4,18 @@
 
 SimdSkia is a .NET 2D rendering engine that runs without Google's native Skia library. In a console app or service, use `SKCanvas` to draw and save a PNG. In an Avalonia app, change the package references and startup code to switch the renderer while keeping your XAML and view models.
 
-[简体中文](README.md) · English · .NET 10 · [Release 0.1.7](docs/RELEASE-0.1.7.md) · [MIT](LICENSE)
+[简体中文](README.md) · English · .NET 10 · [Release 0.1.8](docs/RELEASE-0.1.8.md) · [MIT](LICENSE)
 
-0.1.7 reduces GC pressure during streaming Direct2D bitmap uploads and improves font matching, geometry hit testing, CPU rendering, and PNG encoding. [CPU, memory, and NativeAOT benchmarks](docs/PERFORMANCE-AOT-CPU-MEMORY-2026-11-18.md)
+0.1.8 removes the Avalonia version ceiling and includes the 12.1.6 desktop hosts. [CPU, memory, and NativeAOT benchmarks](docs/PERFORMANCE-AOT-CPU-MEMORY-2026-11-18.md)
 
 ## Choose your starting point
 
 | What you want to do | Package to install | Where to start |
 | --- | --- | --- |
-| Draw and generate a PNG in a .NET app | [SimdSkia](https://www.nuget.org/packages/SimdSkia/0.1.7) | [Run the drawing example](#generate-a-png) |
-| Switch the Avalonia renderer on Windows, Linux, or macOS | [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.7) | [Migrate an existing app](#migrate-an-existing-app) · [Run the window example](#run-the-desktop-window-example) |
-| Render an Avalonia Android app on the CPU | [SimdSkia.Avalonia.Android](https://www.nuget.org/packages/SimdSkia.Avalonia.Android/0.1.7) | [Set up the Android project](#avalonia-android) |
-| Convert pages from an existing PDF to images | [SimdSkia.Pdf](https://www.nuget.org/packages/SimdSkia.Pdf/0.1.7) | [Read and render PDFs](src/SimdSkia.Pdf/README.md) |
+| Draw and generate a PNG in a .NET app | [SimdSkia](https://www.nuget.org/packages/SimdSkia/0.1.8) | [Run the drawing example](#generate-a-png) |
+| Switch the Avalonia renderer on Windows, Linux, or macOS | [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.8) | [Migrate an existing app](#migrate-an-existing-app) · [Run the window example](#run-the-desktop-window-example) |
+| Render an Avalonia Android app on the CPU | [SimdSkia.Avalonia.Android](https://www.nuget.org/packages/SimdSkia.Avalonia.Android/0.1.8) | [Set up the Android project](#avalonia-android) |
+| Convert pages from an existing PDF to images | [SimdSkia.Pdf](https://www.nuget.org/packages/SimdSkia.Pdf/0.1.8) | [Read and render PDFs](src/SimdSkia.Pdf/README.md) |
 
 If your project directly references multiple `SimdSkia.*` packages, use the same version for each.
 
@@ -26,7 +26,7 @@ Install `SimdSkia` to run this example. It draws a rounded rectangle and a circl
 ```sh
 dotnet new console --framework net10.0 -o SimdSkiaDemo
 cd SimdSkiaDemo
-dotnet add package SimdSkia --version 0.1.7
+dotnet add package SimdSkia --version 0.1.8
 ```
 
 Replace `Program.cs` with the following code. SimdSkia's compatibility layer provides the `SkiaSharp` namespace.
@@ -85,7 +85,7 @@ Starting in 0.1.5, drawing falls back to the original outline if a TrueType glyp
 
 ### Migrate an existing app
 
-1. Run `dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.7` in your startup project and align your Avalonia packages to the same tested version. The example below uses `12.1.5`.
+1. Run `dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.8` in your startup project and align your Avalonia packages to the same version. The example uses `12.1.6`.
 2. Remove any direct references to `Avalonia.Desktop`, `Avalonia.Skia`, and `Avalonia.Fonts.Inter`. Check whether third-party controls depend on the original Skia backend or `ISkiaSharpApiLeaseFeature`.
 3. Add `using SimdSkia.Avalonia;` and replace `.UsePlatformDetect()` with `.UseSimdSkiaDesktop()` in your startup code. Remove `.WithInterFont()` if present.
 
@@ -101,9 +101,9 @@ Create `Demo.csproj` in an empty directory.
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SimdSkia.Avalonia.Desktop" Version="0.1.7" />
-    <PackageReference Include="Avalonia" Version="[12.1.5]" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.5]" />
+    <PackageReference Include="SimdSkia.Avalonia.Desktop" Version="0.1.8" />
+    <PackageReference Include="Avalonia" Version="[12.1.6]" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.6]" />
   </ItemGroup>
 </Project>
 ```
@@ -164,13 +164,13 @@ This screenshot from a Direct2D test shows the Avalonia controls demo with text 
 | Linux | Prefers hardware Vulkan under X11 or XWayland and can fall back to the CPU |
 | macOS | Renders on the CPU and uses Avalonia's native window host |
 
-Use `.UseSimdSkiaDesktop(options => options.UseCpu())` to explicitly select CPU rendering. The base `.UseSimdSkia()` adapter and offscreen bitmaps use the CPU. Desktop windows have been tested with Avalonia `12.1.0`–`12.1.5`. Newer versions need regression testing. [Backend selection and fallback](docs/GPU-PREFERRED-2026-11-07.md) · [Avalonia version matrix](docs/AVALONIA-VERSION-COMPATIBILITY.md)
+Use `.UseSimdSkiaDesktop(options => options.UseCpu())` to explicitly select CPU rendering. The base `.UseSimdSkia()` adapter and offscreen bitmaps use the CPU. The desktop package accepts Avalonia `12.1.0` and later. It uses the newest bundled host when it has no exact match. Compatibility with a later release depends on its host interfaces. [Backend selection and fallback](docs/GPU-PREFERRED-2026-11-07.md) · [Avalonia version matrix](docs/AVALONIA-VERSION-COMPATIBILITY.md)
 
 To publish a desktop app with Native AOT, install the target platform's toolchain. For example, run `dotnet publish -c Release -r win-x64 -p:PublishAot=true` on Windows x64. Use `linux-x64` for Linux x64 or `osx-arm64` for macOS ARM64. [0.1.2 AOT size comparison and reproduction steps](examples/DefaultAvaloniaAot/README.md)
 
 ## Avalonia Android
 
-Install `SimdSkia.Avalonia.Android` in a startup project targeting `net10.0-android36.0`. Use Avalonia `12.1.5` and call `.UseSimdSkiaAndroid()` in `CreateAppBuilder()`. When migrating from Avalonia's Android template, remove the direct `Avalonia.Android` reference and follow the example to configure the Activity's AppCompat theme and fonts. [Android setup and example](examples/Mobile.Android/README.md)
+Install `SimdSkia.Avalonia.Android` in a startup project targeting `net10.0-android36.0`. Use Avalonia `12.1.5` or later and call `.UseSimdSkiaAndroid()` in `CreateAppBuilder()`. When migrating from Avalonia's Android template, remove the direct `Avalonia.Android` reference and follow the example to configure the Activity's AppCompat theme and fonts. [Android setup and example](examples/Mobile.Android/README.md)
 
 Android uses CPU/SIMD rendering. The release record distinguishes tests of the source app on an Android 16 ARM64 device from Release and Mono AOT builds of an app consuming the NuGet package. iOS window presentation remains to be implemented. [Device test report](docs/ANDROID-2026-11-09.md) · [Package verification](docs/NUGET-PREVIEW.md)
 

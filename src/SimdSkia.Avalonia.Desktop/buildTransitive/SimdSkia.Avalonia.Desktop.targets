@@ -1,6 +1,6 @@
 <Project>
-  <!-- Patch releases can add host interface members. Select the host matching the
-       resolved core assembly, not the text of a user's PackageReference range. -->
+  <!-- Prefer the host built against the resolved core assembly. Applications
+       on a newer Avalonia version can start with the latest bundled host. -->
   <Target Name="SelectSimdSkiaAvaloniaHost" BeforeTargets="ResolveAssemblyReferences" DependsOnTargets="ResolvePackageAssets;ResolveLockFileReferences">
     <ItemGroup>
       <_SimdSkiaAvaloniaContract Include="@(Reference)" Condition="'%(Reference.Filename)' == 'Avalonia.Base' And Exists('%(Reference.Identity)')" />
@@ -11,7 +11,12 @@
       <Output TaskParameter="Assemblies" ItemName="_SimdSkiaAvaloniaIdentity" />
     </GetAssemblyIdentity>
     <PropertyGroup>
-      <_SimdSkiaHostVersion>@(_SimdSkiaAvaloniaIdentity->'%(Version)'->Distinct())</_SimdSkiaHostVersion>
+      <_SimdSkiaResolvedAvaloniaVersion>@(_SimdSkiaAvaloniaIdentity->'%(Version)'->Distinct())</_SimdSkiaResolvedAvaloniaVersion>
+      <_SimdSkiaHostVersion>$(_SimdSkiaResolvedAvaloniaVersion)</_SimdSkiaHostVersion>
+      <_SimdSkiaResolvedPackageVersion>$([System.Version]::Parse('$(_SimdSkiaResolvedAvaloniaVersion)').ToString(3))</_SimdSkiaResolvedPackageVersion>
+      <_SimdSkiaFallbackHostVersion>12.1.6.0</_SimdSkiaFallbackHostVersion>
+      <_SimdSkiaHostVersion Condition="'$(SimdSkiaSourceHosts)' != 'true' And !Exists('$(MSBuildThisFileDirectory)../hosts/$(_SimdSkiaHostVersion)/Avalonia.Win32.dll')">$(_SimdSkiaFallbackHostVersion)</_SimdSkiaHostVersion>
+      <_SimdSkiaHostVersion Condition="'$(SimdSkiaSourceHosts)' == 'true' And !Exists('$(NuGetPackageRoot)/avalonia.win32/$(_SimdSkiaResolvedPackageVersion)/lib/net8.0/Avalonia.Win32.dll')">$(_SimdSkiaFallbackHostVersion)</_SimdSkiaHostVersion>
       <_SimdSkiaHostFolder>$(MSBuildThisFileDirectory)../hosts/$(_SimdSkiaHostVersion)/</_SimdSkiaHostFolder>
       <_SimdSkiaHostPackageVersion>$([System.Version]::Parse('$(_SimdSkiaHostVersion)').ToString(3))</_SimdSkiaHostPackageVersion>
     </PropertyGroup>
@@ -21,7 +26,7 @@
     <ItemGroup Condition="'$(SimdSkiaSourceHosts)' == 'true'">
       <_SimdSkiaHost Include="$(NuGetPackageRoot)/avalonia.win32/$(_SimdSkiaHostPackageVersion)/lib/net8.0/*.dll;$(NuGetPackageRoot)/avalonia.x11/$(_SimdSkiaHostPackageVersion)/lib/net8.0/Avalonia.X11.dll;$(NuGetPackageRoot)/avalonia.freedesktop/$(_SimdSkiaHostPackageVersion)/lib/net8.0/*.dll;$(NuGetPackageRoot)/avalonia.freedesktop.atspi/$(_SimdSkiaHostPackageVersion)/lib/net8.0/*.dll;$(NuGetPackageRoot)/avalonia.native/$(_SimdSkiaHostPackageVersion)/lib/net8.0/*.dll" />
     </ItemGroup>
-    <Error Condition="'@(_SimdSkiaHost)' == ''" Text="SimdSkia has no matching desktop host for Avalonia $(_SimdSkiaHostVersion). This release supplies 12.1.0–12.1.5; update SimdSkia for newer Avalonia versions." />
+    <Error Condition="'@(_SimdSkiaHost)' == ''" Text="SimdSkia could not find the selected desktop host files ($(_SimdSkiaHostVersion)) for Avalonia $(_SimdSkiaResolvedAvaloniaVersion)." />
     <ItemGroup>
       <Reference Include="@(_SimdSkiaHost)" Private="true" />
     </ItemGroup>
@@ -32,6 +37,6 @@
     <ItemGroup Condition="$([MSBuild]::IsOSPlatform('OSX')) Or $([System.String]::Copy('$(RuntimeIdentifier)').StartsWith('osx'))">
       <Content Include="$(_SimdSkiaMacBridge)" Link="libAvaloniaNative.dylib" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     </ItemGroup>
-    <Message Importance="High" Text="SimdSkia: selecting Avalonia $(_SimdSkiaHostVersion) Win32/X11/macOS hosts." />
+    <Message Importance="High" Text="SimdSkia: Avalonia $(_SimdSkiaResolvedAvaloniaVersion) using Win32/X11/macOS hosts $(_SimdSkiaHostVersion)." />
   </Target>
 </Project>

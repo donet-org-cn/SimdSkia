@@ -166,8 +166,8 @@
         "contentHash": "bBjp4cHwHYy8t4o/f7vjgesPvOAlZUmEw6JEkbi/F2I9KRruwneD+Pwvfw2kYRxtcz+0V+hBM7Zo+cSs1SAWxw==",
         "dependencies": {
           "Sdcb.SimdCodecs.Abstractions": "2.0.0",
-          "Sdcb.SimdCodecs.Png": "2.0.0",
-          "Sdcb.SimdCodecs.Jpeg": "2.0.0"
+          "Sdcb.SimdCodecs.Jpeg": "2.0.0",
+          "Sdcb.SimdCodecs.Png": "2.0.0"
         }
       },
       "Sdcb.SimdCodecs.Webp": {
@@ -181,12 +181,12 @@
       "simdskia.avalonia": {
         "type": "Project",
         "dependencies": {
-          "Avalonia": "[12.1.0, 13.0.0)",
+          "Avalonia": "[12.1.0, )",
           "Clipper2": "[2.0.0, 2.0.0]",
-          "SimdSkia.Core": "[0.1.5, )",
-          "SimdSkia.Cpu": "[0.1.5, )",
-          "SimdSkia.Imaging": "[0.1.5, )",
-          "SimdSkia.Text": "[0.1.5, )"
+          "SimdSkia.Core": "[0.1.7, )",
+          "SimdSkia.Cpu": "[0.1.7, )",
+          "SimdSkia.Imaging": "[0.1.7, )",
+          "SimdSkia.Text": "[0.1.7, )"
         }
       },
       "simdskia.core": {
@@ -198,20 +198,20 @@
       "simdskia.cpu": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.5, )"
+          "SimdSkia.Core": "[0.1.7, )"
         }
       },
       "simdskia.imaging": {
         "type": "Project",
         "dependencies": {
           "Sdcb.SimdCodecs": "[2.0.0, 2.0.0]",
-          "SimdSkia.Core": "[0.1.5, )"
+          "SimdSkia.Core": "[0.1.7, )"
         }
       },
       "simdskia.text": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.5, )"
+          "SimdSkia.Core": "[0.1.7, )"
         }
       }
     }

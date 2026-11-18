@@ -4,22 +4,22 @@
     "net10.0": {
       "Avalonia": {
         "type": "Direct",
-        "requested": "[12.1.5, 12.1.5]",
-        "resolved": "12.1.5",
-        "contentHash": "Vw+gNvv4RXK5hLeVI9PfalhxPai6hrQjIElfoCDQK1fXTpk+vRyfhuhprrh+EIeuJtoYCy+AsSrqR1wgU28zeQ==",
+        "requested": "[12.1.6, 12.1.6]",
+        "resolved": "12.1.6",
+        "contentHash": "juogZu7ASS2KMtSqOMa8nGJ5I1Ile/3PG3JR+tD73liDr30qgilEsqNVQw3KIXJvuFc9m3Mf9NzGWc3sQvnlXA==",
         "dependencies": {
           "Avalonia.BuildServices": "11.3.2",
-          "Avalonia.Remote.Protocol": "12.1.5",
+          "Avalonia.Remote.Protocol": "12.1.6",
           "MicroCom.Runtime": "0.11.6"
         }
       },
       "Avalonia.Themes.Fluent": {
         "type": "Direct",
-        "requested": "[12.1.5, 12.1.5]",
-        "resolved": "12.1.5",
-        "contentHash": "FGjtJEpeVIbth+u4r507c9nbm1NQWLTvT3RC4e/yqDceRC4crAl37zVUloElA6rexDz69y0WvDfMLGX+t12yBQ==",
+        "requested": "[12.1.6, 12.1.6]",
+        "resolved": "12.1.6",
+        "contentHash": "CafSFU8q6I2ij7VRWy3D5qw3ObrDEOXRqIvFqVuEh7vqk1EC9ob94KYRmbHLZRsyj3Ob2xsF/tgcF5YF2uiKzQ==",
         "dependencies": {
-          "Avalonia": "12.1.5"
+          "Avalonia": "12.1.6"
         }
       },
       "Avalonia.BuildServices": {
@@ -29,8 +29,8 @@
       },
       "Avalonia.Remote.Protocol": {
         "type": "Transitive",
-        "resolved": "12.1.5",
-        "contentHash": "yNSke7MNKxJrgcTOQJk70QhPU568dxwRMeQCSmq9N7IGbpPS4zpbr4o6e8rLF/8UfASBQN/yuTgqUfa2nwf6Iw=="
+        "resolved": "12.1.6",
+        "contentHash": "55fcjPpzkzPaSSMczUjpKHKWcuJo6dJHHkLXgT8nMP80ijYASzdPdf86173R7CqPitw8E8nJ229Jqpu/EyUVow=="
       },
       "Clipper2": {
         "type": "Transitive",
@@ -167,8 +167,8 @@
         "contentHash": "bBjp4cHwHYy8t4o/f7vjgesPvOAlZUmEw6JEkbi/F2I9KRruwneD+Pwvfw2kYRxtcz+0V+hBM7Zo+cSs1SAWxw==",
         "dependencies": {
           "Sdcb.SimdCodecs.Abstractions": "2.0.0",
-          "Sdcb.SimdCodecs.Png": "2.0.0",
-          "Sdcb.SimdCodecs.Jpeg": "2.0.0"
+          "Sdcb.SimdCodecs.Jpeg": "2.0.0",
+          "Sdcb.SimdCodecs.Png": "2.0.0"
         }
       },
       "Sdcb.SimdCodecs.Webp": {
@@ -187,30 +187,30 @@
       "simdskia.avalonia": {
         "type": "Project",
         "dependencies": {
-          "Avalonia": "[12.1.0, 13.0.0)",
+          "Avalonia": "[12.1.0, )",
           "Clipper2": "[2.0.0, 2.0.0]",
-          "SimdSkia.Core": "[0.1.5, )",
-          "SimdSkia.Cpu": "[0.1.5, )",
-          "SimdSkia.Imaging": "[0.1.5, )",
-          "SimdSkia.Text": "[0.1.5, )"
+          "SimdSkia.Core": "[0.1.8, )",
+          "SimdSkia.Cpu": "[0.1.8, )",
+          "SimdSkia.Imaging": "[0.1.8, )",
+          "SimdSkia.Text": "[0.1.8, )"
         }
       },
       "simdskia.avalonia.desktop": {
         "type": "Project",
         "dependencies": {
-          "Avalonia": "[12.1.0, 13.0.0)",
-          "SimdSkia.Avalonia": "[0.1.5, )",
-          "SimdSkia.Avalonia.Gpu": "[0.1.5, )",
+          "Avalonia": "[12.1.0, )",
+          "SimdSkia.Avalonia": "[0.1.8, )",
+          "SimdSkia.Avalonia.Gpu": "[0.1.8, )",
           "Tmds.DBus.Protocol": "[0.94.1, 0.94.1]"
         }
       },
       "simdskia.avalonia.gpu": {
         "type": "Project",
         "dependencies": {
-          "Avalonia": "[12.1.0, 13.0.0)",
-          "SimdSkia.Avalonia": "[0.1.5, )",
-          "SimdSkia.Gpu": "[0.1.5, )",
-          "SimdSkia.Gpu.Direct2D": "[0.1.5, )"
+          "Avalonia": "[12.1.0, )",
+          "SimdSkia.Avalonia": "[0.1.8, )",
+          "SimdSkia.Gpu": "[0.1.8, )",
+          "SimdSkia.Gpu.Direct2D": "[0.1.8, )"
         }
       },
       "simdskia.core": {
@@ -222,35 +222,35 @@
       "simdskia.cpu": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.5, )"
+          "SimdSkia.Core": "[0.1.8, )"
         }
       },
       "simdskia.gpu": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.5, )",
-          "SimdSkia.Cpu": "[0.1.5, )"
+          "SimdSkia.Core": "[0.1.8, )",
+          "SimdSkia.Cpu": "[0.1.8, )"
         }
       },
       "simdskia.gpu.direct2d": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.5, )",
-          "SimdSkia.Cpu": "[0.1.5, )",
-          "SimdSkia.Gpu": "[0.1.5, )"
+          "SimdSkia.Core": "[0.1.8, )",
+          "SimdSkia.Cpu": "[0.1.8, )",
+          "SimdSkia.Gpu": "[0.1.8, )"
         }
       },
       "simdskia.imaging": {
         "type": "Project",
         "dependencies": {
           "Sdcb.SimdCodecs": "[2.0.0, 2.0.0]",
-          "SimdSkia.Core": "[0.1.5, )"
+          "SimdSkia.Core": "[0.1.8, )"
         }
       },
       "simdskia.text": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.5, )"
+          "SimdSkia.Core": "[0.1.8, )"
         }
       }
     }

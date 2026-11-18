@@ -1,18 +1,18 @@
-# SimdSkia.Avalonia.Android 0.1.7
+# SimdSkia.Avalonia.Android 0.1.8
 
-0.1.7 更新了共享的 Avalonia 字体和几何路径，以及 CPU 光栅化。Direct2D、Vulkan 与 Win64 NativeAOT 性能数据来自桌面测试。[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.7/docs/RELEASE-0.1.7.md) · [性能报告](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.7/docs/PERFORMANCE-AOT-CPU-MEMORY-2026-11-18.md)
+0.1.8 接受 Avalonia 12.1.5 及更高版本，示例使用 12.1.6。Direct2D、Vulkan 和 Win64 NativeAOT 性能数据来自桌面测试。[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.8/docs/RELEASE-0.1.8.md) · [性能报告](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.8/docs/PERFORMANCE-AOT-CPU-MEMORY-2026-11-18.md)
 
-该源码示例使用 Avalonia 12.1.5 和 SimdSkia 的 C# CPU/通用 SIMD 光栅化。Android 官方宿主负责 Activity、触摸、输入法和帧缓冲显示。
+该源码示例使用 SimdSkia 的 C# CPU/通用 SIMD 光栅化。随包的 12.1.5 Android 宿主负责 Activity、触摸、输入法和帧缓冲显示。
 
 中文、输入框、按钮、动画进度条、圆角渐变及前后台恢复已在 Android 16 ARM64 USB 真机测试。0.1.4 新增可直接引用的 Android 包，包消费另做独立缓存 Release/Mono AOT 构建。iOS 呈现适配仍待实现。测试范围见[移动端报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/ANDROID-2026-11-09.md)，当前发行结果见[发布记录](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/NUGET-PREVIEW.md)。
 
 ## NuGet 接入
 
-目标框架使用 `net10.0-android36.0`，Avalonia 家族包统一为12.1.5。在 Android 启动项目中安装以下包。
+目标框架使用 `net10.0-android36.0`。在 Android 启动项目中统一 Avalonia 家族包版本，以下命令使用 12.1.6。
 
 ```powershell
-dotnet add package SimdSkia.Avalonia.Android --version 0.1.7
-dotnet add package Avalonia.Themes.Fluent --version 12.1.5
+dotnet add package SimdSkia.Avalonia.Android --version 0.1.8
+dotnet add package Avalonia.Themes.Fluent --version 12.1.6
 ```
 
 已有模板中的 `Avalonia.Android` 直接引用应先移除，使用本包提供的窗口宿主。`CreateAppBuilder()` 中调用 `UseSimdSkiaAndroid()`，并提供受支持的静态 TrueType 字体。

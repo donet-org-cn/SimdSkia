@@ -1,8 +1,8 @@
 param(
- [string]$Version='0.1.7',
+ [string]$Version='0.1.8',
  [string]$Packages='artifacts/avalonia-matrix/packages',
  [string]$Output='artifacts/avalonia-matrix/results',
- [string[]]$AvaloniaVersions=@('12.1.0','12.1.1','12.1.2','12.1.3','12.1.4','12.1.5'),
+ [string[]]$AvaloniaVersions=@('12.1.0','12.1.1','12.1.2','12.1.3','12.1.4','12.1.5','12.1.6'),
  [switch]$SkipDesktop,
  [switch]$NativeAot
 )
@@ -23,8 +23,17 @@ try{
  foreach($av in $AvaloniaVersions){
   $rowPath=Join-Path $outPath $av;New-Item -ItemType Directory -Force $rowPath|Out-Null
   $props=@('-p:UsePackedSimdSkia=true',"-p:SimdSkiaPackageVersion=$Version","-p:AvaloniaVersion=$av","-p:NuGetLockFilePath=$rowPath/packages.lock.json")
-  dotnet restore tests/AvaloniaControls @props --configfile $config --packages $cache --force-evaluate *> "$rowPath/restore.log"
-  if($LASTEXITCODE -ne 0){Get-Content "$rowPath/restore.log";throw "Avalonia $av restore failed."}
+  for($attempt=1;$attempt -le 3;$attempt++){
+   dotnet restore tests/AvaloniaControls @props --configfile $config --packages $cache --force-evaluate *> "$rowPath/restore.log"
+   if($LASTEXITCODE -eq 0){break}
+   $downloadFailure=Select-String -LiteralPath "$rowPath/restore.log" -Pattern 'NU1301|Failed to download package' -Quiet
+   if(!$downloadFailure -or $attempt -eq 3){
+    Get-Content "$rowPath/restore.log"
+    throw "Avalonia $av restore failed."
+   }
+   Copy-Item -LiteralPath "$rowPath/restore.log" -Destination "$rowPath/restore-attempt-$attempt.log"
+   Start-Sleep -Seconds (15*$attempt)
+  }
   $assets=Get-Content tests/AvaloniaControls/obj/project.assets.json -Raw|ConvertFrom-Json
   if(!$assets.libraries.PSObject.Properties["Avalonia/$av"]){throw "Requested Avalonia $av was replaced by another version."}
   foreach($lib in $assets.libraries.PSObject.Properties){if($lib.Name -match '^SimdSkia' -and $lib.Value.type -eq 'project'){throw 'Source engine reference in binary compatibility test.'}}

@@ -5,8 +5,9 @@
     <ApplicationId>org.simdskia.androidsample</ApplicationId>
     <ApplicationTitle>SimdSkia Android</ApplicationTitle>
     <ApplicationVersion>1</ApplicationVersion>
-    <ApplicationDisplayVersion>0.1.7</ApplicationDisplayVersion>
-    <SimdSkiaPackageVersion Condition="'$(SimdSkiaPackageVersion)' == ''">0.1.7</SimdSkiaPackageVersion>
+    <ApplicationDisplayVersion>0.1.8</ApplicationDisplayVersion>
+    <SimdSkiaPackageVersion Condition="'$(SimdSkiaPackageVersion)' == ''">0.1.8</SimdSkiaPackageVersion>
+    <AvaloniaVersion Condition="'$(AvaloniaVersion)' == ''">12.1.6</AvaloniaVersion>
     <SupportedOSPlatformVersion>23</SupportedOSPlatformVersion>
     <RuntimeIdentifier>android-arm64</RuntimeIdentifier>
     <AndroidPackageFormats>apk</AndroidPackageFormats>
@@ -15,7 +16,8 @@
   <ItemGroup>
     <ProjectReference Include="../../src/SimdSkia.Avalonia.Android/SimdSkia.Avalonia.Android.csproj" Condition="'$(UsePackedSimdSkia)' != 'true'" />
     <PackageReference Include="SimdSkia.Avalonia.Android" Version="[$(SimdSkiaPackageVersion)]" Condition="'$(UsePackedSimdSkia)' == 'true'" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.5]" />
+    <PackageReference Include="Avalonia" Version="[$(AvaloniaVersion)]" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="[$(AvaloniaVersion)]" />
     <AndroidAsset Include="../../baseline/fonts/ZCOOLXiaoWei-Regular.ttf" Link="Fonts/ZCOOLXiaoWei-Regular.ttf" />
     <AndroidAsset Include="../../baseline/fonts/ZCOOLXiaoWei-OFL.txt" Link="Fonts/OFL.txt" />
     <AndroidAsset Include="../../LICENSE" Link="Licenses/SimdSkia-MIT.txt" />

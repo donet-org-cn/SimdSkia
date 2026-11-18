@@ -19,10 +19,10 @@ if (font.GetGlyph('中') == 0) throw new InvalidOperationException("The licensed
 int checks = 0;
 void Check(bool value, string message) { if (!value) throw new InvalidOperationException(message); checks++; }
 void Throws<T>(Action action) where T : Exception { try { action(); } catch (T) { checks++; return; } throw new InvalidOperationException($"Expected {typeof(T).Name}"); }
-foreach(var supported in new[]{new Version(12,1,0,0),new Version(12,1,5,0),new Version(12,2,0,0)})
-    Check(AvaloniaCompatibility.SupportsVersion(supported),"Supported Avalonia range must include the minimum and later 12.x.");
-foreach(var unsupported in new Version?[]{null,new(11,3,0,0),new(12,0,99,0),new(13,0,0,0)})
-    Check(!AvaloniaCompatibility.SupportsVersion(unsupported),"Unsupported Avalonia major/minimum must be rejected.");
+foreach(var supported in new[]{new Version(12,1,0,0),new Version(12,1,6,0),new Version(12,2,0,0),new Version(13,0,0,0)})
+    Check(AvaloniaCompatibility.SupportsVersion(supported),"The version policy must accept Avalonia 12.1.0 and later.");
+foreach(var unsupported in new Version?[]{null,new(11,3,0,0),new(12,0,99,0)})
+    Check(!AvaloniaCompatibility.SupportsVersion(unsupported),"The version policy must enforce the minimum.");
 AvaloniaCompatibility.Validate();
 string temp = Path.Combine(Path.GetTempPath(), "simdskia-fonts-" + Guid.NewGuid().ToString("N"));
 Directory.CreateDirectory(temp);

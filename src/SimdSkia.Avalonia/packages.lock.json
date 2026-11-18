@@ -4,7 +4,7 @@
     "net10.0": {
       "Avalonia": {
         "type": "Direct",
-        "requested": "[12.1.0, 13.0.0)",
+        "requested": "[12.1.0, )",
         "resolved": "12.1.0",
         "contentHash": "an4ugAy2q6GTdaFl635V8W/LKrWNL+mnSFUprbgyf8m1Zzf9WgoGaF5ajGv5i4gXefMZrzsUPV1QU+kKrgwCWg==",
         "dependencies": {
@@ -159,8 +159,8 @@
         "contentHash": "bBjp4cHwHYy8t4o/f7vjgesPvOAlZUmEw6JEkbi/F2I9KRruwneD+Pwvfw2kYRxtcz+0V+hBM7Zo+cSs1SAWxw==",
         "dependencies": {
           "Sdcb.SimdCodecs.Abstractions": "2.0.0",
-          "Sdcb.SimdCodecs.Png": "2.0.0",
-          "Sdcb.SimdCodecs.Jpeg": "2.0.0"
+          "Sdcb.SimdCodecs.Jpeg": "2.0.0",
+          "Sdcb.SimdCodecs.Png": "2.0.0"
         }
       },
       "Sdcb.SimdCodecs.Webp": {
@@ -180,20 +180,20 @@
       "simdskia.cpu": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.5, )"
+          "SimdSkia.Core": "[0.1.8, )"
         }
       },
       "simdskia.imaging": {
         "type": "Project",
         "dependencies": {
           "Sdcb.SimdCodecs": "[2.0.0, 2.0.0]",
-          "SimdSkia.Core": "[0.1.5, )"
+          "SimdSkia.Core": "[0.1.8, )"
         }
       },
       "simdskia.text": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.5, )"
+          "SimdSkia.Core": "[0.1.8, )"
         }
       }
     }

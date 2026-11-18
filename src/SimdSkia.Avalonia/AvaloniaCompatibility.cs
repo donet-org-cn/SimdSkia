@@ -10,7 +10,7 @@ internal static class AvaloniaCompatibility
 {
     internal static readonly Version MinimumVersion=new(12,1,0,0);
     internal static bool SupportsVersion(Version? version)=>
-        version is not null&&version.Major==12&&version>=MinimumVersion;
+        version is not null&&version>=MinimumVersion;
 
     // Keep the precise property contracts used by tile brushes available in AOT.
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicProperties|DynamicallyAccessedMemberTypes.NonPublicProperties,typeof(IImageBrushSource))]
@@ -20,7 +20,7 @@ internal static class AvaloniaCompatibility
     {
         var version=typeof(AppBuilder).Assembly.GetName().Version;
         if(!SupportsVersion(version))
-            throw new NotSupportedException($"SimdSkia requires Avalonia >=12.1.0 and <13.0.0; loaded {version}.");
+            throw new NotSupportedException($"SimdSkia requires Avalonia 12.1.0 or later. Loaded version: {version}.");
         // Do not equate an accepted version number with a supported private ABI.
         var bitmap=typeof(IImageBrushSource).GetProperty("Bitmap",BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic);
         var item=bitmap?.PropertyType.GetProperty("Item",BindingFlags.Instance|BindingFlags.Public);

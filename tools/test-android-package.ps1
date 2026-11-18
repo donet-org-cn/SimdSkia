@@ -2,6 +2,7 @@ param(
     [Parameter(Mandatory=$true)][string]$Version,
     [string]$Packages='artifacts/nuget-preview',
     [string]$Output='artifacts/android-package-consumer',
+    [string]$AvaloniaVersion='12.1.6',
     [string]$AndroidSdkDirectory=$env:ANDROID_HOME,
     [string]$JavaSdkDirectory=$env:JAVA_HOME,
     [switch]$PublicNuGet
@@ -36,11 +37,14 @@ try {
         $feed="<add key=`"release`" value=`"$escaped`"/>"
     }
     [IO.File]::WriteAllText($configPath,"<configuration><packageSources><clear/>$feed<add key=`"nuget.org`" value=`"https://api.nuget.org/v3/index.json`"/></packageSources></configuration>")
-    $properties=@('-p:UsePackedSimdSkia=true',"-p:SimdSkiaPackageVersion=$Version",'-p:RestorePackagesWithLockFile=true',
+    $properties=@('-p:UsePackedSimdSkia=true',"-p:SimdSkiaPackageVersion=$Version","-p:AvaloniaVersion=$AvaloniaVersion",'-p:RestorePackagesWithLockFile=true',
         "-p:AndroidSdkDirectory=$AndroidSdkDirectory","-p:JavaSdkDirectory=$JavaSdkDirectory")
     dotnet restore $consumerProject @properties -r android-arm64 --configfile $configPath --packages $cachePath --no-http-cache --force-evaluate *> "$outputPath/restore.log"
     if($LASTEXITCODE -ne 0){Get-Content "$outputPath/restore.log" -Tail 25;throw 'Android package-only restore failed.'}
     $assets=Get-Content "$projectPath/obj/project.assets.json" -Raw | ConvertFrom-Json
+    if(!$assets.libraries.PSObject.Properties["Avalonia/$AvaloniaVersion"]){
+        throw "Android consumer did not resolve Avalonia $AvaloniaVersion."
+    }
     $engines=@($assets.libraries.PSObject.Properties | Where-Object Name -like 'SimdSkia*')
     if($engines.Count -lt 5){throw 'Missing Android engine packages.'}
     foreach($library in $engines){
@@ -64,7 +68,7 @@ try {
     }
     finally {$archive.Dispose()}
     $summary=[ordered]@{
-        version=$Version;passed=$true;source=if($PublicNuGet){'NuGet.org-only'}else{'local release feed and NuGet.org'}
+        version=$Version;avaloniaVersion=$AvaloniaVersion;passed=$true;source=if($PublicNuGet){'NuGet.org-only'}else{'local release feed and NuGet.org'}
         freshPrivateCache=$true;enginePackages=@($engines.Name);sourceEngineProjects=$false
         apkBytes=$apk.Length;apkSha256=(Get-FileHash $apk.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
         monoAotAssemblies=$aot.Count;forbiddenAssets=$forbidden;deviceRunPerformed=$false

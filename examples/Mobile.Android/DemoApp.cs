@@ -63,7 +63,7 @@ public sealed class DemoApp : global::Avalonia.Application
             Children =
             {
                 new TextBlock { Text = "SimdSkia 安卓真机", FontSize = 28, FontWeight = FontWeight.Bold },
-                new TextBlock { Text = "纯 C# CPU / SIMD / Avalonia 12.1.5", TextWrapping = TextWrapping.Wrap },
+                new TextBlock { Text = "纯 C# CPU / SIMD", TextWrapping = TextWrapping.Wrap },
                 input, button, status, progress,
                 new Border
                 {
