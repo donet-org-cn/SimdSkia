@@ -2,7 +2,7 @@ namespace SimdSkia.Cpu;
 
 internal static class ClipCoverageCache
 {
-    internal readonly record struct Key(PathGeometry Path,Matrix3 Matrix,int Width,int Height,bool Antialias,float Tolerance);
+    internal readonly record struct Key(PathCacheKey Path,Matrix3 Matrix,int Width,int Height,bool Antialias,float Tolerance);
     private static readonly object gate=new();
     private static readonly Dictionary<Key,LinkedListNode<(Key Key,CoverageClip Clip,long Bytes)>> entries=[];
     private static readonly LinkedList<(Key Key,CoverageClip Clip,long Bytes)> order=[];
@@ -15,7 +15,7 @@ internal static class ClipCoverageCache
     {lock(gate){if(entries.TryGetValue(key,out var node)){order.Remove(node);order.AddLast(node);clip=node.Value.Clip;return true;}clip=null!;return false;}}
     internal static CoverageClip Add(Key key,CoverageClip clip)
     {
-        long length=(long)clip.Width*clip.Height+(long)key.Path.Segments.Length*32;
+        long length=clip.StoredPixels.Length+(long)key.Path.Geometry.SegmentCount*32;
         if(length>ByteLimit||length>SingleAllocationLimit||ByteLimit==0)return clip;
         lock(gate)
         {

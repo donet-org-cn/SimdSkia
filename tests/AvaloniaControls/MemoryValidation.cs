@@ -158,6 +158,165 @@ internal static class MemoryValidation
         var noDraw=Cpu.RasterCanvas.CreateClipForBounds(new(stripes),Matrix3.Identity,stripeWidth,stripeHeight,true);
         for(int x=0;x<stripeWidth;x++)
             Check(noDraw.At(x,5)==((x&1)==0?255:0),"No-draw canvas lost dense path clip coverage.");
+
+        using (var pixels = new PixelBuffer(32, 24, SimdSkia.PixelFormat.Bgra8888, SimdSkia.AlphaFormat.Premultiplied))
+        using (var raster = new Cpu.RasterCanvas(pixels))
+        {
+            var path = PathGeometry.Rectangle(new(2.25f, 3, 20.25f, 17));
+            var mask = raster.CreateClip(path, Matrix3.Identity);
+            var rebuilt = new PathGeometry(path.Segments.ToArray());
+            Check(ReferenceEquals(mask, raster.CreateClip(rebuilt, Matrix3.Identity)), "Equivalent paths must reuse their immutable clip.");
+            var inverse = new PathGeometry(path.Segments.ToArray(), SimdSkia.FillRule.InverseWinding);
+            Check(mask.At(0, 0) == 0 && raster.CreateClip(inverse, Matrix3.Identity).At(0, 0) == 255,
+                "Clip reuse lost the fill rule.");
+            Check(mask.At(2, 6) != raster.CreateClip(rebuilt, Matrix3.Identity with { M02 = .5f }).At(2, 6),
+                "Clip reuse lost the device transform.");
+        }
+        var flatPen = new Pen(Brushes.Navy, 2);
+        var firstLine = factory.CreateLineGeometry(new(2, 3), new(21, 12));
+        var sameLine = factory.CreateLineGeometry(new(2, 3), new(21, 12));
+        Check(ReferenceEquals(firstLine.GetWidenedGeometry(flatPen), sameLine.GetWidenedGeometry(flatPen)),
+            "Rebuilt line geometry did not reuse its stroke.");
+
+        for (int i = 0; i < 40; i++)
+        {
+            bool horizontal = (i & 1) == 0;
+            double band = 8.125 + i * .231;
+            var start = horizontal ? new Point(-3.125, band) : new Point(band, -3.125);
+            var end = horizontal ? new Point(49.625, band) : new Point(band, 35.625);
+            if ((i & 2) != 0) (start, end) = (end, start);
+            var pen = new Pen(Brushes.Navy, (i % 6 + 1) * .5)
+            {
+                LineCap = PenLineCap.Flat,
+                DashStyle = (i % 5) switch
+                {
+                    0 => null,
+                    1 => new DashStyle([1, 1], i * .25),
+                    2 => new DashStyle([0, 2], i * -.25),
+                    3 => new DashStyle([2, 0], i * .25),
+                    _ => new DashStyle([1.2, .7, .9], i * -.25),
+                },
+            };
+            var line = factory.CreateLineGeometry(start, end);
+            var outline = factory.CreateStreamGeometry();
+            using (var edit = outline.Open())
+            {
+                edit.BeginFigure(start, false);
+                edit.LineTo(end);
+                edit.LineTo(end); // Same stroke, with a contour that uses the polygon stroker.
+                edit.EndFigure(false);
+            }
+            Check(line.GetRenderBounds(pen) == outline.GetRenderBounds(pen), "Flat-axis stroke bounds diverged from the polygon stroker.");
+            var transform = i % 3 == 0 ? Matrix.CreateRotation(.137) : Matrix.Identity;
+            using (var draw = reused.CreateDrawingContext())
+            {
+                draw.Clear(Colors.Transparent);
+                draw.Transform = transform;
+                draw.DrawGeometry(null, pen, line);
+            }
+            using (var draw = reference.CreateDrawingContext())
+            {
+                draw.Clear(Colors.Transparent);
+                draw.Transform = transform;
+                draw.DrawGeometry(null, pen, outline);
+            }
+            Check(Bytes(reused).AsSpan().SequenceEqual(Bytes(reference)), "Flat-axis stroke changed dashed or transformed pixels.");
+        }
+
+        var ellipse = factory.CreateEllipseGeometry(new(3.5, 2.75, 42, 33));
+        var rectangle = new Rect(12, 10, 31, 29);
+        void RenderNestedClip(IRenderTargetBitmapImpl bitmap, bool geometryClip)
+        {
+            using var context = bitmap.CreateDrawingContext();
+            context.Clear(Colors.Transparent);
+            context.PushGeometryClip(ellipse);
+            if (geometryClip)
+                context.PushGeometryClip(factory.CreateRectangleGeometry(rectangle));
+            else
+                context.PushClip(rectangle);
+            context.DrawRectangle(Brushes.Red, null, new Rect(0, 0, 64, 48));
+            context.PopClip();
+            context.DrawRectangle(Brushes.Blue, null, new Rect(6, 7, 6, 7));
+            context.PopClip();
+        }
+        RenderNestedClip(reused, true);
+        RenderNestedClip(reference, false);
+        Check(Bytes(reused).AsSpan().SequenceEqual(Bytes(reference)), "Integral geometry clips changed inherited coverage or clip restoration.");
+
+        var shadow = new BoxShadow { OffsetX = 2.25, OffsetY = 2, Blur = 4, Color = Color.FromArgb(128, 10, 20, 30) };
+        byte[] RenderShadow(BoxShadow style)
+        {
+            using (var context = reused.CreateDrawingContext())
+            {
+                context.Clear(Colors.Transparent);
+                context.DrawRectangle(Brushes.White, null, new RoundedRect(new Rect(8, 8, 40, 24), 5), new BoxShadows(style));
+            }
+            return Bytes(reused);
+        }
+        var originalShadow = RenderShadow(shadow);
+        for (int i = 0; i < 3; i++)
+            Check(RenderShadow(shadow).AsSpan().SequenceEqual(originalShadow), "Reusing a box shadow changed its pixels.");
+        shadow.Color = Colors.Orange;
+        Check(!RenderShadow(shadow).AsSpan().SequenceEqual(originalShadow), "A cached box shadow ignored the new color.");
+
+        using (var bitmap = factory.CreateRenderTargetBitmap(new(336,248), new(96,96)))
+        foreach (bool inset in new[] { false, true })
+        foreach (int corner in new[] { 0, 13 })
+        {
+            const int width = 336, height = 248;
+            var rect = new RoundedRect(new Rect(24.25,21.5,280.5,200),corner);
+            var style = new BoxShadow { OffsetX=-2.5, OffsetY=3.25, Spread=2, Blur=5, Color=Color.FromArgb(173,73,124,218), IsInset=inset };
+            using (var draw = bitmap.CreateDrawingContext())
+            {
+                draw.Clear(Colors.Transparent);
+                draw.DrawRectangle(null,null,rect,new BoxShadows(style));
+            }
+            // Independent full-size convolution, including the rows omitted by the strip renderer.
+            using var fullMask = PixelBuffer.Rent(width,height,SimdSkia.PixelFormat.Alpha8);
+            using var maskCanvas = new Cpu.RasterCanvas(fullMask);
+            var cast = inset ? rect.Deflate(2,2) : rect.Inflate(2,2);
+            if (inset) maskCanvas.Execute(DrawingCommand.Clear(new(255,255,255,255)));
+            maskCanvas.Execute(new(CommandKind.FillPath,default,Matrix3.Identity with { M02=-2.5f,M12=3.25f },
+                new(new(255,255,255,255),inset?CompositeMode.Clear:CompositeMode.SourceOver,true))
+                {Path=SimdSkia.Avalonia.Geometry.Rounded(cast).Path,CurveTolerance=.015625f});
+            float sigma=.288675f*5+.5f;
+            using var dense = Cpu.ManagedFilters.Blur(fullMask,sigma,sigma);
+            var box = maskCanvas.CreateClip(SimdSkia.Avalonia.Geometry.Rounded(rect).Path,Matrix3.Identity);
+            var actual=Bytes(bitmap);
+            for (int y=0;y<height;y++)
+            {
+                var alpha = dense.GetRowSpan(y);
+                for (int x=0;x<width;x++)
+                {
+                    int cover=corner>0?box.At(x,y):x>=24&&x<305&&y>=22&&y<222?255:0;
+                    static byte Mul(int a,int b)=>(byte)((a*b+127)/255);
+                    byte a=Mul(Mul(alpha[x],173),inset?cover:255-cover);
+                    int p=(y*width+x)*4;
+                    if (actual[p]!=Mul(218,a)||actual[p+1]!=Mul(124,a)||actual[p+2]!=Mul(73,a)||actual[p+3]!=a)
+                        throw new Exception($"Compressed box shadow differs at ({x},{y}), inset={inset}, radius={corner}.");
+                }
+            }
+            checks++;
+        }
+
+        using var alphaPlane = new PixelBuffer(73, 19, SimdSkia.PixelFormat.Alpha8, SimdSkia.AlphaFormat.Premultiplied, 79);
+        using var colorPlane = new PixelBuffer(73, 19, SimdSkia.PixelFormat.Bgra8888, SimdSkia.AlphaFormat.Premultiplied, 304);
+        for (int y = 0; y < alphaPlane.Height; y++)
+            for (int x = 0; x < alphaPlane.Width; x++)
+            {
+                byte alpha = (byte)((y * 43 + x * 31) & 255);
+                alphaPlane.GetRowSpan(y)[x] = alpha;
+                colorPlane.GetRowSpan(y)[x * 4 + 3] = alpha;
+            }
+        foreach (var region in new RectF?[] { null, new(5.25f, 2, 70.75f, 16) })
+        {
+            using var filteredAlpha = Cpu.ManagedFilters.Blur(alphaPlane, 2.15f, 1.1f, region);
+            using var filteredColor = Cpu.ManagedFilters.Blur(colorPlane, 2.15f, 1.1f, region);
+            for (int y = 0; y < alphaPlane.Height; y++)
+                Check(Enumerable.Range(0, alphaPlane.Width).All(x =>
+                    filteredAlpha.GetRowSpan(y)[x] == filteredColor.GetRowSpan(y)[x * 4 + 3]),
+                    "Single-channel blur must match the premultiplied alpha channel, including edges and partial regions.");
+        }
         return checks;
     }
 

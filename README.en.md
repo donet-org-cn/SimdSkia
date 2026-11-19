@@ -4,18 +4,18 @@
 
 SimdSkia is a .NET 2D rendering engine that runs without Google's native Skia library. In a console app or service, use `SKCanvas` to draw and save a PNG. In an Avalonia app, change the package references and startup code to switch the renderer while keeping your XAML and view models.
 
-[简体中文](README.md) · English · .NET 10 · [Release 0.1.9](docs/RELEASE-0.1.9.md) · [MIT](LICENSE)
+[简体中文](README.md) · English · .NET 10 · [Release 0.1.10](docs/RELEASE-0.1.10.md) · [MIT](LICENSE)
 
-0.1.9 fixes a stream geometry exception while drawing OxyPlot axis ticks. The fix was verified with Avalonia 12.1.6 and OxyPlot.Avalonia 2.2.0. [CPU, memory, and NativeAOT benchmarks](docs/PERFORMANCE-AOT-CPU-MEMORY-2026-11-18.md)
+0.1.10 reduces managed allocations in Avalonia clipping, shadows, strokes, and glyph rendering. The report covers a live OxyPlot window, Fluent controls, list scrolling, and Win64 NativeAOT. [CPU, memory, and NativeAOT benchmarks](docs/PERFORMANCE-OXYPLOT-2026-11-19.md)
 
 ## Choose your starting point
 
 | What you want to do | Package to install | Where to start |
 | --- | --- | --- |
-| Draw and generate a PNG in a .NET app | [SimdSkia](https://www.nuget.org/packages/SimdSkia/0.1.9) | [Run the drawing example](#generate-a-png) |
-| Switch the Avalonia renderer on Windows, Linux, or macOS | [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.9) | [Migrate an existing app](#migrate-an-existing-app) · [Run the window example](#run-the-desktop-window-example) |
-| Render an Avalonia Android app on the CPU | [SimdSkia.Avalonia.Android](https://www.nuget.org/packages/SimdSkia.Avalonia.Android/0.1.9) | [Set up the Android project](#avalonia-android) |
-| Convert pages from an existing PDF to images | [SimdSkia.Pdf](https://www.nuget.org/packages/SimdSkia.Pdf/0.1.9) | [Read and render PDFs](src/SimdSkia.Pdf/README.md) |
+| Draw and generate a PNG in a .NET app | [SimdSkia](https://www.nuget.org/packages/SimdSkia/0.1.10) | [Run the drawing example](#generate-a-png) |
+| Switch the Avalonia renderer on Windows, Linux, or macOS | [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.10) | [Migrate an existing app](#migrate-an-existing-app) · [Run the window example](#run-the-desktop-window-example) |
+| Render an Avalonia Android app on the CPU | [SimdSkia.Avalonia.Android](https://www.nuget.org/packages/SimdSkia.Avalonia.Android/0.1.10) | [Set up the Android project](#avalonia-android) |
+| Convert pages from an existing PDF to images | [SimdSkia.Pdf](https://www.nuget.org/packages/SimdSkia.Pdf/0.1.10) | [Read and render PDFs](src/SimdSkia.Pdf/README.md) |
 
 If your project directly references multiple `SimdSkia.*` packages, use the same version for each.
 
@@ -26,7 +26,7 @@ Install `SimdSkia` to run this example. It draws a rounded rectangle and a circl
 ```sh
 dotnet new console --framework net10.0 -o SimdSkiaDemo
 cd SimdSkiaDemo
-dotnet add package SimdSkia --version 0.1.9
+dotnet add package SimdSkia --version 0.1.10
 ```
 
 Replace `Program.cs` with the following code. SimdSkia's compatibility layer provides the `SkiaSharp` namespace.
@@ -85,7 +85,7 @@ Starting in 0.1.5, drawing falls back to the original outline if a TrueType glyp
 
 ### Migrate an existing app
 
-1. Run `dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.9` in your startup project and align your Avalonia packages to the same version. The example uses `12.1.6`.
+1. Run `dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.10` in your startup project and align your Avalonia packages to the same version. The example uses `12.1.6`.
 2. Remove any direct references to `Avalonia.Desktop`, `Avalonia.Skia`, and `Avalonia.Fonts.Inter`. Check whether third-party controls depend on the original Skia backend or `ISkiaSharpApiLeaseFeature`.
 3. Add `using SimdSkia.Avalonia;` and replace `.UsePlatformDetect()` with `.UseSimdSkiaDesktop()` in your startup code. Remove `.WithInterFont()` if present.
 
@@ -101,7 +101,7 @@ Create `Demo.csproj` in an empty directory.
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SimdSkia.Avalonia.Desktop" Version="0.1.9" />
+    <PackageReference Include="SimdSkia.Avalonia.Desktop" Version="0.1.10" />
     <PackageReference Include="Avalonia" Version="[12.1.6]" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.6]" />
   </ItemGroup>

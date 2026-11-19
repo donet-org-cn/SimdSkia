@@ -15,6 +15,13 @@ internal class Geometry : IGeometryImpl
     internal SPath Path {get;set;}
     internal SPath StrokePath {get;set;}
     private readonly record struct StrokeKey(double Width,PenLineCap Cap,PenLineJoin Join,double Miter,ImmutableDashStyle? Dash);
+    private readonly record struct SharedStrokeKey(PathCacheKey Path, StrokeKey Pen);
+    private const int SharedStrokeBudget = 2 * 1024 * 1024;
+    private static readonly object sharedStrokeGate = new();
+    private static readonly Dictionary<SharedStrokeKey, LinkedListNode<(SharedStrokeKey Key, Geometry Value, long Bytes)>> sharedStrokes = [];
+    private static readonly LinkedList<(SharedStrokeKey Key, Geometry Value, long Bytes)> sharedStrokeOrder = [];
+    private static long sharedStrokeBytes;
+    private static ClipperD? smallStrokeUnion;
     private readonly object strokeGate=new();
     private sealed class FirstStroke(StrokeKey key,Geometry geometry)
     {
@@ -61,16 +68,57 @@ internal class Geometry : IGeometryImpl
                 if(key==first.Key)return first.Geometry;
                 if(first.Other is {} other&&other.TryGetValue(key,out var cached))return cached;
             }
-            var result=CreateStroke(key);
+            var result=GetSharedStroke(StrokePath,key);
             if(strokes is null||strokes.Other?.Count>=31)strokes=new(key,result);
             else (strokes.Other??=[]).Add(key,result);
             return result;
         }
     }
-    private Geometry CreateStroke(StrokeKey key)
+    private static Geometry GetSharedStroke(SPath path, StrokeKey pen)
     {
+        if (path.Segments.Length > PathCacheKey.ContentLimit || pen.Dash?.Dashes?.Count > 32)
+            return CreateStroke(path, pen);
+
+        var key = new SharedStrokeKey(new(path), pen);
+        lock (sharedStrokeGate)
+        {
+            if (sharedStrokes.TryGetValue(key, out var existing))
+            {
+                sharedStrokeOrder.Remove(existing);
+                sharedStrokeOrder.AddLast(existing);
+                return existing.Value.Value;
+            }
+        }
+
+        var stroke = CreateStroke(path, pen);
+        long bytes = ((long)path.Segments.Length + stroke.Path.SegmentCount) * 32 + 256;
+        if (bytes > SharedStrokeBudget / 4)
+            return stroke;
+
+        lock (sharedStrokeGate)
+        {
+            if (sharedStrokes.TryGetValue(key, out var existing))
+                return existing.Value.Value;
+            while (sharedStrokes.Count >= 128 || sharedStrokeBytes + bytes > SharedStrokeBudget)
+            {
+                var oldest = sharedStrokeOrder.First!;
+                sharedStrokes.Remove(oldest.Value.Key);
+                sharedStrokeBytes -= oldest.Value.Bytes;
+                sharedStrokeOrder.RemoveFirst();
+            }
+            sharedStrokes.Add(key, sharedStrokeOrder.AddLast((key, stroke, bytes)));
+            sharedStrokeBytes += bytes;
+            return stroke;
+        }
+    }
+
+    private static Geometry CreateStroke(SPath path, StrokeKey key)
+    {
+        if (TryCreateFlatAxisStroke(path, key) is { } aligned)
+            return aligned;
+
         var paths=new PathsD();
-        if(key.Width>0)foreach(var contour in Contours)
+        if(key.Width>0)foreach(var contour in path.Flatten(Matrix3.Identity,0.015625f))
         {
             if(contour.Length<2)continue;
             bool closed=contour[0]==contour[^1];
@@ -81,28 +129,161 @@ internal class Geometry : IGeometryImpl
             if(key.Dash is {Dashes.Count:>0})end=key.Cap switch {PenLineCap.Flat=>EndType.Butt,PenLineCap.Round=>EndType.Round,_=>EndType.Square};
             paths.AddRange(Clipper.InflatePaths(pieces,key.Width/2,join,end,key.Miter,5,0.015625));
         }
-        return new Geometry(FromPaths(Clipper.Union(paths,CFill.NonZero)));
+        int vertices = 0;
+        foreach (var polygon in paths)
+        {
+            if (polygon.Count > 64 - vertices)
+                return new Geometry(FromPaths(Clipper.Union(paths,CFill.NonZero)));
+            vertices += polygon.Count;
+        }
+        // Clipper owns reusable vertex and output pools. Lend one engine to one
+        // small union at a time. Large or failed unions release their scratch.
+        var union = Interlocked.Exchange(ref smallStrokeUnion, null) ?? new ClipperD(2);
+        var solution = new PathsD();
+        union.AddSubject(paths);
+        bool succeeded = union.Execute(ClipType.Union,CFill.NonZero,solution);
+        var outline = FromPaths(solution);
+        if (succeeded && outline.SegmentCount <= 128)
+        {
+            union.Clear();
+            Interlocked.CompareExchange(ref smallStrokeUnion,union,null);
+        }
+        return new Geometry(outline);
     }
+
+    private static Geometry? TryCreateFlatAxisStroke(SPath path, StrokeKey pen)
+    {
+        var segments = path.Segments;
+        if (pen.Cap != PenLineCap.Flat || pen.Join is not (PenLineJoin.Miter or PenLineJoin.Bevel or PenLineJoin.Round) ||
+            segments.Length != 2 ||
+            segments[0].Verb != PathVerb.Move || segments[1].Verb != PathVerb.Line)
+            return null;
+
+        var start = segments[0].A;
+        var end = segments[1].A;
+        bool horizontal = start.Y == end.Y;
+        if (start == end || (!horizontal && start.X != end.X))
+            return null;
+
+        // Match the offset precision and final union precision used by Clipper.
+        const double offsetScale = 100_000;
+        double half = pen.Width / 2 * offsetScale;
+        if (half < 1 || half != Math.Truncate(half) ||
+            Math.Max(Math.Max(Math.Abs(start.X), Math.Abs(end.X)), Math.Max(Math.Abs(start.Y), Math.Abs(end.Y))) +
+            pen.Width / 2 > 1_000_000)
+            return null;
+
+        static double OffsetCoordinate(double coordinate) => Math.Round(coordinate * offsetScale, MidpointRounding.AwayFromZero);
+        static float FinalCoordinate(double coordinate) => (float)(Math.Round(coordinate * (1 / offsetScale) * 100,
+            MidpointRounding.AwayFromZero) * .01);
+
+        double axis = OffsetCoordinate(horizontal ? start.Y : start.X);
+        float near = FinalCoordinate(axis - half), far = FinalCoordinate(axis + half);
+        var rectangles = new List<RectF>();
+        bool Add(double begin, double finish)
+        {
+            double first = OffsetCoordinate(begin), last = OffsetCoordinate(finish);
+            if (first == last) return false;
+            float low = FinalCoordinate(Math.Min(first, last)), high = FinalCoordinate(Math.Max(first, last));
+            if (low == high || near == far) return true;
+            var box = horizontal ? new RectF(low, near, high, far) : new RectF(near, low, far, high);
+            if (rectangles.Count > 0)
+            {
+                var previous = rectangles[^1];
+                if (previous.Left <= box.Right && box.Left <= previous.Right &&
+                    previous.Top <= box.Bottom && box.Top <= previous.Bottom)
+                {
+                    rectangles[^1] = new RectF(Math.Min(previous.Left, box.Left), Math.Min(previous.Top, box.Top),
+                        Math.Max(previous.Right, box.Right), Math.Max(previous.Bottom, box.Bottom));
+                    return true;
+                }
+            }
+            rectangles.Add(box);
+            return true;
+        }
+
+        double origin = horizontal ? start.X : start.Y;
+        double finish = horizontal ? end.X : end.Y;
+        if (pen.Dash is { Dashes.Count: > 0 } dash)
+        {
+            var cursor = new DashCursor(dash, pen.Width);
+            double delta = finish - origin, length = Math.Sqrt(delta * delta);
+            if (dash.Dashes is { Count: 2 } pattern && pattern[0] > 0 && pattern[1] > 0)
+            {
+                double capacity = Math.Ceiling(length / ((pattern[0] + pattern[1]) * pen.Width)) + 1;
+                if (capacity <= 4096) rectangles.EnsureCapacity((int)capacity);
+            }
+            for (double at = 0; at < length;)
+            {
+                double take = Math.Min(cursor.Remaining, length - at);
+                double begin = at;
+                at += take;
+                if (cursor.IsOn && take > 0 && !Add(origin + delta * begin / length, origin + delta * at / length))
+                    return null;
+                cursor.Consume(take);
+            }
+        }
+        else if (!Add(origin, finish))
+            return null;
+
+        return new Geometry(SPath.FromAxisRectangles(rectangles));
+    }
+
+    private struct DashCursor
+    {
+        private readonly double[] pattern;
+        private int index;
+        internal double Remaining { get; private set; }
+        internal bool IsOn => (index & 1) == 0;
+
+        internal DashCursor(IDashStyle dash, double width)
+        {
+            pattern = dash.Dashes!.Select(length => length * width).ToArray();
+            if (pattern.Any(length => !double.IsFinite(length) || length < 0) || !double.IsFinite(dash.Offset))
+                throw new ArgumentException("Dash lengths must be nonnegative and finite, and the offset must be finite.");
+            if ((pattern.Length & 1) != 0) pattern = pattern.Concat(pattern).ToArray();
+            double total = pattern.Sum();
+            if (total <= 0 || !double.IsFinite(total) || !double.IsFinite(dash.Offset * width))
+                throw new ArgumentException("The dash pattern must have a positive finite period.");
+
+            double phase = ((dash.Offset * width) % total + total) % total;
+            index = 0;
+            while (phase > 0 && phase >= pattern[index])
+            {
+                phase -= pattern[index];
+                index = (index + 1) % pattern.Length;
+            }
+            Remaining = pattern[index] - phase;
+        }
+
+        internal bool Consume(double length)
+        {
+            Remaining -= length;
+            if (Remaining < 1e-10)
+            {
+                index = (index + 1) % pattern.Length;
+                Remaining = pattern[index];
+                return true;
+            }
+            return false;
+        }
+    }
+
     private static PathsD Dash(PathD path,IDashStyle dash,double width,bool closed,PenLineCap cap)
     {
-        var pattern=dash.Dashes!.Select(x=>x*width).ToArray();
-        if(pattern.Any(x=>!double.IsFinite(x)||x<0)||!double.IsFinite(dash.Offset))throw new ArgumentException("Dash lengths must be nonnegative and finite, and the offset must be finite.");
-        if((pattern.Length&1)!=0)pattern=pattern.Concat(pattern).ToArray();
-        double total=pattern.Sum();if(total<=0||!double.IsFinite(total)||!double.IsFinite(dash.Offset*width))throw new ArgumentException("The dash pattern must have a positive finite period.");
-        double phase=((dash.Offset*width)%total+total)%total;int index=0;
-        while(phase>0){if(phase<pattern[index])break;phase-=pattern[index];index=(index+1)%pattern.Length;}
-        double remaining=pattern[index]-phase;var result=new PathsD();PathD? piece=null;
+        var cursor = new DashCursor(dash, width);
+        var result=new PathsD();PathD? piece=null;
         for(int j=1;j<path.Count;j++)
         {
             var a=path[j-1];var b=path[j];double dx=b.x-a.x,dy=b.y-a.y,length=Math.Sqrt(dx*dx+dy*dy),at=0;
             while(at<length)
             {
-                double take=Math.Min(remaining,length-at);var start=new PointD(a.x+dx*at/length,a.y+dy*at/length);at+=take;var stop=new PointD(a.x+dx*at/length,a.y+dy*at/length);
-                if((index&1)==0&&(take>0||cap!=PenLineCap.Flat)){if(piece is null){piece=new PathD{start};result.Add(piece);}piece.Add(stop);}
-                remaining-=take;if(remaining<1e-10){index=(index+1)%pattern.Length;remaining=pattern[index];piece=null;}
+                double take=Math.Min(cursor.Remaining,length-at);var start=new PointD(a.x+dx*at/length,a.y+dy*at/length);at+=take;var stop=new PointD(a.x+dx*at/length,a.y+dy*at/length);
+                if(cursor.IsOn&&(take>0||cap!=PenLineCap.Flat)){if(piece is null){piece=new PathD{start};result.Add(piece);}piece.Add(stop);}
+                if(cursor.Consume(take))piece=null;
             }
         }
-        if(remaining==0&&(index&1)==0&&cap!=PenLineCap.Flat)result.Add(new PathD{path[^1]});
+        if(cursor.Remaining==0&&cursor.IsOn&&cap!=PenLineCap.Flat)result.Add(new PathD{path[^1]});
         if(closed&&result.Count>1&&result[0][0]==result[^1][^1]){result[^1].AddRange(result[0].Skip(1));result.RemoveAt(0);}
         return result;
     }
@@ -121,7 +302,18 @@ internal class Geometry : IGeometryImpl
     }
     internal static SPath FromPaths(PathsD paths)
     {
-        var list=new List<PathSegment>();foreach(var p in paths){if(p.Count==0)continue;list.Add(new(PathVerb.Move,new((float)p[0].x,(float)p[0].y)));for(int i=1;i<p.Count;i++)list.Add(new(PathVerb.Line,new((float)p[i].x,(float)p[i].y)));list.Add(new(PathVerb.Close,default));}return new(list);
+        int count = 0;
+        foreach (var p in paths) if (p.Count > 0) count = checked(count + p.Count + 1);
+        var segments = new PathSegment[count];
+        int index = 0;
+        foreach (var p in paths)
+        {
+            if (p.Count == 0) continue;
+            for (int i = 0; i < p.Count; i++)
+                segments[index++] = new(i == 0 ? PathVerb.Move : PathVerb.Line, new((float)p[i].x, (float)p[i].y));
+            segments[index++] = new(PathVerb.Close, default);
+        }
+        return SPath.FromOwnedSegments(segments);
     }
     internal static SPath Combine(SPath a,SPath b,GeometryCombineMode mode)
     {
@@ -219,13 +411,17 @@ internal class Geometry : IGeometryImpl
 internal sealed class StreamGeometry:Geometry,IStreamGeometryImpl
 {
     private bool editing;
-    internal StreamGeometry():base(new SPath([])) { }
+    private static readonly SPath empty = new([]);
+    internal StreamGeometry():base(empty) { }
     public IStreamGeometryImpl Clone()=>new StreamGeometry{Path=Path,StrokePath=StrokePath};
     public IStreamGeometryContextImpl Open(){if(editing)throw new InvalidOperationException("Geometry is already open.");editing=true;return new Context(this);}
     internal override void Validate(){if(editing)throw new InvalidOperationException("Dispose the geometry context before using its geometry.");}
     private sealed class Context(StreamGeometry owner):IStreamGeometryContextImpl
     {
-        private readonly List<PathSegment> fill=[],stroke=[];
+        private readonly List<PathSegment> stroke=[];
+        // Both streams share the common prefix until a fill/stroke flag or a
+        // closing edge requires different geometry.
+        private List<PathSegment>? fill;
         private SimdSkia.FillRule rule;private bool disposed,figure,filled;private Point current,start;
         private void Check(){ObjectDisposedException.ThrowIf(disposed,this);}
         public void SetFillRule(AFill value){Check();rule=value==AFill.EvenOdd?SimdSkia.FillRule.EvenOdd:SimdSkia.FillRule.Winding;}
@@ -237,11 +433,17 @@ internal sealed class StreamGeometry:Geometry,IStreamGeometryImpl
             figure = true;
             filled = isFilled;
             current = start = p;
-            if (filled)
-                fill.Add(move);
+            if (!filled) fill ??= new(stroke);
+            else fill?.Add(move);
             stroke.Add(move);
         }
-        private void Add(PathSegment segment,Point end,bool isStroked){Check();if(!figure)throw new InvalidOperationException("BeginFigure is required.");if(filled)fill.Add(segment);stroke.Add(isStroked?segment:new(PathVerb.Move,ConvertTo.Point(end)));current=end;}
+        private void Add(PathSegment segment,Point end,bool isStroked)
+        {
+            Check();if(!figure)throw new InvalidOperationException("BeginFigure is required.");
+            if (!isStroked) fill ??= new(stroke);
+            if (filled) fill?.Add(segment);
+            stroke.Add(isStroked?segment:new(PathVerb.Move,ConvertTo.Point(end)));current=end;
+        }
         public void LineTo(Point p,bool isStroked=true)=>Add(new(PathVerb.Line,ConvertTo.Point(p)),p,isStroked);
         public void QuadraticBezierTo(Point a,Point b,bool isStroked=true)=>Add(new(PathVerb.Quadratic,ConvertTo.Point(a),ConvertTo.Point(b)),b,isStroked);
         public void CubicBezierTo(Point a,Point b,Point c,bool isStroked=true)=>Add(new(PathVerb.Cubic,ConvertTo.Point(a),ConvertTo.Point(b),ConvertTo.Point(c)),c,isStroked);
@@ -260,7 +462,23 @@ internal sealed class StreamGeometry:Geometry,IStreamGeometryImpl
             Point Map(double a,double b)=>new(centerX+cos*rx*a-sin*ry*b,centerY+sin*rx*a+cos*ry*b);
             for(int i=0;i<count;i++){double a=t0+i*delta/count,b=t0+(i+1)*delta/count,k=4.0/3*Math.Tan((b-a)/4);CubicBezierTo(Map(Math.Cos(a)-k*Math.Sin(a),Math.Sin(a)+k*Math.Cos(a)),Map(Math.Cos(b)+k*Math.Sin(b),Math.Sin(b)-k*Math.Cos(b)),i==count-1?p:Map(Math.Cos(b),Math.Sin(b)),isStroked);}
         }
-        public void EndFigure(bool closed){Check();if(!figure)throw new InvalidOperationException("No open figure.");if(closed){if(filled)fill.Add(new(PathVerb.Close,default));stroke.Add(new(PathVerb.Line,ConvertTo.Point(start)));}figure=false;}
-        public void Dispose(){if(disposed)return;if(figure)EndFigure(false);owner.Replace(new(fill,rule),new(stroke,rule));owner.editing=false;disposed=true;}
+        public void EndFigure(bool closed)
+        {
+            Check();if(!figure)throw new InvalidOperationException("No open figure.");
+            if(closed)
+            {
+                fill ??= new(stroke);
+                if(filled)fill.Add(new(PathVerb.Close,default));
+                stroke.Add(new(PathVerb.Line,ConvertTo.Point(start)));
+            }
+            figure=false;
+        }
+        public void Dispose()
+        {
+            if(disposed)return;if(figure)EndFigure(false);
+            var strokePath=new SPath(stroke,rule);
+            owner.Replace(fill is null ? strokePath : new(fill,rule),strokePath);
+            owner.editing=false;disposed=true;
+        }
     }
 }

@@ -12,6 +12,7 @@ internal sealed class WindowGpuCanvas : ICanvasBackend
     private readonly RasterCanvas software;
     private readonly SimdSkiaGpuBackend kind;
     private readonly bool fallback;
+    private readonly bool nativeWindow;
     private readonly int owner = Environment.CurrentManagedThreadId;
     private bool cpuDirty, gpuDirty, gpuShadowStale, disposed;
     private long maskBuilds,maskHits,drawDispatches,drawBarriers;
@@ -22,7 +23,7 @@ internal sealed class WindowGpuCanvas : ICanvasBackend
     private readonly Dictionary<(GlyphRunGeometry Run,Matrix3 Matrix,bool Aa,bool Snap),PathGeometry[]> glyphBatches=[];
     private long glyphBytes;
     private readonly SimdSkiaGpuTextMode textMode;
-    private readonly Dictionary<(int ContentHash,Matrix3 Matrix,Paint Paint,bool Preblend,bool Snap,float Tolerance,CoverageClip? Coverage,int OriginX,int OriginY),AtlasEntry> atlas=[];
+    private readonly Dictionary<(int ContentHash,Matrix3 Matrix,Paint Paint,bool Preblend,bool Snap,float Tolerance,object? Coverage,int OriginX,int OriginY),AtlasEntry> atlas=[];
     private sealed record AtlasEntry(PixelBuffer Pixels,int Left,int Top,GlyphRunGeometry Run,long RetainedBytes)
     {internal long Used;}
     private long atlasBytes;
@@ -38,7 +39,7 @@ internal sealed class WindowGpuCanvas : ICanvasBackend
     {
         if(atlasEntryLimit<=0||atlasByteLimit<=0)throw new ArgumentOutOfRangeException(nameof(atlasEntryLimit));
         if(target.Alpha==AlphaFormat.Straight)throw new NotSupportedException("Window GPU rendering requires premultiplied target pixels.");
-        this.target = target.Share(); this.kind = kind; this.fallback = fallback;this.textMode=textMode;this.atlasEntryLimit=atlasEntryLimit;this.atlasByteLimit=atlasByteLimit;
+        this.target = target.Share(); this.kind = kind; this.fallback = fallback;nativeWindow=windowHandle!=0;this.textMode=textMode;this.atlasEntryLimit=atlasEntryLimit;this.atlasByteLimit=atlasByteLimit;
         software = new RasterCanvas(this.target);
         ICanvasBackend? initializing=null;
         try
@@ -137,34 +138,44 @@ internal sealed class WindowGpuCanvas : ICanvasBackend
     {
         var run=command.GlyphRun??throw new ArgumentException("Glyph outlines required.");var matrix=command.Transform;
         int ix=(int)MathF.Floor(matrix.M02),iy=(int)MathF.Floor(matrix.M12);var local=matrix with{M02=matrix.M02-ix,M12=matrix.M12-iy};
-        var key=(run.ContentHash,local,command.Paint,command.TextMaskPreblend,command.SnapGlyphBaseline,command.CurveTolerance,command.CoverageClip,command.CoverageClip is null?0:ix,command.CoverageClip is null?0:iy);
+        var clip = command.CoverageClip;
+        var plainKey=(run.ContentHash,local,command.Paint,command.TextMaskPreblend,command.SnapGlyphBaseline,command.CurveTolerance,Coverage:(object?)null,OriginX:0,OriginY:0);
+        if (clip is not null && atlas.TryGetValue(plainKey, out var plain) && run.ContentEquals(plain.Run) &&
+            clip.IsOpaqueOver(ix + plain.Left, iy + plain.Top, plain.Pixels.Width, plain.Pixels.Height))
+            clip = null;
+        var key=plainKey;
+        if (clip is not null) { key.Coverage=clip.CacheIdentity; key.OriginX=ix; key.OriginY=iy; }
         bool found=atlas.TryGetValue(key,out var entry);
         if(found&&!run.ContentEquals(entry!.Run))
-        {Flush();atlas.Remove(key);atlasBytes-=entry.RetainedBytes;entry.Pixels.Dispose();found=false;}
+        {RemoveCollision(entry!);found=false;}
         if(!found)
         {
-            var normalized=command with{Transform=local,Clip=null,CoverageClip=null};RectF? bounds=null;
-            foreach(var item in GlyphCommands.Expand(normalized,run))
-            {
-                if(item.Path!.Segments.IsEmpty)continue;var b=item.Path.GetTightBounds(item.Transform);
-                bounds=bounds is {} old?new(Math.Min(old.Left,b.Left),Math.Min(old.Top,b.Top),Math.Max(old.Right,b.Right),Math.Max(old.Bottom,b.Bottom)):b;
-            }
-            if(bounds is not {} area)return true;
+            var normalized=command with{Transform=local,Clip=null,CoverageClip=null};
+            if(GlyphCommands.InkBounds(normalized,run) is not {} area)return true;
             int left=(int)MathF.Floor(area.Left)-1,top=(int)MathF.Floor(area.Top)-1,right=(int)MathF.Ceiling(area.Right)+1,bottom=(int)MathF.Ceiling(area.Bottom)+1;
-            int width=right-left,height=bottom-top;long bytes=(long)width*height*4+(long)(command.CoverageClip?.Width??0)*(command.CoverageClip?.Height??0);
+            int width=right-left,height=bottom-top;long bytes=(long)width*height*4;
             if(width<=0||height<=0||width>32768||height>32768||bytes>atlasByteLimit)return false;
+            if (clip is not null && clip.IsOpaqueOver(ix + left,iy + top,width,height))
+            {
+                clip = null;
+                key = plainKey;
+                if (atlas.TryGetValue(key,out var collision)) RemoveCollision(collision);
+            }
             var bitmap=PixelBuffer.Rent(width,height);
             try
             {
                 using var raster=new RasterCanvas(bitmap);
                 CoverageClip? baked=null;
-                if(command.CoverageClip is {} clip)
+                if(clip is not null)
                 {
                     // Clipping after flattening changes SourceOver at overlapping glyphs.
                     // Bake device coverage per glyph and key the cache by mask + origin.
-                    byte[] coverage=new byte[checked(width*height)];
-                    for(int y=0;y<height;y++)for(int x=0;x<width;x++)coverage[y*width+x]=clip.At(ix+left+x,iy+top+y);
-                    baked=CoverageClip.BorrowImmutable(0,0,width,height,coverage);
+                    byte[] glyphCoverage=new byte[checked(width*height)];
+                    int x0 = Math.Max(ix + left,clip.Left), x1 = Math.Min(ix + right,clip.Left + clip.Width);
+                    if (x0 < x1)
+                        for (int y = Math.Max(iy + top,clip.Top); y < Math.Min(iy + bottom,clip.Top + clip.Height); y++)
+                            clip.GetRow(y).Slice(x0-clip.Left,x1-x0).CopyTo(glyphCoverage.AsSpan((y-iy-top)*width+(x0-ix-left)));
+                    baked=CoverageClip.BorrowImmutable(0,0,width,height,glyphCoverage);
                 }
                 raster.Execute(normalized with{Transform=local with{M02=local.M02-left,M12=local.M12-top},CoverageClip=baked});
                 entry=new(bitmap,left,top,run,bytes);
@@ -172,7 +183,7 @@ internal sealed class WindowGpuCanvas : ICanvasBackend
                 {
                     // Queued Vulkan draws still borrow these buffers. Complete
                     // them before eviction; never free an in-flight atlas.
-                    Flush();
+                    if(kind==SimdSkiaGpuBackend.Vulkan)Flush();
                     while(atlas.Count>=atlasEntryLimit||atlasBytes+bytes>atlasByteLimit)
                     {
                         using var iterator=atlas.GetEnumerator();
@@ -189,8 +200,14 @@ internal sealed class WindowGpuCanvas : ICanvasBackend
         }
         else {entry!.Used=++atlasClock;GlyphAtlasHits++;SimdSkiaGpuDiagnostics.AtlasHit();}
         Execute(new DrawingCommand(CommandKind.DrawImage,new(ix+entry!.Left,iy+entry.Top,ix+entry.Left+entry.Pixels.Width,iy+entry.Top+entry.Pixels.Height),Matrix3.Identity,new(new(255,255,255,255),CompositeMode.SourceOver))
-        {Image=entry.Pixels,ImageIsImmutable=true,ImageSource=new(0,0,entry.Pixels.Width,entry.Pixels.Height),Sampling=ImageSampling.Nearest,Clip=command.Clip});
+        {Image=entry.Pixels,ImageIsImmutable=true,ImageContentVersion=1,ImageSource=new(0,0,entry.Pixels.Width,entry.Pixels.Height),Sampling=ImageSampling.Nearest,Clip=command.Clip});
         return true;
+
+        void RemoveCollision(AtlasEntry old)
+        {
+            if(kind==SimdSkiaGpuBackend.Vulkan)Flush();
+            atlas.Remove(key);atlasBytes-=old.RetainedBytes;old.Pixels.Dispose();
+        }
     }
     public void Flush()
     {
@@ -231,7 +248,7 @@ internal sealed class WindowGpuCanvas : ICanvasBackend
     public void Dispose()
     {
         if (disposed) return; Check();
-        try { if(!IsFaulted)Flush(); }
+        try { if(!nativeWindow&&!IsFaulted)Flush(); }
         finally
         {
             disposed=true;

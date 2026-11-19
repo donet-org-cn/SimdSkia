@@ -17,7 +17,11 @@ public readonly record struct PathSegment(PathVerb Verb,PointF A,PointF B=defaul
 }
 public sealed class PathGeometry
 {
-    private readonly PathSegment[] segments;
+    private PathSegment[]? storedSegments;
+    private readonly RectF[]? rectangleContours;
+    private PathSegment[] SegmentsArray => Volatile.Read(ref storedSegments) ?? ExpandRectangles();
+    internal ReadOnlySpan<RectF> RectangleContours => rectangleContours;
+    internal int SegmentCount => storedSegments?.Length ?? checked(rectangleContours!.Length * 5);
     public FillRule FillRule { get; }
     public bool HasConics{get;}
     private sealed record BoundsBox(RectF Value);
@@ -30,12 +34,12 @@ public sealed class PathGeometry
             var computed=new BoundsBox(ComputeControlBounds());return (Interlocked.CompareExchange(ref bounds,computed,null)??computed).Value;
         }
     }
-    public ReadOnlySpan<PathSegment> Segments=>segments;
+    public ReadOnlySpan<PathSegment> Segments=>SegmentsArray;
     public PathGeometry Transform(Matrix3 matrix)
     {
         if(!matrix.IsFinite||!matrix.IsAffine)throw new NotSupportedException("Path transforms require a finite affine matrix.");
         if(matrix==Matrix3.Identity)return this;
-        var transformed=new PathSegment[segments.Length];
+        var segments=Segments;var transformed=new PathSegment[segments.Length];
         for(int i=0;i<segments.Length;i++)transformed[i]=MapSegment(segments[i],matrix);
         return new PathGeometry(transformed,FillRule);
     }
@@ -43,7 +47,7 @@ public sealed class PathGeometry
     {
         ArgumentNullException.ThrowIfNull(destination);
         if(!matrix.IsFinite||!matrix.IsAffine)throw new NotSupportedException("Path transforms require a finite affine matrix.");
-        foreach(var segment in segments)destination.Add(MapSegment(segment,matrix));
+        foreach(var segment in Segments)destination.Add(MapSegment(segment,matrix));
     }
     private static PathSegment MapSegment(PathSegment segment,Matrix3 matrix)
     {
@@ -53,13 +57,14 @@ public sealed class PathGeometry
     public RectF GetTightBounds(Matrix3 matrix)
     {
         if(!matrix.IsFinite||!matrix.IsAffine)throw new NotSupportedException("Bounds require a finite affine transform.");
+        if (rectangleContours is not null && matrix == Matrix3.Identity) return ControlBounds;
         double left=double.PositiveInfinity,top=double.PositiveInfinity,right=double.NegativeInfinity,bottom=double.NegativeInfinity;
         PointF Map(PointF p){var v=matrix.Map(p.X,p.Y);return new(v.X,v.Y);}
         void Include(double x,double y){left=Math.Min(left,x);top=Math.Min(top,y);right=Math.Max(right,x);bottom=Math.Max(bottom,y);}
         static double Quad(double a,double b,double c,double t){double u=1-t;return u*u*a+2*u*t*b+t*t*c;}
         static double Cubic(double a,double b,double c,double d,double t){double u=1-t;return u*u*u*a+3*u*u*t*b+3*u*t*t*c+t*t*t*d;}
         var current=Map(default);var start=current;
-        foreach(var s in segments)
+        foreach(var s in Segments)
         {
             if(s.Verb==PathVerb.Close){current=start;continue;}
             var a=current;var b=Map(s.A);
@@ -104,13 +109,40 @@ public sealed class PathGeometry
     public PathGeometry(IEnumerable<PathSegment> segments,FillRule fillRule=FillRule.Winding)
     {
         if(!Enum.IsDefined(fillRule))throw new ArgumentOutOfRangeException(nameof(fillRule));
-        this.segments=segments.ToArray();
+        storedSegments=segments.ToArray();
         FillRule=fillRule;
-        HasConics=ValidateSegments(this.segments);
+        HasConics=ValidateSegments(storedSegments);
     }
     // Internal producers hand over a private array. Public callers retain ownership of their input.
     private PathGeometry(PathSegment[] owned,FillRule fillRule)
-    {segments=owned;FillRule=fillRule;HasConics=ValidateSegments(owned);}
+    {storedSegments=owned;FillRule=fillRule;HasConics=ValidateSegments(owned);}
+    internal static PathGeometry FromOwnedSegments(PathSegment[] segments) => new(segments, FillRule.Winding);
+    internal static PathGeometry FromAxisRectangles(List<RectF> rectangles)
+        => rectangles.Count switch { 0 => FromOwnedSegments([]), 1 => Rectangle(rectangles[0]), _ => new(rectangles.ToArray()) };
+    private PathGeometry(RectF[] rectangles)
+    {
+        // The axis stroker emits ordered, disjoint rectangles along one line.
+        rectangleContours = rectangles;
+        var first = rectangles[0];
+        var last = rectangles[^1];
+        bounds = new(new(Math.Min(first.Left,last.Left), Math.Min(first.Top,last.Top),
+            Math.Max(first.Right,last.Right), Math.Max(first.Bottom,last.Bottom)));
+        FillRule = FillRule.Winding;
+    }
+    private PathSegment[] ExpandRectangles()
+    {
+        var result = new PathSegment[SegmentCount];
+        int index = 0;
+        foreach (var box in rectangleContours!)
+        {
+            result[index++] = new(PathVerb.Move, new(box.Left, box.Top));
+            result[index++] = new(PathVerb.Line, new(box.Right, box.Top));
+            result[index++] = new(PathVerb.Line, new(box.Right, box.Bottom));
+            result[index++] = new(PathVerb.Line, new(box.Left, box.Bottom));
+            result[index++] = new(PathVerb.Close, default);
+        }
+        return Interlocked.CompareExchange(ref storedSegments, result, null) ?? result;
+    }
     private static bool ValidateSegments(PathSegment[] segments)
     {
         bool hasConics=false;
@@ -123,10 +155,11 @@ public sealed class PathGeometry
     }
     private RectF ComputeControlBounds()
     {
+        var segments = Segments;
         float l=float.PositiveInfinity,t=float.PositiveInfinity,r=float.NegativeInfinity,b=float.NegativeInfinity;
         void Include(PointF p){l=MathF.Min(l,p.X);t=MathF.Min(t,p.Y);r=MathF.Max(r,p.X);b=MathF.Max(b,p.Y);}
         if(segments.Length>0&&segments[0].Verb!=PathVerb.Move)Include(default);
-        foreach(var s in this.segments)
+        foreach(var s in segments)
         {if(s.Verb==PathVerb.Close)continue;Include(s.A);if(s.Verb is PathVerb.Quadratic or PathVerb.Cubic or PathVerb.Conic)Include(s.B);if(s.Verb==PathVerb.Cubic)Include(s.C);}
         return float.IsPositiveInfinity(l)?default:new(l,t,r,b);
     }
@@ -135,10 +168,22 @@ public sealed class PathGeometry
     {
         if(!float.IsFinite(tolerance)||tolerance<=0)throw new ArgumentOutOfRangeException(nameof(tolerance));
         if(!matrix.IsFinite||!matrix.IsAffine) throw new NotSupportedException("Path rasterization requires a finite affine transform.");
-        var contours=new List<PointF[]>(); var points=new List<PointF>(); PointF current=default,start=default;
         PointF Map(PointF p) { var v=matrix.Map(p.X,p.Y); var mapped=new PointF(v.X,v.Y); if(!Finite(mapped))throw new ArgumentException("Transformed path exceeds finite range."); return mapped; }
+        if (rectangleContours is not null)
+        {
+            var result = new PointF[rectangleContours.Length][];
+            for (int i = 0; i < result.Length; i++)
+            {
+                var r = rectangleContours[i];
+                var a = Map(new(r.Left,r.Top)); var b = Map(new(r.Right,r.Top));
+                var c = Map(new(r.Right,r.Bottom)); var d = Map(new(r.Left,r.Bottom));
+                result[i] = d == a ? [a,b,c,d] : [a,b,c,d,a];
+            }
+            return result;
+        }
+        var contours=new List<PointF[]>(); var points=new List<PointF>(); PointF current=default,start=default;
         void Finish() { if(points.Count>0) contours.Add(points.ToArray()); points.Clear(); }
-        foreach(var s in segments)
+        foreach(var s in Segments)
         {
             switch(s.Verb)
             {

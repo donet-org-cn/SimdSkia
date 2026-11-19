@@ -31,7 +31,10 @@ public static partial class ManagedFilters
     {
         ArgumentNullException.ThrowIfNull(source);source.ThrowIfDisposed();var xKernel=Kernel(sigmaX);var yKernel=Kernel(sigmaY);
         if(region is {} area&&!area.IsFinite)throw new ArgumentException("Filter bounds must be finite.",nameof(region));
-        using var input=source.Alpha==AlphaFormat.Premultiplied?source.Share():PixelBuffer.Rent(source.Width,source.Height,source.Format,AlphaFormat.Premultiplied);
+        int pixelBytes = source.BytesPerPixel;
+        bool convert = pixelBytes == 4 && source.Alpha != AlphaFormat.Premultiplied;
+        int batch = 8 / pixelBytes, wideBatch = batch * 4;
+        using var input=convert?PixelBuffer.Rent(source.Width,source.Height,source.Format,AlphaFormat.Premultiplied):source.Share();
         using var horizontal=PixelBuffer.Rent(source.Width,source.Height,source.Format,AlphaFormat.Premultiplied);
         var output=PixelBuffer.Rent(source.Width,source.Height,source.Format,AlphaFormat.Premultiplied);
         try
@@ -39,7 +42,7 @@ public static partial class ManagedFilters
             // Preserve input alpha semantics, including physical A bytes for an
             // opaque source, without reading or writing any stride padding.
             int ri=source.Format==PixelFormat.Rgba8888?0:2;
-            for(int y=0;source.Alpha!=AlphaFormat.Premultiplied&&y<source.Height;y++)
+            for(int y=0;convert&&y<source.Height;y++)
             {
                 var src=source.GetRowSpan(y);var dst=input.GetRowSpan(y);
                 for(int x=0;x<source.Width;x++)
@@ -55,20 +58,21 @@ public static partial class ManagedFilters
                 var row=input.GetRowSpan(y);var target=horizontal.GetRowSpan(y);
                 for(int x=left;x<right;)
                 {
-                    if(vector&&x>=rx&&x+8<=Math.Min(right,source.Width-rx))
+                    int start = x * pixelBytes;
+                    if(vector&&x>=rx&&x+wideBatch<=Math.Min(right,source.Width-rx))
                     {
                         var a=Vector256<int>.Zero;var b=a;var c=a;var d=a;
                         for(int k=-rx;k<=rx;k++)
-                        {var p=row.Slice((x+k)*4,32);var w=Vector256.Create(xKernel[k+rx]);a=Avx2.Add(a,Avx2.MultiplyLow(Load8(p),w));b=Avx2.Add(b,Avx2.MultiplyLow(Load8(p[8..]),w));c=Avx2.Add(c,Avx2.MultiplyLow(Load8(p[16..]),w));d=Avx2.Add(d,Avx2.MultiplyLow(Load8(p[24..]),w));}
-                        Store8(target[(x*4)..],a);Store8(target[(x*4+8)..],b);Store8(target[(x*4+16)..],c);Store8(target[(x*4+24)..],d);x+=8;
+                        {var p=row.Slice(start+k*pixelBytes,32);var w=Vector256.Create(xKernel[k+rx]);a=Avx2.Add(a,Avx2.MultiplyLow(Load8(p),w));b=Avx2.Add(b,Avx2.MultiplyLow(Load8(p[8..]),w));c=Avx2.Add(c,Avx2.MultiplyLow(Load8(p[16..]),w));d=Avx2.Add(d,Avx2.MultiplyLow(Load8(p[24..]),w));}
+                        Store8(target[start..],a);Store8(target[(start+8)..],b);Store8(target[(start+16)..],c);Store8(target[(start+24)..],d);x+=wideBatch;
                     }
-                    else if(vector&&x>=rx&&x+2<=Math.Min(right,source.Width-rx))
+                    else if(vector&&x>=rx&&x+batch<=Math.Min(right,source.Width-rx))
                     {
                         var sum=Vector256<int>.Zero;
-                        for(int k=-rx;k<=rx;k++)sum=Avx2.Add(sum,Avx2.MultiplyLow(Load8(row[((x+k)*4)..]),Vector256.Create(xKernel[k+rx])));
-                        Store8(target[(x*4)..],sum);x+=2;
+                        for(int k=-rx;k<=rx;k++)sum=Avx2.Add(sum,Avx2.MultiplyLow(Load8(row[(start+k*pixelBytes)..]),Vector256.Create(xKernel[k+rx])));
+                        Store8(target[start..],sum);x+=batch;
                     }
-                    else{for(int c=0;c<4;c++){int sum=0;for(int k=-rx;k<=rx;k++)if(x+k>=0&&x+k<source.Width)sum+=row[(x+k)*4+c]*xKernel[k+rx];target[x*4+c]=(byte)((sum+Scale/2)/Scale);}x++;}
+                    else{for(int c=0;c<pixelBytes;c++){int sum=0;for(int k=-rx;k<=rx;k++)if(x+k>=0&&x+k<source.Width)sum+=row[start+k*pixelBytes+c]*xKernel[k+rx];target[start+c]=(byte)((sum+Scale/2)/Scale);}x++;}
                 }
             }
             var horizontalData=horizontal.GetPixelSpan();int horizontalStride=horizontal.RowBytes;
@@ -78,20 +82,21 @@ public static partial class ManagedFilters
                 int first=Math.Max(-ry,-y),last=Math.Min(ry,source.Height-1-y);
                 for(int x=left;x<right;)
                 {
-                    if(vector&&x+8<=right)
+                    int start = x * pixelBytes;
+                    if(vector&&x+wideBatch<=right)
                     {
                         var a=Vector256<int>.Zero;var b=a;var c=a;var d=a;
                         for(int k=first;k<=last;k++)
-                        {var p=horizontalData.Slice((y+k)*horizontalStride+x*4,32);var w=Vector256.Create(yKernel[k+ry]);a=Avx2.Add(a,Avx2.MultiplyLow(Load8(p),w));b=Avx2.Add(b,Avx2.MultiplyLow(Load8(p[8..]),w));c=Avx2.Add(c,Avx2.MultiplyLow(Load8(p[16..]),w));d=Avx2.Add(d,Avx2.MultiplyLow(Load8(p[24..]),w));}
-                        Store8(target[(x*4)..],a);Store8(target[(x*4+8)..],b);Store8(target[(x*4+16)..],c);Store8(target[(x*4+24)..],d);x+=8;
+                        {var p=horizontalData.Slice((y+k)*horizontalStride+start,32);var w=Vector256.Create(yKernel[k+ry]);a=Avx2.Add(a,Avx2.MultiplyLow(Load8(p),w));b=Avx2.Add(b,Avx2.MultiplyLow(Load8(p[8..]),w));c=Avx2.Add(c,Avx2.MultiplyLow(Load8(p[16..]),w));d=Avx2.Add(d,Avx2.MultiplyLow(Load8(p[24..]),w));}
+                        Store8(target[start..],a);Store8(target[(start+8)..],b);Store8(target[(start+16)..],c);Store8(target[(start+24)..],d);x+=wideBatch;
                     }
-                    else if(vector&&x+2<=right)
+                    else if(vector&&x+batch<=right)
                     {
                         var sum=Vector256<int>.Zero;
-                        for(int k=first;k<=last;k++)sum=Avx2.Add(sum,Avx2.MultiplyLow(Load8(horizontalData[((y+k)*horizontalStride+x*4)..]),Vector256.Create(yKernel[k+ry])));
-                        Store8(target[(x*4)..],sum);x+=2;
+                        for(int k=first;k<=last;k++)sum=Avx2.Add(sum,Avx2.MultiplyLow(Load8(horizontalData[((y+k)*horizontalStride+start)..]),Vector256.Create(yKernel[k+ry])));
+                        Store8(target[start..],sum);x+=batch;
                     }
-                    else{for(int c=0;c<4;c++){int sum=0;for(int k=first;k<=last;k++)sum+=horizontalData[(y+k)*horizontalStride+x*4+c]*yKernel[k+ry];target[x*4+c]=(byte)((sum+Scale/2)/Scale);}x++;}
+                    else{for(int c=0;c<pixelBytes;c++){int sum=0;for(int k=first;k<=last;k++)sum+=horizontalData[(y+k)*horizontalStride+start+c]*yKernel[k+ry];target[start+c]=(byte)((sum+Scale/2)/Scale);}x++;}
                 }
             }
             return output;

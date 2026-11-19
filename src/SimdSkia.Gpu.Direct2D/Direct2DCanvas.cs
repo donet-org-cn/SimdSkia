@@ -39,13 +39,18 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
     private int currentBlend=-1;
     private RectF? currentClip;
     public long NativeStateChanges{get;private set;}
-    private readonly Dictionary<(PathGeometry Geometry,float Tolerance),nint> paths=[];
+    private const long PathCacheBudget = 1024 * 1024;
+    private readonly record struct CachedPath((PathGeometry Geometry, float Tolerance) Key, nint Native, long Bytes);
+    private readonly Dictionary<(PathGeometry Geometry, float Tolerance), LinkedListNode<CachedPath>> paths = [];
+    private readonly LinkedList<CachedPath> pathOrder = [];
+    private long pathBytes;
     private readonly Dictionary<Rgba32,nint> solids=[];
     private readonly Dictionary<(IColorShader Shader,byte Opacity),nint> gradients=[];
     public const int MaximumCachedGradientBrushes=64;
     public int CachedGradientBrushes=>gradients.Count;
-    private readonly Dictionary<CoverageClip,(nint Bitmap,nint Brush,long Bytes)> clips=[];
+    private readonly Dictionary<object,(nint Bitmap,nint Brush,long Bytes)> clips=[];
     private long clipBytes;
+    private bool useBgraCoverage;
     private const int LargeImageReuseThreshold = 128 * 1024;
     private const int RecentDisposedImagesPerSize = 4;
     private sealed class CachedImage(nint bitmap, byte[] snapshot, int hash, long used)
@@ -123,7 +128,14 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
             }
             else if(windowHandle!=0)completion=D2DNative.QueryEvent(device);
             if(windowHandle==0)staging=D2DNative.Texture(device,pixels.Width,pixels.Height,true);
-            surface=D2DNative.Query(texture,D2DNative.DxgiSurface);target=D2DNative.Target(context,surface);D2DNative.SetTarget(context,target);Upload();
+            surface=D2DNative.Query(texture,D2DNative.DxgiSurface);target=D2DNative.Target(context,surface);D2DNative.SetTarget(context,target);
+            if (pixels.HasDeferredStorage)
+            {
+                D2DNative.Begin(context);
+                D2DNative.Clear(context, default);
+                D2DNative.End(context);
+            }
+            else Upload();
         }
         catch{DisposeResources();throw;}
         finally{D2DNative.Release(ref surface);D2DNative.Release(ref dxgiFactory);D2DNative.Release(ref adapter);D2DNative.Release(ref dxgi);}
@@ -213,20 +225,39 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
         }
         catch{D2DNative.Release(ref brush);throw;}
     }
-    private nint CoverageBrush(CoverageClip mask)
+    private unsafe nint CoverageBrush(CoverageClip mask)
     {
-        if(clips.TryGetValue(mask,out var found))return found.Brush;
-        long bytes=checked((long)mask.Width*mask.Height*4);if(bytes>64*1024*1024)throw new NotSupportedException("A Direct2D coverage texture exceeds 64 MiB.");
-        using var pixels=PixelBuffer.Rent(mask.Width,mask.Height);
-        for(int y=0;y<mask.Height;y++){var row=pixels.GetRowSpan(y);var values=mask.GetRow(mask.Top+y);for(int x=0;x<mask.Width;x++)row.Slice(x*4,4).Fill(values[x]);}
-        nint bitmap=UploadBitmap(pixels),brush=0;
+        var key = mask.CacheIdentity;
+        if(clips.TryGetValue(key,out var found))return found.Brush;
+        long size = (long)mask.Width * mask.Height;
+        if (size > 16 * 1024 * 1024) throw new NotSupportedException("A Direct2D coverage texture exceeds 16 million pixels.");
+        nint bitmap = 0, brush = 0;
+        if (!useBgraCoverage)
+        {
+            bitmap = D2DNative.TryAlphaBitmap(context, mask);
+            useBgraCoverage = bitmap == 0;
+        }
+        if (bitmap == 0)
+        {
+            using var pixels = PixelBuffer.Rent(mask.Width, mask.Height);
+            for (int y = 0; y < mask.Height; y++)
+            {
+                var row = MemoryMarshal.Cast<byte, uint>(pixels.GetRowSpan(y));
+                var values = mask.GetRow(mask.Top + y);
+                for (int x = 0; x < mask.Width; x++)
+                    row[x] = 0x01010101u * values[x];
+            }
+            bitmap = UploadBitmap(pixels);
+        }
+        // Keep room for device bitmap alignment and brush storage.
+        long bytes = size * (useBgraCoverage ? 5 : 2);
         try
         {
             brush=D2DNative.OpacityBrush(context,bitmap,mask.Left,mask.Top);
             if(!cachePathMasks||bytes>resourceLimit){transient.Add(bitmap);transient.Add(brush);return brush;}
             if(imageBytes+clipBytes+bytes>resourceLimit)PurgeCachePayloads();
             if(clips.Count>=128||clipBytes+bytes>64*1024*1024){foreach(var old in clips.Values){nint b=old.Brush,t=old.Bitmap;D2DNative.Release(ref b);D2DNative.Release(ref t);}clips.Clear();clipBytes=0;}
-            clips.Add(mask,(bitmap,brush,bytes));clipBytes+=bytes;return brush;
+            clips.Add(key,(bitmap,brush,bytes));clipBytes+=bytes;return brush;
         }
         catch{D2DNative.Release(ref brush);D2DNative.Release(ref bitmap);throw;}
     }
@@ -262,10 +293,10 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
 
         if (source.ByteCount > 64 * 1024 * 1024)
             throw new NotSupportedException("A Direct2D source texture exceeds the 64 MiB cache budget.");
-        var bytes = source.GetPixelSpan();
         images.TryGetValue(source, out var previous);
-        if (version != 0 && bytes.Length >= LargeImageReuseThreshold)
+        if (version != 0 && (source.ByteCount >= LargeImageReuseThreshold || immutable && version > 0))
             return VersionedBitmap(source, previous, version);
+        var bytes = source.GetPixelSpan();
         if (previous is { Version: not 0 })
         {
             RemoveImage(source, previous);
@@ -417,17 +448,30 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
             if(tolerance==0)throw new NotSupportedException("Conic transform exceeds the subdivision precision budget.");
         }
         var key=(path,tolerance);
-        if(paths.TryGetValue(key,out nint result))return result;result=D2DNative.Path(factory);nint sink=0;
+        if (paths.TryGetValue(key, out var cached))
+        {
+            pathOrder.Remove(cached);
+            pathOrder.AddLast(cached);
+            return cached.Value.Native;
+        }
+        nint result=D2DNative.Path(factory),sink=0;
         try
         {
             sink=D2DNative.Open(result);D2DNative.FillRule(sink,path.FillRule==FillRule.Winding);bool open=false;
-            if(path.HasConics)
+            long nativeSegments = path.SegmentCount;
+            if (!path.RectangleContours.IsEmpty)
             {
+                foreach (var box in path.RectangleContours) D2DNative.RectangleFigure(sink,box);
+            }
+            else if(path.HasConics)
+            {
+                nativeSegments = 0;
                 foreach(var contour in path.Flatten(Matrix3.Identity,tolerance))
                 {
                     if(contour.Length==0)continue;D2DNative.BeginFigure(sink,contour[0]);
                     for(int i=1;i<contour.Length;i++)D2DNative.Line(sink,contour[i]);
                     D2DNative.EndFigure(sink,contour.Length>1&&contour[0]==contour[^1]);
+                    nativeSegments += contour.Length + 1L;
                 }
             }
             else foreach(var s in path.Segments)
@@ -436,7 +480,28 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
                 else if(s.Verb==PathVerb.Close){if(open)D2DNative.EndFigure(sink,true);open=false;}
                 else{if(!open){D2DNative.BeginFigure(sink,default);open=true;}if(s.Verb==PathVerb.Line)D2DNative.Line(sink,s.A);else if(s.Verb is PathVerb.Quadratic or PathVerb.Cubic)D2DNative.Bezier(sink,s);else throw new NotSupportedException("Unknown path verb.");}
             }
-            if(open)D2DNative.EndFigure(sink,false);D2DNative.Close(sink);if(paths.Count>=1024){foreach(var value in paths.Values){nint old=value;D2DNative.Release(ref old);}paths.Clear();}paths.Add(key,result);return result;
+            if(open)D2DNative.EndFigure(sink,false);
+            D2DNative.Close(sink);
+            // Track the managed source and the size of the geometry submitted to D2D.
+            long bytes = 192 + (path.SegmentCount + nativeSegments) * 32;
+            if (bytes > PathCacheBudget / 2)
+                transient.Add(result);
+            else
+            {
+                while (paths.Count >= 256 || pathBytes + bytes > PathCacheBudget)
+                {
+                    var oldest = pathOrder.First!;
+                    transient.Add(oldest.Value.Native);
+                    paths.Remove(oldest.Value.Key);
+                    pathOrder.RemoveFirst();
+                    pathBytes -= oldest.Value.Bytes;
+                }
+                var entry = new LinkedListNode<CachedPath>(new(key, result, bytes));
+                paths.Add(key, entry);
+                pathOrder.AddLast(entry);
+                pathBytes += bytes;
+            }
+            return result;
         }
         catch{D2DNative.Release(ref result);throw;}
         finally{D2DNative.Release(ref sink);}
@@ -553,7 +618,7 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
         glyphMasks.Clear();
         foreach(var frame in pendingFrames)frame.Dispose();pendingFrames=[];
         foreach(nint item in transient){nint value=item;D2DNative.Release(ref value);}transient.Clear();
-        foreach(var value in paths.Values){nint p=value;D2DNative.Release(ref p);}paths.Clear();
+        ClearPaths();
         foreach(var value in solids.Values){nint p=value;D2DNative.Release(ref p);}solids.Clear();
         foreach(var value in gradients.Values){nint p=value;D2DNative.Release(ref p);}gradients.Clear();
         foreach(var value in clips.Values){nint p=value.Brush,b=value.Bitmap;D2DNative.Release(ref p);D2DNative.Release(ref b);}clips.Clear();clipBytes=0;

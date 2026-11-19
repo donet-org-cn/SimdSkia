@@ -24,7 +24,18 @@ public sealed partial class Direct2DCanvas
         Check();if(bytes<=0||System.Diagnostics.Stopwatch.GetElapsedTime(lastActivity).TotalMilliseconds<age)return;
         // Finish the queued batch before dropping resources referenced by it.
         Flush();PurgeCachePayloads(scratchOnly);
-        if(!scratchOnly){foreach(nint item in paths.Values){nint value=item;D2DNative.Release(ref value);}paths.Clear();foreach(nint item in solids.Values){nint value=item;D2DNative.Release(ref value);}solids.Clear();foreach(nint item in gradients.Values){nint value=item;D2DNative.Release(ref value);}gradients.Clear();}
+        if(!scratchOnly){ClearPaths();foreach(nint item in solids.Values){nint value=item;D2DNative.Release(ref value);}solids.Clear();foreach(nint item in gradients.Values){nint value=item;D2DNative.Release(ref value);}gradients.Clear();}
+    }
+    private void ClearPaths()
+    {
+        foreach (var item in pathOrder)
+        {
+            nint native = item.Native;
+            D2DNative.Release(ref native);
+        }
+        paths.Clear();
+        pathOrder.Clear();
+        pathBytes = 0;
     }
     internal void DropLostDeviceResources(){if(disposed)return;if(owner!=Environment.CurrentManagedThreadId)throw new InvalidOperationException("Release Direct2D on its creating thread.");faulted=true;disposed=true;DisposeResources();}
 }

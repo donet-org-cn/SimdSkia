@@ -1,4 +1,8 @@
-# SimdSkia 0.1.9
+# SimdSkia 0.1.10
+
+0.1.10 减少裁剪、阴影、描边和字形绘制的托管分配。本机 Win64 的 OxyPlot 测试中，分配为 1.219 MiB/s，工作集为 161.7 MiB，完整 GC 后大对象堆留存为 1.52 MiB。[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.10/docs/RELEASE-0.1.10.md) · [性能报告](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.10/docs/PERFORMANCE-OXYPLOT-2026-11-19.md)
+
+## 0.1.9 OxyPlot 兼容修复
 
 0.1.9 修复 OxyPlot 绘制坐标轴次刻度时的流式几何异常。桌面和渲染适配器要求 Avalonia 12.1.0 起，Android 要求 12.1.5 起。[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.9/docs/RELEASE-0.1.9.md)
 

@@ -83,7 +83,67 @@ internal static unsafe partial class D2DNative
     }
     internal static void FillRect(nint context,RectF rectangle,nint brush)=>((delegate* unmanaged[Stdcall]<nint,RectF*,nint,void>)Slot(context,17))(context,&rectangle,brush);
     internal static void FillPath(nint context,nint path,nint brush)=>((delegate* unmanaged[Stdcall]<nint,nint,nint,nint,void>)Slot(context,23))(context,path,brush,0);
-    internal static nint Bitmap(nint context,int width,int height,nint bytes,int stride){var size=new Size{Width=(uint)width,Height=(uint)height};var p=new BitmapProperties{Format=87,Alpha=1,DpiX=96,DpiY=96};nint r=0;Check(((delegate* unmanaged[Stdcall]<nint,Size,nint,uint,BitmapProperties*,nint*,int>)Slot(context,4))(context,size,bytes,(uint)stride,&p,&r));return r;}
+    internal static nint Bitmap(nint context,int width,int height,nint bytes,int stride)
+    {
+        Check(CreateBitmap(context, width, height, bytes, stride, 87, out nint bitmap)); // B8G8R8A8_UNORM
+        return bitmap;
+    }
+    internal static nint TryAlphaBitmap(nint context, CoverageClip mask)
+    {
+        int width = mask.Width;
+        nint bitmap;
+        int result;
+        fixed (byte* pixels = mask.StoredPixels)
+            result = CreateBitmap(context, width, mask.Height, mask.ExtraRows == 0 ? (nint)pixels : 0, width, 65, out bitmap); // A8_UNORM
+        if (result is unchecked((int)0x88982f80) or unchecked((int)0x80070057))
+        {
+            Release(ref bitmap);
+            return 0; // Unsupported pixel format or invalid argument.
+        }
+        Check(result);
+        if (mask.ExtraRows != 0)
+        {
+            try { UploadRepeatedRows(bitmap, mask); }
+            catch { Release(ref bitmap); throw; }
+        }
+        return bitmap;
+    }
+    private static void UploadRepeatedRows(nint bitmap, CoverageClip mask)
+    {
+        int width = mask.Width, afterFirst = mask.RepeatStart + 1, afterBand = afterFirst + mask.ExtraRows;
+        void Upload(int top, int rows, byte* source)
+        {
+            uint* rect = stackalloc uint[4] { 0, (uint)top, (uint)width, (uint)(top + rows) };
+            Check(((delegate* unmanaged[Stdcall]<nint,void*,nint,uint,int>)Slot(bitmap,10))(bitmap,rect,(nint)source,(uint)width));
+        }
+        fixed (byte* pixels = mask.StoredPixels)
+        {
+            Upload(0, afterFirst, pixels);
+            if (afterBand < mask.Height)
+                Upload(afterBand, mask.Height - afterBand, pixels + afterFirst * width);
+        }
+        int batch = Math.Min(mask.ExtraRows, Math.Max(1, 16 * 1024 / width));
+        var scratch = System.Buffers.ArrayPool<byte>.Shared.Rent(batch * width);
+        try
+        {
+            var row = mask.GetRow(mask.Top + mask.RepeatStart);
+            for (int i = 0; i < batch; i++) row.CopyTo(scratch.AsSpan(i * width, width));
+            fixed (byte* pixels = scratch)
+                for (int top = afterFirst; top < afterBand; top += Math.Min(batch, afterBand - top))
+                    Upload(top, Math.Min(batch, afterBand - top), pixels);
+        }
+        finally { System.Buffers.ArrayPool<byte>.Shared.Return(scratch); }
+    }
+    private static int CreateBitmap(nint context, int width, int height, nint bytes, int stride, uint format, out nint bitmap)
+    {
+        var size = new Size { Width = (uint)width, Height = (uint)height };
+        var properties = new BitmapProperties { Format = format, Alpha = 1, DpiX = 96, DpiY = 96 };
+        nint value = 0;
+        int result = ((delegate* unmanaged[Stdcall]<nint, Size, nint, uint, BitmapProperties*, nint*, int>)Slot(context, 4))
+            (context, size, bytes, (uint)stride, &properties, &value);
+        bitmap = value;
+        return result;
+    }
     // ID2D1Bitmap::CopyFromMemory, slot 10. A null rectangle replaces the whole bitmap.
     internal static void UpdateBitmap(nint bitmap,nint bytes,int stride)
         =>Check(((delegate* unmanaged[Stdcall]<nint,void*,nint,uint,int>)Slot(bitmap,10))(bitmap,null,bytes,(uint)stride));
@@ -94,6 +154,13 @@ internal static unsafe partial class D2DNative
     internal static void BeginFigure(nint sink,PointF start)=>((delegate* unmanaged[Stdcall]<nint,PointF,uint,void>)Slot(sink,5))(sink,start,0);
     internal static void EndFigure(nint sink,bool closed)=>((delegate* unmanaged[Stdcall]<nint,uint,void>)Slot(sink,8))(sink,closed?1u:0u);
     internal static void Line(nint sink,PointF end)=>((delegate* unmanaged[Stdcall]<nint,PointF,void>)Slot(sink,10))(sink,end);
+    internal static void RectangleFigure(nint sink,RectF rect)
+    {
+        BeginFigure(sink,new(rect.Left,rect.Top));
+        PointF* corners=stackalloc PointF[3]{new(rect.Right,rect.Top),new(rect.Right,rect.Bottom),new(rect.Left,rect.Bottom)};
+        ((delegate* unmanaged[Stdcall]<nint,PointF*,uint,void>)Slot(sink,6))(sink,corners,3);
+        EndFigure(sink,true);
+    }
     internal static void Bezier(nint sink,PathSegment s){PointF* p=stackalloc PointF[3]{s.A,s.B,s.C};((delegate* unmanaged[Stdcall]<nint,PointF*,void>)Slot(sink,s.Verb==PathVerb.Quadratic?12:11))(sink,p);}
     internal static void Close(nint sink)=>Check(((delegate* unmanaged[Stdcall]<nint,int>)Slot(sink,9))(sink));
     [StructLayout(LayoutKind.Sequential)] internal struct TextureDescription{internal uint Width,Height,Mips,Array,Format,SampleCount,SampleQuality,Usage,Bind,Cpu,Misc;}

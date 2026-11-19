@@ -286,7 +286,7 @@ internal sealed class GlyphRun:IGlyphRunImpl
             positioned[index++]=new(font.Outline(info.GlyphIndex),new((float)(x+info.GlyphOffset.X),(float)info.GlyphOffset.Y));
             x+=info.GlyphAdvance;
         }
-        glyphs=new(positioned,new(scale,0,0,0,-scale,0,0,0,1),GlyphPositioning.QuarterPixel);BaselineOrigin=baseline;FontRenderingEmSize=size;Bounds=ConvertTo.Rect(glyphs.Bounds).Translate(new Vector(baseline.X,baseline.Y));
+        glyphs=GlyphRunGeometry.FromOwnedGlyphs(positioned,new(scale,0,0,0,-scale,0,0,0,1),GlyphPositioning.QuarterPixel);BaselineOrigin=baseline;FontRenderingEmSize=size;Bounds=ConvertTo.Rect(glyphs.Bounds).Translate(new Vector(baseline.X,baseline.Y));
     }
     public IReadOnlyList<float> GetIntersections(float lower,float upper)
     {

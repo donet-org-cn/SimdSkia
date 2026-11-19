@@ -193,7 +193,7 @@ public sealed partial class RasterCanvas : ICanvasBackend
         }
         return mask;
     }
-    private static long MaskBytes(CoverageMask mask,PathGeometry geometry)=>mask.Data.LongLength+(long)mask.Runs.Length*16+(long)geometry.Segments.Length*32;
+    private static long MaskBytes(CoverageMask mask,PathGeometry geometry)=>mask.Data.LongLength+(long)mask.Runs.Length*16+(long)geometry.SegmentCount*32;
     private void FillPath(in DrawingCommand command)
     {
         var geometry=command.Path??throw new ArgumentException("Path command requires geometry.");

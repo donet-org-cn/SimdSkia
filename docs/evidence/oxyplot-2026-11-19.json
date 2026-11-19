@@ -1,0 +1,1061 @@
+{
+  "date": "2026-11-19",
+  "modes": {
+    "Previous": "frozen local build from optimization round 2",
+    "Candidate": "local source, optimization round 3",
+    "Native": "unmodified Avalonia renderer"
+  },
+  "oxyplot": {
+    "runtime": {
+      "Runtime": ".NET 10.0.14",
+      "Os": "Microsoft Windows NT 10.0.28000.0",
+      "Scale": 1,
+      "Width": 960,
+      "Height": 560,
+      "ServerGc": false
+    },
+    "avalonia": "12.1.6",
+    "oxyplot_avalonia": "2.2.0",
+    "phases_seconds": [
+      10,
+      8,
+      45
+    ],
+    "trial_orders": [
+      [
+        "Previous",
+        "Native",
+        "Candidate"
+      ],
+      [
+        "Native",
+        "Candidate",
+        "Previous"
+      ],
+      [
+        "Candidate",
+        "Previous",
+        "Native"
+      ]
+    ],
+    "renderers": {
+      "Previous": {
+        "renderer": "SimdSkia.Avalonia.RenderInterface",
+        "graphics": null,
+        "device": "Direct2D: NVIDIA GeForce RTX 3060"
+      },
+      "Native": {
+        "renderer": "Avalonia.Skia.PlatformRenderInterface",
+        "graphics": "Avalonia.Win32.OpenGl.Angle.D3D11AngleWin32PlatformGraphics",
+        "device": "Avalonia.Win32.OpenGl.Angle.D3D11AngleWin32PlatformGraphics"
+      },
+      "Candidate": {
+        "renderer": "SimdSkia.Avalonia.RenderInterface",
+        "graphics": null,
+        "device": "Direct2D: NVIDIA GeForce RTX 3060"
+      }
+    },
+    "medians": {
+      "Previous": {
+        "idle_ws_mib": 173.664062,
+        "live_ws_mib": 169.925781,
+        "live_private_ws_mib": 83.496094,
+        "live_private_mib": 134.632812,
+        "live_ws_p95_mib": 177.203125,
+        "live_managed_mib": 25.26313,
+        "retained_heap_mib": 14.675499,
+        "retained_loh_mib": 6.693138,
+        "allocated_mib_per_second": 1.560319,
+        "live_gen0": 6,
+        "live_gen1": 3,
+        "live_gen2": 1,
+        "live_cpu_ms_per_update": 32.291667,
+        "live_updates": 45
+      },
+      "Native": {
+        "idle_ws_mib": 155.632812,
+        "live_ws_mib": 164.402344,
+        "live_private_ws_mib": 65.097656,
+        "live_private_mib": 145.878906,
+        "live_ws_p95_mib": 168.021484,
+        "live_managed_mib": 10.82618,
+        "retained_heap_mib": 3.633057,
+        "retained_loh_mib": 0.930168,
+        "allocated_mib_per_second": 0.876211,
+        "live_gen0": 3,
+        "live_gen1": 1,
+        "live_gen2": 0,
+        "live_cpu_ms_per_update": 32.638889,
+        "live_updates": 45
+      },
+      "Candidate": {
+        "idle_ws_mib": 166.054688,
+        "live_ws_mib": 161.742188,
+        "live_private_ws_mib": 74.96875,
+        "live_private_mib": 126.152344,
+        "live_ws_p95_mib": 166.689453,
+        "live_managed_mib": 18.384178,
+        "retained_heap_mib": 7.867683,
+        "retained_loh_mib": 1.516724,
+        "allocated_mib_per_second": 1.218812,
+        "live_gen0": 5,
+        "live_gen1": 2,
+        "live_gen2": 1,
+        "live_cpu_ms_per_update": 28.125,
+        "live_updates": 45
+      }
+    },
+    "runs": {
+      "Previous": [
+        {
+          "idle_ws_mib": 173.089844,
+          "live_ws_mib": 169.925781,
+          "live_private_ws_mib": 83.441406,
+          "live_private_mib": 134.59375,
+          "live_ws_p95_mib": 176.537109,
+          "live_managed_mib": 25.211067,
+          "retained_heap_mib": 14.629921,
+          "retained_loh_mib": 6.599342,
+          "allocated_mib_per_second": 1.560489,
+          "live_gen0": 6,
+          "live_gen1": 3,
+          "live_gen2": 1,
+          "live_cpu_ms_per_update": 32.291667,
+          "live_updates": 45,
+          "presents": 52
+        },
+        {
+          "idle_ws_mib": 174.242188,
+          "live_ws_mib": 170.386719,
+          "live_private_ws_mib": 83.78125,
+          "live_private_mib": 134.824219,
+          "live_ws_p95_mib": 177.3125,
+          "live_managed_mib": 25.263794,
+          "retained_heap_mib": 14.675499,
+          "retained_loh_mib": 6.693138,
+          "allocated_mib_per_second": 1.56005,
+          "live_gen0": 6,
+          "live_gen1": 3,
+          "live_gen2": 1,
+          "live_cpu_ms_per_update": 29.513889,
+          "live_updates": 45,
+          "presents": 53
+        },
+        {
+          "idle_ws_mib": 173.664062,
+          "live_ws_mib": 169.480469,
+          "live_private_ws_mib": 83.496094,
+          "live_private_mib": 134.632812,
+          "live_ws_p95_mib": 177.203125,
+          "live_managed_mib": 25.26313,
+          "retained_heap_mib": 14.676826,
+          "retained_loh_mib": 6.693138,
+          "allocated_mib_per_second": 1.560319,
+          "live_gen0": 6,
+          "live_gen1": 3,
+          "live_gen2": 1,
+          "live_cpu_ms_per_update": 33.680556,
+          "live_updates": 45,
+          "presents": 53
+        }
+      ],
+      "Native": [
+        {
+          "idle_ws_mib": 155.632812,
+          "live_ws_mib": 165.0,
+          "live_private_ws_mib": 65.234375,
+          "live_private_mib": 146.867188,
+          "live_ws_p95_mib": 167.84375,
+          "live_managed_mib": 10.82618,
+          "retained_heap_mib": 3.633087,
+          "retained_loh_mib": 0.930168,
+          "allocated_mib_per_second": 0.876211,
+          "live_gen0": 3,
+          "live_gen1": 1,
+          "live_gen2": 0,
+          "live_cpu_ms_per_update": 27.777778,
+          "live_updates": 45,
+          "presents": 0
+        },
+        {
+          "idle_ws_mib": 155.59375,
+          "live_ws_mib": 158.773438,
+          "live_private_ws_mib": 63.046875,
+          "live_private_mib": 139.027344,
+          "live_ws_p95_mib": 168.982422,
+          "live_managed_mib": 11.003197,
+          "retained_heap_mib": 3.633057,
+          "retained_loh_mib": 0.930168,
+          "allocated_mib_per_second": 0.876172,
+          "live_gen0": 3,
+          "live_gen1": 1,
+          "live_gen2": 0,
+          "live_cpu_ms_per_update": 32.986111,
+          "live_updates": 45,
+          "presents": 0
+        },
+        {
+          "idle_ws_mib": 156.894531,
+          "live_ws_mib": 164.402344,
+          "live_private_ws_mib": 65.097656,
+          "live_private_mib": 145.878906,
+          "live_ws_p95_mib": 168.021484,
+          "live_managed_mib": 10.683777,
+          "retained_heap_mib": 3.586182,
+          "retained_loh_mib": 0.836372,
+          "allocated_mib_per_second": 0.876216,
+          "live_gen0": 3,
+          "live_gen1": 1,
+          "live_gen2": 0,
+          "live_cpu_ms_per_update": 32.638889,
+          "live_updates": 45,
+          "presents": 0
+        }
+      ],
+      "Candidate": [
+        {
+          "idle_ws_mib": 166.054688,
+          "live_ws_mib": 163.160156,
+          "live_private_ws_mib": 77.210938,
+          "live_private_mib": 126.859375,
+          "live_ws_p95_mib": 167.0,
+          "live_managed_mib": 18.328918,
+          "retained_heap_mib": 7.867683,
+          "retained_loh_mib": 1.516724,
+          "allocated_mib_per_second": 1.218812,
+          "live_gen0": 5,
+          "live_gen1": 2,
+          "live_gen2": 1,
+          "live_cpu_ms_per_update": 31.944444,
+          "live_updates": 45,
+          "presents": 52
+        },
+        {
+          "idle_ws_mib": 165.527344,
+          "live_ws_mib": 161.742188,
+          "live_private_ws_mib": 74.96875,
+          "live_private_mib": 125.679688,
+          "live_ws_p95_mib": 166.560547,
+          "live_managed_mib": 18.384178,
+          "retained_heap_mib": 7.86747,
+          "retained_loh_mib": 1.516724,
+          "allocated_mib_per_second": 1.218574,
+          "live_gen0": 5,
+          "live_gen1": 2,
+          "live_gen2": 1,
+          "live_cpu_ms_per_update": 27.430556,
+          "live_updates": 45,
+          "presents": 51
+        },
+        {
+          "idle_ws_mib": 166.316406,
+          "live_ws_mib": 161.269531,
+          "live_private_ws_mib": 74.519531,
+          "live_private_mib": 126.152344,
+          "live_ws_p95_mib": 166.689453,
+          "live_managed_mib": 18.467567,
+          "retained_heap_mib": 7.869423,
+          "retained_loh_mib": 1.516724,
+          "allocated_mib_per_second": 1.218885,
+          "live_gen0": 5,
+          "live_gen1": 2,
+          "live_gen2": 1,
+          "live_cpu_ms_per_update": 28.125,
+          "live_updates": 45,
+          "presents": 53
+        }
+      ]
+    }
+  },
+  "diagnostics": {
+    "allocation_eventpipe": {
+      "Previous": {
+        "seconds": 30.011899899999996,
+        "total_sampled_weight_bytes": 49848112,
+        "large_sampled_weight_bytes": 1563504,
+        "allocations_by_route": {
+          "Other": 30808792,
+          "Stroke widening": 17369200,
+          "Clip masks": 1670120
+        },
+        "largest_sampled_sites": [
+          {
+            "Type": "SimdSkia.PathSegment[]",
+            "Site": "SimdSkia.Avalonia.Geometry.TryCreateFlatAxisStroke(class SimdSkia.PathGeometry,value class StrokeKey)",
+            "SampleWeight": 3322064
+          },
+          {
+            "Type": "Clipper2Lib.Point64[]",
+            "Site": "SimdSkia.Avalonia.Geometry.CreateStroke(class SimdSkia.PathGeometry,value class StrokeKey)",
+            "SampleWeight": 2565744
+          },
+          {
+            "Type": "SimdSkia.RectF[]",
+            "Site": "SimdSkia.Avalonia.Geometry.TryCreateFlatAxisStroke(class SimdSkia.PathGeometry,value class StrokeKey)",
+            "SampleWeight": 2381600
+          },
+          {
+            "Type": "System.Byte[]",
+            "Site": "SimdSkia.Cpu.RasterCanvas.ToClip(class SimdSkia.Cpu.CoverageMask)",
+            "SampleWeight": 1563504
+          },
+          {
+            "Type": "Clipper2Lib.OutPt",
+            "Site": "SimdSkia.Avalonia.Geometry.CreateStroke(class SimdSkia.PathGeometry,value class StrokeKey)",
+            "SampleWeight": 1497088
+          },
+          {
+            "Type": "SimdSkia.PathSegment[]",
+            "Site": "SimdSkia.Avalonia.Geometry.FromPaths(class Clipper2Lib.PathsD)",
+            "SampleWeight": 1286448
+          },
+          {
+            "Type": "Avalonia.Rendering.Composition.Server.ServerCompositionDrawListVisual",
+            "Site": "Avalonia.Visual.CreateCompositionVisual(class Avalonia.Rendering.Composition.Compositor)",
+            "SampleWeight": 958376
+          },
+          {
+            "Type": "Clipper2Lib.Active",
+            "Site": "SimdSkia.Avalonia.Geometry.CreateStroke(class SimdSkia.PathGeometry,value class StrokeKey)",
+            "SampleWeight": 858728
+          },
+          {
+            "Type": "Clipper2Lib.Vertex",
+            "Site": "SimdSkia.Avalonia.Geometry.CreateStroke(class SimdSkia.PathGeometry,value class StrokeKey)",
+            "SampleWeight": 852544
+          },
+          {
+            "Type": "Avalonia.Controls.TextBlock",
+            "Site": "OxyPlot.Avalonia.CanvasRenderContext.MeasureText(class System.String,class System.String,float64,float64)",
+            "SampleWeight": 746200
+          },
+          {
+            "Type": "SimdSkia.PathSegment[]",
+            "Site": "System.Collections.Generic.List`1[SimdSkia.PathSegment].AddWithResize(!0)",
+            "SampleWeight": 745688
+          },
+          {
+            "Type": "SimdSkia.Cpu.RasterCanvas",
+            "Site": "SimdSkia.Avalonia.WindowGpuCanvas.DrawTextAtlas(value class SimdSkia.DrawingCommand&)",
+            "SampleWeight": 647440
+          }
+        ],
+        "gc_starts": [
+          {
+            "seconds": 6.674497599999999,
+            "generation": 2,
+            "reason": "AllocSmall",
+            "kind": "BackgroundGC"
+          },
+          {
+            "seconds": 6.674752399999997,
+            "generation": 1,
+            "reason": "AllocSmall",
+            "kind": "NonConcurrentGC"
+          },
+          {
+            "seconds": 14.721706099999999,
+            "generation": 0,
+            "reason": "AllocSmall",
+            "kind": "NonConcurrentGC"
+          },
+          {
+            "seconds": 22.821640099999996,
+            "generation": 0,
+            "reason": "AllocSmall",
+            "kind": "NonConcurrentGC"
+          }
+        ]
+      },
+      "Candidate": {
+        "seconds": 30.0145342,
+        "total_sampled_weight_bytes": 38869760,
+        "large_sampled_weight_bytes": 0,
+        "allocations_by_route": {
+          "Other": 29172376,
+          "Stroke widening": 9373520,
+          "Clip masks": 323864
+        },
+        "largest_sampled_sites": [
+          {
+            "Type": "Clipper2Lib.Point64[]",
+            "Site": "SimdSkia.Avalonia.Geometry.CreateStroke(class SimdSkia.PathGeometry,value class StrokeKey)",
+            "SampleWeight": 1704832
+          },
+          {
+            "Type": "Clipper2Lib.Active",
+            "Site": "SimdSkia.Avalonia.Geometry.CreateStroke(class SimdSkia.PathGeometry,value class StrokeKey)",
+            "SampleWeight": 1488192
+          },
+          {
+            "Type": "Clipper2Lib.Vertex",
+            "Site": "SimdSkia.Avalonia.Geometry.CreateStroke(class SimdSkia.PathGeometry,value class StrokeKey)",
+            "SampleWeight": 1065744
+          },
+          {
+            "Type": "SimdSkia.RectF[]",
+            "Site": "SimdSkia.Avalonia.Geometry.TryCreateFlatAxisStroke(class SimdSkia.PathGeometry,value class StrokeKey)",
+            "SampleWeight": 959400
+          },
+          {
+            "Type": "Avalonia.Rendering.Composition.Server.ServerCompositionDrawListVisual",
+            "Site": "Avalonia.Visual.CreateCompositionVisual(class Avalonia.Rendering.Composition.Compositor)",
+            "SampleWeight": 959144
+          },
+          {
+            "Type": "Avalonia.Rendering.Composition.CompositionDrawListVisual",
+            "Site": "Avalonia.Visual.CreateCompositionVisual(class Avalonia.Rendering.Composition.Compositor)",
+            "SampleWeight": 746200
+          },
+          {
+            "Type": "SimdSkia.RectF[]",
+            "Site": "SimdSkia.PathGeometry.FromAxisRectangles(class System.Collections.Generic.List`1<value class SimdSkia.RectF>)",
+            "SampleWeight": 745688
+          },
+          {
+            "Type": "SimdSkia.Cpu.RasterCanvas",
+            "Site": "SimdSkia.Avalonia.WindowGpuCanvas.DrawTextAtlas(value class SimdSkia.DrawingCommand&)",
+            "SampleWeight": 646352
+          },
+          {
+            "Type": "Clipper2Lib.PointD[]",
+            "Site": "SimdSkia.Avalonia.Geometry.CreateStroke(class SimdSkia.PathGeometry,value class StrokeKey)",
+            "SampleWeight": 533000
+          },
+          {
+            "Type": "SimdSkia.PathSegment[]",
+            "Site": "System.Collections.Generic.List`1[SimdSkia.PathSegment].AddWithResize(!0)",
+            "SampleWeight": 532744
+          },
+          {
+            "Type": "Avalonia.AvaloniaPropertyChangedEventArgs`1[Avalonia.Visual]",
+            "Site": "Avalonia.Layout.Layoutable.OnVisualParentChanged(class Avalonia.Visual,class Avalonia.Visual)",
+            "SampleWeight": 532488
+          },
+          {
+            "Type": "Clipper2Lib.OutPt",
+            "Site": "SimdSkia.Avalonia.Geometry.CreateStroke(class SimdSkia.PathGeometry,value class StrokeKey)",
+            "SampleWeight": 532488
+          }
+        ],
+        "gc_starts": [
+          {
+            "seconds": 0.6165600000000013,
+            "generation": 0,
+            "reason": "AllocSmall",
+            "kind": "NonConcurrentGC"
+          },
+          {
+            "seconds": 10.751375500000002,
+            "generation": 0,
+            "reason": "AllocSmall",
+            "kind": "NonConcurrentGC"
+          },
+          {
+            "seconds": 20.8826052,
+            "generation": 2,
+            "reason": "AllocSmall",
+            "kind": "BackgroundGC"
+          },
+          {
+            "seconds": 20.883148700000003,
+            "generation": 1,
+            "reason": "AllocSmall",
+            "kind": "NonConcurrentGC"
+          }
+        ]
+      }
+    },
+    "post_gc_heap_snapshots": {
+      "Previous": {
+        "retained": {
+          "HeapBytes": 17924232,
+          "LohBytes": 9866736,
+          "CommittedBytes": 52207616
+        },
+        "live_types": {
+          "SimdSkia.PathSegment[]": {
+            "count": 421,
+            "bytes": 1556656
+          },
+          "System.Byte[]": {
+            "count": 1018,
+            "bytes": 13595508
+          }
+        }
+      },
+      "Candidate": {
+        "retained": {
+          "HeapBytes": 8488352,
+          "LohBytes": 1944200,
+          "CommittedBytes": 44646400
+        },
+        "live_types": {
+          "SimdSkia.PathSegment[]": {
+            "count": 374,
+            "bytes": 207048
+          },
+          "System.Byte[]": {
+            "count": 832,
+            "bytes": 5238476
+          }
+        },
+        "large_object_root_groups_bytes": {
+          "TrueTypeFont tables": [
+            120036,
+            120560,
+            90192,
+            120036,
+            119024,
+            119548,
+            120036,
+            120560,
+            90142,
+            120036
+          ],
+          "PixelStorage.Available": [
+            88932,
+            88932,
+            175928
+          ],
+          "Direct2DCanvas image cache": [
+            175928,
+            175928
+          ],
+          "Other": [
+            98352
+          ]
+        }
+      }
+    }
+  },
+  "historical_nuget_reference": {
+    "package": "SimdSkia.Avalonia.Desktop 0.1.9",
+    "package_sha256": "80fbbfdaa3e3195a4c533bbfa13152237caf9df1ed17232d3b55f15de67e781d",
+    "phases_seconds": [
+      10,
+      10,
+      60
+    ],
+    "pairs": 4,
+    "environment": [
+      ".NET 10.0.14",
+      "Microsoft Windows NT 10.0.28000.0",
+      false,
+      1,
+      960,
+      560
+    ],
+    "runs": {
+      "SimdSkia": [
+        {
+          "live_ws_mib": 275.648438,
+          "live_private_mib": 330.714844,
+          "live_managed_mib": 66.653206,
+          "retained_loh_mib": 20.177719,
+          "live_allocated_mib_per_sec": 37.440744,
+          "live_collections_gen0": 108,
+          "live_collections_gen1": 51,
+          "live_collections_gen2": 39,
+          "live_updates": 59,
+          "live_seconds": 60.008369
+        },
+        {
+          "live_ws_mib": 293.957031,
+          "live_private_mib": 352.574219,
+          "live_managed_mib": 82.840363,
+          "retained_loh_mib": 20.177719,
+          "live_allocated_mib_per_sec": 37.619543,
+          "live_collections_gen0": 105,
+          "live_collections_gen1": 48,
+          "live_collections_gen2": 35,
+          "live_updates": 60,
+          "live_seconds": 60.000076
+        },
+        {
+          "live_ws_mib": 301.003906,
+          "live_private_mib": 358.351562,
+          "live_managed_mib": 64.362328,
+          "retained_loh_mib": 19.060341,
+          "live_allocated_mib_per_sec": 38.120387,
+          "live_collections_gen0": 104,
+          "live_collections_gen1": 47,
+          "live_collections_gen2": 34,
+          "live_updates": 60,
+          "live_seconds": 60.013579
+        },
+        {
+          "live_ws_mib": 286.308594,
+          "live_private_mib": 337.582031,
+          "live_managed_mib": 64.189133,
+          "retained_loh_mib": 26.060501,
+          "live_allocated_mib_per_sec": 37.955597,
+          "live_collections_gen0": 107,
+          "live_collections_gen1": 48,
+          "live_collections_gen2": 38,
+          "live_updates": 60,
+          "live_seconds": 60.00153
+        }
+      ],
+      "Native": [
+        {
+          "live_ws_mib": 166.496094,
+          "live_private_mib": 149.941406,
+          "live_managed_mib": 11.717339,
+          "retained_loh_mib": 0.930168,
+          "live_allocated_mib_per_sec": 0.876826,
+          "live_collections_gen0": 4,
+          "live_collections_gen1": 1,
+          "live_collections_gen2": 0,
+          "live_updates": 60,
+          "live_seconds": 60.011004
+        },
+        {
+          "live_ws_mib": 165.667969,
+          "live_private_mib": 147.664062,
+          "live_managed_mib": 11.709953,
+          "retained_loh_mib": 0.930168,
+          "live_allocated_mib_per_sec": 0.8752,
+          "live_collections_gen0": 4,
+          "live_collections_gen1": 1,
+          "live_collections_gen2": 0,
+          "live_updates": 60,
+          "live_seconds": 60.005556
+        },
+        {
+          "live_ws_mib": 165.246094,
+          "live_private_mib": 146.882812,
+          "live_managed_mib": 11.711647,
+          "retained_loh_mib": 0.930168,
+          "live_allocated_mib_per_sec": 0.87504,
+          "live_collections_gen0": 4,
+          "live_collections_gen1": 1,
+          "live_collections_gen2": 0,
+          "live_updates": 60,
+          "live_seconds": 60.010263
+        },
+        {
+          "live_ws_mib": 165.347656,
+          "live_private_mib": 145.824219,
+          "live_managed_mib": 11.632385,
+          "retained_loh_mib": 0.930168,
+          "live_allocated_mib_per_sec": 0.876648,
+          "live_collections_gen0": 4,
+          "live_collections_gen1": 1,
+          "live_collections_gen2": 0,
+          "live_updates": 60,
+          "live_seconds": 60.001726
+        }
+      ]
+    }
+  },
+  "win64_native_aot": {
+    "avalonia": "12.1.5",
+    "preference": "Speed",
+    "sizes": {
+      "Previous": {
+        "exeBytes": 26353664,
+        "deploymentBytes": 32826470.0,
+        "files": [
+          "Avalonia.Win32.Automation.xml",
+          "Avalonia.Win32.xml",
+          "AvaloniaAot.SimdSkia.exe",
+          "ZCOOLXiaoWei-Regular.ttf",
+          "Avalonia-MIT.txt",
+          "ZCOOLXiaoWei-OFL.txt"
+        ]
+      },
+      "Candidate": {
+        "exeBytes": 26357760,
+        "deploymentBytes": 32830566.0,
+        "files": [
+          "Avalonia.Win32.Automation.xml",
+          "Avalonia.Win32.xml",
+          "AvaloniaAot.SimdSkia.exe",
+          "ZCOOLXiaoWei-Regular.ttf",
+          "Avalonia-MIT.txt",
+          "ZCOOLXiaoWei-OFL.txt"
+        ]
+      },
+      "Native": {
+        "exeBytes": 19608064,
+        "deploymentBytes": 43157309.0,
+        "files": [
+          "Avalonia.Base.xml",
+          "Avalonia.Controls.xml",
+          "Avalonia.DesignerSupport.xml",
+          "Avalonia.Dialogs.xml",
+          "Avalonia.Markup.Xaml.xml",
+          "Avalonia.Markup.xml",
+          "Avalonia.Metal.xml",
+          "Avalonia.MicroCom.xml",
+          "Avalonia.OpenGL.xml",
+          "Avalonia.Vulkan.xml",
+          "Avalonia.Win32.Automation.xml",
+          "Avalonia.Win32.xml",
+          "Avalonia.xml",
+          "AvaloniaAot.Original.exe",
+          "libHarfBuzzSharp.dll",
+          "libSkiaSharp.dll",
+          "ZCOOLXiaoWei-Regular.ttf",
+          "Avalonia-MIT.txt",
+          "HarfBuzzSharp-LICENSE.txt",
+          "SkiaSharp-LICENSE.txt",
+          "ZCOOLXiaoWei-OFL.txt"
+        ]
+      }
+    },
+    "software_scenes": {
+      "warmup_s": 2,
+      "measure_s": 4,
+      "orders": [
+        [
+          "Previous",
+          "Native",
+          "Candidate"
+        ],
+        [
+          "Native",
+          "Candidate",
+          "Previous"
+        ],
+        [
+          "Candidate",
+          "Previous",
+          "Native"
+        ]
+      ],
+      "runs": {
+        "controls": {
+          "Previous": [
+            {
+              "cpuMsPerFrame": 2.6692708333333335,
+              "drawMsPerFrame": 1.7734608333333337,
+              "allocatedBytesPerFrame": 4066.5666666666666,
+              "workingSetMiB": 66.33203125,
+              "privateMiB": 43.6015625,
+              "managedRetainedMiB": 17.497726440429688,
+              "frames": 240,
+              "missedDeadlines": 10
+            },
+            {
+              "cpuMsPerFrame": 0.6510416666666666,
+              "drawMsPerFrame": 2.1486737499999995,
+              "allocatedBytesPerFrame": 4067.2,
+              "workingSetMiB": 66.09765625,
+              "privateMiB": 42.6796875,
+              "managedRetainedMiB": 17.497840881347656,
+              "frames": 240,
+              "missedDeadlines": 10
+            },
+            {
+              "cpuMsPerFrame": 1.2369791666666667,
+              "drawMsPerFrame": 1.8878733333333335,
+              "allocatedBytesPerFrame": 4036.5,
+              "workingSetMiB": 66.19921875,
+              "privateMiB": 42.734375,
+              "managedRetainedMiB": 17.497726440429688,
+              "frames": 240,
+              "missedDeadlines": 26
+            }
+          ],
+          "Native": [
+            {
+              "cpuMsPerFrame": 12.434895833333334,
+              "drawMsPerFrame": 4.2131575,
+              "allocatedBytesPerFrame": 8022,
+              "workingSetMiB": 57.82421875,
+              "privateMiB": 31.4921875,
+              "managedRetainedMiB": 2.51617431640625,
+              "frames": 240,
+              "missedDeadlines": 23
+            },
+            {
+              "cpuMsPerFrame": 0.3255208333333333,
+              "drawMsPerFrame": 4.121899999999999,
+              "allocatedBytesPerFrame": 8002.866666666667,
+              "workingSetMiB": 57.6796875,
+              "privateMiB": 31.390625,
+              "managedRetainedMiB": 2.51617431640625,
+              "frames": 240,
+              "missedDeadlines": 30
+            },
+            {
+              "cpuMsPerFrame": 7.682291666666667,
+              "drawMsPerFrame": 4.598839166666664,
+              "allocatedBytesPerFrame": 8003.133333333333,
+              "workingSetMiB": 57.68359375,
+              "privateMiB": 31.390625,
+              "managedRetainedMiB": 2.5162353515625,
+              "frames": 240,
+              "missedDeadlines": 28
+            }
+          ],
+          "Candidate": [
+            {
+              "cpuMsPerFrame": 2.34375,
+              "drawMsPerFrame": 1.7214541666666665,
+              "allocatedBytesPerFrame": 4058.366666666667,
+              "workingSetMiB": 65.9765625,
+              "privateMiB": 42.56640625,
+              "managedRetainedMiB": 17.44695281982422,
+              "frames": 240,
+              "missedDeadlines": 15
+            },
+            {
+              "cpuMsPerFrame": 3.3203125,
+              "drawMsPerFrame": 1.9694804166666668,
+              "allocatedBytesPerFrame": 4077.5,
+              "workingSetMiB": 66.08203125,
+              "privateMiB": 42.69140625,
+              "managedRetainedMiB": 17.47039031982422,
+              "frames": 240,
+              "missedDeadlines": 8
+            },
+            {
+              "cpuMsPerFrame": 2.9947916666666665,
+              "drawMsPerFrame": 1.801894583333333,
+              "allocatedBytesPerFrame": 4069.3,
+              "workingSetMiB": 66.1484375,
+              "privateMiB": 42.7421875,
+              "managedRetainedMiB": 17.44695281982422,
+              "frames": 240,
+              "missedDeadlines": 12
+            }
+          ]
+        },
+        "scroll": {
+          "Previous": [
+            {
+              "cpuMsPerFrame": 2.1484375,
+              "drawMsPerFrame": 1.1406937499999998,
+              "allocatedBytesPerFrame": 5560.966666666666,
+              "workingSetMiB": 59.16015625,
+              "privateMiB": 38.07421875,
+              "managedRetainedMiB": 13.389923095703125,
+              "frames": 240,
+              "missedDeadlines": 8
+            },
+            {
+              "cpuMsPerFrame": 0.9765625,
+              "drawMsPerFrame": 1.248183333333333,
+              "allocatedBytesPerFrame": 5573,
+              "workingSetMiB": 59.0625,
+              "privateMiB": 37.99609375,
+              "managedRetainedMiB": 13.389869689941406,
+              "frames": 240,
+              "missedDeadlines": 10
+            },
+            {
+              "cpuMsPerFrame": 5.186721991701245,
+              "drawMsPerFrame": 1.2314091286307054,
+              "allocatedBytesPerFrame": 5554.6556016597515,
+              "workingSetMiB": 59.14453125,
+              "privateMiB": 38.0546875,
+              "managedRetainedMiB": 13.401382446289062,
+              "frames": 241,
+              "missedDeadlines": 6
+            }
+          ],
+          "Native": [
+            {
+              "cpuMsPerFrame": 5.013020833333333,
+              "drawMsPerFrame": 1.2588837499999999,
+              "allocatedBytesPerFrame": 13128.033333333333,
+              "workingSetMiB": 61.62890625,
+              "privateMiB": 37.46484375,
+              "managedRetainedMiB": 1.6527175903320312,
+              "frames": 240,
+              "missedDeadlines": 5
+            },
+            {
+              "cpuMsPerFrame": 4.166666666666667,
+              "drawMsPerFrame": 1.2485420833333332,
+              "allocatedBytesPerFrame": 13431.133333333333,
+              "workingSetMiB": 61.5078125,
+              "privateMiB": 37.3125,
+              "managedRetainedMiB": 1.65252685546875,
+              "frames": 240,
+              "missedDeadlines": 4
+            },
+            {
+              "cpuMsPerFrame": 7.421875,
+              "drawMsPerFrame": 1.2985900000000004,
+              "allocatedBytesPerFrame": 13166.7,
+              "workingSetMiB": 61.62109375,
+              "privateMiB": 37.44921875,
+              "managedRetainedMiB": 1.6527557373046875,
+              "frames": 240,
+              "missedDeadlines": 14
+            }
+          ],
+          "Candidate": [
+            {
+              "cpuMsPerFrame": 2.658195020746888,
+              "drawMsPerFrame": 1.3746672199170122,
+              "allocatedBytesPerFrame": 5580.0829875518675,
+              "workingSetMiB": 59.03515625,
+              "privateMiB": 37.93359375,
+              "managedRetainedMiB": 13.403427124023438,
+              "frames": 241,
+              "missedDeadlines": 6
+            },
+            {
+              "cpuMsPerFrame": 9.049479166666666,
+              "drawMsPerFrame": 1.1805420833333333,
+              "allocatedBytesPerFrame": 5618.633333333333,
+              "workingSetMiB": 59.17578125,
+              "privateMiB": 38.078125,
+              "managedRetainedMiB": 13.411521911621094,
+              "frames": 240,
+              "missedDeadlines": 4
+            },
+            {
+              "cpuMsPerFrame": 1.3020833333333333,
+              "drawMsPerFrame": 1.207530416666667,
+              "allocatedBytesPerFrame": 5540.733333333334,
+              "workingSetMiB": 59.046875,
+              "privateMiB": 37.94921875,
+              "managedRetainedMiB": 13.403732299804688,
+              "frames": 240,
+              "missedDeadlines": 18
+            }
+          ]
+        }
+      },
+      "summary": {
+        "controls": {
+          "Previous": {
+            "cpuMsPerFrame": 1.2369791666666667,
+            "drawMsPerFrame": 1.8878733333333335,
+            "allocatedBytesPerFrame": 4066.5666666666666,
+            "workingSetMiB": 66.19921875,
+            "privateMiB": 42.734375,
+            "managedRetainedMiB": 17.497726440429688,
+            "frames": 240,
+            "missedDeadlines": 10
+          },
+          "Native": {
+            "cpuMsPerFrame": 7.682291666666667,
+            "drawMsPerFrame": 4.2131575,
+            "allocatedBytesPerFrame": 8003.133333333333,
+            "workingSetMiB": 57.68359375,
+            "privateMiB": 31.390625,
+            "managedRetainedMiB": 2.51617431640625,
+            "frames": 240,
+            "missedDeadlines": 28
+          },
+          "Candidate": {
+            "cpuMsPerFrame": 2.9947916666666665,
+            "drawMsPerFrame": 1.801894583333333,
+            "allocatedBytesPerFrame": 4069.3,
+            "workingSetMiB": 66.08203125,
+            "privateMiB": 42.69140625,
+            "managedRetainedMiB": 17.44695281982422,
+            "frames": 240,
+            "missedDeadlines": 12
+          }
+        },
+        "scroll": {
+          "Previous": {
+            "cpuMsPerFrame": 2.1484375,
+            "drawMsPerFrame": 1.2314091286307054,
+            "allocatedBytesPerFrame": 5560.966666666666,
+            "workingSetMiB": 59.14453125,
+            "privateMiB": 38.0546875,
+            "managedRetainedMiB": 13.389923095703125,
+            "frames": 240,
+            "missedDeadlines": 8
+          },
+          "Native": {
+            "cpuMsPerFrame": 5.013020833333333,
+            "drawMsPerFrame": 1.2588837499999999,
+            "allocatedBytesPerFrame": 13166.7,
+            "workingSetMiB": 61.62109375,
+            "privateMiB": 37.44921875,
+            "managedRetainedMiB": 1.6527175903320312,
+            "frames": 240,
+            "missedDeadlines": 5
+          },
+          "Candidate": {
+            "cpuMsPerFrame": 2.658195020746888,
+            "drawMsPerFrame": 1.207530416666667,
+            "allocatedBytesPerFrame": 5580.0829875518675,
+            "workingSetMiB": 59.046875,
+            "privateMiB": 37.94921875,
+            "managedRetainedMiB": 13.403732299804688,
+            "frames": 240,
+            "missedDeadlines": 6
+          }
+        }
+      }
+    }
+  },
+  "validation": {
+    "oxyplot_direct2d_readback": {
+      "initial": {
+        "width": 960,
+        "height": 560,
+        "different_pixels": 0,
+        "orange_pixels": 2158,
+        "blue_pixels": 1798,
+        "previous_sha256": "f4e6428e7de734e7e47177dccddcfed0a24d0d4dbfa8f5a3146e7b0e9a4160bf",
+        "candidate_sha256": "f4e6428e7de734e7e47177dccddcfed0a24d0d4dbfa8f5a3146e7b0e9a4160bf",
+        "max_channel_delta": 0
+      },
+      "updated": {
+        "width": 960,
+        "height": 560,
+        "different_pixels": 0,
+        "orange_pixels": 2142,
+        "blue_pixels": 1796,
+        "previous_sha256": "8795d18760c1d24e283ebecd97531560d64a01883214dcfcc8351119b904c6e8",
+        "candidate_sha256": "8795d18760c1d24e283ebecd97531560d64a01883214dcfcc8351119b904c6e8",
+        "max_channel_delta": 0
+      }
+    },
+    "identical_tile_effect_shadow_fixtures": 114,
+    "identical_cpu_controls_rgba_sha256": "c090cd95035354efa14a63d7ba2796757f4df6cca77f4d27ce7d44b6ea7948f6",
+    "assertions_by_suite": {
+      "GpuPreferred": 166,
+      "Direct2D": 246438,
+      "AvaloniaGpu": 12222,
+      "RuntimeNumeric": 270722,
+      "Optimization": 474472,
+      "GlyphBatches": 60,
+      "AvaloniaControls": 14149
+    },
+    "published_compatibility_with_new_core_and_cpu": {
+      "published_compatibility_sha256": "c9cb59c458560849ba60f7de3042d5a5af7997f56becdd94491fcc2f5af64aca",
+      "checks": 485,
+      "images": 324,
+      "metadata_records": 90
+    }
+  },
+  "managed_assembly_sha256": {
+    "SimdSkia.Core.dll": {
+      "Previous": "616f8dceb26128046b013289621963848c3c952c9d1fe11515a96bccf04990eb",
+      "Candidate": "ad210d2ba7652de1a1e0c3d37011f36069519089b144be9a35fc4d35027edf46"
+    },
+    "SimdSkia.Cpu.dll": {
+      "Previous": "87c56e0266946d112bf881f29c0cb4db2eb43a87dcf92cbb1aaf92cb43bd66a3",
+      "Candidate": "fe95ec0ec3c9ea94b9305983a5cee89eab72523d1bb8fbbd3414cda0c1fcbe81"
+    },
+    "SimdSkia.Avalonia.dll": {
+      "Previous": "387bbe68c218fecbb82707faa9aa40d12266a6be0146292e05c4f2a481cce27e",
+      "Candidate": "d2845fc99fcce6227dd3b2aa2334a0d9274a391bae659ceab9a58f0664ff5d6e"
+    },
+    "SimdSkia.Gpu.dll": {
+      "Previous": "c0f3126fd7d05103dbcbe49b62c6a5dd9c6ac53dbcb7f99306ad6e9ba12b73c8",
+      "Candidate": "02154d9167c9dbf2b1e89c213377feeb0d6a3d2491f0b2823818c76b73263bb8"
+    },
+    "SimdSkia.Gpu.Direct2D.dll": {
+      "Previous": "b684432ef65442de4f530501f0a41dd0560817f8703b01bd573d110b89c173de",
+      "Candidate": "3b4d06f9421367faf7cf1a4b0d7d52c908fdabc771966a002975aaba3b27d011"
+    },
+    "SimdSkia.Avalonia.Gpu.dll": {
+      "Previous": "c4fd3641b72a47fc2b440f48a0de143eb7547ffb519eb10e20a601767d50436d",
+      "Candidate": "d736004aa36a8bb7ee3766a4dc8d361b7886e989c9cc597b9e5d5fdcbea1d97b"
+    }
+  }
+}

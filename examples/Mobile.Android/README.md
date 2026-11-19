@@ -1,6 +1,6 @@
-# SimdSkia.Avalonia.Android 0.1.9
+# SimdSkia.Avalonia.Android 0.1.10
 
-0.1.9 包含 Avalonia 流式几何的 OxyPlot 兼容修复。Android 包接受 Avalonia 12.1.5 及更高版本，示例使用 12.1.6。[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.9/docs/RELEASE-0.1.9.md) · [桌面性能报告](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.9/docs/PERFORMANCE-AOT-CPU-MEMORY-2026-11-18.md)
+0.1.10 减少 Avalonia 裁剪、阴影、描边和字形绘制的托管分配。Android 包接受 Avalonia 12.1.5 及更高版本，示例使用 12.1.6。[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.10/docs/RELEASE-0.1.10.md) · [桌面性能报告](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.10/docs/PERFORMANCE-OXYPLOT-2026-11-19.md)
 
 该源码示例使用 SimdSkia 的 C# CPU/通用 SIMD 光栅化。随包的 12.1.5 Android 宿主负责 Activity、触摸、输入法和帧缓冲显示。
 
@@ -11,7 +11,7 @@
 目标框架使用 `net10.0-android36.0`。在 Android 启动项目中统一 Avalonia 家族包版本，以下命令使用 12.1.6。
 
 ```powershell
-dotnet add package SimdSkia.Avalonia.Android --version 0.1.9
+dotnet add package SimdSkia.Avalonia.Android --version 0.1.10
 dotnet add package Avalonia.Themes.Fluent --version 12.1.6
 ```
 

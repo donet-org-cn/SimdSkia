@@ -1,7 +1,7 @@
 <Project>
   <Import Project="../Directory.Build.props" />
   <PropertyGroup>
-    <Version Condition="'$(Version)' == ''">0.1.9</Version>
+    <Version Condition="'$(Version)' == ''">0.1.10</Version>
     <Authors>hnlyf168</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/donet-org-cn/SimdSkia</PackageProjectUrl>
@@ -11,7 +11,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Description>Managed C# 2D rendering components. Version 0.1 supports the documented subset; SkiaSharp source and rendering equivalence remain incomplete. No Google Skia rendering dependency.</Description>
     <PackageTags>SimdSkia;graphics;rendering;managed;2d</PackageTags>
-    <PackageReleaseNotes>0.1.9 正式版。修复 OxyPlot.Avalonia 绘制坐标轴刻度时的路径异常，支持连续 BeginFigure 绘制独立开放线段。详见 CHANGELOG.md。</PackageReleaseNotes>
+    <PackageReleaseNotes>0.1.10 正式版。减少 Avalonia 裁剪、阴影、描边和字形绘制的托管分配。性能和 NativeAOT 实测见 CHANGELOG.md。</PackageReleaseNotes>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>

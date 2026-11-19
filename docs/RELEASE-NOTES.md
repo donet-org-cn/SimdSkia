@@ -1,5 +1,13 @@
 # SimdSkia 更新日志 / Release notes
 
+## 0.1.10 正式版 · 减少 Avalonia 托管分配（2026-11-19）
+
+- 减少裁剪遮罩、滤镜、透明度图层、阴影、虚线描边和字形绘制的临时分配。Direct2D 分块上传裁剪遮罩并复用图像资源。
+- 本机 Win64 的 OxyPlot 三轮刷新测试中，托管分配为 1.219 MiB/s，工作集为 161.7 MiB，完整 GC 后的大对象堆留存为 1.52 MiB。原生 Avalonia 分别为 0.876 MiB/s、164.4 MiB 和 0.93 MiB。Direct2D 窗口的首帧和更新帧均通过逐像素回归。
+- Win64 NativeAOT 控件示例的完整发布目录为 31.31 MiB，原生为 41.16 MiB。性能报告包含 CPU 波动范围、软件绘制、滚动和正式 NuGet 0.1.9 的历史基线。
+
+[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.10/docs/RELEASE-0.1.10.md) · [性能报告](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.10/docs/PERFORMANCE-OXYPLOT-2026-11-19.md)
+
 ## 0.1.9 正式版 · OxyPlot 绘图兼容（2026-11-19）
 
 - 修复 OxyPlot 绘制坐标轴次刻度时抛出的 `End the preceding figure.` 异常。Avalonia 流式几何支持连续调用 `BeginFigure`，各段轮廓独立绘制。

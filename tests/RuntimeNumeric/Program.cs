@@ -7,6 +7,21 @@ using SimdSkia.Cpu;
 
 var output=args[0];Directory.CreateDirectory(output);
 int checks=0;var random=new Random(119403);
+using (var dirty = PixelBuffer.Rent(128, 64))
+    dirty.GetPixelSpan().Fill(255);
+using (var pending = PixelBuffer.RentDeferred(128, 64))
+using (var view = pending.Share())
+{
+    if (!pending.HasDeferredStorage || !view.HasDeferredStorage || pending.IsDisposed)
+        throw new Exception("Sharing a deferred framebuffer allocated pixels.");
+    if (view.GetPixelSpan().ContainsAnyExcept((byte)0) || pending.HasDeferredStorage)
+        throw new Exception("Deferred framebuffer storage was not shared and initialized.");
+    pending.Dispose();
+    view.WritePixel(5, 6, new(100, 20, 30, 255));
+    if (view.ReadPixel(5, 6) != new Rgba32(100, 20, 30, 255))
+        throw new Exception("Disposing one deferred view invalidated the other.");
+    checks += 3;
+}
 string[] expressions=[
     "return half4(p/size,.5,1);",
     "float2 q=p/size;return half4(q.yx*gain,.5,1);",

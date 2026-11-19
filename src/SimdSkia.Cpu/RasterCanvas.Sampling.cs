@@ -35,7 +35,7 @@ public sealed partial class RasterCanvas
     {
         ObjectDisposedException.ThrowIf(disposed,this);target.ThrowIfDisposed();
         if(!float.IsFinite(curveTolerance)||curveTolerance<=0)throw new ArgumentOutOfRangeException(nameof(curveTolerance));
-        var key=new ClipCoverageCache.Key(geometry,transform,target.Width,target.Height,antialias,curveTolerance);
+        var key=new ClipCoverageCache.Key(new(geometry),transform,target.Width,target.Height,antialias,curveTolerance);
         if(ClipCoverageCache.TryGet(key,out var cached))return cached;
         var command=new DrawingCommand(CommandKind.FillPath,default,transform,new(default,CompositeMode.Source,antialias)){CurveTolerance=curveTolerance};
         return ClipCoverageCache.Add(key,ToClip(GetMask(geometry,command)));
@@ -43,18 +43,55 @@ public sealed partial class RasterCanvas
     internal static CoverageClip CreateClipForBounds(PathGeometry geometry,Matrix3 transform,int width,int height,bool antialias)
     {
         if((long)width*height>16_777_216)throw new NotSupportedException("Pixel-accurate no-draw path clips are limited to 16 million pixels.");
+        return RasterizeClip(geometry,transform,width,height,antialias);
+    }
+    internal static CoverageClip RasterizeClip(PathGeometry geometry,Matrix3 transform,int width,int height,bool antialias)
+    {
         var mask=PathRasterizer.Rasterize(geometry.Flatten(transform,.015625f),geometry.FillRule,width,height,antialias,compactRuns:true);
         return ToClip(mask);
     }
     private static CoverageClip ToClip(CoverageMask mask)
     {
-        var data=mask.Data;
-        if(data.Length!=checked(mask.Width*mask.Height))
+        int length = checked(mask.Width * mask.Height);
+        if (mask.Data.Length == length)
+            return CoverageClip.BorrowImmutable(mask.Left,mask.Top,mask.Width,mask.Height,mask.Data);
+
+        // Rounded rectangles and rectangular bands often share almost every row.
+        // Compare the sparse runs before allocating a device-sized byte plane.
+        int repeatStart = 0, extraRows = 0;
+        if (length >= 32 * 1024)
         {
-            data=new byte[checked(mask.Width*mask.Height)];
-            foreach(var run in mask.Runs)data.AsSpan((run.Y-mask.Top)*mask.Width+run.X-mask.Left,run.Length).Fill(run.Coverage);
+            int previous = 0, end = 0, start = 0;
+            for (int row = 0; row < mask.Height; row++)
+            {
+                int current = end;
+                while (end < mask.Runs.Length && mask.Runs[end].Y == mask.Top + row) end++;
+                if (!SameScanline(mask.Runs.AsSpan(previous, current - previous), mask.Runs.AsSpan(current, end - current)))
+                    start = row;
+                if (row - start > extraRows) { repeatStart = start; extraRows = row - start; }
+                previous = current;
+            }
         }
-        return CoverageClip.BorrowImmutable(mask.Left,mask.Top,mask.Width,mask.Height,data);
+        var data = new byte[mask.Width * (mask.Height - extraRows)];
+        foreach (var run in mask.Runs)
+        {
+            int row = run.Y - mask.Top;
+            if (row > repeatStart)
+            {
+                if (row <= repeatStart + extraRows) continue;
+                row -= extraRows;
+            }
+            data.AsSpan(row * mask.Width + (run.X - mask.Left), run.Length).Fill(run.Coverage);
+        }
+        return CoverageClip.BorrowRepeatedRows(mask.Left,mask.Top,mask.Width,mask.Height,data,repeatStart,extraRows);
+    }
+    private static bool SameScanline(ReadOnlySpan<CoverageRun> previous, ReadOnlySpan<CoverageRun> current)
+    {
+        if (previous.Length != current.Length) return false;
+        for (int i = 0; i < current.Length; i++)
+            if (previous[i].X != current[i].X || previous[i].Length != current[i].Length || previous[i].Coverage != current[i].Coverage)
+                return false;
+        return true;
     }
     private static byte ClipCoverage(byte coverage,int x,int y,CoverageClip? clip)=>clip is null?coverage:PixelBuffer.Multiply(coverage,clip.At(x,y));
     private static int ClipRun(CoverageClip clip,int x,int y,int maximum,out byte coverage)

@@ -23,7 +23,7 @@ internal sealed class GpuCoverageCache
             result=new(x0,y0,x1-x0,y1-y0,values);
         }
         else result=RasterCanvas.CreateClipForBounds(path,command.Transform,width,height,command.Paint.Antialias);
-        long length=(long)result.Width*result.Height+(long)path.Segments.Length*32;
+        long length=(long)result.Width*result.Height+(long)path.SegmentCount*32;
         if(limit>0&&length<=limit){if(entries.Count>=32||bytes+length>limit)Clear();entries.Add(key,result);bytes+=length;}return result;
     }
     internal void Configure(long budget,bool enabled){limit=enabled?Math.Clamp(budget,0,2*1024*1024):0;if(bytes>limit)Clear();}

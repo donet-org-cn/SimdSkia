@@ -25,7 +25,7 @@ internal sealed partial class NativeWindowTarget(INativePlatformHandleSurface su
         if(size.Width<=0||size.Height<=0)throw new InvalidOperationException("The native window has no drawable area.");
         if(pixels is null||pixels.Width!=size.Width||pixels.Height!=size.Height)
         {
-            canvas?.Dispose();canvas=null;pixels?.Dispose();pixels=PixelBuffer.Rent(size.Width,size.Height);retained=false;
+            canvas?.Dispose();canvas=null;pixels?.Dispose();pixels=PixelBuffer.RentDeferred(size.Width,size.Height);retained=false;
             canvas=new WindowGpuCanvas(pixels,SimdSkiaGpuBackend.Direct2D,fallback,surface.Handle,textMode);
         }
         properties=new(){PreviousFrameIsRetained=retained};active=true;

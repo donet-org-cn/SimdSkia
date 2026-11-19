@@ -217,9 +217,50 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
     public void PushGeometryClip(IGeometryImpl geometry)
     {
         using var measurement=SimdSkiaDiagnostics.Measure("clip");
-        Check();var g=(Geometry)geometry;g.Validate();var next=CreateCoverageClip(g.Path,DeviceMatrix,Antialias);
+        Check();var g=(Geometry)geometry;g.Validate();
+        var matrix = DeviceMatrix;
+        if (TryGetHardClip(g.Path, matrix, out var rectangle))
+        {
+            clips.Push((clip, coverageClip));
+            clip = Intersect(clip, rectangle);
+            return;
+        }
+        var next=CreateCoverageClip(g.Path,matrix,Antialias);
         var combined=coverageClip is null?next:CoverageClip.Intersect(coverageClip,next);
         clips.Push((clip,coverageClip));coverageClip=combined;clip=Intersect(clip,next.Bounds);
+    }
+    private bool TryGetHardClip(PathGeometry path, Matrix3 matrix, out RectF rectangle)
+    {
+        rectangle = default;
+        var segments = path.Segments;
+        if (segments.Length != 5 || segments[0].Verb != PathVerb.Move ||
+            segments[1].Verb != PathVerb.Line || segments[2].Verb != PathVerb.Line ||
+            segments[3].Verb != PathVerb.Line || segments[4].Verb != PathVerb.Close ||
+            path.FillRule is FillRule.InverseWinding or FillRule.InverseEvenOdd ||
+            matrix.M01 != 0 || matrix.M10 != 0 || !matrix.IsFinite)
+            return false;
+
+        var a = segments[0].A;
+        var b = segments[1].A;
+        var c = segments[2].A;
+        var d = segments[3].A;
+        if (!(a.Y == b.Y && b.X == c.X && c.Y == d.Y && d.X == a.X) &&
+            !(a.X == b.X && b.Y == c.Y && c.X == d.X && d.Y == a.Y))
+            return false;
+
+        var start = matrix.Map(a.X, a.Y);
+        var end = matrix.Map(c.X, c.Y);
+        // Integral edges have identical hard-clip and path coverage on every pixel.
+        static bool Integral(float v) => float.IsFinite(v) && v == MathF.Truncate(v);
+        if (!Integral(start.X) || !Integral(start.Y) || !Integral(end.X) || !Integral(end.Y))
+            return false;
+
+        rectangle = new(
+            Math.Clamp(MathF.Min(start.X, end.X), 0, target.Width),
+            Math.Clamp(MathF.Min(start.Y, end.Y), 0, target.Height),
+            Math.Clamp(MathF.Max(start.X, end.X), 0, target.Width),
+            Math.Clamp(MathF.Max(start.Y, end.Y), 0, target.Height));
+        return true;
     }
     public void PopClip(){Check();if(!clips.TryPop(out var state))throw new InvalidOperationException("Unbalanced clip stack.");(clip,coverageClip)=state;}
     public void PopGeometryClip()=>PopClip();

@@ -19,11 +19,14 @@ public sealed class GlyphRunGeometry
     internal bool ContentEquals(GlyphRunGeometry other)=>ReferenceEquals(this,other)||
         ContentHash==other.ContentHash&&FontTransform==other.FontTransform&&Positioning==other.Positioning&&glyphs.AsSpan().SequenceEqual(other.glyphs);
     public GlyphRunGeometry(IEnumerable<PositionedGlyph> glyphs,Matrix3 fontTransform,GlyphPositioning positioning=GlyphPositioning.Exact)
+        : this(glyphs?.ToArray() ?? throw new ArgumentNullException(nameof(glyphs)),fontTransform,positioning) { }
+    internal static GlyphRunGeometry FromOwnedGlyphs(PositionedGlyph[] glyphs,Matrix3 fontTransform,GlyphPositioning positioning)
+        => new(glyphs,fontTransform,positioning);
+    private GlyphRunGeometry(PositionedGlyph[] glyphs,Matrix3 fontTransform,GlyphPositioning positioning)
     {
-        ArgumentNullException.ThrowIfNull(glyphs);
         if(!fontTransform.IsFinite||!fontTransform.IsAffine)throw new ArgumentException("A finite affine font transform is required.",nameof(fontTransform));
         if(!Enum.IsDefined(positioning))throw new ArgumentOutOfRangeException(nameof(positioning));
-        this.glyphs=glyphs.ToArray();FontTransform=fontTransform;Positioning=positioning;
+        this.glyphs=glyphs;FontTransform=fontTransform;Positioning=positioning;
         var hash=new HashCode();hash.Add(fontTransform);hash.Add(positioning);RectF? bounds=null;
         foreach(var glyph in this.glyphs)
         {

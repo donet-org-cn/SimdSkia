@@ -15,7 +15,7 @@ public sealed class PixelBuffer : IDisposable
     public int RowBytes { get; }
     public PixelFormat Format { get; }
     public AlphaFormat Alpha { get; }
-    public bool IsDisposed => data is null&&external is null;
+    public bool IsDisposed => data is null&&external is null&&storage is null;
     public int BytesPerPixel=>Format==PixelFormat.Alpha8?1:4;
     public int ByteCount => checked(RowBytes * (Height-1) + Width * BytesPerPixel);
     internal int StorageCapacity=>data?.Length??ByteCount;
@@ -36,9 +36,14 @@ public sealed class PixelBuffer : IDisposable
     /// <summary>Rents bounded reusable storage and initializes all bytes before exposing it.</summary>
     public static PixelBuffer Rent(int width,int height,PixelFormat format=PixelFormat.Bgra8888,AlphaFormat alpha=AlphaFormat.Premultiplied)
         => new(width, height, format, alpha, 0, true, clearPooled: true);
+    // GPU windows need a CPU-visible buffer only for fallback and readback.
+    internal static PixelBuffer RentDeferred(int width, int height)
+        => new(width, height, PixelFormat.Bgra8888, AlphaFormat.Premultiplied, 0, true, deferred: true);
+    internal bool HasDeferredStorage => data is null && storage is { IsAllocated: false };
+    private byte[] ManagedData => data ??= storage!.Bytes;
 
     private PixelBuffer(int width, int height, PixelFormat format, AlphaFormat alpha, int rowBytes,
-        bool pooled, bool uninitialized = false, bool exactSize = false, bool clearPooled = false)
+        bool pooled, bool uninitialized = false, bool exactSize = false, bool clearPooled = false, bool deferred = false)
     {
         if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
         if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
@@ -49,6 +54,11 @@ public sealed class PixelBuffer : IDisposable
         if (rowBytes < minimum) throw new ArgumentOutOfRangeException(nameof(rowBytes));
         Width = width; Height = height; RowBytes = rowBytes; Format = format; Alpha = alpha;
         int length=checked(rowBytes*height);
+        if (deferred)
+        {
+            storage = PixelStorage.Deferred(length);
+            return;
+        }
         if(pooled){storage=PixelStorage.Rent(length,exactSize);data=storage.Bytes;}
         else data = uninitialized?GC.AllocateUninitializedArray<byte>(length):new byte[length];
         if (alpha == AlphaFormat.Opaque && !uninitialized)
@@ -101,17 +111,17 @@ public sealed class PixelBuffer : IDisposable
     {ThrowIfDisposed();if(resource is not null)throw new InvalidOperationException("A pixel view already retains its resource.");resource=lease.Retain();}
 
     /// <summary>Pins a retained storage lease until disposed; used only at platform framebuffer boundaries.</summary>
-    public PixelBufferPin Pin() { ThrowIfDisposed(); return external is null?new(this,data!):new(this,external.Address); }
+    public PixelBufferPin Pin() { ThrowIfDisposed(); return external is null?new(this,ManagedData):new(this,external.Address); }
 
     public Span<byte> GetRowSpan(int y)
     {
         ThrowIfDisposed();
         if ((uint)y >= (uint)Height) throw new ArgumentOutOfRangeException(nameof(y));
-        return external is null?data.AsSpan(y*RowBytes,RowBytes):GetPixelSpan().Slice(y*RowBytes,y==Height-1?Width*BytesPerPixel:RowBytes);
+        return external is null?ManagedData.AsSpan(y*RowBytes,RowBytes):GetPixelSpan().Slice(y*RowBytes,y==Height-1?Width*BytesPerPixel:RowBytes);
     }
 
-    public unsafe Span<byte> GetPixelSpan() { ThrowIfDisposed(); return external is null?data.AsSpan(0,ByteCount):new Span<byte>((void*)external.Address,ByteCount); }
-    internal ReadOnlyMemory<byte> GetManagedMemory() { ThrowIfDisposed(); return data is null ? default : data.AsMemory(0, ByteCount); }
+    public unsafe Span<byte> GetPixelSpan() { ThrowIfDisposed(); return external is null?ManagedData.AsSpan(0,ByteCount):new Span<byte>((void*)external.Address,ByteCount); }
+    internal ReadOnlyMemory<byte> GetManagedMemory() { ThrowIfDisposed(); return external is null ? ManagedData.AsMemory(0, ByteCount) : default; }
     public byte[] CopyBytes() => GetPixelSpan().ToArray();
 
     // Expects complete four-byte pixels with alpha in the last byte.

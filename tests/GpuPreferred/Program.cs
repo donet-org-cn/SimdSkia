@@ -84,6 +84,43 @@ foreach(Exception error in new Exception[]{new ArgumentException("bad scene"),ne
 if(args.Contains("--hardware"))
 {
     if(!OperatingSystem.IsWindows())throw new PlatformNotSupportedException("This hardware test uses the current Windows Direct2D/Vulkan devices.");
+    using (var canvasPixels = PixelBuffer.Rent(288,224))
+    using (var gpu = new Direct2DCanvas(canvasPixels))
+    using (var raster = new RasterCanvas(canvasPixels))
+    {
+        var a = raster.CreateClip(PathGeometry.Rectangle(new(4.375f,7.5f,261.75f,207.125f)),Matrix3.Identity);
+        var b = raster.CreateClip(PathGeometry.Rectangle(new(4.625f,5.25f,261.875f,209.75f)),Matrix3.Identity);
+        var compact = CoverageClip.Intersect(a,b);
+        var dense = new byte[compact.Width*compact.Height];
+        for (int y=0; y<compact.Height; y++)
+            for (int x=0; x<compact.Width; x++)
+            {
+                int deviceX=x+compact.Left, deviceY=y+compact.Top;
+                dense[y*compact.Width+x]=(byte)((a.At(deviceX,deviceY)*b.At(deviceX,deviceY)+127)/255);
+            }
+        byte[] Draw(CoverageClip mask)
+        {
+            gpu.Execute(DrawingCommand.Clear(default));
+            gpu.Execute(DrawingCommand.FillRectangle(new(0,0,288,224),Matrix3.Identity,new(new(38,182,74,255),CompositeMode.SourceOver)) with {CoverageClip=mask});
+            gpu.Flush();
+            return canvasPixels.CopyBytes();
+        }
+        var first = Draw(compact);
+        Check(first.AsSpan().SequenceEqual(Draw(new CoverageClip(compact.Left,compact.Top,compact.Width,compact.Height,dense))) &&
+            canvasPixels.ReadPixel(100,100).A==255 && canvasPixels.ReadPixel(4,8).A is >0 and <255,
+            "Repeated soft coverage rows must upload and intersect exactly like a dense mask.");
+    }
+    using (var pathPixels = PixelBuffer.Rent(32, 24))
+    using (var paths = new Direct2DCanvas(pathPixels))
+    {
+        var fill = new DrawingCommand(CommandKind.FillPath, default, Matrix3.Identity,
+            new(new(38, 182, 74, 255), CompositeMode.SourceOver));
+        for (int i = 0; i < 360; i++)
+            paths.Execute(fill with { Path = PathGeometry.Rectangle(new(3, 4, 16, 18)) });
+        paths.Flush();
+        Check(paths.ResourceUsage.Count <= 260 && pathPixels.ReadPixel(6, 7) == new Rgba32(38, 182, 74, 255),
+            "Evicting queued Direct2D paths must bound retention and preserve pending draws.");
+    }
     using (var target = PixelBuffer.Rent(8, 1))
     using (var gpu = new Direct2DCanvas(target))
     using (var dc = new SimdSkia.Avalonia.DrawingContext(target, new(96,96), backend: gpu))

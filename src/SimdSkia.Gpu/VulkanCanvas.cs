@@ -80,7 +80,7 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
     }
     private sealed class EdgeEntry
     {
-        public required PathGeometry Geometry;public required float[] Edges;public TiledEdges? Tiles;public bool ClassifyTiles;public long Used;public long Bytes=>(long)Edges.Length*4+(long)(Tiles?.Data.Length??0)*4+(long)Geometry.Segments.Length*32;
+        public required PathGeometry Geometry;public required float[] Edges;public TiledEdges? Tiles;public bool ClassifyTiles;public long Used;public long Bytes=>(long)Edges.Length*4+(long)(Tiles?.Data.Length??0)*4+(long)Geometry.SegmentCount*32;
     }
     private sealed class Texture(IntPtr device,int width,int height) : IDisposable
     {
@@ -515,7 +515,7 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
             if(!ReserveMasks(bytes,false))return null;
             entry.Buffer=Allocate((int)bytes,deviceLocal:true);entry.Bytes+=bytes;maskBytes+=bytes;return entry;
         }
-        long retained=128L+cmd.Path!.Segments.Length*32L;
+        long retained=128L+cmd.Path!.SegmentCount*32L;
         if(!ReserveMasks(retained,true))return null;
         // Admit on the second identical use. Animating/transient geometry gets
         // full-quality direct GPU rendering without allocating a mask every frame.

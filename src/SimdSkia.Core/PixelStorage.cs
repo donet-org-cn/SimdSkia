@@ -11,10 +11,32 @@ internal sealed class PixelStorage
     private static readonly List<byte[]> Available=[];
     private static long pooledBytes;
     private int references=1;
-    public byte[] Bytes {get;}
-    private PixelStorage(byte[] bytes)=>Bytes=bytes;
+    private readonly int deferredLength;
+    private byte[]? bytes;
+    internal bool IsAllocated => Volatile.Read(ref bytes) is not null;
+    public byte[] Bytes
+    {
+        get
+        {
+            if (Volatile.Read(ref bytes) is { } allocated)
+                return allocated;
+            lock (this)
+            {
+                if (bytes is { } ready)
+                    return ready;
+                var buffer = RentArray(deferredLength, exactSize: false);
+                buffer.AsSpan(0, deferredLength).Clear();
+                Volatile.Write(ref bytes, buffer);
+                return buffer;
+            }
+        }
+    }
+    private PixelStorage(byte[] bytes)=>this.bytes=bytes;
+    private PixelStorage(int length)=>deferredLength=length;
+    internal static PixelStorage Deferred(int length)=>new(length);
 
-    public static PixelStorage Rent(int length, bool exactSize)
+    public static PixelStorage Rent(int length, bool exactSize) => new(RentArray(length, exactSize));
+    private static byte[] RentArray(int length, bool exactSize)
     {
         long maximum = exactSize ? length : Math.Max(4096L, (long)length * 2);
         lock(Gate)
@@ -26,21 +48,22 @@ internal sealed class PixelStorage
             if(best>=0)
             {
                 byte[] bytes=Available[best];Available.RemoveAt(best);pooledBytes-=bytes.Length;
-                return new(bytes);
+                return bytes;
             }
         }
-        return new(GC.AllocateUninitializedArray<byte>(length));
+        return GC.AllocateUninitializedArray<byte>(length);
     }
 
     public void Retain()=>Interlocked.Increment(ref references);
     public void Release()
     {
-        if(Interlocked.Decrement(ref references)!=0||Bytes.Length>Budget)return;
+        if (Interlocked.Decrement(ref references) != 0 || Volatile.Read(ref bytes) is not { } buffer || buffer.Length > Budget)
+            return;
         lock(Gate)
         {
-            while(Available.Count>=4||pooledBytes+Bytes.Length>Budget)
+            while(Available.Count>=4||pooledBytes+buffer.Length>Budget)
             {pooledBytes-=Available[0].Length;Available.RemoveAt(0);}
-            Available.Add(Bytes);pooledBytes+=Bytes.Length;
+            Available.Add(buffer);pooledBytes+=buffer.Length;
         }
     }
 }
