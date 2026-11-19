@@ -1,6 +1,6 @@
-# SimdSkia.Pdf 0.1.8
+# SimdSkia.Pdf 0.1.9
 
-0.1.8 纳入 Avalonia 版本范围更新。目标框架为 .NET 10，PDF 读取依赖 PdfPig 0.1.16。共享光栅和字体性能记录包含 CPU、内存与 NativeAOT 对照。[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.8/docs/RELEASE-0.1.8.md) · [性能报告](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.8/docs/PERFORMANCE-AOT-CPU-MEMORY-2026-11-18.md)
+0.1.9 与包含 OxyPlot 兼容修复的 Avalonia 组件同步发布。PDF 包面向 .NET 10，读取依赖 PdfPig 0.1.16。[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.9/docs/RELEASE-0.1.9.md) · [性能报告](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.9/docs/PERFORMANCE-AOT-CPU-MEMORY-2026-11-18.md)
 
 ## SimdSkia 0.1.4 Android NuGet 接入
 
@@ -18,7 +18,7 @@ Avalonia接受>=12.1.0且<13.0.0，已验证宿主12.1.0–12.1.5。默认SK*解
 
 完整累计更新、性能记录、限制与升级方法见包内CHANGELOG.md和[0.1.2发行说明](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-0.1.2.md)。原始测量按快照保留，不以正式版本号改写画质结果。
 
-## SimdSkia.Pdf 0.1.8
+## SimdSkia.Pdf 0.1.9
 
 Requires .NET 10.
 
@@ -29,7 +29,7 @@ native font library is used for PDF rendering. PDF Flate streams use the managed
 The optional parser is not pulled in by ordinary Avalonia or compatibility users. Keep all direct SimdSkia package versions aligned.
 
 ```shell
-dotnet add package SimdSkia.Pdf --version 0.1.8
+dotnet add package SimdSkia.Pdf --version 0.1.9
 ```
 
 Every package includes `CHANGELOG.md` and NuGet release notes. This release is a

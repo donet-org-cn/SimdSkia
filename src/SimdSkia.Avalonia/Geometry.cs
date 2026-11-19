@@ -229,7 +229,18 @@ internal sealed class StreamGeometry:Geometry,IStreamGeometryImpl
         private SimdSkia.FillRule rule;private bool disposed,figure,filled;private Point current,start;
         private void Check(){ObjectDisposedException.ThrowIf(disposed,this);}
         public void SetFillRule(AFill value){Check();rule=value==AFill.EvenOdd?SimdSkia.FillRule.EvenOdd:SimdSkia.FillRule.Winding;}
-        public void BeginFigure(Point p,bool isFilled=true){Check();if(figure)throw new InvalidOperationException("End the preceding figure.");figure=true;filled=isFilled;current=start=p;if(filled)fill.Add(new(PathVerb.Move,ConvertTo.Point(p)));stroke.Add(new(PathVerb.Move,ConvertTo.Point(p)));}
+        public void BeginFigure(Point p, bool isFilled = true)
+        {
+            Check();
+            // A move starts a separate contour and leaves any preceding figure open.
+            var move = new PathSegment(PathVerb.Move, ConvertTo.Point(p));
+            figure = true;
+            filled = isFilled;
+            current = start = p;
+            if (filled)
+                fill.Add(move);
+            stroke.Add(move);
+        }
         private void Add(PathSegment segment,Point end,bool isStroked){Check();if(!figure)throw new InvalidOperationException("BeginFigure is required.");if(filled)fill.Add(segment);stroke.Add(isStroked?segment:new(PathVerb.Move,ConvertTo.Point(end)));current=end;}
         public void LineTo(Point p,bool isStroked=true)=>Add(new(PathVerb.Line,ConvertTo.Point(p)),p,isStroked);
         public void QuadraticBezierTo(Point a,Point b,bool isStroked=true)=>Add(new(PathVerb.Quadratic,ConvertTo.Point(a),ConvertTo.Point(b)),b,isStroked);

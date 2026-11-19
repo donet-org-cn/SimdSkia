@@ -1,6 +1,6 @@
-# SimdSkia 0.1.8
+# SimdSkia 0.1.9
 
-0.1.8 移除 Avalonia 版本上限。桌面和渲染适配器要求 12.1.0 起，Android 要求 12.1.5 起。桌面增加 12.1.6 宿主，后续版本可尝试使用随包最新宿主。[发行说明与 NativeAOT 验证范围](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.8/docs/RELEASE-0.1.8.md)
+0.1.9 修复 OxyPlot 绘制坐标轴次刻度时的流式几何异常。桌面和渲染适配器要求 Avalonia 12.1.0 起，Android 要求 12.1.5 起。[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.9/docs/RELEASE-0.1.9.md)
 
 ## 0.1.7 性能更新
 
@@ -40,7 +40,7 @@ Packages target .NET 10 or later:
 | SimdSkia.Pdf | Optional managed PDF parsing/rendering; subset only, pinned PdfPig 0.1.16 |
 
 ```shell
-dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.8
+dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.9
 ```
 
 An existing Avalonia application selects the adapter explicitly.
@@ -55,7 +55,7 @@ AppBuilder.Configure<App>()
 
 Windows uses its current message font; Linux/macOS discover supported installed static TrueType families. Explicit `options.FontFiles.Add(path)` overrides automatic selection. Parsing, shaping, glyph coverage and codecs remain C#. Chinese text needs a supported installed Chinese font. Complex shaping, CFF/variable/color fonts and hinting have gaps.
 
-Startup preparation is enabled by default. To disable it for diagnosis, use `.UseSimdSkiaDesktop(options => options.EnableStartupPreparation = false)`. Keep all directly referenced SimdSkia packages on version `0.1.8` and align the versions of your Avalonia packages.
+Startup preparation is enabled by default. To disable it for diagnosis, use `.UseSimdSkiaDesktop(options => options.EnableStartupPreparation = false)`. Keep all directly referenced SimdSkia packages on version `0.1.9` and align the versions of your Avalonia packages.
 
 The base adapter provides rendering/font services. The Desktop package supplies OS host selection without Skia/HarfBuzz/ANGLE packages. macOS uses the official MIT libAvaloniaNative window bridge, an explicit window-host exception; application drawing/fonts are managed. The optional GPU adapter defaults Direct2D to a native Windows swapchain; Vulkan currently waits for completion and reads back to the OS framebuffer. The Metal core is unverified and is not wired into Avalonia presentation. GPU glyphs normally use a managed atlas, and CPU layers/fallbacks are reported. See the [complete quick start](https://github.com/donet-org-cn/SimdSkia#readme).
 
@@ -65,7 +65,7 @@ MIT licensed. Third-party components retain their own licenses and notices, incl
 ## Standalone SkiaSharp namespace usage
 
 ```shell
-dotnet add package SimdSkia --version 0.1.8
+dotnet add package SimdSkia --version 0.1.9
 ```
 
 ```csharp

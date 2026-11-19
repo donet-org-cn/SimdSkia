@@ -1,5 +1,12 @@
 # SimdSkia 更新日志 / Release notes
 
+## 0.1.9 正式版 · OxyPlot 绘图兼容（2026-11-19）
+
+- 修复 OxyPlot 绘制坐标轴次刻度时抛出的 `End the preceding figure.` 异常。Avalonia 流式几何支持连续调用 `BeginFigure`，各段轮廓独立绘制。
+- 在 Windows x64 上使用 Avalonia 12.1.6 和 OxyPlot.Avalonia 2.2.0 验证图表启动、曲线绘制和实时刷新。几何与控件回归通过 14,018 项断言。
+
+[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.9/docs/RELEASE-0.1.9.md)
+
 ## 0.1.8 正式版 · Avalonia 版本上限移除（2026-11-18）
 
 - Avalonia、Desktop 和 GPU 包接受 Avalonia 12.1.0 及更高版本。Android 包接受 Avalonia 12.1.5 及更高版本。

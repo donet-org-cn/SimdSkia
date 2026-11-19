@@ -150,6 +150,26 @@ internal static class Validation
         Assert(line.TryGetSegment(2,6,true,out var segment)&&Math.Abs(segment.ContourLength-4)<1e-5,"Geometry trim did not preserve requested distances.");
         var geometry=Factory.CreateStreamGeometry();using(var context=geometry.Open()){context.BeginFigure(new(0,10),false);context.ArcTo(new(20,10),new(10,10),0,false,SweepDirection.Clockwise);context.EndFigure(false);}
         Assert(geometry.ContourLength>30&&geometry.ContourLength<32&&geometry.Bounds.Width>19,"Unfilled SVG elliptical arc lost its curve or bounds.");
+        var openFigures = Factory.CreateStreamGeometry();
+        using (var context = openFigures.Open())
+        {
+            context.BeginFigure(new(2, 4), false);
+            context.LineTo(new(10, 4));
+            context.LineTo(new(10, 12));
+            context.BeginFigure(new(18, 18), false);
+            context.LineTo(new(28, 18));
+        }
+        Assert(Math.Abs(openFigures.ContourLength - 26) < 1e-5, "Consecutive figures changed the length of open contours.");
+        using (var image = Target())
+        {
+            using (var context = image.CreateDrawingContext())
+            {
+                context.Clear(Colors.Transparent);
+                context.DrawGeometry(null, new Pen(Brushes.Red, 2), openFigures);
+            }
+            Assert(Pixel(image, 6, 4) == Colors.Red && Pixel(image, 22, 18) == Colors.Red, "The stream did not draw both figures.");
+            Assert(Pixel(image, 6, 8).A == 0 && Pixel(image, 14, 15).A == 0, "Starting another figure closed or joined open contours.");
+        }
         var clone=geometry.Clone();using(var edit=clone.Open()){edit.BeginFigure(new(3,3));edit.LineTo(new(5,3));edit.LineTo(new(5,5));edit.EndFigure(true);}Assert(clone.FillContains(new(4.5,3.5))&&geometry.ContourLength>30,"Editing cloned geometry changed the original.");
         clone.GetWidenedGeometry(new Pen(Brushes.Black,1));using(var edit=clone.Open()){edit.BeginFigure(new(20,20));edit.LineTo(new(25,20));edit.EndFigure(false);}Assert(clone.GetWidenedGeometry(new Pen(Brushes.Black,1)).FillContains(new(22,20)),"Editing a geometry did not invalidate its stroke cache.");
         Assert(!clone.FillContains(new(4.5,3.5)),"Hit testing reused contours from an earlier edit.");
