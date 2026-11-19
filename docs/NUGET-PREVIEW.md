@@ -1,5 +1,11 @@
 # NuGet 发布记录
 
+## 0.1.10 正式版
+
+2026-11-19 发布了 13 个正式 NuGet 包。公开下载的程序集、宿主、元数据和发行文档均与 CI 产物一致。Windows、Linux 和 macOS 通过 Avalonia 12.1.0–12.1.6 窗口矩阵与端点 NativeAOT 验证。Android 使用 Avalonia 12.1.6 通过 ARM64 Mono AOT Release APK 构建。[NuGet 0.1.10](https://www.nuget.org/packages/SimdSkia/0.1.10) · [发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/44472243249)
+
+从 NuGet.org 使用独立缓存安装 0.1.10 后，Windows x64 上的 OxyPlot.Avalonia 2.2.0 示例通过启动、绘图和实时刷新测试。`v0.1.10` 指向 `65665c84b983ca184fac7bd7072e688bf787d994`。[GitHub Release](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.10)
+
 ## 0.1.9 正式版
 
 2026-11-19 发布了 13 个正式 NuGet 包。公开下载的程序集、宿主、元数据和发行文档均与 CI 产物一致。Windows、Linux 和 macOS 通过 Avalonia 12.1.0–12.1.6 窗口矩阵与端点 NativeAOT 验证。Android 使用 Avalonia 12.1.6 通过 ARM64 Mono AOT Release APK 构建。[NuGet 0.1.9](https://www.nuget.org/packages/SimdSkia/0.1.9) · [发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/44442653672)
