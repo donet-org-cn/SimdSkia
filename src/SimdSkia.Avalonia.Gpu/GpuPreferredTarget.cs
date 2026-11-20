@@ -27,8 +27,11 @@ internal sealed class GpuPreferredTarget : IRenderTarget
     private bool disposed;
 
     private IDisposable? pending;
-    internal GpuPreferredTarget(Candidate[] candidates,Func<IRenderTarget> createCpu,GpuPreference preference,Func<bool>? isReady=null,IDisposable? pending=null)
-    {this.candidates=candidates;this.createCpu=createCpu;this.preference=preference;this.isReady=isReady;this.pending=pending;}
+    // Strict selection (an explicit backend with allowCpuFallback: false) must
+    // surface the GPU failure instead of silently presenting through the CPU.
+    private readonly bool allowCpuFallback;
+    internal GpuPreferredTarget(Candidate[] candidates,Func<IRenderTarget> createCpu,GpuPreference preference,Func<bool>? isReady=null,IDisposable? pending=null,bool allowCpuFallback=true)
+    {this.candidates=candidates;this.createCpu=createCpu;this.preference=preference;this.isReady=isReady;this.pending=pending;this.allowCpuFallback=allowCpuFallback;}
 
     internal static IRenderTarget Create(IReadOnlyList<IPlatformRenderSurface> surfaces,GpuPreference preference)=>Create(null,surfaces,preference);
 
@@ -55,7 +58,7 @@ internal sealed class GpuPreferredTarget : IRenderTarget
         var created=metal;
         Candidate[] choices=[new("Metal native layer",SimdSkiaGpuBackend.Metal,()=>Interlocked.Exchange(ref created,null)??throw new InvalidOperationException("The Metal layer target was already consumed."))];
         IRenderTarget Cpu()=>new FramebufferTarget((framebuffer??throw new NotSupportedException("Metal fallback requires an OS framebuffer surface.")).CreateFramebufferRenderTarget());
-        return new GpuPreferredTarget(choices,Cpu,preference,pending:metal);
+        return new GpuPreferredTarget(choices,Cpu,preference,pending:metal,allowCpuFallback:allowCpuFallback);
     }
 
     internal static IRenderTarget Create(IPlatformGraphicsContext? graphics,IReadOnlyList<IPlatformRenderSurface> surfaces,GpuPreference preference)
@@ -100,6 +103,7 @@ internal sealed class GpuPreferredTarget : IRenderTarget
     {
         ObjectDisposedException.ThrowIf(disposed,this);
         if(selected is not null)return selected.CreateDrawingContext(scene,out properties);
+        Exception? lastFailure=null;
         foreach(var candidate in candidates)
         {
             if(!preference.Allows(candidate.Backend))continue;
@@ -114,7 +118,7 @@ internal sealed class GpuPreferredTarget : IRenderTarget
             }
             catch(Exception error) when(IsUnavailable(error))
             {
-                attempt?.Dispose();if(ReferenceEquals(attempt,pending))pending=null;
+                attempt?.Dispose();if(ReferenceEquals(attempt,pending))pending=null;lastFailure=error;
                 SimdSkiaGpuDiagnostics.InitializationFailed(candidate.Name,error);
                 // A missing loader affects all windows. A layered window or target
                 // size restriction does not establish that the device is unavailable.
@@ -122,6 +126,11 @@ internal sealed class GpuPreferredTarget : IRenderTarget
                     preference.DeviceLost(candidate.Backend);
             }
             catch{attempt?.Dispose();throw;}
+        }
+        if(!allowCpuFallback)
+        {
+            if(lastFailure is not null)System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw(lastFailure);
+            throw new NotSupportedException("No GPU target is available and CPU fallback was not allowed.");
         }
         selected=createCpu();SimdSkiaGpuDiagnostics.Selected("CPU/SIMD (GPU preferred fallback)");
         return selected.CreateDrawingContext(scene,out properties);

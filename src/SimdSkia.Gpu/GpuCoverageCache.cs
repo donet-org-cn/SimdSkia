@@ -55,9 +55,12 @@ internal sealed class GpuCoverageCache
         return result;
     }
     // Translation invariance holds when no edge of the shape (plus its
-    // antialiasing pixel) is clipped by the target bounds.
+    // antialiasing pixel) is clipped by the target bounds. An inverse fill
+    // covers everything outside the path up to the target edges, so it is
+    // never invariant: its key keeps the full transform and target size.
     private static bool Inside(PathGeometry path,Matrix3 m,int width,int height)
     {
+        if(path.FillRule is FillRule.InverseWinding or FillRule.InverseEvenOdd)return false;
         var b=path.ControlBounds;if(!b.IsFinite)return false;
         var p0=m.Map(b.Left,b.Top);var p1=m.Map(b.Right,b.Top);var p2=m.Map(b.Left,b.Bottom);var p3=m.Map(b.Right,b.Bottom);
         float left=MathF.Min(MathF.Min(p0.X,p1.X),MathF.Min(p2.X,p3.X)),right=MathF.Max(MathF.Max(p0.X,p1.X),MathF.Max(p2.X,p3.X));
