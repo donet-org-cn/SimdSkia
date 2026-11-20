@@ -1,5 +1,15 @@
 # NuGet 发布记录
 
+## 0.1.12 正式版
+
+2026-11-20 发布了 13 个正式 NuGet 包。公开下载的程序集、宿主、元数据和发行文档均与 CI 产物一致。Windows、Linux 和 macOS 通过 Avalonia 12.1.0–12.1.6 窗口矩阵与端点 NativeAOT 验证。其中 macOS 使用显式 CPU 渲染，Windows 和 Linux 使用默认模式。Android 使用 Avalonia 12.1.6 通过 ARM64 Mono AOT Release APK 构建。[NuGet 0.1.12](https://www.nuget.org/packages/SimdSkia/0.1.12) · [发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/44727647918)
+
+macOS 桌面默认优先使用 Metal。由 PR 作者在 Apple M5 上验证实际 Metal 窗口和故障回退。[PR #4](https://github.com/donet-org-cn/SimdSkia/pull/4) · [实机报告](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.12/docs/MACOS-METAL-2026-11-20.md)
+
+本版也包含 CJK 回退、TTC 读取、CPU 投影和路径光栅化的修复。0.1.11 的发布任务已取消，其构建内容纳入本版。[发行说明与性能记录](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.12/docs/RELEASE-0.1.12.md)
+
+从 NuGet.org 使用独立缓存安装 0.1.12 后，Windows x64 上的 OxyPlot.Avalonia 2.2.0 示例通过启动、绘图和实时刷新测试。`v0.1.12` 指向 `17eaa45b3b0430cd8d538ccdc9c5d88c6452d2fb`。[GitHub Release](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.12)
+
 ## 0.1.10 正式版
 
 2026-11-19 发布了 13 个正式 NuGet 包。公开下载的程序集、宿主、元数据和发行文档均与 CI 产物一致。Windows、Linux 和 macOS 通过 Avalonia 12.1.0–12.1.6 窗口矩阵与端点 NativeAOT 验证。Android 使用 Avalonia 12.1.6 通过 ARM64 Mono AOT Release APK 构建。[NuGet 0.1.10](https://www.nuget.org/packages/SimdSkia/0.1.10) · [发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/44472243249)
