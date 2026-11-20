@@ -829,10 +829,10 @@
         "dependencies": {
           "Avalonia": "[12.1.0, )",
           "Clipper2": "[2.0.0, 2.0.0]",
-          "SimdSkia.Core": "[0.1.10, )",
-          "SimdSkia.Cpu": "[0.1.10, )",
-          "SimdSkia.Imaging": "[0.1.10, )",
-          "SimdSkia.Text": "[0.1.10, )"
+          "SimdSkia.Core": "[0.1.11, )",
+          "SimdSkia.Cpu": "[0.1.11, )",
+          "SimdSkia.Imaging": "[0.1.11, )",
+          "SimdSkia.Text": "[0.1.11, )"
         }
       },
       "simdskia.core": {
@@ -844,20 +844,20 @@
       "simdskia.cpu": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.10, )"
+          "SimdSkia.Core": "[0.1.11, )"
         }
       },
       "simdskia.imaging": {
         "type": "Project",
         "dependencies": {
           "Sdcb.SimdCodecs": "[2.0.0, 2.0.0]",
-          "SimdSkia.Core": "[0.1.10, )"
+          "SimdSkia.Core": "[0.1.11, )"
         }
       },
       "simdskia.text": {
         "type": "Project",
         "dependencies": {
-          "SimdSkia.Core": "[0.1.10, )"
+          "SimdSkia.Core": "[0.1.11, )"
         }
       }
     }

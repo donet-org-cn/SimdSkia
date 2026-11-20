@@ -1,4 +1,8 @@
-# SimdSkia 0.1.10
+# SimdSkia 0.1.11
+
+macOS 桌面默认优先使用 Metal 窗口呈现，支持 GPU 图层、模糊和阴影。Metal 不可用时回退到 CPU。[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.11/docs/RELEASE-0.1.11.md) · [macOS 实测](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.11/docs/MACOS-METAL-2026-11-20.md)
+
+## 0.1.10 Avalonia 性能优化
 
 0.1.10 减少裁剪、阴影、描边和字形绘制的托管分配。本机 Win64 的 OxyPlot 测试中，分配为 1.219 MiB/s，工作集为 161.7 MiB，完整 GC 后大对象堆留存为 1.52 MiB。[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.10/docs/RELEASE-0.1.10.md) · [性能报告](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.10/docs/PERFORMANCE-OXYPLOT-2026-11-19.md)
 

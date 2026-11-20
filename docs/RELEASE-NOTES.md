@@ -1,5 +1,14 @@
 # SimdSkia 更新日志 / Release notes
 
+## 0.1.11 正式版 · macOS Metal 窗口呈现（2026-11-20）
+
+- macOS 桌面默认优先通过 CAMetalLayer 呈现，支持 GPU 图层、模糊和投影，Metal 不可用时回退到 CPU。
+- 反向填充缓存保留完整变换与目标尺寸。显式选择 Metal 严格模式时，首帧初始化失败会抛出原始异常。
+- macOS CI 上的窗口缩放检查出现帧尺寸不匹配。遇到该情况可以通过 `.UseSimdSkiaDesktop(options => options.UseCpu())` 选择 CPU 路径。[缩放检查记录](https://github.com/donet-org-cn/SimdSkia/actions/runs/44722057615/job/136245074286)
+- 感谢 [@239573049](https://github.com/239573049) 提供实现、Apple M5 实测和回归测试。[PR #4](https://github.com/donet-org-cn/SimdSkia/pull/4)
+
+[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.11/docs/RELEASE-0.1.11.md) · [macOS 真机验证与性能数据](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.11/docs/MACOS-METAL-2026-11-20.md)
+
 ## 0.1.10 正式版 · 减少 Avalonia 托管分配（2026-11-19）
 
 - 减少裁剪遮罩、滤镜、透明度图层、阴影、虚线描边和字形绘制的临时分配。Direct2D 分块上传裁剪遮罩并复用图像资源。

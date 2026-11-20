@@ -1,8 +1,9 @@
 param(
- [string]$Version='0.1.10',
+ [string]$Version='0.1.11',
  [string]$Packages='artifacts/avalonia-matrix/packages',
  [string]$Output='artifacts/avalonia-matrix/results',
  [string[]]$AvaloniaVersions=@('12.1.0','12.1.1','12.1.2','12.1.3','12.1.4','12.1.5','12.1.6'),
+ [ValidateSet('auto','cpu')][string]$DesktopBackend='auto',
  [switch]$SkipDesktop,
  [switch]$NativeAot
 )
@@ -47,13 +48,13 @@ try{
   if($LASTEXITCODE -ne 0){Get-Content "$rowPath/run.log";throw "Avalonia $av controls failed."}
   $aot=$NativeAot -and ($av -eq $AvaloniaVersions[0] -or $av -eq $AvaloniaVersions[-1])
   if(!$SkipDesktop){
-   & "$PSScriptRoot/test-desktop-package.ps1" -Version $Version -AvaloniaVersion $av -Packages $feed -Output "$rowPath/desktop" -NativeAot:$aot *> "$rowPath/desktop.log"
+   & "$PSScriptRoot/test-desktop-package.ps1" -Version $Version -AvaloniaVersion $av -Packages $feed -Output "$rowPath/desktop" -Backend $DesktopBackend -NativeAot:$aot *> "$rowPath/desktop.log"
    if($LASTEXITCODE -ne 0){Get-Content "$rowPath/desktop.log";throw "Avalonia $av desktop failed."}
    if((Get-FileHash "$rowPath/desktop/bin/SimdSkia.Avalonia.dll" -Algorithm SHA256).Hash -ne $expected){throw 'Desktop adapter differs from tested package.'}
   }
-  $rows+=@{avalonia=$av;assemblyVersion=$loaded;adapterSha256=$actual;controls='passed';desktop=$(if($SkipDesktop){'not-run'}else{'passed'});nativeAot=$(if($aot -and !$SkipDesktop){'passed'}else{'not-run'})}
+  $rows+=@{avalonia=$av;assemblyVersion=$loaded;adapterSha256=$actual;controls='passed';desktop=$(if($SkipDesktop){'not-run'}else{'passed'});desktopBackend=$(if($SkipDesktop){'not-run'}else{$DesktopBackend});nativeAot=$(if($aot -and !$SkipDesktop){'passed'}else{'not-run'})}
   $rows|ConvertTo-Json -Depth 8|Set-Content "$outPath/results.json" -Encoding utf8
-  Write-Output "PASS Avalonia ${av}: same adapter binary, controls, desktop=$(!$SkipDesktop), NativeAot=$aot"
+  Write-Output "PASS Avalonia ${av}: same adapter binary, controls, desktop=$(!$SkipDesktop) ($DesktopBackend), NativeAot=$aot"
  }
 }
 finally{Pop-Location}

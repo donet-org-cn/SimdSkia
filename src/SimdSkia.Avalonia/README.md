@@ -4,18 +4,18 @@
 
 SimdSkia 是一个 .NET 2D 渲染引擎，绘图无需加载 Google Skia 原生库。在控制台或服务端，可以用 `SKCanvas` 画图并输出 PNG。在 Avalonia 项目里，可以通过调整包引用和启动代码来切换后端，继续使用原有的 XAML 和视图模型。
 
-简体中文 · [English](https://github.com/donet-org-cn/SimdSkia/blob/main/README.en.md) · .NET 10 · [正式版 0.1.10](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-0.1.10.md) · [MIT](https://github.com/donet-org-cn/SimdSkia/blob/main/LICENSE)
+简体中文 · [English](https://github.com/donet-org-cn/SimdSkia/blob/main/README.en.md) · .NET 10 · [正式版 0.1.11](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-0.1.11.md) · [MIT](https://github.com/donet-org-cn/SimdSkia/blob/main/LICENSE)
 
-0.1.10 减少 Avalonia 裁剪、阴影、描边和字形绘制的托管分配。报告包含 OxyPlot 实际窗口、Fluent 控件、列表滚动和 Win64 NativeAOT 对照。[CPU、内存与 NativeAOT 实测](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/PERFORMANCE-OXYPLOT-2026-11-19.md)
+0.1.11 在 macOS 上优先使用 Metal 呈现桌面窗口，支持 GPU 图层、模糊和阴影。Metal 不可用时自动选择 CPU。[macOS 实测与适用范围](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/MACOS-METAL-2026-11-20.md)
 
 ## 按用途开始
 
 | 你要做什么 | 安装哪个包 | 从哪里开始 |
 | --- | --- | --- |
-| 在 .NET 程序里画图、生成 PNG | [SimdSkia](https://www.nuget.org/packages/SimdSkia/0.1.10) | [运行绘图示例](#生成-png) |
-| 为 Windows、Linux 或 macOS 上的 Avalonia 应用切换后端 | [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.10) | [迁移现有项目](#迁移现有项目) · [运行窗口示例](#运行桌面窗口示例) |
-| 为 Avalonia Android 应用接入 CPU 渲染 | [SimdSkia.Avalonia.Android](https://www.nuget.org/packages/SimdSkia.Avalonia.Android/0.1.10) | [配置 Android 启动项目](#avalonia-android) |
-| 将现有 PDF 的页面转成图片 | [SimdSkia.Pdf](https://www.nuget.org/packages/SimdSkia.Pdf/0.1.10) | [读取和渲染 PDF](https://github.com/donet-org-cn/SimdSkia/blob/main/src/SimdSkia.Pdf/README.md) |
+| 在 .NET 程序里画图、生成 PNG | [SimdSkia](https://www.nuget.org/packages/SimdSkia/0.1.11) | [运行绘图示例](#生成-png) |
+| 为 Windows、Linux 或 macOS 上的 Avalonia 应用切换后端 | [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.11) | [迁移现有项目](#迁移现有项目) · [运行窗口示例](#运行桌面窗口示例) |
+| 为 Avalonia Android 应用接入 CPU 渲染 | [SimdSkia.Avalonia.Android](https://www.nuget.org/packages/SimdSkia.Avalonia.Android/0.1.11) | [配置 Android 启动项目](#avalonia-android) |
+| 将现有 PDF 的页面转成图片 | [SimdSkia.Pdf](https://www.nuget.org/packages/SimdSkia.Pdf/0.1.11) | [读取和渲染 PDF](https://github.com/donet-org-cn/SimdSkia/blob/main/src/SimdSkia.Pdf/README.md) |
 
 同一个项目直接引用多个 `SimdSkia.*` 包时，请统一版本。
 
@@ -26,7 +26,7 @@ SimdSkia 是一个 .NET 2D 渲染引擎，绘图无需加载 Google Skia 原生�
 ```sh
 dotnet new console --framework net10.0 -o SimdSkiaDemo
 cd SimdSkiaDemo
-dotnet add package SimdSkia --version 0.1.10
+dotnet add package SimdSkia --version 0.1.11
 ```
 
 将 `Program.cs` 替换为以下代码。`SkiaSharp` 是 SimdSkia 兼容层提供的命名空间。
@@ -85,7 +85,7 @@ gif.Complete();
 
 ### 迁移现有项目
 
-1. 在启动项目中运行 `dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.10`，并将 Avalonia 系列包统一为同一个版本。下方示例使用 `12.1.6`。
+1. 在启动项目中运行 `dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.11`，并将 Avalonia 系列包统一为同一个版本。下方示例使用 `12.1.6`。
 2. 移除直接引用的 `Avalonia.Desktop`、`Avalonia.Skia` 和 `Avalonia.Fonts.Inter`（如有）。同时检查第三方控件是否依赖原版 Skia 后端或 `ISkiaSharpApiLeaseFeature`。
 3. 添加 `using SimdSkia.Avalonia;`，把启动链中的 `.UsePlatformDetect()` 替换为 `.UseSimdSkiaDesktop()`。如果原来调用了 `.WithInterFont()`，也一并移除。
 
@@ -101,7 +101,7 @@ gif.Complete();
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SimdSkia.Avalonia.Desktop" Version="0.1.10" />
+    <PackageReference Include="SimdSkia.Avalonia.Desktop" Version="0.1.11" />
     <PackageReference Include="Avalonia" Version="[12.1.6]" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.6]" />
   </ItemGroup>
@@ -195,3 +195,7 @@ dotnet run --project examples/CrossPlatform -c Release -- --controls
 第一个示例逐像素验证矩形并写出 `artifacts/rectangle.ppm`，第二个示例打开 Avalonia 控件窗口。[公共 API 示例](https://github.com/donet-org-cn/SimdSkia/blob/main/examples/Compatibility99/README.md) · [更新日志](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-NOTES.md)
 
 欢迎在 [GitHub Issues](https://github.com/donet-org-cn/SimdSkia/issues) 反馈问题。若能附上包版本、系统、渲染后端和最小复现，会更容易定位。
+
+## 致谢
+
+- [@239573049](https://github.com/239573049) 贡献了 macOS Metal 窗口呈现、GPU 图层和阴影，并补充了反向填充与严格回退的回归测试。[PR #4](https://github.com/donet-org-cn/SimdSkia/pull/4)
