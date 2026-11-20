@@ -17,7 +17,7 @@ internal static class StartupPreparation
     private static Task? pending;
     internal static Task? Pending {get {lock(gate)return pending;}}
 
-    internal static void Start()
+    internal static void Start(IReadOnlyList<Action>? extensions=null)
     {
         if(!RuntimeFeature.IsDynamicCodeSupported)return;
         lock(gate)
@@ -29,7 +29,7 @@ internal static class StartupPreparation
             pending=completion.Task;
             var worker=new Thread(()=>
             {
-                try{Prepare();completion.SetResult();}
+                try{Prepare();foreach(var extension in extensions??[])extension();completion.SetResult();}
                 catch(Exception error)
                 {
                     Trace.TraceError("SimdSkia startup preparation failed: {0}",error);

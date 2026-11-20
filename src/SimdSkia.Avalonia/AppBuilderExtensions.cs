@@ -14,7 +14,12 @@ public sealed class SimdSkiaOptions
     public Func<SimdSkia.PixelBuffer,SimdSkia.ICanvasBackend>? CanvasBackendFactory {get;set;}
     /// <summary>Optional direct native-window GPU target. The drawing and lifetime contracts remain version-specific.</summary>
     public Func<INativePlatformHandleSurface,IRenderTarget>? NativeRenderTargetFactory {get;set;}
-    internal Func<IReadOnlyList<IPlatformRenderSurface>,IRenderTarget>? PreferredRenderTargetFactory {get;set;}
+    internal Func<IPlatformGraphicsContext?,IReadOnlyList<IPlatformRenderSurface>,IRenderTarget>? PreferredRenderTargetFactory {get;set;}
+    /// <summary>The preferred factory can use a platform GPU context (macOS
+    /// Metal), so the OS host should create one.</summary>
+    internal bool UsesPlatformGraphics {get;set;}
+    /// <summary>Additional background JIT warm-up for the selected renderer.</summary>
+    internal List<Action> Preparations {get;}=[];
 }
 
 public static class AppBuilderExtensions
@@ -23,7 +28,7 @@ public static class AppBuilderExtensions
     public static void UseCpu(this SimdSkiaOptions options)
     {
         ArgumentNullException.ThrowIfNull(options);
-        options.CanvasBackendFactory=null;options.NativeRenderTargetFactory=null;options.PreferredRenderTargetFactory=null;
+        options.CanvasBackendFactory=null;options.NativeRenderTargetFactory=null;options.PreferredRenderTargetFactory=null;options.UsesPlatformGraphics=false;options.Preparations.Clear();
     }
     /// <summary>Uses installed static TrueType fonts on Windows, Linux and macOS, without bundled font files.</summary>
     public static AppBuilder UseSimdSkia(this AppBuilder builder)=>UseSimdSkia(builder,static _=>{});
@@ -32,8 +37,15 @@ public static class AppBuilderExtensions
     public static AppBuilder UseSimdSkia(this AppBuilder builder,Action<SimdSkiaOptions> configure)
     {
         ArgumentNullException.ThrowIfNull(builder);ArgumentNullException.ThrowIfNull(configure);
+        var options=new SimdSkiaOptions();configure(options);return UseSimdSkia(builder,options);
+    }
+
+    /// <summary>Uses already configured options (the desktop host inspects them first).</summary>
+    internal static AppBuilder UseSimdSkia(AppBuilder builder,SimdSkiaOptions options)
+    {
+        ArgumentNullException.ThrowIfNull(builder);ArgumentNullException.ThrowIfNull(options);
         AvaloniaCompatibility.Validate();
-        var options=new SimdSkiaOptions();configure(options);var paths=options.FontFiles.ToArray();var factory=options.CanvasBackendFactory;var nativeFactory=options.NativeRenderTargetFactory;var preferredFactory=options.PreferredRenderTargetFactory;bool prepare=options.EnableStartupPreparation;
+        var paths=options.FontFiles.ToArray();var factory=options.CanvasBackendFactory;var nativeFactory=options.NativeRenderTargetFactory;var preferredFactory=options.PreferredRenderTargetFactory;bool prepare=options.EnableStartupPreparation;var preparations=options.Preparations.ToArray();
         return builder.UseRenderingSubsystem(()=>
         {
             AvaloniaLocator.CurrentMutable.Bind<IPlatformRenderInterface>().ToConstant(new RenderInterface(factory,nativeFactory,preferredFactory));
@@ -52,7 +64,7 @@ public static class AppBuilderExtensions
                 // Prepare before OnFrameworkInitializationCompleted builds the
                 // desktop UI; bitmap/headless users should pay no warmup cost.
                 if(prepare&&app.Instance?.ApplicationLifetime is global::Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime)
-                    StartupPreparation.Start();
+                    StartupPreparation.Start(preparations);
             });
     }
 }

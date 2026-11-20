@@ -11,7 +11,7 @@ using AAlpha=Avalonia.Platform.AlphaFormat;
 
 namespace SimdSkia.Avalonia;
 
-internal sealed class RenderInterface(Func<PixelBuffer,ICanvasBackend>? backendFactory=null,Func<INativePlatformHandleSurface,IRenderTarget>? nativeFactory=null,Func<IReadOnlyList<IPlatformRenderSurface>,IRenderTarget>? preferredFactory=null):IPlatformRenderInterface
+internal sealed class RenderInterface(Func<PixelBuffer,ICanvasBackend>? backendFactory=null,Func<INativePlatformHandleSurface,IRenderTarget>? nativeFactory=null,Func<IPlatformGraphicsContext?,IReadOnlyList<IPlatformRenderSurface>,IRenderTarget>? preferredFactory=null):IPlatformRenderInterface
 {
     public bool SupportsIndividualRoundRects=>true;
     public bool SupportsRegions=>true;
@@ -77,21 +77,24 @@ internal sealed class RenderInterface(Func<PixelBuffer,ICanvasBackend>? backendF
         {if(stride<pixels.Width*4)throw new ArgumentOutOfRangeException(nameof(stride));for(int y=0;y<size.Height;y++)new ReadOnlySpan<byte>((byte*)data+checked((long)y*stride),pixels.Width*4).CopyTo(pixels.GetRowSpan(y));return new Bitmap(pixels,dpi);}
         catch{pixels.Dispose();throw;}
     }
+    // A platform graphics context (macOS Metal) is used only by the GPU-preferred
+    // target factory. Other configurations present through the OS framebuffer,
+    // which every desktop host still offers next to its GPU surfaces.
     public IPlatformRenderInterfaceContext CreateBackendContext(IPlatformGraphicsContext? graphics)
-    {if(graphics is not null)throw new NotSupportedException("Configure the OS host for framebuffer presentation; GPU drawing is selected by SimdSkia options.");return new RenderContext(backendFactory,nativeFactory,preferredFactory);}
+        =>new RenderContext(backendFactory,nativeFactory,preferredFactory,preferredFactory is null?null:graphics);
 }
 
-internal sealed class RenderContext(Func<PixelBuffer,ICanvasBackend>? backendFactory=null,Func<INativePlatformHandleSurface,IRenderTarget>? nativeFactory=null,Func<IReadOnlyList<IPlatformRenderSurface>,IRenderTarget>? preferredFactory=null):IPlatformRenderInterfaceContext
+internal sealed class RenderContext(Func<PixelBuffer,ICanvasBackend>? backendFactory=null,Func<INativePlatformHandleSurface,IRenderTarget>? nativeFactory=null,Func<IPlatformGraphicsContext?,IReadOnlyList<IPlatformRenderSurface>,IRenderTarget>? preferredFactory=null,IPlatformGraphicsContext? graphics=null):IPlatformRenderInterfaceContext
 {
     private bool disposed;
-    public bool IsLost=>disposed;
+    public bool IsLost=>disposed||graphics?.IsLost==true;
     public IReadOnlyDictionary<Type,object> PublicFeatures {get;}=new Dictionary<Type,object>();
     public PixelSize? MaxOffscreenRenderTargetPixelSize=>new(16384,16384);
     public object? TryGetFeature(Type type)=>null;
     public IRenderTarget CreateRenderTarget(IEnumerable<IPlatformRenderSurface> surfaces)
     {
         ObjectDisposedException.ThrowIf(disposed,this);var available=surfaces.ToArray();
-        if(preferredFactory is not null)return preferredFactory(available);
+        if(preferredFactory is not null)return preferredFactory(graphics,available);
         if(nativeFactory is not null)return nativeFactory(available.OfType<INativePlatformHandleSurface>().FirstOrDefault()??throw new NotSupportedException("Direct GPU presentation requires a native window surface."));
         var framebuffer=available.OfType<IFramebufferPlatformSurface>().FirstOrDefault()??throw new NotSupportedException("No software framebuffer surface was provided.");return new FramebufferTarget(framebuffer.CreateFramebufferRenderTarget(),backendFactory);
     }

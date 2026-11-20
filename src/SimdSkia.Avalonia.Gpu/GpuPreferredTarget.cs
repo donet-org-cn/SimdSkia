@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using Avalonia.Metal;
 using Avalonia.Platform;
 using Avalonia.Platform.Surfaces;
 
@@ -25,11 +26,41 @@ internal sealed class GpuPreferredTarget : IRenderTarget
     private Candidate? hardware;
     private bool disposed;
 
-    internal GpuPreferredTarget(Candidate[] candidates,Func<IRenderTarget> createCpu,GpuPreference preference,Func<bool>? isReady=null)
-    {this.candidates=candidates;this.createCpu=createCpu;this.preference=preference;this.isReady=isReady;}
+    private IDisposable? pending;
+    internal GpuPreferredTarget(Candidate[] candidates,Func<IRenderTarget> createCpu,GpuPreference preference,Func<bool>? isReady=null,IDisposable? pending=null)
+    {this.candidates=candidates;this.createCpu=createCpu;this.preference=preference;this.isReady=isReady;this.pending=pending;}
 
-    internal static IRenderTarget Create(IReadOnlyList<IPlatformRenderSurface> surfaces,GpuPreference preference)
+    internal static IRenderTarget Create(IReadOnlyList<IPlatformRenderSurface> surfaces,GpuPreference preference)=>Create(null,surfaces,preference);
+
+    // macOS: the native Metal layer, created eagerly because the host binds a
+    // surface render target where render targets are created; CPU framebuffer
+    // presentation remains the fallback.
+    internal static IRenderTarget CreateMetal(IPlatformGraphicsContext? graphics,IReadOnlyList<IPlatformRenderSurface> surfaces,GpuPreference preference,bool allowCpuFallback,SimdSkiaGpuTextMode textMode=SimdSkiaGpuTextMode.ManagedGlyphAtlas)
     {
+        var framebuffer=surfaces.OfType<IFramebufferPlatformSurface>().FirstOrDefault();
+        MetalWindowTarget? metal=null;
+        if(OperatingSystem.IsMacOS()&&graphics is IMetalDevice device&&surfaces.OfType<IMetalPlatformSurface>().FirstOrDefault() is {} layer&&preference.Allows(SimdSkiaGpuBackend.Metal))
+        {
+            try{metal=new MetalWindowTarget(device,layer,allowCpuFallback,textMode);}
+            catch(Exception error) when(error is NotSupportedException or PlatformNotSupportedException or InvalidCastException or ExternalException or ArgumentException or (InvalidOperationException and not ObjectDisposedException))
+            {SimdSkiaGpuDiagnostics.InitializationFailed("Metal native layer",error);}
+        }
+        if(metal is null)
+        {
+            if(!allowCpuFallback)throw new NotSupportedException("The Metal layer is unavailable and CPU fallback was not allowed: "+SimdSkiaGpuDiagnostics.LastInitializationFailure);
+            if(framebuffer is null)throw new NotSupportedException("No Metal layer or OS framebuffer surface is available.");
+            SimdSkiaGpuDiagnostics.Selected(graphics is IMetalDevice?"CPU/SIMD (Metal layer unavailable)":"CPU/SIMD (host did not create a Metal device)");
+            return new FramebufferTarget(framebuffer.CreateFramebufferRenderTarget());
+        }
+        var created=metal;
+        Candidate[] choices=[new("Metal native layer",SimdSkiaGpuBackend.Metal,()=>Interlocked.Exchange(ref created,null)??throw new InvalidOperationException("The Metal layer target was already consumed."))];
+        IRenderTarget Cpu()=>new FramebufferTarget((framebuffer??throw new NotSupportedException("Metal fallback requires an OS framebuffer surface.")).CreateFramebufferRenderTarget());
+        return new GpuPreferredTarget(choices,Cpu,preference,pending:metal);
+    }
+
+    internal static IRenderTarget Create(IPlatformGraphicsContext? graphics,IReadOnlyList<IPlatformRenderSurface> surfaces,GpuPreference preference)
+    {
+        if(OperatingSystem.IsMacOS())return CreateMetal(graphics,surfaces,preference,true);
         var framebuffer=surfaces.OfType<IFramebufferPlatformSurface>().FirstOrDefault();
         var native=surfaces.OfType<INativePlatformHandleSurface>().FirstOrDefault();
         IRenderTarget Cpu()=>new FramebufferTarget((framebuffer??throw new NotSupportedException("GPU fallback requires an OS framebuffer surface.")).CreateFramebufferRenderTarget());
@@ -79,11 +110,11 @@ internal sealed class GpuPreferredTarget : IRenderTarget
                 // Actual device/pipeline creation is lazy in the OS targets. Test
                 // the first drawing context before declaring GPU selection success.
                 var context=attempt.CreateDrawingContext(scene,out properties);
-                selected=attempt;hardware=candidate;SimdSkiaGpuDiagnostics.Selected(candidate.Name);return context;
+                selected=attempt;hardware=candidate;if(ReferenceEquals(attempt,pending))pending=null;SimdSkiaGpuDiagnostics.Selected(candidate.Name);return context;
             }
             catch(Exception error) when(IsUnavailable(error))
             {
-                attempt?.Dispose();
+                attempt?.Dispose();if(ReferenceEquals(attempt,pending))pending=null;
                 SimdSkiaGpuDiagnostics.InitializationFailed(candidate.Name,error);
                 // A missing loader affects all windows. A layered window or target
                 // size restriction does not establish that the device is unavailable.
@@ -96,7 +127,7 @@ internal sealed class GpuPreferredTarget : IRenderTarget
         return selected.CreateDrawingContext(scene,out properties);
     }
     private static bool IsUnavailable(Exception error)=>error is NotSupportedException or DllNotFoundException
-        or EntryPointNotFoundException or BadImageFormatException or ExternalException or global::SimdSkia.Gpu.VulkanDeviceLostException
+        or EntryPointNotFoundException or BadImageFormatException or ExternalException or PlatformNotSupportedException or global::SimdSkia.Gpu.VulkanDeviceLostException
         ||error is InvalidOperationException and not ObjectDisposedException;
-    public void Dispose(){if(disposed)return;selected?.Dispose();selected=null;disposed=true;}
+    public void Dispose(){if(disposed)return;selected?.Dispose();selected=null;Interlocked.Exchange(ref pending,null)?.Dispose();disposed=true;}
 }

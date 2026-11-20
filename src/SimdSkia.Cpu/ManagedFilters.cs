@@ -10,7 +10,7 @@ public static partial class ManagedFilters
     private const int Scale=16384;
     private static readonly object gate=new();
     private static readonly Dictionary<float,int[]> kernels=[];
-    private static int[] Kernel(float sigma)
+    internal static int[] Kernel(float sigma)
     {
         if(!float.IsFinite(sigma)||sigma<0||sigma>256)throw new ArgumentOutOfRangeException(nameof(sigma),"Gaussian sigma must be finite and in 0..256.");
         if(sigma==0)return [Scale];

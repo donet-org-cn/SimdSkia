@@ -162,9 +162,9 @@ dotnet run
 | --- | --- |
 | Windows | 优先使用 Direct2D 和原生交换链，可回退到 CPU |
 | Linux | 在 X11 或 XWayland 下优先使用硬件 Vulkan，可回退到 CPU |
-| macOS | 使用 CPU 渲染，由 Avalonia 原生宿主处理窗口 |
+| macOS | 优先使用 Metal：经 Avalonia 原生宿主的 CAMetalLayer 直接呈现，图层与阴影在 GPU 上处理，可回退到 CPU |
 
-可用 `.UseSimdSkiaDesktop(options => options.UseCpu())` 显式选用 CPU。基础适配器 `.UseSimdSkia()` 与离屏位图使用 CPU。桌面支持从 Avalonia `12.1.0` 起选择版本。匹配不到随包宿主时使用随包最新宿主，实际兼容性取决于 Avalonia 的接口。[平台行为与回退](docs/GPU-PREFERRED-2026-11-07.md) · [Avalonia 版本验证](docs/AVALONIA-VERSION-COMPATIBILITY.md)
+可用 `.UseSimdSkiaDesktop(options => options.UseCpu())` 显式选用 CPU。基础适配器 `.UseSimdSkia()` 与离屏位图使用 CPU。桌面支持从 Avalonia `12.1.0` 起选择版本。匹配不到随包宿主时使用随包最新宿主，实际兼容性取决于 Avalonia 的接口。[平台行为与回退](docs/GPU-PREFERRED-2026-11-07.md) · [macOS Metal](docs/MACOS-METAL-2026-11-20.md) · [Avalonia 版本验证](docs/AVALONIA-VERSION-COMPATIBILITY.md)
 
 桌面应用可用目标平台的 Native AOT 工具链发布。例如在 Windows x64 上运行 `dotnet publish -c Release -r win-x64 -p:PublishAot=true`。Linux x64 和 macOS ARM64 分别使用 `linux-x64` 和 `osx-arm64`。[0.1.2 的 AOT 体积对照与复现步骤](examples/DefaultAvaloniaAot/README.md)
 
