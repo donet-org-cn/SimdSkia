@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Buffers.Binary;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
@@ -27,18 +28,25 @@ public static partial class ManagedFilters
         lock(gate){if(kernels.Count>=64)kernels.Clear();kernels[sigma]=result;}
         return result;
     }
-    public static PixelBuffer Blur(PixelBuffer source,float sigmaX,float sigmaY,RectF? region=null)
+    public static PixelBuffer Blur(PixelBuffer source,float sigmaX,float sigmaY,RectF? region=null) =>
+        BlurCore(source,sigmaX,sigmaY,region,alphaOnly:false);
+
+    private static PixelBuffer BlurCore(PixelBuffer source,float sigmaX,float sigmaY,RectF? region,bool alphaOnly)
     {
         ArgumentNullException.ThrowIfNull(source);source.ThrowIfDisposed();var xKernel=Kernel(sigmaX);var yKernel=Kernel(sigmaY);
         if(region is {} area&&!area.IsFinite)throw new ArgumentException("Filter bounds must be finite.",nameof(region));
-        int pixelBytes = source.BytesPerPixel;
-        bool convert = pixelBytes == 4 && source.Alpha != AlphaFormat.Premultiplied;
+        int pixelBytes = alphaOnly ? 1 : source.BytesPerPixel;
+        bool convert = !alphaOnly && pixelBytes == 4 && source.Alpha != AlphaFormat.Premultiplied;
         int batch = 8 / pixelBytes, wideBatch = batch * 4;
         using var input=convert?PixelBuffer.Rent(source.Width,source.Height,source.Format,AlphaFormat.Premultiplied):source.Share();
-        using var horizontal=PixelBuffer.Rent(source.Width,source.Height,source.Format,AlphaFormat.Premultiplied);
-        var output=PixelBuffer.Rent(source.Width,source.Height,source.Format,AlphaFormat.Premultiplied);
+        var format=alphaOnly?PixelFormat.Alpha8:source.Format;
+        using var horizontal=PixelBuffer.Rent(source.Width,source.Height,format,AlphaFormat.Premultiplied);
+        var output=PixelBuffer.Rent(source.Width,source.Height,format,AlphaFormat.Premultiplied);
+        byte[]? alphaRow=null;
         try
         {
+            if(alphaOnly&&(source.Format!=PixelFormat.Alpha8||source.Alpha==AlphaFormat.Opaque))
+                alphaRow=ArrayPool<byte>.Shared.Rent(source.Width);
             // Preserve input alpha semantics, including physical A bytes for an
             // opaque source, without reading or writing any stride padding.
             int ri=source.Format==PixelFormat.Rgba8888?0:2;
@@ -55,7 +63,17 @@ public static partial class ManagedFilters
             bool vector=CpuOptions.EnableSimd&&Avx2.IsSupported;
             for(int y=Math.Max(0,top-ry);y<Math.Min(source.Height,bottom+ry);y++)
             {
-                var row=input.GetRowSpan(y);var target=horizontal.GetRowSpan(y);
+                var row=input.GetRowSpan(y);
+                if(alphaRow is not null)
+                {
+                    // Convolve the source alpha directly, reusing one scanline
+                    // instead of materializing a third full-size work buffer.
+                    var alpha=alphaRow.AsSpan(0,source.Width);
+                    if(source.Alpha==AlphaFormat.Opaque)alpha.Fill(255);
+                    else for(int x=0;x<alpha.Length;x++)alpha[x]=row[x*4+3];
+                    row=alpha;
+                }
+                var target=horizontal.GetRowSpan(y);
                 for(int x=left;x<right;)
                 {
                     int start = x * pixelBytes;
@@ -102,6 +120,7 @@ public static partial class ManagedFilters
             return output;
         }
         catch{output.Dispose();throw;}
+        finally{if(alphaRow is not null)ArrayPool<byte>.Shared.Return(alphaRow);}
     }
     private static Vector256<int> Load8(ReadOnlySpan<byte> row)=>Avx2.ConvertToVector256Int32(Vector128.CreateScalar(BinaryPrimitives.ReadUInt64LittleEndian(row)).AsByte());
     private static void Store8(Span<byte> row,Vector256<int> sum)
@@ -115,17 +134,37 @@ public static partial class ManagedFilters
     public static PixelBuffer DropShadow(PixelBuffer source,float sigmaX,float sigmaY,float offsetX,float offsetY,Rgba32 color,RectF? region=null)
     {
         if(!float.IsFinite(offsetX)||!float.IsFinite(offsetY))throw new ArgumentException("Shadow offsets must be finite.");
-        using var blurred=Blur(source,sigmaX,sigmaY,region);int ri=source.Format==PixelFormat.Rgba8888?0:2;
-        for(int y=0;y<blurred.Height;y++){var row=blurred.GetRowSpan(y);for(int x=0;x<blurred.Width;x++){byte a=PixelBuffer.Multiply(row[x*4+3],color.A);row[x*4+ri]=PixelBuffer.Multiply(color.R,a);row[x*4+1]=PixelBuffer.Multiply(color.G,a);row[x*4+2-ri]=PixelBuffer.Multiply(color.B,a);row[x*4+3]=a;}}
+        using var blurred=BlurCore(source,sigmaX,sigmaY,region,alphaOnly:true);
+        using var shadow=PixelBuffer.Rent(source.Width,source.Height,source.Format,AlphaFormat.Premultiplied);
+        int ri=source.Format==PixelFormat.Rgba8888?0:2;
+        for(int y=0;y<blurred.Height;y++)
+        {
+            var coverage=blurred.GetRowSpan(y);
+            var row=shadow.GetRowSpan(y);
+            if(shadow.Format==PixelFormat.Alpha8)
+            {
+                for(int x=0;x<shadow.Width;x++)row[x]=PixelBuffer.Multiply(coverage[x],color.A);
+                continue;
+            }
+            for(int x=0;x<shadow.Width;x++)
+            {
+                byte a=PixelBuffer.Multiply(coverage[x],color.A);
+                row[x*4+ri]=PixelBuffer.Multiply(color.R,a);
+                row[x*4+1]=PixelBuffer.Multiply(color.G,a);
+                row[x*4+2-ri]=PixelBuffer.Multiply(color.B,a);
+                row[x*4+3]=a;
+            }
+        }
         var result=PixelBuffer.Rent(source.Width,source.Height,source.Format,AlphaFormat.Premultiplied);
         try
         {
             using var canvas=new RasterCanvas(result);
             canvas.Execute(new(CommandKind.DrawImage,new(0,0,source.Width,source.Height),new(1,0,offsetX,0,1,offsetY,0,0,1),new(new(255,255,255,255),CompositeMode.SourceOver))
-            {Image=blurred,ImageSource=new(0,0,source.Width,source.Height),Sampling=ImageSampling.Bilinear});
+            {Image=shadow,ImageSource=new(0,0,source.Width,source.Height),Sampling=ImageSampling.Bilinear});
             canvas.Execute(new(CommandKind.DrawImage,new(0,0,source.Width,source.Height),Matrix3.Identity,new(new(255,255,255,255),CompositeMode.SourceOver)){Image=source});
             return result;
         }
         catch{result.Dispose();throw;}
     }
+
 }

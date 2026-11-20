@@ -9,6 +9,17 @@ internal sealed record CoverageMask(int Left,int Top,int Width,int Height,byte[]
 
 public static class PathRasterizer
 {
+    private const int MaximumRetainedRunCapacity = 16_384;
+    private static List<CoverageRun>? reusableRuns;
+
+    private static List<CoverageRun> RentRuns() => Interlocked.Exchange(ref reusableRuns,null) ?? new();
+    private static void ReturnRuns(List<CoverageRun>? runs)
+    {
+        if(runs is null||runs.Capacity>MaximumRetainedRunCapacity)return;
+        runs.Clear();
+        Interlocked.CompareExchange(ref reusableRuns,runs,null);
+    }
+
     private readonly record struct Crossing(float X,int Winding,int Edge);
     private readonly record struct Edge(PointF A,PointF B,float Minimum,float Maximum);
     private sealed class EdgeComparer:IComparer<Edge>
@@ -23,13 +34,13 @@ public static class PathRasterizer
     }
     public static byte[] Coverage(PointF[][] contours,FillRule rule,int width,int height,bool antialias,RectF? clip=null)
     {
-        var mask=Rasterize(contours,rule,width,height,antialias,clip);
+        var mask=Rasterize(contours,rule,width,height,antialias,clip,includeRuns:false);
         var output=new byte[checked(width*height)];
         for(int y=0;y<mask.Height;y++)mask.Data.AsSpan(y*mask.Width,mask.Width).CopyTo(output.AsSpan((y+mask.Top)*width+mask.Left,mask.Width));
         return output;
     }
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    internal static CoverageMask Rasterize(PointF[][] contours,FillRule rule,int width,int height,bool antialias,RectF? clip=null,bool compactRuns=false,bool aliasedHalfUp=true)
+    internal static CoverageMask Rasterize(PointF[][] contours,FillRule rule,int width,int height,bool antialias,RectF? clip=null,bool compactRuns=false,bool aliasedHalfUp=true,bool includeRuns=true)
     {
         bool inverse=rule is FillRule.InverseEvenOdd or FillRule.InverseWinding;
         bool odd=rule is FillRule.EvenOdd or FillRule.InverseEvenOdd;
@@ -51,7 +62,7 @@ public static class PathRasterizer
         }
         bool sparse=compactRuns&&edgeHeight/h<=8;
         var output=sparse?Array.Empty<byte>():new byte[checked(w*h)];
-        var sparseRuns=sparse?new List<CoverageRun>():null;
+        List<CoverageRun>? sparseRuns=null;
         Edge[]? rentedEdges=null;int[]? rentedActive=null;Crossing[]? rentedCrossings=null;
         int[]? rentedRow=null;int[]? rentedDelta=null;ulong[]? rentedEvents=null;
         Span<Edge> edges=edgeCount<=128?stackalloc Edge[edgeCount]:(rentedEdges=ArrayPool<Edge>.Shared.Rent(edgeCount));
@@ -67,6 +78,7 @@ public static class PathRasterizer
         float sampleStep=1f/samples;
         try
         {
+            if(sparse)sparseRuns=RentRuns();
             int n=0;
             foreach(var contour in contours)
             {
@@ -139,9 +151,11 @@ public static class PathRasterizer
                 else for(int x=0;x<w;x++)
                 {accumulated+=delta[x];output[(y-y0)*w+x]=(byte)(((row[x]+accumulated)*255+round)>>totalShift);}
             }
+            if(sparse)return new(x0,y0,w,h,[],sparseRuns!.ToArray());
         }
         finally
         {
+            ReturnRuns(sparseRuns);
             if(rentedEdges is not null)ArrayPool<Edge>.Shared.Return(rentedEdges);
             if(rentedActive is not null)ArrayPool<int>.Shared.Return(rentedActive);
             if(rentedCrossings is not null)ArrayPool<Crossing>.Shared.Return(rentedCrossings);
@@ -149,30 +163,42 @@ public static class PathRasterizer
             if(rentedDelta is not null)ArrayPool<int>.Shared.Return(rentedDelta);
             if(rentedEvents is not null)ArrayPool<ulong>.Shared.Return(rentedEvents);
         }
-        if(sparse)return new(x0,y0,w,h,[],sparseRuns!.ToArray());
+        if(!includeRuns&&!compactRuns)return new(x0,y0,w,h,output,[],true);
         // Dense AA text can contain more run metadata than coverage bytes. Keep the
         // byte mask and composite it directly instead of allocating thousands of runs.
+        int runCount=0;
         if(compactRuns)
         {
-            int count=0,limit=output.Length/16;
+            int limit=output.Length/16;
             for(int y=0;y<h;y++)for(int x=0;x<w;)
             {
                 byte coverage=output[y*w+x];int end=x+1;
                 while(end<w&&output[y*w+end]==coverage)end++;
-                if(coverage!=0&&++count>limit)return new(x0,y0,w,h,output,[],true);
+                if(coverage!=0&&++runCount>limit)return new(x0,y0,w,h,output,[],true);
                 x=end;
             }
         }
-        var runs=new List<CoverageRun>();
-        for(int y=0;y<h;y++)for(int x=0;x<w;)
+        var exact=compactRuns?(runCount==0?Array.Empty<CoverageRun>():new CoverageRun[runCount]):null;
+        var scratch=compactRuns?null:RentRuns();
+        int written=0;
+        try
         {
-            byte coverage=output[y*w+x];int end=x+1;
-            while(end<w&&output[y*w+end]==coverage)end++;
-            if(coverage!=0)runs.Add(new(y+y0,x+x0,end-x,coverage));x=end;
+            for(int y=0;y<h;y++)for(int x=0;x<w;)
+            {
+                byte coverage=output[y*w+x];int end=x+1;
+                while(end<w&&output[y*w+end]==coverage)end++;
+                if(coverage!=0)
+                {
+                    var run=new CoverageRun(y+y0,x+x0,end-x,coverage);
+                    if(exact is not null)exact[written++]=run;
+                    else scratch!.Add(run);
+                }
+                x=end;
+            }
+            // The cached mask owns its runs independently of the scratch list.
+            return new(x0,y0,w,h,compactRuns?[]:output,exact??scratch!.ToArray());
         }
-        // Compact callers consume runs when Dense is false. Keep only one
-        // coverage representation; public Coverage() still requests the grid.
-        return new(x0,y0,w,h,compactRuns?[]:output,runs.ToArray());
+        finally { ReturnRuns(scratch); }
     }
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private static void SortCoherent(Span<Crossing> values,int count)

@@ -83,7 +83,10 @@ internal sealed class FontSource
         uint version=U32(4),count=U32(8);
         if(version is not (0x10000 or 0x20000))throw new NotSupportedException("Unsupported TTC version.");
         if(count is 0 or >4096||12+count*4+(version==0x20000?12:0)>Length)throw new InvalidDataException("Invalid TTC face count/header.");
-        for(int i=0;i<count;i++)if(U32(12+i*4)>Length-12)throw new InvalidDataException("Invalid TTC face offset.");
+        // Explicit in-memory fonts keep strict collection validation. For an
+        // installed file, each reader validates its selected face independently.
+        if(bytes is not null)
+            for(int i=0;i<count;i++)if(U32(12+i*4)>Length-12)throw new InvalidDataException("Invalid TTC face offset.");
         if(version==0x20000)
         {
             int p=12+(int)count*4;uint tag=U32(p),length=U32(p+4),offset=U32(p+8);

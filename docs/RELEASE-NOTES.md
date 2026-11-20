@@ -1,6 +1,16 @@
 # SimdSkia 更新日志 / Release notes
 
-## 0.1.11 正式版 · macOS Metal 窗口呈现（2026-11-20）
+## 0.1.12 正式版 · macOS Metal、字体与 CPU 渲染（2026-11-20）
+
+- macOS 桌面优先使用 Metal，支持 GPU 图层、模糊和阴影。感谢 [@239573049](https://github.com/239573049) 的实现、实机验证和测试。[PR #4](https://github.com/donet-org-cn/SimdSkia/pull/4)
+- CJK 字体选择参考界面和文本区域。TTC 逐字形处理异常，支持 Mac Roman 家族名。[#5](https://github.com/donet-org-cn/SimdSkia/issues/5) · [#6](https://github.com/donet-org-cn/SimdSkia/issues/6)
+- CPU 投影只模糊 alpha 通道，保留原有像素结果。路径光栅化复用有界的临时扫描行列表，仍保留独立的缓存结果。[#9](https://github.com/donet-org-cn/SimdSkia/issues/9) · [#10](https://github.com/donet-org-cn/SimdSkia/issues/10)
+
+[发行说明和实测](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.12/docs/RELEASE-0.1.12.md)
+
+## 0.1.11 暂缓发布的构建 · macOS Metal 窗口呈现（2026-11-20）
+
+发布任务已取消，改动纳入 0.1.12。
 
 - macOS 桌面默认优先通过 CAMetalLayer 呈现，支持 GPU 图层、模糊和投影，Metal 不可用时回退到 CPU。
 - 反向填充缓存保留完整变换与目标尺寸。显式选择 Metal 严格模式时，首帧初始化失败会抛出原始异常。

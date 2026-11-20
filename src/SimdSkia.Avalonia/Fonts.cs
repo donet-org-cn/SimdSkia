@@ -35,17 +35,18 @@ internal sealed class FontData
     internal FontData(FontSource source,int faceIndex):this(TrueTypeFont.FromInstalledSource(source,faceIndex)) { }
     private FontData(TrueTypeFont font)
     {
-        Font=font;Family=ReadName(Font,16)??ReadName(Font,1)??throw new InvalidDataException("The font has no family name.");
+        Font=font;
+        Family=Font.TryGetTable("name",out var names)&&ReadFamilyName(names.Span) is {} family
+            ? family : throw new InvalidDataException("The font has no family name.");
         Weight=FontWeight.Normal;Stretch=FontStretch.Normal;
         if(Font.TryGetTable("OS/2",out var table)&&table.Length>=8)
         {Weight=(FontWeight)BinaryPrimitives.ReadUInt16BigEndian(table.Span[4..]);Stretch=(FontStretch)BinaryPrimitives.ReadUInt16BigEndian(table.Span[6..]);}
         if(Font.TryGetTable("head",out var head)&&head.Length>=46&&(BinaryPrimitives.ReadUInt16BigEndian(head.Span[44..])&2)!=0)Style=FontStyle.Italic;
     }
-    private static string? ReadName(TrueTypeFont font,int id)
-    {
-        return font.TryGetTable("name",out var memory)?ReadName(memory.Span,id):null;
-    }
-    internal static string? ReadName(ReadOnlySpan<byte> data,int id)
+    internal static string? ReadFamilyName(ReadOnlySpan<byte> data) =>
+        ReadName(data,16,false) ?? ReadName(data,1,false) ?? ReadName(data,16,true) ?? ReadName(data,1,true);
+
+    private static string? ReadName(ReadOnlySpan<byte> data,int id,bool macRoman)
     {
         if(data.Length<6)return null;
         int count=BinaryPrimitives.ReadUInt16BigEndian(data[2..]),offset=BinaryPrimitives.ReadUInt16BigEndian(data[4..]);string? result=null;int best=-1;
@@ -53,13 +54,31 @@ internal sealed class FontData
         for(int i=0;i<count;i++)
         {
             var entry=data.Slice(6+i*12,12);int platform=BinaryPrimitives.ReadUInt16BigEndian(entry),language=BinaryPrimitives.ReadUInt16BigEndian(entry[4..]);
-            if(BinaryPrimitives.ReadUInt16BigEndian(entry[6..])!=id||platform is not (0 or 3))continue;
+            if(BinaryPrimitives.ReadUInt16BigEndian(entry[6..])!=id)continue;
+            if(macRoman ? platform!=1||BinaryPrimitives.ReadUInt16BigEndian(entry[2..])!=0 : platform is not (0 or 3))continue;
             int length=BinaryPrimitives.ReadUInt16BigEndian(entry[8..]),start=offset+BinaryPrimitives.ReadUInt16BigEndian(entry[10..]);
-            if(start>data.Length-length||(length&1)!=0)throw new InvalidDataException("Invalid font name offset.");
-            int priority=(language==0x409?2:0)+(platform==3?1:0);if(priority<=best)continue;
-            result=Encoding.BigEndianUnicode.GetString(data.Slice(start,length));best=priority;
+            if(start>data.Length-length||(!macRoman&&(length&1)!=0))throw new InvalidDataException("Invalid font name offset.");
+            int priority=macRoman?(language==0?1:0):(language==0x409?2:0)+(platform==3?1:0);
+            if(priority<=best)continue;
+            var value=data.Slice(start,length);
+            string candidate=macRoman?DecodeMacRoman(value):Encoding.BigEndianUnicode.GetString(value);
+            if(string.IsNullOrWhiteSpace(candidate))continue;
+            result=candidate;best=priority;
         }
         return result;
+    }
+
+    private static string DecodeMacRoman(ReadOnlySpan<byte> value)
+    {
+        // OpenType Macintosh platform encoding 0. Keep the table local so the
+        // renderer does not need to initialize the legacy code-page provider.
+        const string extended = "ÄÅÇÉÑÖÜáàâäãåçéèêëíìîïñóòôöõúùûü"
+            + "†°¢£§•¶ß®©™´¨≠ÆØ∞±≤≥¥µ∂∑∏π∫ªºΩæø"
+            + "¿¡¬√ƒ≈∆«»…\u00A0ÀÃÕŒœ–—“”‘’÷◊ÿŸ⁄€‹›ﬁﬂ"
+            + "‡·‚„‰ÂÊÁËÈÍÎÏÌÓÔ\uF8FFÒÚÛÙıˆ˜¯˘˙˚¸˝˛ˇ";
+        Span<char> result = value.Length <= 256 ? stackalloc char[value.Length] : new char[value.Length];
+        for(int i=0;i<value.Length;i++)result[i]=value[i]<128?(char)value[i]:extended[value[i]-128];
+        return new string(result);
     }
 }
 
@@ -81,10 +100,12 @@ internal sealed class FontManager:IFontManagerImpl
 {
     private readonly FontEntry[] fonts;
     private readonly string defaultFamily;
+    private readonly bool installedFonts;
     private FaceOrder? fallbackOrder;
     internal int LoadedFaceCount=>fonts.Count(f=>f.IsLoaded);
     internal FontManager(IEnumerable<string> paths,string? defaultFamily=null,bool supportedFacesOnly=false)
     {
+        installedFonts=supportedFacesOnly;
         var loaded=new List<FontEntry>();
         foreach(string path in paths)
         {
@@ -148,13 +169,23 @@ internal sealed class FontManager:IFontManagerImpl
             order=new FaceOrder(fonts,request);
             Volatile.Write(ref fallbackOrder,order);
         }
-        // Search the preferred family first, preserving registration order on ties.
-        // Opening Data can touch a font file; only probe candidates up to the first match.
-        for(int pass=family is null?1:0;pass<=1;pass++)
+        // Check an explicitly requested family before locale-specific fallback.
+        if(family is not null)
             foreach(int index in order.Indices)
             {
                 var face=fonts[index];
-                if(face.Family.Equals(family,StringComparison.OrdinalIgnoreCase)!=(pass==0))continue;
+                if(!face.Family.Equals(family,StringComparison.OrdinalIgnoreCase))continue;
+                var data=face.Data;
+                if(data.Font.GetGlyph(codepoint)!=0){typeface=new PlatformTypeface(data);return true;}
+            }
+        var locale=installedFonts&&CjkFontPreference.AppliesTo(codepoint)
+            ? CjkFontPreference.ForCulture(culture??CultureInfo.CurrentUICulture) : CjkLocale.Unspecified;
+        int lastRank=locale==CjkLocale.Unspecified?0:2;
+        for(int rank=0;rank<=lastRank;rank++)
+            foreach(int index in order.Indices)
+            {
+                var face=fonts[index];
+                if(face.Family.Equals(family,StringComparison.OrdinalIgnoreCase)||CjkFontPreference.Rank(locale,face.Locale)!=rank)continue;
                 var data=face.Data;
                 if(data.Font.GetGlyph(codepoint)!=0){typeface=new PlatformTypeface(data);return true;}
             }

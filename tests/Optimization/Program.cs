@@ -366,6 +366,7 @@ using(var red=new SKBitmap(128,96))using(var blue=new SKBitmap(128,96))
 checks+=CoverageRunValidation.Run();
 checks+=ValidateCoverageIntersection();
 checks+=SamplingValidation.Run();
+checks+=DropShadowValidation.Run();
 // Repainting a stable clipped/shaded rectangle must hit coverage caches, not
 // retain dozens of identical full masks under fresh geometry identities.
 foreach(bool clipped in new[]{false,true})

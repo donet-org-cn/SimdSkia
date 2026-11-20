@@ -33,7 +33,7 @@ public sealed partial class RasterCanvas
             if(command.Kind==CommandKind.FillRectangle&&command.Transform.M01==0&&command.Transform.M10==0&&filter is RasterMaskFilter blur&&blur.TryFilterRectangle(bounds,command.Transform,out var analytic))coverage=analytic!;
             else
             {
-                int w=right-left,h=bottom-top;var raster=PathRasterizer.Rasterize(geometry.Flatten(shifted,command.CurveTolerance),geometry.FillRule,w,h,true);var input=new byte[checked(w*h)];
+                int w=right-left,h=bottom-top;var raster=PathRasterizer.Rasterize(geometry.Flatten(shifted,command.CurveTolerance),geometry.FillRule,w,h,true,includeRuns:false);var input=new byte[checked(w*h)];
                 for(int y=0;y<raster.Height;y++)raster.Data.AsSpan(y*raster.Width,raster.Width).CopyTo(input.AsSpan((y+raster.Top)*w+raster.Left,raster.Width));
                 coverage=filter.Filter(CoverageClip.BorrowImmutable(left,top,w,h,input),command.Transform);
             }

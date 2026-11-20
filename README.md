@@ -4,18 +4,18 @@
 
 SimdSkia 是一个 .NET 2D 渲染引擎，绘图无需加载 Google Skia 原生库。在控制台或服务端，可以用 `SKCanvas` 画图并输出 PNG。在 Avalonia 项目里，可以通过调整包引用和启动代码来切换后端，继续使用原有的 XAML 和视图模型。
 
-简体中文 · [English](README.en.md) · .NET 10 · [正式版 0.1.11](docs/RELEASE-0.1.11.md) · [MIT](LICENSE)
+简体中文 · [English](README.en.md) · .NET 10 · [正式版 0.1.12](docs/RELEASE-0.1.12.md) · [MIT](LICENSE)
 
-0.1.11 在 macOS 上优先使用 Metal 呈现桌面窗口，支持 GPU 图层、模糊和阴影。Metal 不可用时自动选择 CPU。[macOS 实测与适用范围](docs/MACOS-METAL-2026-11-20.md)
+0.1.12 新增 macOS Metal 呈现，修复 CJK 字体和 TTC 字形发现，并减少 CPU 阴影与路径光栅化开销。[发行说明与实测](docs/RELEASE-0.1.12.md)
 
 ## 按用途开始
 
 | 你要做什么 | 安装哪个包 | 从哪里开始 |
 | --- | --- | --- |
-| 在 .NET 程序里画图、生成 PNG | [SimdSkia](https://www.nuget.org/packages/SimdSkia/0.1.11) | [运行绘图示例](#生成-png) |
-| 为 Windows、Linux 或 macOS 上的 Avalonia 应用切换后端 | [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.11) | [迁移现有项目](#迁移现有项目) · [运行窗口示例](#运行桌面窗口示例) |
-| 为 Avalonia Android 应用接入 CPU 渲染 | [SimdSkia.Avalonia.Android](https://www.nuget.org/packages/SimdSkia.Avalonia.Android/0.1.11) | [配置 Android 启动项目](#avalonia-android) |
-| 将现有 PDF 的页面转成图片 | [SimdSkia.Pdf](https://www.nuget.org/packages/SimdSkia.Pdf/0.1.11) | [读取和渲染 PDF](src/SimdSkia.Pdf/README.md) |
+| 在 .NET 程序里画图、生成 PNG | [SimdSkia](https://www.nuget.org/packages/SimdSkia/0.1.12) | [运行绘图示例](#生成-png) |
+| 为 Windows、Linux 或 macOS 上的 Avalonia 应用切换后端 | [SimdSkia.Avalonia.Desktop](https://www.nuget.org/packages/SimdSkia.Avalonia.Desktop/0.1.12) | [迁移现有项目](#迁移现有项目) · [运行窗口示例](#运行桌面窗口示例) |
+| 为 Avalonia Android 应用接入 CPU 渲染 | [SimdSkia.Avalonia.Android](https://www.nuget.org/packages/SimdSkia.Avalonia.Android/0.1.12) | [配置 Android 启动项目](#avalonia-android) |
+| 将现有 PDF 的页面转成图片 | [SimdSkia.Pdf](https://www.nuget.org/packages/SimdSkia.Pdf/0.1.12) | [读取和渲染 PDF](src/SimdSkia.Pdf/README.md) |
 
 同一个项目直接引用多个 `SimdSkia.*` 包时，请统一版本。
 
@@ -26,7 +26,7 @@ SimdSkia 是一个 .NET 2D 渲染引擎，绘图无需加载 Google Skia 原生�
 ```sh
 dotnet new console --framework net10.0 -o SimdSkiaDemo
 cd SimdSkiaDemo
-dotnet add package SimdSkia --version 0.1.11
+dotnet add package SimdSkia --version 0.1.12
 ```
 
 将 `Program.cs` 替换为以下代码。`SkiaSharp` 是 SimdSkia 兼容层提供的命名空间。
@@ -85,7 +85,7 @@ gif.Complete();
 
 ### 迁移现有项目
 
-1. 在启动项目中运行 `dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.11`，并将 Avalonia 系列包统一为同一个版本。下方示例使用 `12.1.6`。
+1. 在启动项目中运行 `dotnet add package SimdSkia.Avalonia.Desktop --version 0.1.12`，并将 Avalonia 系列包统一为同一个版本。下方示例使用 `12.1.6`。
 2. 移除直接引用的 `Avalonia.Desktop`、`Avalonia.Skia` 和 `Avalonia.Fonts.Inter`（如有）。同时检查第三方控件是否依赖原版 Skia 后端或 `ISkiaSharpApiLeaseFeature`。
 3. 添加 `using SimdSkia.Avalonia;`，把启动链中的 `.UsePlatformDetect()` 替换为 `.UseSimdSkiaDesktop()`。如果原来调用了 `.WithInterFont()`，也一并移除。
 
@@ -101,7 +101,7 @@ gif.Complete();
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SimdSkia.Avalonia.Desktop" Version="0.1.11" />
+    <PackageReference Include="SimdSkia.Avalonia.Desktop" Version="0.1.12" />
     <PackageReference Include="Avalonia" Version="[12.1.6]" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.6]" />
   </ItemGroup>

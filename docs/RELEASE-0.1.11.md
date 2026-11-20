@@ -1,4 +1,6 @@
-# SimdSkia 0.1.11
+# SimdSkia 0.1.11 取消发布记录
+
+0.1.11 的发布任务已取消。该构建的改动纳入 [0.1.12](RELEASE-0.1.12.md)。
 
 macOS 桌面窗口默认优先使用 Metal，通过 Avalonia 原生宿主的 `CAMetalLayer` 呈现。Metal 不可用时会选择 CPU 渲染，也可以通过 `.UseSimdSkiaDesktop(options => options.UseCpu())` 显式选择 CPU。
 

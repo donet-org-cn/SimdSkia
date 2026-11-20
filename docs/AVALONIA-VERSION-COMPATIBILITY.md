@@ -8,7 +8,7 @@
 
 0.1.8 的发布矩阵覆盖 Avalonia 12.1.0–12.1.6，最低和最高版本执行 NativeAOT。Android 包消费检查用 Avalonia 12.1.6 生成 ARM64 Release APK。[0.1.8 发行说明](RELEASE-0.1.8.md)
 
-从 0.1.11 起，macOS 桌面默认优先使用 Metal。CI 的默认模式曾复现缩放后帧尺寸与窗口及 DPI 不一致。发布矩阵在 macOS 显式验证 CPU 路径，默认模式继续由跨平台桌面工作流检查。[macOS Metal 的实机验证与适用范围](MACOS-METAL-2026-11-20.md) · [缩放检查记录](https://github.com/donet-org-cn/SimdSkia/actions/runs/44722057615/job/136245074286)
+从 0.1.12 起，macOS 桌面默认优先使用 Metal。CI 的默认模式曾复现缩放后帧尺寸与窗口及 DPI 不一致。发布矩阵在 macOS 显式验证 CPU 路径，默认模式继续由跨平台桌面工作流检查。[macOS Metal 的实机验证与适用范围](MACOS-METAL-2026-11-20.md) · [缩放检查记录](https://github.com/donet-org-cn/SimdSkia/actions/runs/44722057615/job/136245074286)
 
 ## 0.1.1 历史验证
 

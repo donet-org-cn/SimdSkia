@@ -47,6 +47,7 @@ try
     Check(managerTypeface.FamilyName == found.DefaultFamily, "Discovered files must load into the real Avalonia managed font manager.");
     var again = UnixSystemFonts.Discover([temp]);
     Check(again.Files.SequenceEqual(found.Files) && again.DefaultFamily == found.DefaultFamily, "Discovery order is deterministic.");
+    checks += FontDiscoveryValidation.Run(temp,bytes);
     byte[] boldBytes=(byte[])bytes.Clone();
     int tableCount=BinaryPrimitives.ReadUInt16BigEndian(boldBytes.AsSpan(4));bool changed=false;
     for(int i=0;i<tableCount;i++)

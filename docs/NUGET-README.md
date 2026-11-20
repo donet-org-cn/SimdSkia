@@ -1,4 +1,8 @@
-# SimdSkia 0.1.11
+# SimdSkia 0.1.12
+
+新增 macOS Metal 窗口呈现，修复 CJK 回退和 TTC 字形发现，减少 CPU 阴影与路径光栅化的开销。[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.12/docs/RELEASE-0.1.12.md)
+
+## 0.1.11 暂缓发布的构建
 
 macOS 桌面默认优先使用 Metal 窗口呈现，支持 GPU 图层、模糊和阴影。Metal 不可用时回退到 CPU。[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.11/docs/RELEASE-0.1.11.md) · [macOS 实测](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.11/docs/MACOS-METAL-2026-11-20.md)
 

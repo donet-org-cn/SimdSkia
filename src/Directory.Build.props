@@ -1,7 +1,7 @@
 <Project>
   <Import Project="../Directory.Build.props" />
   <PropertyGroup>
-    <Version Condition="'$(Version)' == ''">0.1.11</Version>
+    <Version Condition="'$(Version)' == ''">0.1.12</Version>
     <Authors>hnlyf168</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/donet-org-cn/SimdSkia</PackageProjectUrl>
@@ -11,7 +11,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Description>Managed C# 2D rendering components. Version 0.1 supports the documented subset; SkiaSharp source and rendering equivalence remain incomplete. No Google Skia rendering dependency.</Description>
     <PackageTags>SimdSkia;graphics;rendering;managed;2d</PackageTags>
-    <PackageReleaseNotes>0.1.11 正式版。macOS 桌面优先使用 Metal 窗口呈现，支持 GPU 图层、模糊和阴影。详见 CHANGELOG.md。</PackageReleaseNotes>
+    <PackageReleaseNotes>0.1.12 正式版。macOS Metal 呈现、CJK 字体回退和 TTC 字形修复，以及 CPU 阴影和光栅化优化。详见 CHANGELOG.md。</PackageReleaseNotes>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>

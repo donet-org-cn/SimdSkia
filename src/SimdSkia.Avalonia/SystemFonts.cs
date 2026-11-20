@@ -1,4 +1,5 @@
 using System.Buffers.Binary;
+using System.Globalization;
 using System.Text;
 
 namespace SimdSkia.Avalonia;
@@ -32,7 +33,7 @@ internal static class UnixSystemFonts
     private sealed record Face(string Path, string Family, bool Bold, bool Cjk);
     private static readonly string[] Preferred = ["Arial", "Helvetica", "DejaVu Sans", "Liberation Sans", "Noto Sans", "Ubuntu", "FreeSans"];
 
-    internal static SimdSkiaSystemFontInfo Discover(IEnumerable<string> directories, string? preferred = null)
+    internal static SimdSkiaSystemFontInfo Discover(IEnumerable<string> directories, string? preferred = null, CultureInfo? culture = null)
     {
         var exclusions = new List<string>();
         var faces = new List<Face>();
@@ -60,7 +61,11 @@ internal static class UnixSystemFonts
                 ?? throw new NotSupportedException($"Requested default font '{preferred}' is not an installed supported static TrueType face.");
         else family = Preferred.Select(p => faces.FirstOrDefault(f => f.Family.Equals(p, StringComparison.OrdinalIgnoreCase))).FirstOrDefault(f => f is not null)?.Family ?? faces[0].Family;
         // Load only selected UI, CJK and monospaced families, not every installed outline.
-        string? cjk = faces.Where(f => f.Cjk).OrderBy(f => f.Family.Contains("Sans", StringComparison.OrdinalIgnoreCase) || f.Family.Contains("Hei", StringComparison.OrdinalIgnoreCase) ? 0 : 1).Select(f => f.Family).FirstOrDefault();
+        var locale = CjkFontPreference.ForCulture(culture ?? CultureInfo.CurrentUICulture);
+        string? cjk = faces.Where(f => f.Cjk)
+            .OrderBy(f => CjkFontPreference.Rank(locale,CjkFontPreference.ForFamily(f.Family)))
+            .ThenBy(f => f.Family.Contains("Sans", StringComparison.OrdinalIgnoreCase) || f.Family.Contains("Hei", StringComparison.OrdinalIgnoreCase) ? 0 : 1)
+            .Select(f => f.Family).FirstOrDefault();
         string? mono = faces.FirstOrDefault(f => f.Family.Contains("Mono", StringComparison.OrdinalIgnoreCase) || f.Family == "Menlo")?.Family;
         var files = faces.Where(f => f.Family == family || f.Family == cjk || f.Family == mono)
             .OrderBy(f => f.Family == family ? 0 : f.Family == cjk ? 1 : 2).ThenBy(f => f.Bold).Select(f => f.Path).Distinct(StringComparer.Ordinal).ToArray();
@@ -90,48 +95,38 @@ internal static class UnixSystemFonts
         else offsets = [0];
         foreach (uint offset in offsets)
         {
-            var h = Read(file, offset, 12);
-            uint magic = Read32(h, 0);
-            if (magic is not (0x00010000 or 0x74727565)) { exclusions.Add($"{path}: face at {offset} uses non-TrueType outlines."); continue; }
-            int count = Read16(h, 4);
-            var directory = Read(file, offset + 12, checked(count * 16));
-            var tables = new Dictionary<string, (uint Offset, int Length)>();
-            for (int i = 0; i < count; i++)
+            try
             {
-                var entry = directory.AsSpan(i * 16, 16);
-                if (!tables.TryAdd(Encoding.ASCII.GetString(entry[..4]), (Read32(entry, 8), checked((int)Read32(entry, 12))))) throw new InvalidDataException("Duplicate font table.");
+                var h = Read(file, offset, 12);
+                uint magic = Read32(h, 0);
+                if (magic is not (0x00010000 or 0x74727565)) { exclusions.Add($"{path}: face at {offset} uses non-TrueType outlines."); continue; }
+                int count = Read16(h, 4);
+                var directory = Read(file, offset + 12, checked(count * 16));
+                var tables = new Dictionary<string, (uint Offset, int Length)>();
+                for (int i = 0; i < count; i++)
+                {
+                    var entry = directory.AsSpan(i * 16, 16);
+                    if (!tables.TryAdd(Encoding.ASCII.GetString(entry[..4]), (Read32(entry, 8), checked((int)Read32(entry, 12))))) throw new InvalidDataException("Duplicate font table.");
+                }
+                if (!tables.ContainsKey("glyf") || new[] { "fvar", "gvar", "COLR", "CPAL", "CBDT", "CBLC", "sbix", "SVG " }.Any(tables.ContainsKey))
+                { exclusions.Add($"{path}: face at {offset} requires unsupported variable/color/CFF rendering."); continue; }
+                byte[] Table(string name, int limit)
+                {
+                    if (!tables.TryGetValue(name, out var entry) || entry.Length > limit) throw new InvalidDataException($"Missing/oversized font metadata table {name}.");
+                    return Read(file, entry.Offset, entry.Length);
+                }
+                var names = Table("name", 1024 * 1024);
+                string? family = FontData.ReadFamilyName(names);
+                if (string.IsNullOrWhiteSpace(family)) throw new InvalidDataException("Font has no supported family name.");
+                var os2 = tables.ContainsKey("OS/2")?Table("OS/2", 4096):[];
+                bool cjk = HasGlyph(Table("cmap", 4 * 1024 * 1024), 0x4e2d);
+                output.Add(new(path, family, os2.Length >= 6 && Read16(os2, 4) >= 600, cjk));
             }
-            if (!tables.ContainsKey("glyf") || new[] { "fvar", "gvar", "COLR", "CPAL", "CBDT", "CBLC", "sbix", "SVG " }.Any(tables.ContainsKey))
-            { exclusions.Add($"{path}: face at {offset} requires unsupported variable/color/CFF rendering."); continue; }
-            byte[] Table(string name, int limit)
+            catch (Exception error) when (error is IOException or InvalidDataException or NotSupportedException or OverflowException or ArgumentOutOfRangeException)
             {
-                if (!tables.TryGetValue(name, out var entry) || entry.Length > limit) throw new InvalidDataException($"Missing/oversized font metadata table {name}.");
-                return Read(file, entry.Offset, entry.Length);
+                exclusions.Add($"{path}: face at {offset}: {error.Message}");
             }
-            var names = Table("name", 1024 * 1024);
-            string? family = Name(names, 16) ?? Name(names, 1);
-            if (string.IsNullOrWhiteSpace(family)) throw new InvalidDataException("Font has no Unicode family name.");
-            var os2 = tables.ContainsKey("OS/2")?Table("OS/2", 4096):[];
-            bool cjk = HasGlyph(Table("cmap", 4 * 1024 * 1024), 0x4e2d);
-            output.Add(new(path, family, os2.Length >= 6 && Read16(os2, 4) >= 600, cjk));
         }
-    }
-    private static string? Name(byte[] names, int id)
-    {
-        if (names.Length < 6) throw new InvalidDataException("Truncated font names.");
-        int count = Read16(names, 2), storage = Read16(names, 4), best = -1; string? result = null;
-        if (count > (names.Length - 6) / 12) throw new InvalidDataException("Truncated font name directory.");
-        for (int i = 0; i < count; i++)
-        {
-            var e = names.AsSpan(6 + i * 12, 12); int platform = Read16(e, 0), language = Read16(e, 4);
-            if (Read16(e, 6) != id || platform is not (0 or 3)) continue;
-            int length = Read16(e, 8), start = checked(storage + Read16(e, 10));
-            if (start > names.Length - length || (length & 1) != 0) throw new InvalidDataException("Invalid font name string.");
-            int score = (language == 0x409 ? 2 : 0) + (platform == 3 ? 1 : 0);
-            if (score <= best) continue;
-            result = Encoding.BigEndianUnicode.GetString(names, start, length); best = score;
-        }
-        return result;
     }
     private static bool HasGlyph(byte[] cmap, int codepoint)
     {
