@@ -4,7 +4,7 @@
     <!-- Versioned host DLLs are deliberately selected by buildTransitive, rather
          than all being unconditional lib/ references (which causes ABI failures). -->
     <NoWarn>$(NoWarn);NU5100</NoWarn>
-    <Description>Windows, Linux X11 and macOS window hosts with GPU-preferred rendering and diagnosed CPU fallback. macOS currently uses managed CPU rendering and the official MIT Avalonia window bridge.</Description>
+    <Description>Windows, Linux X11 and macOS window hosts with GPU-preferred rendering and diagnosed CPU fallback. macOS prefers Metal through the CAMetalLayer of the official MIT Avalonia native window bridge.</Description>
   </PropertyGroup>
   <ItemGroup>
     <None Include="../SimdSkia.Avalonia/README.md" Pack="true" PackagePath="/README.md" />

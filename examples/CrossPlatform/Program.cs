@@ -35,7 +35,7 @@ internal static class Program
         int output = Array.IndexOf(args, "--output"); if (output >= 0) Output = args[output + 1];
         int font = Array.IndexOf(args, "--font");
         int gpu = Array.IndexOf(args, "--gpu");
-        if (gpu >= 0) Gpu = args[gpu + 1] switch { "direct2d" => SimdSkiaGpuBackend.Direct2D, "vulkan" => SimdSkiaGpuBackend.Vulkan, _ => throw new ArgumentException("--gpu must be direct2d or vulkan.") };
+        if (gpu >= 0) Gpu = args[gpu + 1] switch { "direct2d" => SimdSkiaGpuBackend.Direct2D, "vulkan" => SimdSkiaGpuBackend.Vulkan, "metal" => SimdSkiaGpuBackend.Metal, _ => throw new ArgumentException("--gpu must be direct2d, vulkan or metal.") };
         if(Cpu&&Gpu.HasValue)throw new ArgumentException("Select --cpu or --gpu, not both.");
         SimdSkiaDiagnostics.CapturePresentedFrames = Smoke;
         return AppBuilder.Configure<DemoApp>().UseSimdSkiaDesktop(options =>

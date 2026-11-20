@@ -120,6 +120,10 @@ internal sealed class FilteredConstant(Rgba32 input,IColorFilter filter,System.N
     internal Rgba32 Straight {get;}=value.W>0?new(ColorBlend.Byte(value.X/value.W),ColorBlend.Byte(value.Y/value.W),ColorBlend.Byte(value.Z/value.W),ColorBlend.Byte(value.W)):default;
 }
 public enum CommandKind { Clear, FillRectangle,FillPath,DrawImage,DrawGlyphRun }
+/// <summary>An axis-aligned rounded rectangle with circular corners (radii in
+/// top-left, top-right, bottom-right, bottom-left order), optionally minus an
+/// inner one: the ring of a solid stroke.</summary>
+internal readonly record struct AnalyticShape(RectF Outer,System.Numerics.Vector4 OuterRadii,RectF Inner,System.Numerics.Vector4 InnerRadii,bool Ring);
 public readonly record struct DrawingCommand(CommandKind Kind, RectF Rectangle, Matrix3 Transform, Paint Paint)
 {
     public PathGeometry? Path { get; init; }
@@ -157,6 +161,10 @@ public readonly record struct DrawingCommand(CommandKind Kind, RectF Rectangle, 
     public bool AliasedRectangleEdges {get;init;}
     /// <summary>Indexed mesh coverage uses the baseline's fixed 26.6 line edge walker.</summary>
     public bool FixedTriangleEdges {get;init;}
+    /// <summary>Optional analytic description of a FillPath (a rounded rectangle,
+    /// or the ring of a rounded-rectangle stroke) in the command's local space.
+    /// Path stays authoritative; device backends may evaluate this instead.</summary>
+    internal AnalyticShape? Shape {get;init;}
     public static DrawingCommand Clear(Rgba32 color) => new(CommandKind.Clear, default, Matrix3.Identity, new(color, CompositeMode.Source));
     public static DrawingCommand FillRectangle(RectF rect, Matrix3 transform, Paint paint) => new(CommandKind.FillRectangle, rect, transform, paint);
 }

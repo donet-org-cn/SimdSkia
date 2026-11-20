@@ -162,9 +162,9 @@ This screenshot from a Direct2D test shows the Avalonia controls demo with text 
 | --- | --- |
 | Windows | Prefers Direct2D with a native swap chain and can fall back to the CPU |
 | Linux | Prefers hardware Vulkan under X11 or XWayland and can fall back to the CPU |
-| macOS | Renders on the CPU and uses Avalonia's native window host |
+| macOS | Prefers Metal: presents through the native host's CAMetalLayer, keeps layers and shadows on the GPU, and can fall back to the CPU |
 
-Use `.UseSimdSkiaDesktop(options => options.UseCpu())` to explicitly select CPU rendering. The base `.UseSimdSkia()` adapter and offscreen bitmaps use the CPU. The desktop package accepts Avalonia `12.1.0` and later. It uses the newest bundled host when it has no exact match. Compatibility with a later release depends on its host interfaces. [Backend selection and fallback](docs/GPU-PREFERRED-2026-11-07.md) · [Avalonia version matrix](docs/AVALONIA-VERSION-COMPATIBILITY.md)
+Use `.UseSimdSkiaDesktop(options => options.UseCpu())` to explicitly select CPU rendering. The base `.UseSimdSkia()` adapter and offscreen bitmaps use the CPU. The desktop package accepts Avalonia `12.1.0` and later. It uses the newest bundled host when it has no exact match. Compatibility with a later release depends on its host interfaces. [Backend selection and fallback](docs/GPU-PREFERRED-2026-11-07.md) · [macOS Metal](docs/MACOS-METAL-2026-11-20.md) · [Avalonia version matrix](docs/AVALONIA-VERSION-COMPATIBILITY.md)
 
 To publish a desktop app with Native AOT, install the target platform's toolchain. For example, run `dotnet publish -c Release -r win-x64 -p:PublishAot=true` on Windows x64. Use `linux-x64` for Linux x64 or `osx-arm64` for macOS ARM64. [0.1.2 AOT size comparison and reproduction steps](examples/DefaultAvaloniaAot/README.md)
 

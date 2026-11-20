@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Vector4=System.Numerics.Vector4;
 using SimdSkia.Cpu;
 
 namespace SimdSkia.Avalonia;
@@ -86,7 +87,7 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
     private void Execute(DrawingCommand command)
     {
         using var measurement=SimdSkiaDiagnostics.Measure(command.Kind==CommandKind.DrawGlyphRun?"glyph-run":command.Kind==CommandKind.FillPath?command.Paint.Shader is null?"path-solid":"path-gradient":command.Kind==CommandKind.DrawImage?"image":"rectangle");
-        Check();if(rootBackend is not null and not RasterCanvas&&!ReferenceEquals(canvas,rootBackend))SimdSkiaDiagnostics.SoftwareLayerCommand();
+        Check();if(rootBackend is not null and not RasterCanvas&&canvas is RasterCanvas)SimdSkiaDiagnostics.SoftwareLayerCommand();
         canvas.Execute(command with {Clip=clip,CoverageClip=coverageClip,CurveTolerance=0.015625f});
         if(activeLayers==0)return;
         var bounds=command.GlyphRun?.Bounds??command.Path?.ControlBounds??command.Rectangle;var m=command.Transform;
@@ -119,7 +120,8 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
     }
     public void Clear(Color color)
     {Check();if(clip is null&&coverageClip is null&&activeLayers==0)canvas.Execute(DrawingCommand.Clear(ConvertTo.Color(color)));else Execute(DrawingCommand.FillRectangle(new(0,0,target.Width,target.Height),Matrix3.Identity,new(ConvertTo.Color(color),CompositeMode.Source)));}
-    public void DrawGeometry(IBrush? brush,IPen? pen,IGeometryImpl geometry)
+    public void DrawGeometry(IBrush? brush,IPen? pen,IGeometryImpl geometry)=>DrawGeometry(brush,pen,geometry,null,null);
+    private void DrawGeometry(IBrush? brush,IPen? pen,IGeometryImpl geometry,AnalyticShape? fillShape,AnalyticShape? strokeShape)
     {
         Check();var g=geometry as Geometry??throw new ArgumentException("Foreign geometry backend.");g.Validate();
         var stroke=pen?.Brush is not null&&pen.Thickness>0?(Geometry)g.GetWidenedGeometry(pen):null;
@@ -127,8 +129,36 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
         // content must not be rendered repeatedly merely to validate a paint.
         using var fill=brush is not null?CreatePaint(brush,g.Bounds,Antialias):default;
         using var outline=stroke is not null?CreatePaint(pen!.Brush!,stroke.Bounds,Antialias):default;
-        if(brush is not null)Execute(new(CommandKind.FillPath,default,DeviceMatrix,fill.Paint){Path=g.Path,CacheTextCoverage=true});
-        if(stroke is not null)Execute(new(CommandKind.FillPath,default,DeviceMatrix,outline.Paint){Path=stroke.Path,CacheTextCoverage=true});
+        if(brush is not null)Execute(new(CommandKind.FillPath,default,DeviceMatrix,fill.Paint){Path=g.Path,CacheTextCoverage=true,Shape=fillShape});
+        if(stroke is not null)Execute(new(CommandKind.FillPath,default,DeviceMatrix,outline.Paint){Path=stroke.Path,CacheTextCoverage=true,Shape=strokeShape});
+    }
+    // Analytic descriptions of rectangle fills and solid strokes. They describe
+    // exactly the geometry Geometry.Rounded and the stroker produce, so a device
+    // backend can evaluate coverage without rasterizing the path.
+    private static (RectF Rect,Vector4 Radii)? Circular(RoundedRect r)
+    {
+        var rect=r.Rect;var tl=r.RadiiTopLeft;var tr=r.RadiiTopRight;var br=r.RadiiBottomRight;var bl=r.RadiiBottomLeft;
+        double scale=Math.Min(1,Math.Min(Math.Min(rect.Width/Math.Max(tl.X+tr.X,bl.X+br.X),rect.Height/Math.Max(tl.Y+bl.Y,tr.Y+br.Y)),1));
+        if(!double.IsFinite(scale))scale=1;tl*=scale;tr*=scale;br*=scale;bl*=scale;
+        if(tl.X!=tl.Y||tr.X!=tr.Y||br.X!=br.Y||bl.X!=bl.Y)return null;
+        var radii=new Vector4((float)tl.X,(float)tr.X,(float)br.X,(float)bl.X);
+        return float.IsFinite(radii.X+radii.Y+radii.Z+radii.W)?(ConvertTo.Rect(rect),radii):null;
+    }
+    private static AnalyticShape? FillShape(RoundedRect r)=>Circular(r) is {} c?new(c.Rect,c.Radii,default,default,false):null;
+    private static AnalyticShape? StrokeShape(RectF rect,Vector4 radii,IPen? pen)
+    {
+        if(pen?.Brush is null||!(pen.Thickness>0)||pen.DashStyle is not null)return null;
+        float half=(float)pen.Thickness/2;
+        // Rounded corners offset into arcs; a sharp corner keeps a miter (90° needs
+        // a limit of √2) or becomes a round join. Bevels need the path.
+        bool miter=pen.LineJoin==PenLineJoin.Miter&&pen.MiterLimit>=1.4143,round=pen.LineJoin==PenLineJoin.Round;
+        float Outer(float r)=>r>0?r+half:round?half:miter?0:float.NaN;
+        var outer=new Vector4(Outer(radii.X),Outer(radii.Y),Outer(radii.Z),Outer(radii.W));
+        if(!float.IsFinite(outer.X+outer.Y+outer.Z+outer.W))return null;
+        var inner=new RectF(rect.Left+half,rect.Top+half,rect.Right-half,rect.Bottom-half);
+        bool ring=inner.Right>inner.Left&&inner.Bottom>inner.Top;
+        return new(new(rect.Left-half,rect.Top-half,rect.Right+half,rect.Bottom+half),outer,ring?inner:default,
+            Vector4.Max(radii-new Vector4(half),Vector4.Zero),ring);
     }
     public void DrawLine(IPen? pen,Point a,Point b)
     {
@@ -160,10 +190,11 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
                 ?(Geometry)(pen.DashStyle is null?Shape(rect,ShapeKind.Rectangle):Geometry.Rectangle(rect.Rect)).GetWidenedGeometry(pen):null;
             using var outline=stroke is not null?CreatePaint(pen!.Brush!,stroke.Bounds,Antialias):default;
             if(brush is not null){using var fill=CreatePaint(brush,rect.Rect,Antialias);Execute(DrawingCommand.FillRectangle(ConvertTo.Rect(rect.Rect),DeviceMatrix,fill.Paint));}
-            if(stroke is not null)Execute(new(CommandKind.FillPath,default,DeviceMatrix,outline.Paint){Path=stroke.Path,CacheTextCoverage=true});
+            if(stroke is not null)Execute(new(CommandKind.FillPath,default,DeviceMatrix,outline.Paint){Path=stroke.Path,CacheTextCoverage=true,Shape=StrokeShape(ConvertTo.Rect(rect.Rect),Vector4.Zero,pen)});
             return;
         }
-        DrawGeometry(brush,pen,Shape(rect));
+        var shape=FillShape(rect);
+        DrawGeometry(brush,pen,Shape(rect),shape,shape is {} f?StrokeShape(f.Outer,f.OuterRadii,pen):null);
     }
     public void DrawEllipse(IBrush? brush,IPen? pen,Rect rect)=>DrawGeometry(brush,pen,Shape(new(rect),ShapeKind.Ellipse));
     public void DrawRegion(IBrush? brush,IPen? pen,IPlatformRenderInterfaceRegion region)=>DrawGeometry(brush,pen,((Region)region).Geometry);
@@ -285,7 +316,10 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
         {float px=MathF.Ceiling(f.SigmaX*3)+1,py=MathF.Ceiling(f.SigmaY*3)+1;extent=new(Math.Min(extent.Left,extent.Left-f.OffsetX-px),Math.Min(extent.Top,extent.Top-f.OffsetY-py),Math.Max(extent.Right,extent.Right-f.OffsetX+px),Math.Max(extent.Bottom,extent.Bottom-f.OffsetY+py));}
         int x=(int)MathF.Floor(extent.Left),y=(int)MathF.Floor(extent.Top),width=Math.Max(1,(int)MathF.Ceiling(extent.Right)-x),height=Math.Max(1,(int)MathF.Ceiling(extent.Bottom)-y);
         if(width>32768||height>32768||(long)width*height*4>256*1024*1024)throw new NotSupportedException("Layer exceeds the configured 256 MiB limit.");
-        var buffer=PixelBuffer.Rent(width,height,target.Format,AlphaFormat.Premultiplied);var next=new RasterCanvas(buffer);
+        // A device backend keeps the layer on its device; otherwise a CPU layer.
+        PixelBuffer buffer;ICanvasBackend next;
+        if(canvas is ILayerBackendProvider provider&&provider.TryCreateLayer(width,height,target.Format,out var devicePixels,out var deviceCanvas)){buffer=devicePixels;next=deviceCanvas;}
+        else{buffer=PixelBuffer.Rent(width,height,target.Format,AlphaFormat.Premultiplied);next=new RasterCanvas(buffer);}
         groups.Push(new(target,canvas,clip,coverageClip,opacity,mask,bounds,dirty,DeviceMatrix,filter,x,y));groupScopes.Push(new(kind,true));activeLayers++;target=buffer;canvas=next;dirty=null;originX+=x;originY+=y;
         // Apply the existing clip exactly once when restoring this group.
         coverageClip=null;clip=null;
@@ -296,11 +330,21 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
         Check();if(!groupScopes.TryPeek(out var scope)||scope.Kind!=kind)throw new InvalidOperationException($"Unbalanced {kind} stack.");groupScopes.Pop();if(!scope.HasLayer)return;
         var state=groups.Pop();
         activeLayers--;
-        var layer=target;var region=dirty;canvas.Dispose();target=state.Parent;canvas=state.Canvas!;clip=state.Clip;coverageClip=state.Coverage;dirty=state.ParentDirty;originX-=state.OffsetX;originY-=state.OffsetY;
+        var layer=target;var region=dirty;var layerCanvas=canvas;
+        // A CPU layer is complete once disposed. A device layer stays alive until
+        // its effect was encoded; its pixels are then sampled in place.
+        var device=layerCanvas as IFilterBackend;
+        if(device is null)layerCanvas.Dispose();
+        target=state.Parent;canvas=state.Canvas!;clip=state.Clip;coverageClip=state.Coverage;dirty=state.ParentDirty;originX-=state.OffsetX;originY-=state.OffsetY;
+        PixelBuffer? filtered=null;
         try
         {
             if(region is null)return;
-            using var filtered=state.Filter?.Apply(layer,region.Value);
+            if(state.Filter is {} spec&&device is not null)
+                filtered=device.TryFilter(layer,region.Value,spec.SigmaX,spec.SigmaY,spec.OffsetX,spec.OffsetY,spec.Color,spec.Shadow);
+            // CPU filters and masks read or modify layer bytes.
+            if(device is not null&&(filtered is null&&state.Filter is not null||state.Mask is not null))device.SynchronizeForCpu();
+            filtered??=state.Filter?.Apply(layer,region.Value);
             var image=filtered??layer;
             if(state.Filter is {} filter)region=filter.Expand(region.Value);
             var area=new RectF(Math.Max(0,MathF.Floor(region.Value.Left)),Math.Max(0,MathF.Floor(region.Value.Top)),Math.Min(layer.Width,MathF.Ceiling(region.Value.Right)),Math.Min(layer.Height,MathF.Ceiling(region.Value.Bottom)));
@@ -317,7 +361,11 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
             Execute(new(CommandKind.DrawImage,destination,Matrix3.Identity,new(new(255,255,255,state.Opacity),CompositeMode.SourceOver))
             {Image=image,ImageSource=area,Sampling=ImageSampling.Nearest});
         }
-        finally{layer.Dispose();}
+        finally
+        {
+            try{if(device is not null)layerCanvas.Dispose();}
+            finally{filtered?.Dispose();layer.Dispose();}
+        }
     }
     public void PushLayer(Rect bounds)=>BeginGroup(GroupKind.Layer,255,null,bounds);
     public void PopLayer()=>EndGroup(GroupKind.Layer);

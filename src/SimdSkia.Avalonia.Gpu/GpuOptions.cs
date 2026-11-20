@@ -3,20 +3,23 @@ using System.Diagnostics;
 
 namespace SimdSkia.Avalonia;
 
-public enum SimdSkiaGpuBackend { Vulkan, Direct2D }
+public enum SimdSkiaGpuBackend { Vulkan, Direct2D, Metal }
 public enum SimdSkiaGpuPresentation { NativeSwapchain, FramebufferReadback }
 public enum SimdSkiaGpuTextMode { ManagedGlyphAtlas, GpuOutlines }
 
 public static class SimdSkiaGpuOptions
 {
-    /// <summary>Prefers Direct2D native presentation on Windows, Vulkan on Linux, then managed CPU.
-    /// Initialization failures and selected targets are reported in SimdSkiaGpuDiagnostics.
-    /// macOS currently uses CPU until a window Metal backend is implemented and verified.</summary>
+    /// <summary>Prefers Direct2D native presentation on Windows, Vulkan on Linux and a native
+    /// Metal layer on macOS, then managed CPU. Initialization failures and selected targets are
+    /// reported in SimdSkiaGpuDiagnostics.</summary>
     public static void UseGpuPreferred(this SimdSkiaOptions options)
     {
         ArgumentNullException.ThrowIfNull(options);options.UseCpu();
         var preference=new GpuPreference();
-        options.PreferredRenderTargetFactory=surfaces=>GpuPreferredTarget.Create(surfaces,preference);
+        options.PreferredRenderTargetFactory=(graphics,surfaces)=>GpuPreferredTarget.Create(graphics,surfaces,preference);
+        // macOS draws through a CAMetalLayer, which the host creates only when asked for Metal.
+        options.UsesPlatformGraphics=OperatingSystem.IsMacOS();
+        if(OperatingSystem.IsMacOS())options.Preparations.Add(MetalStartupPreparation.Prepare);
     }
     /// <summary>Enables hardware drawing. Direct2D defaults to a native swapchain; Vulkan uses completed-pixel framebuffer readback.</summary>
     public static void UseGpu(this SimdSkiaOptions options, SimdSkiaGpuBackend backend, bool allowCpuFallback = false, SimdSkiaGpuPresentation? presentation = null, SimdSkiaGpuTextMode textMode=SimdSkiaGpuTextMode.ManagedGlyphAtlas)
@@ -26,10 +29,20 @@ public static class SimdSkiaGpuOptions
         if(presentation.HasValue&&!Enum.IsDefined(presentation.Value))throw new ArgumentOutOfRangeException(nameof(presentation));
         if(!Enum.IsDefined(textMode))throw new ArgumentOutOfRangeException(nameof(textMode));
         if (backend == SimdSkiaGpuBackend.Direct2D && !OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("Direct2D requires Windows.");
-        if (backend == SimdSkiaGpuBackend.Vulkan && !OperatingSystem.IsWindows() && !OperatingSystem.IsLinux()) throw new PlatformNotSupportedException("This Vulkan backend supports Windows/Linux. macOS GPU/Metal is not implemented.");
+        if (backend == SimdSkiaGpuBackend.Vulkan && !OperatingSystem.IsWindows() && !OperatingSystem.IsLinux()) throw new PlatformNotSupportedException("This Vulkan backend supports Windows/Linux. Use SimdSkiaGpuBackend.Metal on macOS.");
+        if (backend == SimdSkiaGpuBackend.Metal)
+        {
+            if (!OperatingSystem.IsMacOS()) throw new PlatformNotSupportedException("Metal requires macOS.");
+            if (presentation == SimdSkiaGpuPresentation.FramebufferReadback) throw new NotSupportedException("Metal presents through the native CAMetalLayer.");
+            var preference=new GpuPreference();
+            options.CanvasBackendFactory=null;options.NativeRenderTargetFactory=null;options.UsesPlatformGraphics=true;options.Preparations.Clear();
+            options.PreferredRenderTargetFactory=(graphics,surfaces)=>GpuPreferredTarget.CreateMetal(graphics,surfaces,preference,allowCpuFallback,textMode);
+            options.Preparations.Add(MetalStartupPreparation.Prepare);
+            return;
+        }
         var selected=presentation??(backend==SimdSkiaGpuBackend.Direct2D?SimdSkiaGpuPresentation.NativeSwapchain:SimdSkiaGpuPresentation.FramebufferReadback);
         if(selected==SimdSkiaGpuPresentation.NativeSwapchain&&backend!=SimdSkiaGpuBackend.Direct2D)throw new NotSupportedException("Native swapchain presentation is currently implemented only by Direct2D on Windows.");
-        options.PreferredRenderTargetFactory=null;
+        options.PreferredRenderTargetFactory=null;options.UsesPlatformGraphics=false;options.Preparations.Clear();
         if(selected==SimdSkiaGpuPresentation.NativeSwapchain){options.NativeRenderTargetFactory=surface=>new NativeWindowTarget(surface,allowCpuFallback,textMode);options.CanvasBackendFactory=null;}
         else{options.NativeRenderTargetFactory=null;options.CanvasBackendFactory = target => new WindowGpuCanvas(target, backend, allowCpuFallback,textMode:textMode);}
     }

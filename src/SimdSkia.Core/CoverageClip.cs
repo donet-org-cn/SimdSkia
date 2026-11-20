@@ -47,6 +47,11 @@ public sealed class CoverageClip
         _=checked(left+width);_=checked(top+height);Left=left;Top=top;Width=width;Height=height;data=coverage;
         RepeatStart=repeatStart;ExtraRows=extraRows;
     }
+    /// <summary>The stored bytes: masks that share them (integer translations)
+    /// share one device upload.</summary>
+    internal object StorageIdentity=>data;
+    /// <summary>The same coverage moved by whole device pixels, without copying.</summary>
+    internal CoverageClip Offset(int dx,int dy)=>dx==0&&dy==0?this:new(checked(Left+dx),checked(Top+dy),Width,Height,data,RepeatStart,ExtraRows);
     private int RowOffset(int row) => (ExtraRows == 0 ? row : row - Math.Clamp(row - RepeatStart, 0, ExtraRows)) * Width;
     public ReadOnlySpan<byte> GetRow(int y)=>y<Top||y>=Top+Height?ReadOnlySpan<byte>.Empty:data.AsSpan(RowOffset(y-Top),Width);
     public byte At(int x,int y)=>x<Left||y<Top||x>=Left+Width||y>=Top+Height?(byte)0:data[RowOffset(y-Top)+(x-Left)];

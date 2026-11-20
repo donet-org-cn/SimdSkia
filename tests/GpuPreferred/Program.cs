@@ -291,6 +291,37 @@ if(args.Contains("--hardware"))
     for(int i=0;i<4;i++)vk.Execute(DrawingCommand.FillRectangle(new(i*8,2,i*8+3,8),Matrix3.Identity,new(new(255,0,0,255),CompositeMode.SourceOver)));
     vk.Flush();Check(vk.RectangleBatchDispatches>0&&vk.PreparedPipelineCount==count,"First rectangle batch creates no pipeline during drawing.");
 }
+// Device path coverage reused across translations must equal a fresh
+// rasterization. Inverse fills reach the target edges and are never moved.
+{
+    const int coverageWidth=64,coverageHeight=48;
+    foreach(var rule in new[]{SimdSkia.FillRule.Winding,SimdSkia.FillRule.EvenOdd,SimdSkia.FillRule.InverseWinding,SimdSkia.FillRule.InverseEvenOdd})
+    foreach(bool antialias in new[]{true,false})
+    foreach(float shift in new[]{6f,6.25f,-3f})
+    {
+        var shape=new SimdSkia.PathGeometry([new(PathVerb.Move,new(10.5f,8.25f)),new(PathVerb.Line,new(38.75f,12f)),new(PathVerb.Line,new(30f,36.5f)),new(PathVerb.Line,new(14f,30f)),new(PathVerb.Close,default)],rule);
+        DrawingCommand At(float x)=>new(CommandKind.FillPath,default,new(1,0,x,0,1,2,0,0,1),new(new(255,255,255,255),CompositeMode.SourceOver,antialias)){Path=shape};
+        var warm=new GpuCoverageCache();warm.Get(shape,At(0),coverageWidth,coverageHeight);
+        var reused=warm.Get(shape,At(shift),coverageWidth,coverageHeight);
+        var fresh=new GpuCoverageCache().Get(shape,At(shift),coverageWidth,coverageHeight);
+        int wrong=0;
+        for(int y=0;y<coverageHeight;y++)for(int x=0;x<coverageWidth;x++)if(reused.At(x,y)!=fresh.At(x,y))wrong++;
+        Check(wrong==0,$"Cached coverage {rule} aa={antialias} shift={shift}: {wrong} wrong pixels.");
+    }
+}
+// Strict GPU selection: allowCpuFallback=false surfaces the GPU failure and
+// never presents through a CPU framebuffer.
+using(var failing=new TestTarget(new COMException("Injected first-frame GPU failure")))
+{
+    int cpuCreations=0;
+    using var strict=new GpuPreferredTarget([Candidate("strict metal",()=>failing,SimdSkiaGpuBackend.Metal)],()=>{cpuCreations++;return new TestTarget();},new(),allowCpuFallback:false);
+    Throws<COMException>(()=>Paint(strict));
+    Check(cpuCreations==0&&failing.Disposals==1,"Strict GPU selection does not create a CPU framebuffer.");
+    int fallbacks=0;
+    using var empty=new GpuPreferredTarget([],()=>{fallbacks++;return new TestTarget();},new(),allowCpuFallback:false);
+    Throws<NotSupportedException>(()=>Paint(empty));
+    Check(fallbacks==0,"Strict selection without any GPU candidate does not fall back.");
+}
 Console.WriteLine($"PASS {checks} GPU preference, failure recovery, cache lifetime and upfront pipeline checks.");
 
 sealed class TestTarget(Exception? error=null):IRenderTarget,IDeviceFaultSource
