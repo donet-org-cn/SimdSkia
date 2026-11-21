@@ -43,7 +43,7 @@ internal static class TextCoverageCache
         // scrolling therefore never changes glyph shape through float cancellation.
         var local=m with {M02=m.M02-x0,M12=m.M12-y0};var key=new Key(geometry,local,command.Paint.Antialias,command.CurveTolerance);
         if(Enabled)lock(gate)if(entries.TryGetValue(key,out var node)){order.Remove(node);order.AddLast(node);mask=node.Value.Mask;return true;}
-        mask=PathRasterizer.Rasterize(geometry.Flatten(local,command.CurveTolerance),geometry.FillRule,w,h,command.Paint.Antialias,compactRuns:true);
+        mask=PathRasterizer.Rasterize(geometry,local,command.CurveTolerance,w,h,command.Paint.Antialias,compactRuns:true);
         long size=mask.Data.LongLength+(long)mask.Runs.Length*16+(long)geometry.SegmentCount*32;
         if(!Enabled||size>ByteLimit||EntryLimit<=0||Interlocked.Increment(ref uses.GetValue(geometry,static _=>new()).Count)<2)return true;
         lock(gate)

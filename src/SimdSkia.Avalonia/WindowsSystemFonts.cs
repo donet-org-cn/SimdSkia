@@ -19,7 +19,7 @@ internal static partial class WindowsSystemFonts
     private static readonly HashSet<string> StyleWords=new(StringComparer.OrdinalIgnoreCase)
     {"Regular","Bold","Italic","Oblique","Light","Semilight","Semibold","Black","ExtraLight","ExtraBold"};
 
-    internal static (string DefaultFamily,string[] Files) Discover()
+    internal static (string DefaultFamily,string[] Files,string[] Fallbacks) Discover()
     {
         string family=GetMessageFontFamily();
         var fonts=new Dictionary<string,string>(StringComparer.OrdinalIgnoreCase);
@@ -36,9 +36,10 @@ internal static partial class WindowsSystemFonts
         var fallbacks=available.Where(path=>
             FallbackPriority(Path.GetFileName(path))>=3||Path.GetFileName(path).StartsWith(cjk??"\0",StringComparison.OrdinalIgnoreCase))
             .OrderBy(path=>FallbackPriority(Path.GetFileName(path))).ThenBy(path=>path,StringComparer.OrdinalIgnoreCase);
-        // Resolve only the interface family and a bounded set of fallback families. Do not
-        // eagerly parse every installed font, or include unsupported Windows color/variable fonts.
-        return (family,primary.Concat(fallbacks).Distinct(StringComparer.OrdinalIgnoreCase).ToArray());
+        var files=primary.Concat(fallbacks).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
+        var candidates=fonts.Values.Except(files,StringComparer.OrdinalIgnoreCase)
+            .Order(StringComparer.OrdinalIgnoreCase).ToArray();
+        return (family,files,candidates);
     }
 
     private static int FallbackPriority(string file)=>file.StartsWith("msyh",StringComparison.OrdinalIgnoreCase)?0:

@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 using Avalonia.Metal;
 using Avalonia.Platform;
 using Avalonia.Platform.Surfaces;
+using SimdSkia.Gpu;
 
 namespace SimdSkia.Avalonia;
 
@@ -35,14 +36,14 @@ internal sealed class GpuPreferredTarget : IRenderTarget
 
     internal static IRenderTarget Create(IReadOnlyList<IPlatformRenderSurface> surfaces,GpuPreference preference)=>Create(null,surfaces,preference);
 
-    // macOS: the native Metal layer, created eagerly because the host binds a
+    // Apple hosts: the native Metal layer, created eagerly because the host binds a
     // surface render target where render targets are created; CPU framebuffer
     // presentation remains the fallback.
     internal static IRenderTarget CreateMetal(IPlatformGraphicsContext? graphics,IReadOnlyList<IPlatformRenderSurface> surfaces,GpuPreference preference,bool allowCpuFallback,SimdSkiaGpuTextMode textMode=SimdSkiaGpuTextMode.ManagedGlyphAtlas)
     {
         var framebuffer=surfaces.OfType<IFramebufferPlatformSurface>().FirstOrDefault();
         MetalWindowTarget? metal=null;
-        if(OperatingSystem.IsMacOS()&&graphics is IMetalDevice device&&surfaces.OfType<IMetalPlatformSurface>().FirstOrDefault() is {} layer&&preference.Allows(SimdSkiaGpuBackend.Metal))
+        if(MetalDevice.IsSupportedPlatform&&graphics is IMetalDevice device&&surfaces.OfType<IMetalPlatformSurface>().FirstOrDefault() is {} layer&&preference.Allows(SimdSkiaGpuBackend.Metal))
         {
             try{metal=new MetalWindowTarget(device,layer,allowCpuFallback,textMode);}
             catch(Exception error) when(error is NotSupportedException or PlatformNotSupportedException or InvalidCastException or ExternalException or ArgumentException or (InvalidOperationException and not ObjectDisposedException))
@@ -63,7 +64,7 @@ internal sealed class GpuPreferredTarget : IRenderTarget
 
     internal static IRenderTarget Create(IPlatformGraphicsContext? graphics,IReadOnlyList<IPlatformRenderSurface> surfaces,GpuPreference preference)
     {
-        if(OperatingSystem.IsMacOS())return CreateMetal(graphics,surfaces,preference,true);
+        if(MetalDevice.IsSupportedPlatform)return CreateMetal(graphics,surfaces,preference,true);
         var framebuffer=surfaces.OfType<IFramebufferPlatformSurface>().FirstOrDefault();
         var native=surfaces.OfType<INativePlatformHandleSurface>().FirstOrDefault();
         IRenderTarget Cpu()=>new FramebufferTarget((framebuffer??throw new NotSupportedException("GPU fallback requires an OS framebuffer surface.")).CreateFramebufferRenderTarget());

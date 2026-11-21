@@ -206,8 +206,37 @@ internal sealed partial class DrawingContext:IDrawingContextImplWithEffects
         var glyph=(GlyphRun)run;var origin=run.BaselineOrigin;
         var matrix=ApplyOrigin(Matrix.CreateTranslation(origin.X,origin.Y)*transform*dpiTransform);
         bool textAa=textOptions.TextRenderingMode==TextRenderingMode.Unspecified?Antialias:textOptions.TextRenderingMode!=TextRenderingMode.Alias;
-        using var paint=CreatePaint(brush,ConvertTo.Rect(glyph.Glyphs.Bounds),textAa);
-        Execute(new(CommandKind.DrawGlyphRun,default,matrix,paint.Paint){GlyphRun=glyph.Glyphs,TextMaskPreblend=true,SnapGlyphBaseline=textOptions.BaselinePixelAlignment!=BaselinePixelAlignment.Unaligned});
+        using var paint=CreatePaint(brush,ConvertTo.Rect(glyph.LocalInkBounds),textAa);
+        var command=new DrawingCommand(CommandKind.DrawGlyphRun,default,matrix,paint.Paint)
+            {GlyphRun=glyph.Glyphs,TextMaskPreblend=true,SnapGlyphBaseline=textOptions.BaselinePixelAlignment!=BaselinePixelAlignment.Unaligned};
+        if(glyph.LayerDraws is not {} layers){Execute(command);return;}
+        foreach(var layer in layers)
+        {
+            var layerPaint=paint.Paint;
+            if(layer.Bitmap is {} bitmap)
+            {
+                DrawGlyphBitmap(bitmap,(float)glyph.FontRenderingEmSize,command,layerPaint.Color.A);
+                continue;
+            }
+            if(layer.Color is {} color)layerPaint=new(color with {A=PixelBuffer.Multiply(color.A,layerPaint.Color.A)},layerPaint.Composite,textAa);
+            Execute(command with {GlyphRun=layer.Geometry,Paint=layerPaint});
+        }
+    }
+    private void DrawGlyphBitmap(GlyphRun.BitmapDraw draw,float size,in DrawingCommand glyph,byte opacity)
+    {
+        if(opacity==0)return;
+        var m=glyph.Transform;
+        if(!m.IsAffine)throw new NotSupportedException("Glyph transforms must be affine.");
+        float ppem=size*MathF.Sqrt(m.M01*m.M01+m.M11*m.M11);
+        var bitmap=ppem==size?draw.Bitmap:draw.Font.GetBitmapGlyph(draw.Glyph,ppem)??draw.Bitmap;
+        using var lease=BitmapGlyphCache.Acquire(draw.Font,bitmap);
+        var origin=m.Map(draw.Position.X,draw.Position.Y);
+        float snapX=glyph.Paint.Antialias?4:1,snapY=snapX;
+        if(glyph.SnapGlyphBaseline){if(m.M10==0)snapY=1;else if(m.M00==0)snapX=1;}
+        m=m with {M02=MathF.Floor(origin.X*snapX+.5f)/snapX,M12=MathF.Floor(origin.Y*snapY+.5f)/snapY};
+        var destination=bitmap.Bounds(size,draw.OutlineOrigin);
+        Execute(new(CommandKind.DrawImage,destination,m,new(new(255,255,255,opacity),glyph.Paint.Composite,glyph.Paint.Antialias))
+        {Image=lease.Image,ImageIsImmutable=true,ImageContentVersion=1,Sampling=glyph.Paint.Antialias?ImageSampling.Bilinear:ImageSampling.Nearest});
     }
     private CompositeMode BitmapComposite=>renderOptions.BitmapBlendingMode switch {BitmapBlendingMode.Unspecified or BitmapBlendingMode.SourceOver=>CompositeMode.SourceOver,BitmapBlendingMode.Source=>CompositeMode.Source,_=>throw new NotSupportedException($"Bitmap blend {renderOptions.BitmapBlendingMode} is not implemented.")};
     internal static ImageSampling Sampling(BitmapInterpolationMode mode)=>mode switch {BitmapInterpolationMode.None=>ImageSampling.Nearest,BitmapInterpolationMode.Unspecified or BitmapInterpolationMode.LowQuality or BitmapInterpolationMode.MediumQuality=>ImageSampling.Bilinear,BitmapInterpolationMode.HighQuality=>ImageSampling.Mitchell,_=>throw new NotSupportedException("Unknown interpolation mode.")};

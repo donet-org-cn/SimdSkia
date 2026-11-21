@@ -57,7 +57,7 @@ internal sealed class WindowGpuCanvas : ICanvasBackend, ILayerBackendProvider, I
         {
             if (kind == SimdSkiaGpuBackend.Metal)
             {
-                if (!OperatingSystem.IsMacOS()||metal is null) throw new PlatformNotSupportedException("Metal window drawing requires a macOS Metal device.");
+                if (!MetalDevice.IsSupportedPlatform||metal is null) throw new PlatformNotSupportedException("Metal window drawing requires a Metal device.");
                 var canvas = new MetalCanvas(metal,this.target); initializing=hardware = canvas;
                 if (!canvas.IsShared) throw new NotSupportedException("Metal window targets must be shared device pixels.");
                 this.metal = metal;
@@ -106,7 +106,15 @@ internal sealed class WindowGpuCanvas : ICanvasBackend, ILayerBackendProvider, I
         if(textMode==SimdSkiaGpuTextMode.ManagedGlyphAtlas&&command.Kind==CommandKind.DrawGlyphRun&&command.TextPixelGeometry is not (1 or 2)&&command.Paint.Blender is null&&command.Paint.FloatingColor is null&&!command.Paint.Dither&&command.Paint.Shader is null&&command.Paint.ColorFilter is null&&command.Paint.ImageFilter is null&&command.Paint.MaskFilter is null&&command.Paint.Composite==CompositeMode.SourceOver&&DrawTextAtlas(command))return;
         string? unsupported = command.Paint.Shader is not null and not LinearGradient ? "brush shader" : null;
         if(command.Paint.Shader is {} shader&&shader.TryGetLinearGradient(out var linear)&&linear is not null)
-            unsupported=linear.Stops.Length>(kind switch{SimdSkiaGpuBackend.Direct2D=>256,SimdSkiaGpuBackend.Metal=>16,_=>32})||!linear.HasUnitStops?"gradient stop limits":null;
+            unsupported=!linear.HasUnitStops?"gradient stop offsets":null;
+        else if(kind==SimdSkiaGpuBackend.Direct2D&&command.Paint.Shader is INativeRadialGradient {Direct2DGradient:not null})
+            unsupported=null;
+        else if(kind==SimdSkiaGpuBackend.Direct2D&&OperatingSystem.IsWindows()&&Direct2DCanvas.TryResolveTile(command,out _,out _))
+            unsupported=null;
+        else if(kind is SimdSkiaGpuBackend.Vulkan or SimdSkiaGpuBackend.Metal&&ComputeGradient.CanDraw(command))
+            unsupported=null;
+        else if(kind is SimdSkiaGpuBackend.Vulkan or SimdSkiaGpuBackend.Metal&&ComputeTilePlacement.TryResolve(command,out _,out _))
+            unsupported=null;
         if (kind == SimdSkiaGpuBackend.Metal)
         {
             if (!command.Transform.IsAffine||command.ShaderTransform is {IsAffine:false}) unsupported = "perspective";

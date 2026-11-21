@@ -60,7 +60,91 @@ internal static class FontDiscoveryValidation
             Check(face!.TryGetStream(out var standalone),"A valid face can be exported from a partially invalid TTC.");
             standalone!.Dispose();
         }
+        CheckSupplementaryFallback(parent,fixture,Check);
         return checks;
+    }
+
+    private static void CheckSupplementaryFallback(string parent,byte[] fixture,Action<bool,string> check)
+    {
+        var dir=Directory.CreateDirectory(Path.Combine(parent,"supplementary-fallback")).FullName;
+        string Write(string file,string family,int codepoint,ushort glyph,bool format12=false)
+        {
+            string path=Path.Combine(dir,file);
+            var bytes=WithName(fixture,3,1,0x409,Encoding.BigEndianUnicode.GetBytes(family));
+            SetCharacterMap(bytes,codepoint,glyph,format12);
+            File.WriteAllBytes(path,bytes);
+            return path;
+        }
+        string primary=Write("00-ui.ttf","Fixture UI",'A',3);
+        string noGlyph=Write("10-no-glyph.ttf","No Glyph",0x2713,0);
+        string badGlyph=Write("11-bad-glyph.ttf","Bad Glyph",0x2713,65535);
+        string disappears=Write("12-removed.ttf","Removed Symbols",0x2713,5);
+        string symbol=Write("13-symbols.ttf","Fallback Symbols",0x2713,6);
+        string music=Write("21-music.ttf","Fallback Music",0x1d11e,4,format12:true);
+        string traditional=Write("30-tc.ttf","Fixture TC",'中',3);
+        string simplified=Write("31-sc.ttf","Fixture SC",'中',4);
+        var hans=CultureInfo.GetCultureInfo("zh-CN");
+        var hant=CultureInfo.GetCultureInfo("zh-HK");
+        var discovered=UnixSystemFonts.DiscoverWithFallbacks([dir],"Fixture UI",hans);
+        check(discovered.Primary.Files.SequenceEqual([primary,simplified])&&discovered.Fallbacks.Contains(traditional),
+            "Automatic system discovery retains supplementary sources outside the UI/CJK selection.");
+        var manager=new SimdSkia.Avalonia.FontManager(discovered.Primary.Files,discovered.Primary.DefaultFamily,true,discovered.Fallbacks);
+        check(!manager.SupplementaryIndexCreated&&manager.LoadedFaceCount==0,"Supplementary metadata is deferred at startup.");
+        check(Match(manager,'A',"Fixture UI",hans)=="Fixture UI"&&!manager.SupplementaryIndexCreated,
+            "Common primary glyphs do not initialize the supplementary index.");
+        check(manager.GetInstalledFontFamilyNames().Contains("Fallback Music")&&manager.LoadedFaceCount==1,
+            "Enumerating supplementary families does not load their outlines.");
+        File.Delete(disappears);
+        check(Match(manager,'\u2714',"Fixture UI",hans) is null&&manager.LoadedFaceCount==2,
+            "A missing symbol does not open outlines of supplementary faces on the same page.");
+        check(Match(manager,'\u2713',"Fixture UI",hans)=="Fallback Symbols"&&manager.LoadedFaceCount==3,
+            "The format-4 glyph fallback skips zero glyphs, invalid indices and removed fonts.");
+        check(Match(manager,0x1d11e,null,hans)=="Fallback Music"&&manager.LoadedFaceCount==4,
+            "Supplementary Unicode format-12 glyphs resolve without eagerly loading other faces.");
+        check(Match(manager,'中',null,hant)=="Fixture TC"&&Match(manager,'中',null,hans)=="Fixture SC",
+            "Text culture can select a supplementary TC file even when SC was selected at startup.");
+        check(Match(manager,'中',"Fixture TC",hans)=="Fixture TC","Explicit supplementary CJK fonts take priority.");
+        check(manager.TryGetFamilyTypefaces("Fallback Symbols",out var styles)&&styles.Count==1,
+            "Supplementary family styles are available from metadata.");
+        check(manager.TryCreateGlyphTypeface("Fallback Symbols",FontStyle.Normal,FontWeight.Normal,FontStretch.Normal,out var direct),
+            "Supplementary families are selectable directly.");
+        using(direct)
+        {
+            check(direct!.TryGetStream(out var stream),"Fallback exports the original font.");
+            using(stream) check(stream!.Length==fixture.Length,"Fallback exports the complete font.");
+        }
+        var explicitFiles=new SimdSkia.Avalonia.FontManager([primary]);
+        check(Match(explicitFiles,'\u2713',null,hans) is null,"Explicit FontFiles remain isolated from the installed catalogue.");
+    }
+
+    private static void SetCharacterMap(byte[] font,int codepoint,ushort glyph,bool format12)
+    {
+        int count=BinaryPrimitives.ReadUInt16BigEndian(font.AsSpan(4));
+        for(int i=0;i<count;i++)
+        {
+            var entry=font.AsSpan(12+i*16,16);
+            if(!entry[..4].SequenceEqual("cmap"u8))continue;
+            int offset=(int)BinaryPrimitives.ReadUInt32BigEndian(entry[8..]);
+            var table=font.AsSpan(offset,44);
+            table.Clear();
+            static void U16(Span<byte> data,int at,int value)=>BinaryPrimitives.WriteUInt16BigEndian(data[at..],(ushort)value);
+            static void U32(Span<byte> data,int at,int value)=>BinaryPrimitives.WriteUInt32BigEndian(data[at..],(uint)value);
+            U16(table,2,1);U16(table,4,3);U16(table,6,format12?10:1);U32(table,8,12);
+            var sub=table[12..];
+            if(format12)
+            {
+                U16(sub,0,12);U32(sub,4,28);U32(sub,12,1);
+                U32(sub,16,codepoint);U32(sub,20,codepoint);U32(sub,24,glyph);
+            }
+            else
+            {
+                U16(sub,0,4);U16(sub,2,32);U16(sub,6,4);U16(sub,8,4);U16(sub,10,1);
+                U16(sub,14,codepoint);U16(sub,16,65535);U16(sub,20,codepoint);U16(sub,22,65535);
+                U16(sub,24,glyph-codepoint);U16(sub,26,1);
+            }
+            return;
+        }
+        throw new InvalidOperationException("Fixture has no cmap table.");
     }
 
     private static string? Match(SimdSkia.Avalonia.FontManager manager,int codepoint,string? family,CultureInfo culture)

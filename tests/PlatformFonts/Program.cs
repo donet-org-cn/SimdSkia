@@ -12,6 +12,11 @@ if(args is ["--installed-fallback"])
     FootprintBench.Installed();
     return;
 }
+if(args is ["--color-bitmap-font",var colorFont])
+{
+    BitmapFontValidation.CheckInstalled(colorFont);
+    return;
+}
 string fixture = Path.GetFullPath(args.FirstOrDefault() ?? "baseline/fonts/ZCOOLXiaoWei-Regular.ttf");
 byte[] bytes = File.ReadAllBytes(fixture);
 var font = new TrueTypeFont(bytes);
@@ -48,6 +53,7 @@ try
     var again = UnixSystemFonts.Discover([temp]);
     Check(again.Files.SequenceEqual(found.Files) && again.DefaultFamily == found.DefaultFamily, "Discovery order is deterministic.");
     checks += FontDiscoveryValidation.Run(temp,bytes);
+    checks += BitmapFontValidation.Run(temp,valid);
     byte[] boldBytes=(byte[])bytes.Clone();
     int tableCount=BinaryPrimitives.ReadUInt16BigEndian(boldBytes.AsSpan(4));bool changed=false;
     for(int i=0;i<tableCount;i++)

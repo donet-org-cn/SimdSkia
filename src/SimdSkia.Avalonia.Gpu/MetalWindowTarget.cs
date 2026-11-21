@@ -5,8 +5,8 @@ using SimdSkia.Gpu;
 
 namespace SimdSkia.Avalonia;
 
-// macOS window presentation through the host's CAMetalLayer (Avalonia.Native
-// Metal mode). The scene is drawn into a retained unified-memory RGBA buffer
+// Window presentation through the Apple host's CAMetalLayer. The scene
+// is drawn into a retained unified-memory RGBA buffer
 // (GPU draws, managed CPU fallback, device layers and effects all share it),
 // then a render pass copies it into the frame's drawable. The CPU never waits
 // for the GPU unless a CPU fallback must touch pixels the GPU is drawing.
@@ -42,7 +42,7 @@ internal sealed class MetalWindowTarget : IRenderTarget, IDeviceFaultSource
     // surface target must exist before the first frame is drawn.
     internal MetalWindowTarget(IMetalDevice graphics,IMetalPlatformSurface surface,bool fallback,SimdSkiaGpuTextMode textMode=SimdSkiaGpuTextMode.ManagedGlyphAtlas)
     {
-        if(!OperatingSystem.IsMacOS())throw new PlatformNotSupportedException("Metal presentation requires macOS.");
+        if(!MetalDevice.IsSupportedPlatform)throw new PlatformNotSupportedException("Metal presentation requires macOS or iOS.");
         // Diagnostics: SIMDSKIA_METAL_FAIL=init|draw exercises the CPU fallback.
         if(FailureInjection=="init")throw new NotSupportedException("Injected Metal initialization failure (SIMDSKIA_METAL_FAIL=init).");
         this.graphics=graphics;this.fallback=fallback;this.textMode=textMode;

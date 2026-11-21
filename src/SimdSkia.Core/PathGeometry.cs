@@ -166,52 +166,66 @@ public sealed class PathGeometry
     private static bool Finite(PointF p)=>float.IsFinite(p.X)&&float.IsFinite(p.Y);
     public PointF[][] Flatten(Matrix3 matrix,float tolerance=0.125f)
     {
+        using var flattened = FlattenForRasterization(matrix, tolerance);
+        var result = new PointF[flattened.ContourCount][];
+        for (int i = 0; i < result.Length; i++) result[i] = flattened.Contour(i).ToArray();
+        return result;
+    }
+
+    internal FlattenedPath FlattenForRasterization(Matrix3 matrix,float tolerance)
+    {
         if(!float.IsFinite(tolerance)||tolerance<=0)throw new ArgumentOutOfRangeException(nameof(tolerance));
         if(!matrix.IsFinite||!matrix.IsAffine) throw new NotSupportedException("Path rasterization requires a finite affine transform.");
         PointF Map(PointF p) { var v=matrix.Map(p.X,p.Y); var mapped=new PointF(v.X,v.Y); if(!Finite(mapped))throw new ArgumentException("Transformed path exceeds finite range."); return mapped; }
-        if (rectangleContours is not null)
+        var points = new FlattenedPath();
+        try
         {
-            var result = new PointF[rectangleContours.Length][];
-            for (int i = 0; i < result.Length; i++)
+            if (rectangleContours is not null)
             {
-                var r = rectangleContours[i];
-                var a = Map(new(r.Left,r.Top)); var b = Map(new(r.Right,r.Top));
-                var c = Map(new(r.Right,r.Bottom)); var d = Map(new(r.Left,r.Bottom));
-                result[i] = d == a ? [a,b,c,d] : [a,b,c,d,a];
+                foreach (var r in rectangleContours)
+                {
+                    var a = Map(new(r.Left,r.Top)); var b = Map(new(r.Right,r.Top));
+                    var c = Map(new(r.Right,r.Bottom)); var d = Map(new(r.Left,r.Bottom));
+                    points.Add(a); points.Add(b); points.Add(c); points.Add(d);
+                    if (d != a) points.Add(a);
+                    points.FinishContour();
+                }
+                return points;
             }
-            return result;
-        }
-        var contours=new List<PointF[]>(); var points=new List<PointF>(); PointF current=default,start=default;
-        void Finish() { if(points.Count>0) contours.Add(points.ToArray()); points.Clear(); }
-        foreach(var s in Segments)
-        {
-            switch(s.Verb)
+
+            PointF current=default,start=default;
+            foreach(var s in Segments)
             {
-                case PathVerb.Move: Finish(); current=start=Map(s.A); points.Add(current); break;
-                case PathVerb.Line: if(points.Count==0)points.Add(current); current=Map(s.A); points.Add(current); break;
-                case PathVerb.Quadratic:
-                    if(points.Count==0)points.Add(current); var control=Map(s.A); var end=Map(s.B);
-                    Quad(current,control,end,points,tolerance,0); current=end; break;
-                case PathVerb.Cubic:
-                    if(points.Count==0)points.Add(current); var b=Map(s.A);var c=Map(s.B);var d=Map(s.C);
-                    Cubic(current,b,c,d,points,tolerance,0);current=d;break;
-                case PathVerb.Conic:
-                    if(points.Count==0)points.Add(current);var conicControl=Map(s.A);var conicEnd=Map(s.B);double w=s.ConicWeight;
-                    RationalQuad((current.X,current.Y,1),(w*conicControl.X,w*conicControl.Y,w),(conicEnd.X,conicEnd.Y,1),points,Math.Min(tolerance,1f/64),0);
-                    current=conicEnd;break;
-                case PathVerb.Close: if(points.Count>0&&points[^1]!=start)points.Add(start); current=start; Finish(); break;
-                default: throw new NotSupportedException("Unknown path verb.");
+                switch(s.Verb)
+                {
+                    case PathVerb.Move: points.FinishContour(); current=start=Map(s.A); points.Add(current); break;
+                    case PathVerb.Line: if(points.CurrentCount==0)points.Add(current); current=Map(s.A); points.Add(current); break;
+                    case PathVerb.Quadratic:
+                        if(points.CurrentCount==0)points.Add(current); var control=Map(s.A); var end=Map(s.B);
+                        Quad(current,control,end,points,tolerance,0); current=end; break;
+                    case PathVerb.Cubic:
+                        if(points.CurrentCount==0)points.Add(current); var b=Map(s.A);var c=Map(s.B);var d=Map(s.C);
+                        Cubic(current,b,c,d,points,tolerance,0);current=d;break;
+                    case PathVerb.Conic:
+                        if(points.CurrentCount==0)points.Add(current);var conicControl=Map(s.A);var conicEnd=Map(s.B);double w=s.ConicWeight;
+                        RationalQuad((current.X,current.Y,1),(w*conicControl.X,w*conicControl.Y,w),(conicEnd.X,conicEnd.Y,1),points,Math.Min(tolerance,1f/64),0);
+                        current=conicEnd;break;
+                    case PathVerb.Close: if(points.CurrentCount>0&&points.Last!=start)points.Add(start); current=start; points.FinishContour(); break;
+                    default: throw new NotSupportedException("Unknown path verb.");
+                }
+                if(points.CurrentCount>1_000_000)throw new InvalidOperationException("Path subdivision limit exceeded.");
             }
-            if(points.Count>1_000_000)throw new InvalidOperationException("Path subdivision limit exceeded.");
+            points.FinishContour();
+            return points;
         }
-        Finish(); return contours.ToArray();
+        catch { points.Dispose(); throw; }
     }
-    private static void RationalQuad((double X,double Y,double W) a,(double X,double Y,double W) b,(double X,double Y,double W) c,List<PointF> output,float tolerance,int depth)
+    private static void RationalQuad((double X,double Y,double W) a,(double X,double Y,double W) b,(double X,double Y,double W) c,FlattenedPath output,float tolerance,int depth)
     {
         static PointF Project((double X,double Y,double W) p)=>new((float)(p.X/p.W),(float)(p.Y/p.W));
         var start=Project(a);var control=Project(b);var end=Project(c);
         if(Distance(control,start,end)<=tolerance){output.Add(end);return;}
-        if(depth>=24||output.Count>=1_000_000)throw new InvalidOperationException("Conic subdivision limit exceeded.");
+        if(depth>=24||output.CurrentCount>=1_000_000)throw new InvalidOperationException("Conic subdivision limit exceeded.");
         var ab=((a.X+b.X)*.5,(a.Y+b.Y)*.5,(a.W+b.W)*.5);var bc=((b.X+c.X)*.5,(b.Y+c.Y)*.5,(b.W+c.W)*.5);
         var middle=((ab.Item1+bc.Item1)*.5,(ab.Item2+bc.Item2)*.5,(ab.Item3+bc.Item3)*.5);
         RationalQuad(a,ab,middle,output,tolerance,depth+1);RationalQuad(middle,bc,c,output,tolerance,depth+1);
@@ -222,14 +236,14 @@ public sealed class PathGeometry
         float t=lengthSquared==0?0:Math.Clamp(((p.X-a.X)*dx+(p.Y-a.Y)*dy)/lengthSquared,0,1);
         float x=p.X-a.X-t*dx,y=p.Y-a.Y-t*dy;return MathF.Sqrt(x*x+y*y);
     }
-    private static void Quad(PointF a,PointF b,PointF c,List<PointF> output,float tolerance,int depth)
+    private static void Quad(PointF a,PointF b,PointF c,FlattenedPath output,float tolerance,int depth)
     {
         if(Distance(b,a,c)<=tolerance) { output.Add(c);return; }
         if(depth>=20)throw new InvalidOperationException("Quadratic subdivision limit exceeded.");
         var ab=(a+b)*0.5f;var bc=(b+c)*0.5f;var mid=(ab+bc)*0.5f;
         Quad(a,ab,mid,output,tolerance,depth+1);Quad(mid,bc,c,output,tolerance,depth+1);
     }
-    private static void Cubic(PointF a,PointF b,PointF c,PointF d,List<PointF> output,float tolerance,int depth)
+    private static void Cubic(PointF a,PointF b,PointF c,PointF d,FlattenedPath output,float tolerance,int depth)
     {
         if(MathF.Max(Distance(b,a,d),Distance(c,a,d))<=tolerance){output.Add(d);return;}
         if(depth>=20)throw new InvalidOperationException("Cubic subdivision limit exceeded.");

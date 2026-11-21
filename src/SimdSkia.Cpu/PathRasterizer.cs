@@ -5,7 +5,10 @@ using System.Runtime.CompilerServices;
 namespace SimdSkia.Cpu;
 
 internal readonly record struct CoverageRun(int Y,int X,int Length,byte Coverage);
-internal sealed record CoverageMask(int Left,int Top,int Width,int Height,byte[] Data,CoverageRun[] Runs,bool Dense=false);
+internal sealed record CoverageMask(int Left,int Top,int Width,int Height,byte[] Data,CoverageRun[] RunArray,bool Dense=false,int RunCount=-1)
+{
+    internal ReadOnlySpan<CoverageRun> Runs=>RunCount<0?RunArray:RunArray.AsSpan(0,RunCount);
+}
 
 public static class PathRasterizer
 {
@@ -39,14 +42,35 @@ public static class PathRasterizer
         for(int y=0;y<mask.Height;y++)mask.Data.AsSpan(y*mask.Width,mask.Width).CopyTo(output.AsSpan((y+mask.Top)*width+mask.Left,mask.Width));
         return output;
     }
+
+    private readonly struct Contours(PointF[][]? arrays, FlattenedPath? flattened)
+    {
+        public int Count => arrays?.Length ?? flattened!.ContourCount;
+        public ReadOnlySpan<PointF> this[int index] => arrays is null ? flattened!.Contour(index) : arrays[index];
+    }
+
+    internal static CoverageMask Rasterize(PathGeometry geometry, Matrix3 transform, float tolerance,
+        int width, int height, bool antialias, RectF? clip = null, bool compactRuns = false,
+        bool aliasedHalfUp = true, bool includeRuns = true, RasterCoverageStorage? storage = null)
+    {
+        using var flattened = geometry.FlattenForRasterization(transform, tolerance);
+        return Rasterize(new Contours(null, flattened), geometry.FillRule, width, height, antialias, clip,
+            compactRuns, aliasedHalfUp, includeRuns, storage);
+    }
+
+    internal static CoverageMask Rasterize(PointF[][] contours,FillRule rule,int width,int height,bool antialias,
+        RectF? clip=null,bool compactRuns=false,bool aliasedHalfUp=true,bool includeRuns=true)
+        => Rasterize(new Contours(contours, null),rule,width,height,antialias,clip,compactRuns,aliasedHalfUp,includeRuns,null);
+
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    internal static CoverageMask Rasterize(PointF[][] contours,FillRule rule,int width,int height,bool antialias,RectF? clip=null,bool compactRuns=false,bool aliasedHalfUp=true,bool includeRuns=true)
+    private static CoverageMask Rasterize(Contours contours,FillRule rule,int width,int height,bool antialias,RectF? clip,
+        bool compactRuns,bool aliasedHalfUp,bool includeRuns,RasterCoverageStorage? storage)
     {
         bool inverse=rule is FillRule.InverseEvenOdd or FillRule.InverseWinding;
         bool odd=rule is FillRule.EvenOdd or FillRule.InverseEvenOdd;
         float minX=width,minY=height,maxX=0,maxY=0;
         int edgeCount=0;
-        foreach(var contour in contours)foreach(var p in contour)
+        for (int i = 0; i < contours.Count; i++) foreach(var p in contours[i])
         {minX=MathF.Min(minX,p.X);maxX=MathF.Max(maxX,p.X);minY=MathF.Min(minY,p.Y);maxY=MathF.Max(maxY,p.Y);edgeCount++;}
         if(inverse){minX=0;minY=0;maxX=width;maxY=height;}
         if(clip is {} c){minX=MathF.Max(minX,c.Left);maxX=MathF.Min(maxX,c.Right);minY=MathF.Max(minY,c.Top);maxY=MathF.Min(maxY,c.Bottom);}
@@ -55,13 +79,18 @@ public static class PathRasterizer
         int w=Math.Max(0,x1-x0),h=Math.Max(0,y1-y0);
         if(w==0||h==0)return new(x0,y0,0,0,[],[]);
         double edgeHeight=0;
-        if(compactRuns)foreach(var contour in contours)for(int i=0;i<contour.Length;i++)
+        if(compactRuns)for (int contourIndex = 0; contourIndex < contours.Count; contourIndex++)
         {
-            var a=contour[i];var b=contour[(i+1)%contour.Length];
-            edgeHeight+=Math.Max(0,Math.Min(y1,Math.Max(a.Y,b.Y))-Math.Max(y0,Math.Min(a.Y,b.Y)));
+            var contour = contours[contourIndex];
+            for(int i=0;i<contour.Length;i++)
+            {
+                var a=contour[i];var b=contour[(i+1)%contour.Length];
+                edgeHeight+=Math.Max(0,Math.Min(y1,Math.Max(a.Y,b.Y))-Math.Max(y0,Math.Min(a.Y,b.Y)));
+            }
         }
         bool sparse=compactRuns&&edgeHeight/h<=8;
-        var output=sparse?Array.Empty<byte>():new byte[checked(w*h)];
+        int pixelCount=sparse?0:checked(w*h);
+        var output=sparse?Array.Empty<byte>():storage?.RentCoverage(pixelCount)??new byte[pixelCount];
         List<CoverageRun>? sparseRuns=null;
         Edge[]? rentedEdges=null;int[]? rentedActive=null;Crossing[]? rentedCrossings=null;
         int[]? rentedRow=null;int[]? rentedDelta=null;ulong[]? rentedEvents=null;
@@ -80,8 +109,9 @@ public static class PathRasterizer
         {
             if(sparse)sparseRuns=RentRuns();
             int n=0;
-            foreach(var contour in contours)
+            for (int i = 0; i < contours.Count; i++)
             {
+                var contour = contours[i];
                 if(contour.Length<2)continue;
                 for(int j=0;j<contour.Length;j++)
                 {var a=contour[j];var b=contour[(j+1)%contour.Length];if(a.Y!=b.Y)edges[n++]=new(a,b,MathF.Min(a.Y,b.Y),MathF.Max(a.Y,b.Y));}
@@ -151,7 +181,14 @@ public static class PathRasterizer
                 else for(int x=0;x<w;x++)
                 {accumulated+=delta[x];output[(y-y0)*w+x]=(byte)(((row[x]+accumulated)*255+round)>>totalShift);}
             }
-            if(sparse)return new(x0,y0,w,h,[],sparseRuns!.ToArray());
+            if(sparse)
+            {
+                var collected=sparseRuns!;
+                var rented=storage?.RentRuns(collected.Count);
+                if(rented is null)return new(x0,y0,w,h,[],collected.ToArray());
+                collected.CopyTo(rented);
+                return new(x0,y0,w,h,[],rented,RunCount:collected.Count);
+            }
         }
         finally
         {
@@ -169,7 +206,7 @@ public static class PathRasterizer
         int runCount=0;
         if(compactRuns)
         {
-            int limit=output.Length/16;
+            int limit=pixelCount/16;
             for(int y=0;y<h;y++)for(int x=0;x<w;)
             {
                 byte coverage=output[y*w+x];int end=x+1;
@@ -178,7 +215,7 @@ public static class PathRasterizer
                 x=end;
             }
         }
-        var exact=compactRuns?(runCount==0?Array.Empty<CoverageRun>():new CoverageRun[runCount]):null;
+        var exact=compactRuns?(runCount==0?Array.Empty<CoverageRun>():storage?.RentRuns(runCount)??new CoverageRun[runCount]):null;
         var scratch=compactRuns?null:RentRuns();
         int written=0;
         try
@@ -196,7 +233,8 @@ public static class PathRasterizer
                 x=end;
             }
             // The cached mask owns its runs independently of the scratch list.
-            return new(x0,y0,w,h,compactRuns?[]:output,exact??scratch!.ToArray());
+            if(compactRuns)storage?.ReturnCoverage();
+            return new(x0,y0,w,h,compactRuns?[]:output,exact??scratch!.ToArray(),RunCount:compactRuns?runCount:-1);
         }
         finally { ReturnRuns(scratch); }
     }

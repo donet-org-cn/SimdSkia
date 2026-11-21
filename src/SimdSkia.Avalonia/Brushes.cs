@@ -25,7 +25,7 @@ internal static class BrushFactory
     }
     internal static byte Opacity(double value)
     {if(!double.IsFinite(value)||value<0||value>1)throw new ArgumentOutOfRangeException(nameof(value));return(byte)Math.Round(value*255);}
-    private sealed class Gradient:IColorShader
+    private sealed class Gradient:IColorShader,INativeRadialGradient,IComputeGradientShader
     {
         private readonly (double Offset,Rgba32 Color)[] stops;
         private readonly (double Offset,Rgba32 Color)[] originalStops;
@@ -38,10 +38,78 @@ internal static class BrushFactory
         private readonly double rx,ry,angle;
         private readonly int kind;
         private LinearGradientDescription? linearDescription;
+        private RadialGradientDescription? radialDescription;
+        private ComputeGradient? computeDescription;
+        public ComputeGradient? ComputeGradient
+        {
+            get
+            {
+                // Float32 can choose the wrong side of a discontinuous seam.
+                // Keep repeat radii and hard stops on the exact managed sampler.
+                if(kind==0||stops.Length==0||kind==1&&spread==GradientSpreadMethod.Repeat||
+                    stops[0].Offset<0||stops[^1].Offset>1)return null;
+                if(computeDescription is not null)return computeDescription;
+                var centerPoint=new PointF((float)center.X,(float)center.Y);
+                var transform=ConvertTo.Matrix(inverse);
+                if(!float.IsFinite(centerPoint.X)||!float.IsFinite(centerPoint.Y)||!transform.IsFinite||!transform.IsAffine)return null;
+                var originPoint=centerPoint;
+                PointF radius=default;
+                if(kind==1)
+                {
+                    radius=new((float)rx,(float)ry);
+                    if(radius.X<.001f||radius.Y<.001f||!float.IsFinite(radius.X)||!float.IsFinite(radius.Y))return null;
+                    originPoint=new((float)origin.X,(float)origin.Y);
+                    double x=((double)originPoint.X-centerPoint.X)/radius.X,y=((double)originPoint.Y-centerPoint.Y)/radius.Y;
+                    // Allow enough headroom for the float32 dot product before
+                    // dividing by the term derived from the focal distance.
+                    if(!(x*x+y*y<.999999))return null;
+                }
+                else if(!(Math.Abs(angle)<1_000_000))return null;
+                for(int i=1;i<stops.Length;i++)
+                    if((float)stops[i].Offset<=(float)stops[i-1].Offset)return null;
+                // Preserve the conventional shader behavior at the angular seam
+                // by using the exact CPU sampler for discontinuous conic endpoints.
+                if(kind==2&&stops[0].Color!=stops[^1].Color)return null;
+                float turns=kind==2?(float)(angle%(2*Math.PI)/(2*Math.PI)):0;
+                return computeDescription=new(kind==1?ComputeGradientKind.Radial:ComputeGradientKind.Conic,
+                    centerPoint,originPoint,radius,turns,transform,ExtendMode,
+                    stops.Select(s=>new LinearColorStop((float)s.Offset,s.Color)).ToArray());
+            }
+        }
+        public RadialGradientDescription? Direct2DGradient
+        {
+            get
+            {
+                // Wrapped radial seams can land on a different side of a stop
+                // on native Direct2D. Keep the managed repeat contract.
+                if(kind!=1||!inverse.IsIdentity||spread==GradientSpreadMethod.Repeat||stops.Length==0||
+                    stops[0].Offset<0||stops[^1].Offset>1)return null;
+                if(radialDescription is not null)return radialDescription;
+                float x=(float)center.X,y=(float)center.Y,dx=(float)(origin.X-center.X),dy=(float)(origin.Y-center.Y);
+                float radiusX=(float)rx,radiusY=(float)ry;
+                if(!float.IsFinite(x)||!float.IsFinite(y)||!float.IsFinite(radiusX)||!float.IsFinite(radiusY)||radiusX<=0||radiusY<=0)return null;
+                double px=dx/(double)radiusX,py=dy/(double)radiusY;
+                if(!(px*px+py*py<1))return null;
+                for(int i=1;i<stops.Length;i++)
+                    if((float)stops[i].Offset<=(float)stops[i-1].Offset)return null;
+                var values=new LinearColorStop[stops.Length];
+                for(int i=0;i<values.Length;i++)
+                    values[i]=new((float)stops[i].Offset,stops[i].Color);
+                return radialDescription=new(new(x,y),new(dx,dy),radiusX,radiusY,values,ExtendMode);
+            }
+        }
+        private GradientExtendMode ExtendMode=>spread switch
+        {
+            GradientSpreadMethod.Pad=>GradientExtendMode.Clamp,
+            GradientSpreadMethod.Repeat=>GradientExtendMode.Repeat,
+            GradientSpreadMethod.Reflect=>GradientExtendMode.Mirror,
+            _=>throw new NotSupportedException("Unknown gradient spread.")
+        };
         public bool TryGetLinearGradient(out LinearGradientDescription? gradient)
         {
             gradient=null;if(kind!=0||stops.Length==0)return false;
-            gradient=linearDescription??=new(new((float)origin.X,(float)origin.Y),new((float)end.X,(float)end.Y),stops.Select(s=>new LinearColorStop((float)s.Offset,s.Color)),spread switch{GradientSpreadMethod.Pad=>GradientExtendMode.Clamp,GradientSpreadMethod.Repeat=>GradientExtendMode.Repeat,GradientSpreadMethod.Reflect=>GradientExtendMode.Mirror,_=>throw new NotSupportedException("Unknown gradient spread.")},ConvertTo.Matrix(inverse));
+            gradient=linearDescription??=new(new((float)origin.X,(float)origin.Y),new((float)end.X,(float)end.Y),
+                stops.Select(s=>new LinearColorStop((float)s.Offset,s.Color)),ExtendMode,ConvertTo.Matrix(inverse));
             return true;
         }
         public bool IsHorizontal=>kind==0&&origin.Y==end.Y&&inverse.M21==0;

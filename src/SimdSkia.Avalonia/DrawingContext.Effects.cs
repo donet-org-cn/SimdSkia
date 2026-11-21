@@ -18,6 +18,7 @@ internal sealed partial class DrawingContext
     private static readonly Dictionary<ShadowKey, ShadowImage> shadows = [];
     private static readonly HashSet<ShadowKey> recentShadows = [];
     private static long shadowBytes;
+    private static readonly DropShadowBlurCache effectShadows = new();
 
     private readonly record struct FilterSpec(float SigmaX,float SigmaY,float OffsetX,float OffsetY,Rgba32 Color,bool Shadow)
     {
@@ -29,7 +30,7 @@ internal sealed partial class DrawingContext
         internal PixelBuffer Apply(PixelBuffer source,RectF bounds)
         {
             var blurBounds=new RectF(bounds.Left-MathF.Ceiling(SigmaX*3)-1,bounds.Top-MathF.Ceiling(SigmaY*3)-1,bounds.Right+MathF.Ceiling(SigmaX*3)+1,bounds.Bottom+MathF.Ceiling(SigmaY*3)+1);
-            return Shadow?ManagedFilters.DropShadow(source,SigmaX,SigmaY,OffsetX,OffsetY,Color,blurBounds):ManagedFilters.Blur(source,SigmaX,SigmaY,blurBounds);
+            return Shadow?ManagedFilters.DropShadow(source,SigmaX,SigmaY,OffsetX,OffsetY,Color,blurBounds,effectShadows):ManagedFilters.Blur(source,SigmaX,SigmaY,blurBounds);
         }
     }
     // This factor belongs to Avalonia 12.1.5's radius contract (not CSS blur).

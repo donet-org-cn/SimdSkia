@@ -31,6 +31,7 @@ for(int i=0;i<limit;i++){var path=font.WindowsOutline((ushort)i);foreach(var s i
 var usage=font.CanonicalCacheUsage;Check(usage.Count<=256&&usage.Bytes<=4*1024*1024,"Cache count and bytes remain bounded");Check(stable.AsSpan().SequenceEqual(em.Segments),"Eviction never changes an existing outline snapshot");Check(font.WindowsOutline(glyph).Segments.SequenceEqual(stable),"Recomputed outline matches after eviction");
 var rawStable=raw.Segments.ToArray();for(int i=0;i<Math.Min(1600,font.GlyphCount);i++){var outline=font.Outline((ushort)i);foreach(var s in outline.Segments)Check(float.IsFinite(s.A.X)&&float.IsFinite(s.A.Y),"Finite raw outline after bounded eviction");}
 var rawUsage=font.RawCacheUsage;Check(rawUsage.Count<=512&&rawUsage.Bytes<=4*1024*1024,"Raw Chinese outline cache is bounded");Check(rawStable.AsSpan().SequenceEqual(raw.Segments),"Raw eviction does not mutate a live snapshot");Check(font.Outline(glyph).Segments.SequenceEqual(rawStable),"Raw reparse after eviction is identical");font.PurgeRawGlyphCache();Check(font.RawCacheUsage==(0,0),"Raw purge drops all cached payload");Check(font.Outline(glyph).Segments.SequenceEqual(rawStable),"Raw reparse after purge is identical");
+checks+=ColorGlyphLayersValidation.Run();
 Console.WriteLine($"PASS {checks} font program/spec/oracle/budget/cache checks; cache {usage.Count} glyphs, {usage.Bytes} bytes.");
 
 static Span<byte> GlyphProgram(byte[] font,ushort glyph)

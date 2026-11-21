@@ -2,6 +2,7 @@ using System.Buffers;
 using System.Buffers.Binary;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Security.Cryptography;
 using Avalonia;
@@ -101,11 +102,17 @@ internal sealed class FontManager:IFontManagerImpl
     private readonly FontEntry[] fonts;
     private readonly string defaultFamily;
     private readonly bool installedFonts;
+    private readonly Lazy<FontEntry[]>? supplementary;
+    private readonly Dictionary<SupplementaryRequest,FontData?> supplementaryMatches=[];
     private FaceOrder? fallbackOrder;
-    internal int LoadedFaceCount=>fonts.Count(f=>f.IsLoaded);
-    internal FontManager(IEnumerable<string> paths,string? defaultFamily=null,bool supportedFacesOnly=false)
+    private FaceOrder? supplementaryOrder;
+    internal int LoadedFaceCount=>fonts.Count(f=>f.IsLoaded)+(supplementary is {IsValueCreated:true}?supplementary.Value.Count(f=>f.IsLoaded):0);
+    internal bool SupplementaryIndexCreated=>supplementary?.IsValueCreated==true;
+    internal FontManager(IEnumerable<string> paths,string? defaultFamily=null,bool supportedFacesOnly=false,string[]? installedFallbackFiles=null)
     {
         installedFonts=supportedFacesOnly;
+        if(supportedFacesOnly&&installedFallbackFiles is {Length:>0})
+            supplementary=new(()=>IndexSupplementary(installedFallbackFiles));
         var loaded=new List<FontEntry>();
         foreach(string path in paths)
         {
@@ -122,7 +129,23 @@ internal sealed class FontManager:IFontManagerImpl
             throw new NotSupportedException($"The default font '{this.defaultFamily}' was not found in the supported installed TrueType font faces. Register an explicit supported font to override it.");
     }
     public string GetDefaultFontFamilyName()=>defaultFamily;
-    public string[] GetInstalledFontFamilyNames(bool checkForUpdates=false)=>fonts.Select(f=>f.Family).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
+    public string[] GetInstalledFontFamilyNames(bool checkForUpdates=false)=>fonts.Concat(supplementary?.Value??[])
+        .Select(f=>f.Family).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
+
+    private static FontEntry[] IndexSupplementary(string[] paths)
+    {
+        var faces=new List<FontEntry>();
+        foreach(string path in paths)
+        {
+            try { faces.AddRange(FontEntry.ReadSystemFile(path,indexCoverage:true)); }
+            catch(Exception error) when(IsFontFailure(error))
+            { System.Diagnostics.Trace.WriteLine($"Excluded fallback font {path}: {error.Message}"); }
+        }
+        return faces.ToArray();
+    }
+
+    private static bool IsFontFailure(Exception error)
+        => error is IOException or UnauthorizedAccessException or InvalidDataException or NotSupportedException or OverflowException or ArgumentOutOfRangeException;
     private readonly record struct FaceRequest(FontStyle Style,FontWeight Weight,FontStretch Stretch)
     {
         internal int Compare(FontEntry a,FontEntry b)
@@ -149,6 +172,15 @@ internal sealed class FontManager:IFontManagerImpl
             });
         }
     }
+    private static FaceOrder Order(FontEntry[] faces,FaceRequest request,ref FaceOrder? previous)
+    {
+        var order=Volatile.Read(ref previous);
+        if(order is not null&&order.Request==request)return order;
+        order=new(faces,request);
+        Volatile.Write(ref previous,order);
+        return order;
+    }
+
     public bool TryCreateGlyphTypeface(string familyName,FontStyle style,FontWeight weight,FontStretch stretch,[NotNullWhen(true)]out IPlatformTypeface? typeface)
     {
         var request=new FaceRequest(style,weight,stretch);FontEntry? match=null;
@@ -158,38 +190,90 @@ internal sealed class FontManager:IFontManagerImpl
             if(match is null||request.Compare(face,match)<0)match=face;
             if(face.Style==style&&face.Weight==weight&&face.Stretch==stretch)break;
         }
-        typeface=match is null?null:new PlatformTypeface(match.Data);return typeface is not null;
+        if(match is not null){typeface=new PlatformTypeface(match.Data);return true;}
+        if(supplementary is not null)
+        {
+            var faces=supplementary.Value;
+            foreach(int index in Order(faces,request,ref supplementaryOrder).Indices)
+            {
+                var face=faces[index];
+                if(!face.Family.Equals(familyName,StringComparison.OrdinalIgnoreCase))continue;
+                try{typeface=new PlatformTypeface(face.Data);return true;}
+                catch(Exception error) when(IsFontFailure(error)) { }
+            }
+        }
+        typeface=null;return false;
     }
     public bool TryMatchCharacter(int codepoint,FontStyle style,FontWeight weight,FontStretch stretch,string? family,CultureInfo? culture,[NotNullWhen(true)]out IPlatformTypeface? typeface)
     {
         var request=new FaceRequest(style,weight,stretch);
-        var order=Volatile.Read(ref fallbackOrder);
-        if(order is null||order.Request!=request)
-        {
-            order=new FaceOrder(fonts,request);
-            Volatile.Write(ref fallbackOrder,order);
-        }
+        if(!Rune.IsValid(codepoint))throw new ArgumentOutOfRangeException(nameof(codepoint));
+        var order=Order(fonts,request,ref fallbackOrder);
         // Check an explicitly requested family before locale-specific fallback.
         if(family is not null)
-            foreach(int index in order.Indices)
-            {
-                var face=fonts[index];
-                if(!face.Family.Equals(family,StringComparison.OrdinalIgnoreCase))continue;
-                var data=face.Data;
-                if(data.Font.GetGlyph(codepoint)!=0){typeface=new PlatformTypeface(data);return true;}
-            }
+        {
+            var exact=new SupplementaryRequest(codepoint,request,family,true,CjkLocale.Unspecified,0);
+            var match=MatchCharacter(fonts,order,exact,skipUnavailable:false);
+            if(match is null&&!fonts.Any(f=>f.Family.Equals(family,StringComparison.OrdinalIgnoreCase)))
+                match=MatchSupplementary(exact);
+            if(match is not null){typeface=new PlatformTypeface(match);return true;}
+        }
+        // Pictographic emoji can also be mapped by a legacy monochrome symbol
+        // font. Prefer a drawable palette glyph during installed fallback.
+        if(installedFonts&&codepoint is >=0x1f1e6 and <=0x1faff)
+        {
+            var color=new SupplementaryRequest(codepoint,request,family,false,CjkLocale.Unspecified,0,ColorOnly:true);
+            var match=MatchCharacter(fonts,order,color,skipUnavailable:false)??MatchSupplementary(color);
+            if(match is not null){typeface=new PlatformTypeface(match);return true;}
+        }
         var locale=installedFonts&&CjkFontPreference.AppliesTo(codepoint)
             ? CjkFontPreference.ForCulture(culture??CultureInfo.CurrentUICulture) : CjkLocale.Unspecified;
         int lastRank=locale==CjkLocale.Unspecified?0:2;
         for(int rank=0;rank<=lastRank;rank++)
-            foreach(int index in order.Indices)
-            {
-                var face=fonts[index];
-                if(face.Family.Equals(family,StringComparison.OrdinalIgnoreCase)||CjkFontPreference.Rank(locale,face.Locale)!=rank)continue;
-                var data=face.Data;
-                if(data.Font.GetGlyph(codepoint)!=0){typeface=new PlatformTypeface(data);return true;}
-            }
+        {
+            var fallback=new SupplementaryRequest(codepoint,request,family,false,locale,rank);
+            var match=MatchCharacter(fonts,order,fallback,skipUnavailable:false)??MatchSupplementary(fallback);
+            if(match is not null){typeface=new PlatformTypeface(match);return true;}
+        }
         typeface=null;return false;
+    }
+
+    private readonly record struct SupplementaryRequest(int Codepoint,FaceRequest Style,string? Family,
+        bool RequireFamily,CjkLocale Locale,int Rank,bool ColorOnly=false);
+
+    private FontData? MatchSupplementary(SupplementaryRequest request)
+    {
+        if(supplementary is null)return null;
+        lock(supplementaryMatches)
+            if(supplementaryMatches.TryGetValue(request,out var known))return known;
+
+        var faces=supplementary.Value;
+        var match=MatchCharacter(faces,Order(faces,request.Style,ref supplementaryOrder),request,skipUnavailable:true);
+        lock(supplementaryMatches)
+        {
+            if(supplementaryMatches.Count>=256)supplementaryMatches.Clear();
+            supplementaryMatches[request]=match;
+        }
+        return match;
+    }
+
+    private static FontData? MatchCharacter(FontEntry[] faces,FaceOrder order,SupplementaryRequest request,bool skipUnavailable)
+    {
+        foreach(int index in order.Indices)
+        {
+            var face=faces[index];
+            bool family=face.Family.Equals(request.Family,StringComparison.OrdinalIgnoreCase);
+            if(family!=request.RequireFamily||CjkFontPreference.Rank(request.Locale,face.Locale)!=request.Rank
+                ||request.ColorOnly&&!face.HasColorGlyphs||!face.MayContain(request.Codepoint))continue;
+            try
+            {
+                if(!face.HasGlyph(request.Codepoint))continue;
+                var data=face.Data;
+                if(!request.ColorOnly||data.Font.HasColorGlyph(data.Font.GetGlyph(request.Codepoint)))return data;
+            }
+            catch(Exception error) when(skipUnavailable&&IsFontFailure(error)) { }
+        }
+        return null;
     }
     public bool TryCreateGlyphTypeface(Stream stream,FontSimulations simulations,[NotNullWhen(true)]out IPlatformTypeface? typeface)
     {
@@ -233,9 +317,20 @@ internal sealed class FontManager:IFontManagerImpl
         return true;
     }
     private FontData? FindLoaded(ReadOnlySpan<byte> digest)
-    {foreach(var font in fonts)if(font.IsLoaded&&font.Data.Digest.AsSpan().SequenceEqual(digest))return font.Data;return null;}
+    {
+        var known=MatchDigest(fonts,digest);
+        return known??(supplementary is {IsValueCreated:true}?MatchDigest(supplementary.Value,digest):null);
+    }
+    private static FontData? MatchDigest(FontEntry[] faces,ReadOnlySpan<byte> digest)
+    {foreach(var font in faces)if(font.IsLoaded&&font.Data.Digest.AsSpan().SequenceEqual(digest))return font.Data;return null;}
     public bool TryGetFamilyTypefaces(string family,[NotNullWhen(true)]out IReadOnlyList<Typeface>? typefaces)
-    {var found=fonts.Where(f=>f.Family.Equals(family,StringComparison.OrdinalIgnoreCase)).Select(f=>new Typeface(f.Family,f.Style,f.Weight,f.Stretch)).ToArray();typefaces=found.Length==0?null:found;return typefaces is not null;}
+    {
+        var found=GetFaces(fonts,family);
+        if(found.Length==0&&supplementary is not null)found=GetFaces(supplementary.Value,family);
+        typefaces=found.Length==0?null:found;return typefaces is not null;
+    }
+    private static Typeface[] GetFaces(FontEntry[] faces,string family)=>faces.Where(f=>f.Family.Equals(family,StringComparison.OrdinalIgnoreCase))
+        .Select(f=>new Typeface(f.Family,f.Style,f.Weight,f.Stretch)).ToArray();
 }
 
 /// <summary>Unicode scalar shaping for horizontal Latin/CJK; unsupported scripts fail before producing a buffer.</summary>
@@ -250,25 +345,28 @@ internal sealed class TextShaper:ITextShaperImpl
         if((options.BidiLevel&1)!=0)throw new NotSupportedException("RTL text shaping is not implemented.");
         if(options.FontFeatures is {Count:>0})throw new NotSupportedException("Explicit OpenType feature selection is not implemented.");
         if(!double.IsFinite(options.FontRenderingEmSize)||options.FontRenderingEmSize<=0)throw new ArgumentOutOfRangeException(nameof(options));
-        int count=0;foreach(var rune in text.Span.EnumerateRunes())
+        var font=((PlatformTypeface)options.GlyphTypeface.PlatformTypeface).Data.Font;
+        int count=0;bool compose=false,colorFont=font.HasColorGlyphs;
+        foreach(var rune in text.Span.EnumerateRunes())
         {
+            if(colorFont&&(IsVariation(rune.Value)||IsEmojiJoiner(rune.Value)||rune.Value==0x20e3||
+                rune.Value is >=0x1f1e6 and <=0x1f1ff or >=0x1f3fb and <=0x1f3ff))
+            {count++;compose=true;continue;}
             var category=Rune.GetUnicodeCategory(rune);
             if(rune.Value is >=0x590 and <=0x1cff or >=0xa800 and <=0xabff or 0x200d or >=0x202a and <=0x202e||category is UnicodeCategory.NonSpacingMark or UnicodeCategory.SpacingCombiningMark or UnicodeCategory.EnclosingMark)
                 throw new NotSupportedException($"Contextual/combining text shaping is not implemented (U+{rune.Value:X}).");
             count++;
         }
-        var font=((PlatformTypeface)options.GlyphTypeface.PlatformTypeface).Data.Font;
+        if(compose)return ShapeColorText(text,options,font,count);
         var result=new ShapedBuffer(text,count,options.GlyphTypeface,options.FontRenderingEmSize,options.BidiLevel);
         int index=0,cluster=0;double x=0,scale=options.FontRenderingEmSize/font.UnitsPerEm;
         try
         {
             foreach(var rune in text.Span.EnumerateRunes())
             {
-                ushort glyph=font.GetGlyph(rune.Value);double advance=font.Advance(glyph)*scale;
-                if(rune.Value is '\r' or '\n' or 0x200b or 0xfeff or 0x2060){glyph=font.GetGlyph(' ');advance=0;}
-                else if(rune.Value=='\t'){glyph=font.GetGlyph(' ');advance=options.IncrementalTabWidth>0?options.IncrementalTabWidth-x%options.IncrementalTabWidth:font.Advance(glyph)*scale*4;}
-                else advance+=options.LetterSpacing;
-                result[index++]=new(glyph,cluster,advance);cluster+=rune.Utf16SequenceLength;x+=advance;
+                var glyph=new GlyphCluster(font.GetGlyph(rune.Value),cluster,rune.Value);
+                var info=Position(glyph,options,font,scale,x);
+                result[index++]=info;cluster+=rune.Utf16SequenceLength;x+=info.GlyphAdvance;
             }
             for(int i=0;i<result.Length-1;i++)
             {
@@ -283,13 +381,77 @@ internal sealed class TextShaper:ITextShaperImpl
         }
         catch{result.Dispose();throw;}
     }
+    private static bool IsVariation(int scalar)=>scalar is >=0xfe00 and <=0xfe0f or >=0xe0100 and <=0xe01ef;
+    private static bool IsEmojiJoiner(int scalar)=>scalar is 0x200d or >=0xe0020 and <=0xe007f;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static GlyphInfo Position(GlyphCluster item,TextShaperOptions options,TrueTypeFont font,double scale,double x)
+    {
+        ushort glyph=item.Glyph;double advance=font.Advance(glyph)*scale;
+        if(item.Codepoint is '\r' or '\n' or 0x200b or 0xfeff or 0x2060){glyph=font.GetGlyph(' ');advance=0;}
+        else if(item.Codepoint=='\t'){glyph=font.GetGlyph(' ');advance=options.IncrementalTabWidth>0?options.IncrementalTabWidth-x%options.IncrementalTabWidth:font.Advance(glyph)*scale*4;}
+        else advance+=options.LetterSpacing;
+        return new(glyph,item.Cluster,advance);
+    }
+
+    private static ShapedBuffer ShapeColorText(ReadOnlyMemory<char> text,TextShaperOptions options,TrueTypeFont font,int capacity)
+    {
+        GlyphCluster[]? rented=null;
+        Span<GlyphCluster> glyphs=capacity<=64?stackalloc GlyphCluster[capacity]:(rented=ArrayPool<GlyphCluster>.Shared.Rent(capacity));
+        try
+        {
+            var composition=font.ColorComposition;
+            int count=0,cluster=0;
+            foreach(var rune in text.Span.EnumerateRunes())
+            {
+                if(IsVariation(rune.Value))
+                {
+                    if(count!=0)
+                    {
+                        var previous=glyphs[count-1];
+                        glyphs[count-1]=previous with {Glyph=composition.Variant(previous.Glyph,previous.Codepoint,rune.Value)};
+                    }
+                }
+                else glyphs[count++]=new(font.GetGlyph(rune.Value),cluster,rune.Value);
+                cluster+=rune.Utf16SequenceLength;
+            }
+            if(count>1)count=composition.Apply(glyphs[..count]);
+            int visible=0;
+            for(int i=0;i<count;i++)
+                if(!IsEmojiJoiner(glyphs[i].Codepoint))glyphs[visible++]=glyphs[i];
+            var result=new ShapedBuffer(text,visible,options.GlyphTypeface,options.FontRenderingEmSize,options.BidiLevel);
+            try
+            {
+                double x=0,scale=options.FontRenderingEmSize/font.UnitsPerEm;
+                for(int i=0;i<visible;i++)
+                {
+                    var glyph=Position(glyphs[i],options,font,scale,x);
+                    result[i]=glyph;x+=glyph.GlyphAdvance;
+                }
+                return result;
+            }
+            catch{result.Dispose();throw;}
+        }
+        finally{if(rented is not null)ArrayPool<GlyphCluster>.Shared.Return(rented);}
+    }
 }
 
 internal sealed class GlyphRun:IGlyphRunImpl
 {
     private SimdSkia.PathGeometry? path;
     private GlyphRunGeometry? glyphs;
+    internal sealed record BitmapDraw(TrueTypeFont Font, ushort Glyph, GlyphBitmap Bitmap, PointF Position, RectF OutlineOrigin)
+    {
+        internal RectF Bounds(float size)
+        {
+            var bounds=Bitmap.Bounds(size,OutlineOrigin);
+            return new(bounds.Left+Position.X,bounds.Top+Position.Y,bounds.Right+Position.X,bounds.Bottom+Position.Y);
+        }
+    }
+    internal readonly record struct LayerDraw(GlyphRunGeometry? Geometry,Rgba32? Color,BitmapDraw? Bitmap=null);
+    internal LayerDraw[]? LayerDraws {get;private set;}
     internal GlyphRunGeometry Glyphs=>glyphs??throw new ObjectDisposedException(nameof(GlyphRun));
+    internal RectF LocalInkBounds {get;}
     internal SimdSkia.PathGeometry Path
     {
         get
@@ -297,6 +459,10 @@ internal sealed class GlyphRun:IGlyphRunImpl
             var run=Glyphs;if(path is not null)return path;
             var segments=new List<PathSegment>();
             foreach(var glyph in run.Glyphs)glyph.Outline.AppendTransformedTo(segments,new Matrix3(1,0,glyph.Position.X,0,1,glyph.Position.Y,0,0,1)*run.FontTransform);
+            if(LayerDraws is {} layers)
+                foreach(var layer in layers)
+                    if(layer.Bitmap is {} bitmap)
+                        SimdSkia.PathGeometry.Rectangle(bitmap.Bounds((float)FontRenderingEmSize)).AppendTransformedTo(segments,Matrix3.Identity);
             return path=new(segments);
         }
     }
@@ -310,15 +476,63 @@ internal sealed class GlyphRun:IGlyphRunImpl
         if(!double.IsFinite(size)||size<=0)throw new ArgumentOutOfRangeException(nameof(size));
         ArgumentNullException.ThrowIfNull(infos);
         if(!double.IsFinite(baseline.X)||!double.IsFinite(baseline.Y))throw new ArgumentException("Glyph baseline must be finite.",nameof(baseline));
-        var font=((PlatformTypeface)typeface.PlatformTypeface).Data.Font;float scale=(float)(size/font.UnitsPerEm);var positioned=new PositionedGlyph[infos.Count];double x=0;int index=0;
+        var font=((PlatformTypeface)typeface.PlatformTypeface).Data.Font;float scale=(float)(size/font.UnitsPerEm);
+        var fontTransform=new Matrix3(scale,0,0,0,-scale,0,0,0,1);
+        var positioned=new PositionedGlyph[infos.Count];double x=0;int index=0;
+        List<PositionedGlyph>? ink=null;
+        List<LayerDraw>? draws=null;
+        RectF? imageBounds=null;
         foreach(var info in infos)
         {
             if(!double.IsFinite(info.GlyphAdvance))throw new ArgumentException("Glyph advances must be finite.",nameof(infos));
-            positioned[index++]=new(font.Outline(info.GlyphIndex),new((float)(x+info.GlyphOffset.X),(float)info.GlyphOffset.Y));
+            var position=new PointF((float)(x+info.GlyphOffset.X),(float)info.GlyphOffset.Y);
+            var layers=font.GetColorLayers(info.GlyphIndex);
+            var bitmap=layers.IsEmpty?font.GetBitmapGlyph(info.GlyphIndex,(float)size):null;
+            if(layers.IsEmpty&&bitmap is null)
+            {
+                var outline=new PositionedGlyph(font.Outline(info.GlyphIndex),position);
+                if(draws is null)positioned[index++]=outline;
+                else AddOutline(outline,null);
+            }
+            else
+            {
+                if(draws is null)
+                {
+                    ink=new(infos.Count);
+                    draws=new(infos.Count);
+                    for(int i=0;i<index;i++)AddOutline(positioned[i],null);
+                }
+                if(bitmap is {} image)
+                {
+                    var outlineOrigin=image.UseOutlineOrigin?font.GetGlyphBounds(info.GlyphIndex):default;
+                    var bitmapDraw=new BitmapDraw(font,info.GlyphIndex,image,position,
+                        new(outlineOrigin.Left*scale,outlineOrigin.Top*scale,0,0));
+                    imageBounds=Union(imageBounds??default,bitmapDraw.Bounds((float)size));
+                    draws.Add(new(null,null,bitmapDraw));
+                    if(image.OverlayOutline)AddOutline(new(font.Outline(info.GlyphIndex),position),null);
+                }
+                foreach(var layer in layers)
+                    AddOutline(new(font.Outline(layer.Glyph),position),layer.Color);
+            }
             x+=info.GlyphAdvance;
         }
-        glyphs=GlyphRunGeometry.FromOwnedGlyphs(positioned,new(scale,0,0,0,-scale,0,0,0,1),GlyphPositioning.QuarterPixel);BaselineOrigin=baseline;FontRenderingEmSize=size;Bounds=ConvertTo.Rect(glyphs.Bounds).Translate(new Vector(baseline.X,baseline.Y));
+        if(draws is not null)
+        {
+            positioned=ink!.ToArray();
+            LayerDraws=draws.ToArray();
+        }
+        glyphs=GlyphRunGeometry.FromOwnedGlyphs(positioned,fontTransform,GlyphPositioning.QuarterPixel);
+        LocalInkBounds=imageBounds is {} rasterBounds?Union(glyphs.Bounds,rasterBounds):glyphs.Bounds;
+        BaselineOrigin=baseline;FontRenderingEmSize=size;Bounds=ConvertTo.Rect(LocalInkBounds).Translate(new Vector(baseline.X,baseline.Y));
+
+        void AddOutline(PositionedGlyph outline,Rgba32? color)
+        {
+            ink!.Add(outline);
+            draws!.Add(new(GlyphRunGeometry.FromOwnedGlyphs([outline],fontTransform,GlyphPositioning.QuarterPixel),color));
+        }
     }
+    private static RectF Union(RectF a,RectF b)=>a.IsEmpty?b:new(
+        Math.Min(a.Left,b.Left),Math.Min(a.Top,b.Top),Math.Max(a.Right,b.Right),Math.Max(a.Bottom,b.Bottom));
     public IReadOnlyList<float> GetIntersections(float lower,float upper)
     {
         if(!float.IsFinite(lower)||!float.IsFinite(upper)||lower>upper)throw new ArgumentOutOfRangeException(nameof(lower));
@@ -328,5 +542,5 @@ internal sealed class GlyphRun:IGlyphRunImpl
         var intervals=clipped.Where(c=>c.Length>0).Select(c=>(Left:c.Min(p=>p.X),Right:c.Max(p=>p.X))).OrderBy(p=>p.Left);
         var values=new List<float>();foreach(var interval in intervals){if(values.Count>0&&interval.Left<=values[^1])values[^1]=Math.Max(values[^1],interval.Right);else{values.Add(interval.Left);values.Add(interval.Right);}}return values;
     }
-    public void Dispose(){path=null;glyphs=null;}
+    public void Dispose(){path=null;glyphs=null;LayerDraws=null;}
 }

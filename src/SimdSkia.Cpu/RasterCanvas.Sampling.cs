@@ -38,7 +38,8 @@ public sealed partial class RasterCanvas
         var key=new ClipCoverageCache.Key(new(geometry),transform,target.Width,target.Height,antialias,curveTolerance);
         if(ClipCoverageCache.TryGet(key,out var cached))return cached;
         var command=new DrawingCommand(CommandKind.FillPath,default,transform,new(default,CompositeMode.Source,antialias)){CurveTolerance=curveTolerance};
-        return ClipCoverageCache.Add(key,ToClip(GetMask(geometry,command)));
+        using var lease=GetMask(geometry,command,persistentClip:true);
+        return ClipCoverageCache.Add(key,ToClip(lease.Mask,lease.Storage?.HasCoverage==true));
     }
     internal static CoverageClip CreateClipForBounds(PathGeometry geometry,Matrix3 transform,int width,int height,bool antialias)
     {
@@ -47,14 +48,17 @@ public sealed partial class RasterCanvas
     }
     internal static CoverageClip RasterizeClip(PathGeometry geometry,Matrix3 transform,int width,int height,bool antialias)
     {
-        var mask=PathRasterizer.Rasterize(geometry.Flatten(transform,.015625f),geometry.FillRule,width,height,antialias,compactRuns:true);
+        var mask=PathRasterizer.Rasterize(geometry,transform,.015625f,width,height,antialias,compactRuns:true);
         return ToClip(mask);
     }
-    private static CoverageClip ToClip(CoverageMask mask)
+    private static CoverageClip ToClip(CoverageMask mask,bool copy=false)
     {
         int length = checked(mask.Width * mask.Height);
-        if (mask.Data.Length == length)
-            return CoverageClip.BorrowImmutable(mask.Left,mask.Top,mask.Width,mask.Height,mask.Data);
+        if (mask.Data.Length >= length)
+        {
+            var bytes=copy?mask.Data.AsSpan(0,length).ToArray():mask.Data;
+            return CoverageClip.BorrowImmutable(mask.Left,mask.Top,mask.Width,mask.Height,bytes);
+        }
 
         // Rounded rectangles and rectangular bands often share almost every row.
         // Compare the sparse runs before allocating a device-sized byte plane.
@@ -66,7 +70,7 @@ public sealed partial class RasterCanvas
             {
                 int current = end;
                 while (end < mask.Runs.Length && mask.Runs[end].Y == mask.Top + row) end++;
-                if (!SameScanline(mask.Runs.AsSpan(previous, current - previous), mask.Runs.AsSpan(current, end - current)))
+                if (!SameScanline(mask.Runs.Slice(previous, current - previous), mask.Runs.Slice(current, end - current)))
                     start = row;
                 if (row - start > extraRows) { repeatStart = start; extraRows = row - start; }
                 previous = current;
@@ -143,7 +147,7 @@ public sealed partial class RasterCanvas
         if(command.Paint.Blender is null&&command.Paint.FloatingColor is null&&command.Paint.ColorFilter is null&&TryBlit(command,source,image))return;
         if(command.Paint.Blender is null&&command.Paint.FloatingColor is null&&command.Paint.ColorFilter is null&&TryDrawAxisSampled(command,source,image,inverse))return;
         var geometry=RectangleGeometry(command.Rectangle);
-        var mask=GetMask(geometry,command);var rect=command.Rectangle;
+        using var lease=GetMask(geometry,command);var mask=lease.Mask;var rect=command.Rectangle;
         float sx=(source.Right-source.Left)/(rect.Right-rect.Left),sy=(source.Bottom-source.Top)/(rect.Bottom-rect.Top);
         foreach(var run in mask.Runs)
         {

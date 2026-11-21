@@ -6,7 +6,7 @@ internal static class MetalKernel
         using namespace metal;
         struct Params {
             uint4 bounds; // target width,height; dispatch left,top
-            uint4 mask; // dispatch width,height; paint kind (0 solid,1 gradient,2 image,3 clear); composite
+            uint4 mask; // dispatch width,height; paint kind; composite
             float4 color;
             float4 inverse0;
             float4 inverse1;
@@ -22,6 +22,7 @@ internal static class MetalKernel
             float4 radii; // rounded: top-left,top-right,bottom-right,bottom-left
             float4 inner; // ring: inner rounded rectangle
             float4 innerRadii;
+            float4 brush; // radial radii, conic turn, or tile offset xy
         };
         // Signed distance to a rounded rectangle with circular corners. Exact for
         // straight edges, so 0.5-d is the true area coverage there.
@@ -36,6 +37,56 @@ internal static class MetalKernel
         float4 unpack(uint value) {return float4(value&255u,(value>>8)&255u,(value>>16)&255u,value>>24)/255.0f;}
         uint pack(float4 value) {uint4 c=uint4(floor(clamp(value,0.0f,1.0f)*255.0f+0.5f));return c.x|(c.y<<8)|(c.z<<16)|(c.w<<24);}
         float4 tap(const device uint* image,int x,int y,uint width,uint height) {return unpack(image[uint(clamp(y,0,int(height)-1))*width+uint(clamp(x,0,int(width)-1))]);}
+        float gradientPosition(float2 point,constant Params& p) {
+            if(p.mask.z==4) {
+                float2 focus=(p.line.zw-p.line.xy)/p.brush.xy,direction=(point-p.line.zw)/p.brush.xy;
+                float a=dot(direction,direction),b=2.0f*dot(focus,direction),c=dot(focus,focus)-1.0f;
+                if(a==0.0f)return 0.0f;
+                float root=sqrt(max(0.0f,b*b-4.0f*a*c));
+                return b>0.0f?(-b-root)/(2.0f*c):2.0f*a/(-b+root);
+            }
+            if(p.mask.z==5) {
+                float2 d=point-p.line.xy;
+                float angle=all(d==0.0f)?0.0f:atan2(d.y,d.x);
+                return fract(angle*0.15915494309189535f+0.25f-p.brush.z);
+            }
+            float2 d=p.line.zw-p.line.xy;
+            float den=dot(d,d);
+            return den>0.0f?dot(point-p.line.xy,d)/den:1.0f;
+        }
+        float4 sampleGradient(float t,uint count,constant Stop* stops) {
+            if(count<=16u) {
+                float4 color=stops[0].color;
+                for(uint i=0;i+1<count;i++)if(t>=stops[i].offset.x) {
+                    float span=stops[i+1].offset.x-stops[i].offset.x;
+                    float amount=span>0.0f?clamp((t-stops[i].offset.x)/span,0.0f,1.0f):1.0f;
+                    color=mix(stops[i].color,stops[i+1].color,amount);
+                }
+                return color;
+            }
+            if(t<stops[0].offset.x)return stops[0].color;
+            uint lo=1u,hi=count;
+            while(lo<hi) {
+                uint mid=lo+(hi-lo)/2u;
+                if(t<stops[mid].offset.x)hi=mid;else lo=mid+1u;
+            }
+            if(lo==count)return stops[count-1u].color;
+            float previous=stops[lo-1u].offset.x;
+            return mix(stops[lo-1u].color,stops[lo].color,(t-previous)/(stops[lo].offset.x-previous));
+        }
+        int tileIndex(int index,int size,bool mirror) {
+            int period=mirror?2*size:size;
+            int at=index-(index/period)*period;
+            if(at<0)at+=period;
+            return at<size?at:2*size-1-at;
+        }
+        float4 sampleTile(const device uint* image,int2 at,constant Params& p) {
+            int2 size=int2(p.image.xy),point=at+int2(p.brush.xy);
+            uint repeat=p.image.z;
+            if(repeat==0u&&(any(point<0)||any(point>=size)))return float4(0);
+            int x=tileIndex(point.x,size.x,repeat==2u||repeat==4u),y=tileIndex(point.y,size.y,repeat==3u||repeat==4u);
+            return unpack(image[uint(y)*p.image.x+uint(x)]);
+        }
         kernel void render(device uint* output [[buffer(0)]],const device uchar* coverage [[buffer(1)]],const device uint* image [[buffer(2)]],constant Params& p [[buffer(3)]],constant Stop* stops [[buffer(4)]],uint2 local [[thread_position_in_grid]]) {
             if(local.x>=p.mask.x||local.y>=p.mask.y)return;
             uint2 pixel=local+p.bounds.zw;if(pixel.x>=p.bounds.x||pixel.y>=p.bounds.y)return;
@@ -61,16 +112,18 @@ internal static class MetalKernel
             if(cov==0)return;
             float2 devicePoint=float2(pixel)+0.5f;float2 point=float2(dot(p.inverse0.xyz,float3(devicePoint,1)),dot(p.inverse1.xyz,float3(devicePoint,1)));
             float4 source=p.color;
-            if(p.mask.z==1) {
-                float2 d=p.line.zw-p.line.xy;float den=dot(d,d);float t=den>0?dot(point-p.line.xy,d)/den:1;
+            if(p.mask.z==1||p.mask.z==4||p.mask.z==5) {
+                float t=gradientPosition(point,p);
                 if(p.gradient.y==1)t=fract(t);else if(p.gradient.y==2)t=1-abs(fmod(fmod(t,2.0f)+2.0f,2.0f)-1);else if(p.gradient.y==3&&(t<0||t>1))cov=0;else t=clamp(t,0.0f,1.0f);
-                source=stops[0].color;for(uint i=0;i+1<p.gradient.x;i++)if(t>=stops[i].offset.x){float span=stops[i+1].offset.x-stops[i].offset.x;float amount=span>0?clamp((t-stops[i].offset.x)/span,0.0f,1.0f):1;source=mix(stops[i].color,stops[i+1].color,amount);}source.a*=p.color.a;
+                source=sampleGradient(t,p.gradient.x,stops);source.a*=p.color.a;
+            } else if(p.mask.z==6) {
+                source=sampleTile(image,at,p)*p.color.a;
             } else if(p.mask.z==2) {
                 float2 uv=p.source.xy+(point-p.destination.xy)*p.source.zw/p.destination.zw;
                 if(p.image.z==0) {if(p.image.w!=0)uv=nextafter(uv,float2(-INFINITY));source=tap(image,int(floor(uv.x)),int(floor(uv.y)),p.image.x,p.image.y);}
                 else {float2 at=uv-0.5f;int2 base=int2(floor(at));float2 f=fract(at);source=mix(mix(tap(image,base.x,base.y,p.image.x,p.image.y),tap(image,base.x+1,base.y,p.image.x,p.image.y),f.x),mix(tap(image,base.x,base.y+1,p.image.x,p.image.y),tap(image,base.x+1,base.y+1,p.image.x,p.image.y),f.x),f.y);}source*=p.color.a;
             }
-            if(p.mask.z!=2)source.rgb*=source.a;
+            if(p.mask.z!=2&&p.mask.z!=6)source.rgb*=source.a;
             uint index=pixel.y*p.bounds.x+pixel.x;float4 destination=unpack(output[index]);
             if(p.mask.w==0)source=source*cov+destination*(1-source.a*cov);
             else source=mix(destination,p.mask.w==2?float4(0):source,cov);

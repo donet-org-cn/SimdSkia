@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using System.Buffers;
 namespace SimdSkia.Gpu.Direct2D;
 
 // Fixed Windows SDK ABI. No reflection-based COM activation or bundled native component.
@@ -57,6 +58,32 @@ internal static unsafe partial class D2DNative
         uint* bitmapProps=stackalloc uint[3]{0,0,0};float* brushProps=stackalloc float[7]{1,1,0,0,1,left,top};nint result=0;
         Check(((delegate* unmanaged[Stdcall]<nint,nint,uint*,float*,nint*,int>)Slot(context,7))(context,bitmap,bitmapProps,brushProps,&result));return result;
     }
+    internal static void BindTileBrush(nint context,ref nint brush,nint bitmap,ComputeTileMode mode,
+        float left,float top,byte opacity)
+    {
+        uint x=mode==ComputeTileMode.None?0u:mode is ComputeTileMode.FlipX or ComputeTileMode.FlipXY?2u:1u;
+        uint y=mode==ComputeTileMode.None?0u:mode is ComputeTileMode.FlipY or ComputeTileMode.FlipXY?2u:1u;
+        float* matrix=stackalloc float[6]{1,0,0,1,left,top};
+        if(brush==0)
+        {
+            // ID2D1RenderTarget::CreateBitmapBrush with nearest filtering.
+            uint* options=stackalloc uint[3]{x,y,0};
+            nint result=0;
+            int status=((delegate* unmanaged[Stdcall]<nint,nint,uint*,float*,nint*,int>)Slot(context,7))(context,bitmap,options,null,&result);
+            if(status<0)Release(ref result);
+            Check(status);
+            brush=result;
+        }
+        else
+        {
+            // ID2D1BitmapBrush setters capture state independently for each draw.
+            ((delegate* unmanaged[Stdcall]<nint,uint,void>)Slot(brush,8))(brush,x);
+            ((delegate* unmanaged[Stdcall]<nint,uint,void>)Slot(brush,9))(brush,y);
+            ((delegate* unmanaged[Stdcall]<nint,nint,void>)Slot(brush,11))(brush,bitmap);
+        }
+        ((delegate* unmanaged[Stdcall]<nint,float,void>)Slot(brush,4))(brush,opacity/255f);
+        ((delegate* unmanaged[Stdcall]<nint,float*,void>)Slot(brush,5))(brush,matrix);
+    }
     internal static void PushCoverage(nint context,RectF bounds,nint brush)
     {var p=new LayerParameters{Bounds=bounds,Antialias=1,M11=1,M22=1,Opacity=1,Brush=brush};((delegate* unmanaged[Stdcall]<nint,LayerParameters*,nint,void>)Slot(context,86))(context,&p,0);}
     internal static void PopLayer(nint context)=>((delegate* unmanaged[Stdcall]<nint,void>)Slot(context,41))(context);
@@ -67,12 +94,9 @@ internal static unsafe partial class D2DNative
         =>Gradient(context,new LinearGradientDescription(gradient.Start,gradient.End,[new(0,gradient.StartColor),new(1,gradient.EndColor)]),opacity);
     internal static nint Gradient(nint context,LinearGradientDescription gradient,byte opacity)
     {
-        var values=gradient.Stops.Span;if(values.Length>256||!gradient.HasUnitStops)throw new NotSupportedException("Direct2D gradients accept up to 256 stops in [0,1].");
+        var values=gradient.Stops.Span;if(!gradient.HasUnitStops)throw new NotSupportedException("Direct2D gradient offsets must be in [0,1].");
         if(!gradient.SampleTransform.TryInvert(out var transform))throw new NotSupportedException("Singular gradient transform.");
-        Stop* stops=stackalloc Stop[values.Length];for(int i=0;i<values.Length;i++)stops[i]=new(){Position=values[i].Offset,Color=ColorOf(values[i].Color)};
-        nint collection=0,r=0;
-        // D2D1.1 straight-color interpolation in sRGB, matching managed gradient semantics.
-        Check(((delegate* unmanaged[Stdcall]<nint,Stop*,uint,uint,uint,uint,uint,uint,nint*,int>)Slot(context,64))(context,stops,(uint)values.Length,1,1,1,(uint)gradient.Extend,0,&collection));
+        nint collection=GradientStops(context,values,gradient.Extend),r=0;
         try
         {
             PointF* points=stackalloc PointF[2]{gradient.Start,gradient.End};Check(((delegate* unmanaged[Stdcall]<nint,PointF*,void*,nint,nint*,int>)Slot(context,10))(context,points,null,collection,&r));
@@ -80,6 +104,41 @@ internal static unsafe partial class D2DNative
             float* m=stackalloc float[6]{transform.M00,transform.M10,transform.M01,transform.M11,transform.M02,transform.M12};((delegate* unmanaged[Stdcall]<nint,float*,void>)Slot(r,5))(r,m);return r;
         }
         finally{Release(ref collection);}
+    }
+    internal static nint RadialGradient(nint context,RadialGradientDescription gradient,byte opacity)
+    {
+        nint collection=GradientStops(context,gradient.Stops,gradient.Extend),brush=0;
+        try
+        {
+            // ID2D1RenderTarget::CreateRadialGradientBrush, inherited by ID2D1DeviceContext.
+            float* properties=stackalloc float[6]{gradient.Center.X,gradient.Center.Y,gradient.OriginOffset.X,
+                gradient.OriginOffset.Y,gradient.RadiusX,gradient.RadiusY};
+            Check(((delegate* unmanaged[Stdcall]<nint,float*,void*,nint,nint*,int>)Slot(context,11))
+                (context,properties,null,collection,&brush));
+            ((delegate* unmanaged[Stdcall]<nint,float,void>)Slot(brush,4))(brush,opacity/255f);
+            return brush;
+        }
+        catch{Release(ref brush);throw;}
+        finally{Release(ref collection);}
+    }
+    private static nint GradientStops(nint context,ReadOnlySpan<LinearColorStop> values,GradientExtendMode extend)
+    {
+        Stop[]? rented=null;
+        Span<Stop> stops=values.Length<=64?stackalloc Stop[values.Length]:(rented=ArrayPool<Stop>.Shared.Rent(values.Length));
+        try
+        {
+            for(int i=0;i<values.Length;i++)stops[i]=new(){Position=values[i].Offset,Color=ColorOf(values[i].Color)};
+            nint collection=0;
+            // D2D1.1 straight-color interpolation in sRGB.
+            int result;
+            fixed(Stop* data=stops)
+                result=((delegate* unmanaged[Stdcall]<nint,Stop*,uint,uint,uint,uint,uint,uint,nint*,int>)Slot(context,64))
+                    (context,data,(uint)values.Length,1,1,1,(uint)extend,0,&collection);
+            if(result<0)Release(ref collection);
+            Check(result);
+            return collection;
+        }
+        finally{if(rented is not null)ArrayPool<Stop>.Shared.Return(rented);}
     }
     internal static void FillRect(nint context,RectF rectangle,nint brush)=>((delegate* unmanaged[Stdcall]<nint,RectF*,nint,void>)Slot(context,17))(context,&rectangle,brush);
     internal static void FillPath(nint context,nint path,nint brush)=>((delegate* unmanaged[Stdcall]<nint,nint,nint,nint,void>)Slot(context,23))(context,path,brush,0);

@@ -1,6 +1,7 @@
 using System.Buffers.Binary;
 using System.Globalization;
 using System.Text;
+using SimdSkia.Text;
 
 namespace SimdSkia.Avalonia;
 
@@ -9,12 +10,14 @@ public sealed record SimdSkiaSystemFontInfo(string DefaultFamily, IReadOnlyList<
 
 public static class SimdSkiaSystemFonts
 {
-    public static SimdSkiaSystemFontInfo Discover()
+    public static SimdSkiaSystemFontInfo Discover()=>DiscoverForPlatform().Primary;
+
+    internal static (SimdSkiaSystemFontInfo Primary,string[] Fallbacks) DiscoverForPlatform()
     {
         if (OperatingSystem.IsWindows())
         {
             var found = WindowsSystemFonts.Discover();
-            return new(found.DefaultFamily, found.Files, Array.Empty<string>());
+            return (new(found.DefaultFamily, found.Files, Array.Empty<string>()),found.Fallbacks);
         }
         string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         string[] roots = OperatingSystem.IsAndroid()
@@ -24,7 +27,7 @@ public static class SimdSkiaSystemFonts
             : OperatingSystem.IsMacOS()
                 ? [Path.Combine(home, "Library", "Fonts"), "/Library/Fonts", "/System/Library/Fonts", "/System/Library/Fonts/Supplemental"]
                 : throw new PlatformNotSupportedException("System font discovery supports Windows, Linux, macOS and Android.");
-        return UnixSystemFonts.Discover(roots, Environment.GetEnvironmentVariable("SIMDSKIA_DEFAULT_FONT_FAMILY"));
+        return UnixSystemFonts.DiscoverWithFallbacks(roots, Environment.GetEnvironmentVariable("SIMDSKIA_DEFAULT_FONT_FAMILY"));
     }
 }
 
@@ -34,6 +37,10 @@ internal static class UnixSystemFonts
     private static readonly string[] Preferred = ["Arial", "Helvetica", "DejaVu Sans", "Liberation Sans", "Noto Sans", "Ubuntu", "FreeSans"];
 
     internal static SimdSkiaSystemFontInfo Discover(IEnumerable<string> directories, string? preferred = null, CultureInfo? culture = null)
+        => DiscoverWithFallbacks(directories,preferred,culture).Primary;
+
+    internal static (SimdSkiaSystemFontInfo Primary,string[] Fallbacks) DiscoverWithFallbacks(
+        IEnumerable<string> directories,string? preferred=null,CultureInfo? culture=null)
     {
         var exclusions = new List<string>();
         var faces = new List<Face>();
@@ -60,7 +67,7 @@ internal static class UnixSystemFonts
             family = faces.FirstOrDefault(f => f.Family.Equals(preferred, StringComparison.OrdinalIgnoreCase))?.Family
                 ?? throw new NotSupportedException($"Requested default font '{preferred}' is not an installed supported static TrueType face.");
         else family = Preferred.Select(p => faces.FirstOrDefault(f => f.Family.Equals(p, StringComparison.OrdinalIgnoreCase))).FirstOrDefault(f => f is not null)?.Family ?? faces[0].Family;
-        // Load only selected UI, CJK and monospaced families, not every installed outline.
+        // Keep the common UI fonts ahead of the supplementary character index.
         var locale = CjkFontPreference.ForCulture(culture ?? CultureInfo.CurrentUICulture);
         string? cjk = faces.Where(f => f.Cjk)
             .OrderBy(f => CjkFontPreference.Rank(locale,CjkFontPreference.ForFamily(f.Family)))
@@ -69,7 +76,8 @@ internal static class UnixSystemFonts
         string? mono = faces.FirstOrDefault(f => f.Family.Contains("Mono", StringComparison.OrdinalIgnoreCase) || f.Family == "Menlo")?.Family;
         var files = faces.Where(f => f.Family == family || f.Family == cjk || f.Family == mono)
             .OrderBy(f => f.Family == family ? 0 : f.Family == cjk ? 1 : 2).ThenBy(f => f.Bold).Select(f => f.Path).Distinct(StringComparer.Ordinal).ToArray();
-        return new(family, files, exclusions.ToArray());
+        var fallbacks=faces.Select(f=>f.Path).Except(files,StringComparer.Ordinal).ToArray();
+        return (new(family,files,exclusions.ToArray()),fallbacks);
     }
 
     private static uint Read32(ReadOnlySpan<byte> data, int offset) => BinaryPrimitives.ReadUInt32BigEndian(data.Slice(offset, 4));
@@ -108,7 +116,11 @@ internal static class UnixSystemFonts
                     var entry = directory.AsSpan(i * 16, 16);
                     if (!tables.TryAdd(Encoding.ASCII.GetString(entry[..4]), (Read32(entry, 8), checked((int)Read32(entry, 12))))) throw new InvalidDataException("Duplicate font table.");
                 }
-                if (!tables.ContainsKey("glyf") || new[] { "fvar", "gvar", "COLR", "CPAL", "CBDT", "CBLC", "sbix", "SVG " }.Any(tables.ContainsKey))
+                bool colorBitmaps=tables.ContainsKey("sbix")||tables.ContainsKey("CBDT")&&tables.ContainsKey("CBLC");
+                if ((!tables.ContainsKey("glyf")&&!colorBitmaps) || new[] { "fvar", "gvar", "SVG " }.Any(tables.ContainsKey)||
+                    tables.ContainsKey("CBDT")!=tables.ContainsKey("CBLC")||
+                    tables.TryGetValue("COLR",out var color)&&(!tables.ContainsKey("CPAL")||color.Length<ColorGlyphLayers.HeaderBytes||
+                    !ColorGlyphLayers.HasLegacyRecords(Read(file,color.Offset,ColorGlyphLayers.HeaderBytes))))
                 { exclusions.Add($"{path}: face at {offset} requires unsupported variable/color/CFF rendering."); continue; }
                 byte[] Table(string name, int limit)
                 {
@@ -119,7 +131,9 @@ internal static class UnixSystemFonts
                 string? family = FontData.ReadFamilyName(names);
                 if (string.IsNullOrWhiteSpace(family)) throw new InvalidDataException("Font has no supported family name.");
                 var os2 = tables.ContainsKey("OS/2")?Table("OS/2", 4096):[];
-                bool cjk = HasGlyph(Table("cmap", 4 * 1024 * 1024), 0x4e2d);
+                if(!tables.TryGetValue("cmap",out var cmap)||cmap.Length>4*1024*1024)
+                    throw new InvalidDataException("Missing or oversized font character map.");
+                bool cjk = HasGlyph(file,cmap,0x4e2d,Read16(Table("maxp",4096),4));
                 output.Add(new(path, family, os2.Length >= 6 && Read16(os2, 4) >= 600, cjk));
             }
             catch (Exception error) when (error is IOException or InvalidDataException or NotSupportedException or OverflowException or ArgumentOutOfRangeException)
@@ -128,42 +142,11 @@ internal static class UnixSystemFonts
             }
         }
     }
-    private static bool HasGlyph(byte[] cmap, int codepoint)
+    private static bool HasGlyph(FileStream file,(uint Offset,int Length) cmap,int codepoint,int glyphCount)
     {
-        if (cmap.Length < 4) throw new InvalidDataException("Truncated cmap.");
-        int count = Read16(cmap, 2);
-        if (count > (cmap.Length - 4) / 8) throw new InvalidDataException("Truncated cmap records.");
-        for (int i = 0; i < count; i++)
-        {
-            int platform=Read16(cmap,4+i*8),encoding=Read16(cmap,6+i*8);
-            if(platform!=0&&(platform!=3||encoding is not (1 or 10)))continue;
-            int offset = checked((int)Read32(cmap, 8 + i * 8));
-            if (offset < 0 || offset > cmap.Length - 4) throw new InvalidDataException("Invalid cmap offset.");
-            int format = Read16(cmap, offset);
-            if (format == 12)
-            {
-                if (offset > cmap.Length - 16) throw new InvalidDataException("Truncated cmap12.");
-                int groups = checked((int)Read32(cmap, offset + 12));
-                if (groups > (cmap.Length - offset - 16) / 12) throw new InvalidDataException("Invalid cmap12 groups.");
-                for (int g = 0; g < groups; g++) { int at = offset + 16 + g * 12; if (codepoint >= Read32(cmap, at) && codepoint <= Read32(cmap, at + 4)) return Read32(cmap, at + 8) + codepoint - Read32(cmap, at) != 0; }
-            }
-            else if (format == 4)
-            {
-                if (offset > cmap.Length - 8) throw new InvalidDataException("Truncated cmap4.");
-                int segments = Read16(cmap, offset + 6) / 2;
-                if (segments <= 0 || offset + 16L + segments * 8 > cmap.Length) throw new InvalidDataException("Invalid cmap4 segments.");
-                for (int s = 0; s < segments; s++)
-                {
-                    int end = Read16(cmap, offset + 14 + s * 2), start = Read16(cmap, offset + 16 + segments * 2 + s * 2);
-                    if (codepoint < start || codepoint > end) continue;
-                    int delta = Read16(cmap, offset + 16 + segments * 4 + s * 2), rangeAt = offset + 16 + segments * 6 + s * 2, range = Read16(cmap, rangeAt);
-                    if (range == 0) return ((codepoint + delta) & 65535) != 0;
-                    int at = checked(rangeAt + range + (codepoint - start) * 2);
-                    if (at > cmap.Length - 2) throw new InvalidDataException("Invalid cmap4 glyph offset.");
-                    int glyph = Read16(cmap, at); return glyph != 0 && ((glyph + delta) & 65535) != 0;
-                }
-            }
-        }
-        return false;
+        var selected=UnicodeCmap.Select(cmap.Length,(offset,length)=>Read(file,(long)cmap.Offset+offset,length));
+        var map=Read(file,(long)cmap.Offset+selected.Offset,selected.Length);
+        selected.Validate(map);
+        return selected.GetGlyph(map,codepoint,glyphCount)!=0;
     }
 }

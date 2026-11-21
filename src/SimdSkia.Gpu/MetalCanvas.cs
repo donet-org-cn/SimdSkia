@@ -119,17 +119,23 @@ internal sealed unsafe class MetalCanvas:IGpuCanvas
             if(right<=left||bottom<=top||coverage is {Width:0}or{Height:0})return;
         }
         LinearGradientDescription? gradient=null;
-        if(paint.Shader is LinearGradient simple)gradient=new(simple.Start,simple.End,[new(0,simple.StartColor),new(1,simple.EndColor)]);
-        else if(paint.Shader is not null&&!paint.Shader.TryGetLinearGradient(out gradient))throw new NotSupportedException("The Metal pipeline accepts solid and linear-gradient brushes.");
-        if(gradient is not null&&gradient.Stops.Length>16)throw new NotSupportedException("The Metal gradient pipeline accepts at most 16 stops.");
-        if(!(command.ShaderTransform??command.Transform).TryInvert(out var inverse))return;if(gradient is not null)inverse=gradient.SampleTransform*inverse;
-        var source=command.Image;RectF imageSource=default;
+        bool tiled=ComputeTilePlacement.TryResolve(command,out var tileImage,out var tile);
+        var compute=ComputeGradient.CanDraw(command)?((IComputeGradientShader)paint.Shader!).ComputeGradient:null;
+        if(!tiled&&compute is null)
+        {
+            if(paint.Shader is LinearGradient simple)gradient=new(simple.Start,simple.End,[new(0,simple.StartColor),new(1,simple.EndColor)]);
+            else if(paint.Shader is not null&&!paint.Shader.TryGetLinearGradient(out gradient))throw new NotSupportedException("This Metal brush requires CPU fallback.");
+        }
+        if(!(command.ShaderTransform??command.Transform).TryInvert(out var inverse))return;
+        if(gradient is not null)inverse=gradient.SampleTransform*inverse;
+        else if(compute is not null)inverse=compute.SampleTransform*inverse;
+        var source=tileImage??command.Image;RectF imageSource=default;
         if(command.Kind==CommandKind.DrawImage)
         {
             if(source is null||source.Format==PixelFormat.Alpha8||paint.Shader is not null||command.Sampling==ImageSampling.Mitchell)throw new NotSupportedException("Metal A8/image-brush/cubic sampling requires an additional pipeline.");
             imageSource=command.ImageSource??new(0,0,source.Width,source.Height);if(!imageSource.IsFinite||imageSource.IsEmpty||imageSource.Left<0||imageSource.Top<0||imageSource.Right>source.Width||imageSource.Bottom>source.Height)throw new ArgumentOutOfRangeException(nameof(command.ImageSource));
         }
-        bool temporaryMask=false,temporaryImage=false;nint mask=0,image=0;
+        bool temporaryMask=false,temporaryImage=false;nint mask=0,image=0,stopStorage=0;
         // Build and retain each input before purging the other cache: the encoder
         // has not yet acquired references to them at this point.
         try
@@ -138,16 +144,54 @@ internal sealed unsafe class MetalCanvas:IGpuCanvas
             if(source is null)image=MetalApi.Retain(dummy);
             // Shared pixels (layers, filter results) are sampled in place.
             else if(device.TryGetShared(source,out nint sharedImage))image=MetalApi.Retain(sharedImage);
-            else image=MetalApi.Retain(device.Resources.Image(device,source,command.ImageIsImmutable,out temporaryImage));
-            uint* words=stackalloc uint[68];new Span<uint>(words,68).Clear();
+            else image=MetalApi.Retain(device.Resources.Image(device,source,tiled||command.ImageIsImmutable,out temporaryImage));
+            uint* words=stackalloc uint[72];new Span<uint>(words,72).Clear();
             words[0]=(uint)pixels.Width;words[1]=(uint)pixels.Height;words[2]=(uint)left;words[3]=(uint)top;
-            words[4]=(uint)(right-left);words[5]=(uint)(bottom-top);words[6]=clear?3u:source is not null?2u:gradient is not null?1u:0u;words[7]=paint.Composite==CompositeMode.SourceOver?0u:paint.Composite==CompositeMode.Source?1u:2u;
+            words[4]=(uint)(right-left);words[5]=(uint)(bottom-top);
+            words[6]=clear?3u:tiled?6u:source is not null?2u:gradient is not null?1u:compute is null?0u:compute.Kind==ComputeGradientKind.Radial?4u:5u;
+            words[7]=paint.Composite==CompositeMode.SourceOver?0u:paint.Composite==CompositeMode.Source?1u:2u;
             var color=paint.FloatingColor??new Vector4(paint.Color.R/255f,paint.Color.G/255f,paint.Color.B/255f,paint.Color.A/255f);float* values=(float*)words;values[8]=color.X;values[9]=color.Y;values[10]=color.Z;values[11]=color.W;
             values[12]=inverse.M00;values[13]=inverse.M01;values[14]=inverse.M02;values[16]=inverse.M10;values[17]=inverse.M11;values[18]=inverse.M12;
-            if(source is not null){values[20]=imageSource.Left;values[21]=imageSource.Top;values[22]=imageSource.Right-imageSource.Left;values[23]=imageSource.Bottom-imageSource.Top;values[24]=command.Rectangle.Left;values[25]=command.Rectangle.Top;values[26]=command.Rectangle.Right-command.Rectangle.Left;values[27]=command.Rectangle.Bottom-command.Rectangle.Top;words[28]=(uint)source.Width;words[29]=(uint)source.Height;words[30]=command.Sampling==ImageSampling.Nearest?0u:1u;words[31]=command.NearestLowerBoundary?1u:0u;}
-            float* stops=stackalloc float[128];int stopBytes=16;
-            if(gradient is not null){values[32]=gradient.Start.X;values[33]=gradient.Start.Y;values[34]=gradient.End.X;values[35]=gradient.End.Y;words[36]=(uint)gradient.Stops.Length;words[37]=(uint)gradient.Extend;int index=0;foreach(var stop in gradient.Stops.Span){stops[index*8]=stop.Color.R/255f;stops[index*8+1]=stop.Color.G/255f;stops[index*8+2]=stop.Color.B/255f;stops[index*8+3]=stop.Color.A/255f;stops[index*8+4]=stop.Offset;stops[index*8+5]=stops[index*8+6]=stops[index*8+7]=0;index++;}stopBytes=index*32;}
-            else new Span<float>(stops,4).Clear();
+            if(source is not null)
+            {
+                words[28]=(uint)source.Width;words[29]=(uint)source.Height;
+                if(tiled){words[30]=(uint)tile.Mode;values[68]=tile.X;values[69]=tile.Y;}
+                else
+                {
+                    values[20]=imageSource.Left;values[21]=imageSource.Top;values[22]=imageSource.Right-imageSource.Left;values[23]=imageSource.Bottom-imageSource.Top;
+                    values[24]=command.Rectangle.Left;values[25]=command.Rectangle.Top;values[26]=command.Rectangle.Right-command.Rectangle.Left;values[27]=command.Rectangle.Bottom-command.Rectangle.Top;
+                    words[30]=command.Sampling==ImageSampling.Nearest?0u:1u;words[31]=command.NearestLowerBoundary?1u:0u;
+                }
+            }
+            var stops=gradient?.Stops??compute?.Stops??default;
+            if(gradient is not null)
+            {
+                values[32]=gradient.Start.X;values[33]=gradient.Start.Y;values[34]=gradient.End.X;values[35]=gradient.End.Y;
+                words[37]=(uint)gradient.Extend;
+            }
+            else if(compute is not null)
+            {
+                values[32]=compute.Center.X;values[33]=compute.Center.Y;values[34]=compute.Origin.X;values[35]=compute.Origin.Y;
+                values[68]=compute.Radius.X;values[69]=compute.Radius.Y;values[70]=compute.AngleTurns;
+                words[37]=(uint)compute.Extend;
+            }
+            words[36]=(uint)stops.Length;
+            float* inlineStops=stackalloc float[128];int stopBytes=Math.Max(16,checked(stops.Length*32));
+            float* stopValues=inlineStops;
+            if(stops.Length>16)
+            {
+                stopStorage=device.CreateBuffer(stopBytes);
+                stopValues=(float*)MetalApi.Call(stopStorage,"contents");
+            }
+            var stopSpan=new Span<float>(stopValues,stopBytes/4);
+            stopSpan.Clear();
+            int index=0;
+            foreach(var stop in stops.Span)
+            {
+                stopSpan[index]=stop.Color.R/255f;stopSpan[index+1]=stop.Color.G/255f;
+                stopSpan[index+2]=stop.Color.B/255f;stopSpan[index+3]=stop.Color.A/255f;
+                stopSpan[index+4]=stop.Offset;index+=8;
+            }
             values[40]=rectangle.Left;values[41]=rectangle.Top;values[42]=rectangle.Right;values[43]=rectangle.Bottom;
             int* ints=(int*)words;ints[44]=clipLeft;ints[45]=clipTop;ints[46]=clipRight;ints[47]=clipBottom;
             if(coverage is not null){ints[48]=coverage.Left;ints[49]=coverage.Top;ints[50]=coverage.Width;ints[51]=coverage.Height;words[53]=1;}
@@ -160,7 +204,9 @@ internal sealed unsafe class MetalCanvas:IGpuCanvas
                 values[64]=rounded.InnerRadii.X;values[65]=rounded.InnerRadii.Y;values[66]=rounded.InnerRadii.Z;values[67]=rounded.InnerRadii.W;
             }
             device.Use(device.Pipeline);nint encoder=device.Compute();
-            MetalApi.SetBuffer(encoder,output,0);MetalApi.SetBuffer(encoder,mask,1);MetalApi.SetBuffer(encoder,image,2);MetalApi.SetBytes(encoder,words,272,3);MetalApi.SetBytes(encoder,stops,(nuint)stopBytes,4);MetalApi.Dispatch(encoder,words[4],words[5]);
+            MetalApi.SetBuffer(encoder,output,0);MetalApi.SetBuffer(encoder,mask,1);MetalApi.SetBuffer(encoder,image,2);MetalApi.SetBytes(encoder,words,288,3);
+            if(stopStorage!=0)MetalApi.SetBuffer(encoder,stopStorage,4);else MetalApi.SetBytes(encoder,inlineStops,(nuint)stopBytes,4);
+            MetalApi.Dispatch(encoder,words[4],words[5]);
             dirty=true;Dispatches++;
         }
         catch(Exception error){faulted=true;if(Environment.GetEnvironmentVariable("SIMDSKIA_METAL_TRACE")=="1")Console.Error.WriteLine("[metal] canvas fault: "+error);throw;}
@@ -168,6 +214,7 @@ internal sealed unsafe class MetalCanvas:IGpuCanvas
         {
             // A temporary upload starts with +1 and gets the local +1 above.
             if(temporaryMask){nint value=mask;MetalApi.Release(ref value);}if(temporaryImage){nint value=image;MetalApi.Release(ref value);}MetalApi.Release(ref mask);MetalApi.Release(ref image);
+            MetalApi.Release(ref stopStorage);
         }
     }
     /// <summary>Drains the device. Copied targets then receive the GPU bytes.</summary>

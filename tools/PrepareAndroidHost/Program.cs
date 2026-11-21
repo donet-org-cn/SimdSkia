@@ -3,17 +3,24 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 if (args.Length != 2)
-    throw new ArgumentException("Supply the official Avalonia.Android 12.1.5 DLL and output path.");
+    throw new ArgumentException("Supply the official Avalonia Android/iOS 12.1.5 DLL and output path.");
 
 string source = Path.GetFullPath(args[0]);
 string destination = Path.GetFullPath(args[1]);
-const string expectedHash = "AC7D14C5BB6A9C4BC476E2AE7A88D4FE4E9B9E54BD3A8D2286DBF6FB71B64056";
+var (assembly, entryType, entryMethod, parameters, expectedHash) = Path.GetFileName(source) switch
+{
+    "Avalonia.Android.dll" => ("Android", "Avalonia.AndroidApplicationExtensions", "UseAndroid", 1,
+        "AC7D14C5BB6A9C4BC476E2AE7A88D4FE4E9B9E54BD3A8D2286DBF6FB71B64056"),
+    "Avalonia.iOS.dll" => ("iOS", "Avalonia.IOSApplicationExtensions", "UseiOS", 2,
+        "6E9597E9FA5023875ADD201BD81B0AFF02AD2D0AFF27F93880C8029F0044EB69"),
+    _ => throw new ArgumentException("Unknown Avalonia mobile host assembly.")
+};
 if (Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(source))) != expectedHash)
-    throw new InvalidDataException("Unrecognized Android host. Review the upstream change before updating its hash.");
+    throw new InvalidDataException($"Unrecognized {assembly} host. Review the upstream change before updating its hash.");
 
 using var module = ModuleDefinition.ReadModule(source);
-var entry = module.GetType("Avalonia.AndroidApplicationExtensions").Methods
-    .Single(method => method.Name == "UseAndroid");
+var entry = module.GetType(entryType).Methods
+    .Single(method => method.Name == entryMethod && method.Parameters.Count == parameters);
 int removed = 0;
 foreach (var instruction in entry.Body.Instructions)
 {
@@ -45,7 +52,7 @@ try
     {
         if (verified.AssemblyReferences.Any(reference => reference.Name.Contains("Skia", StringComparison.OrdinalIgnoreCase)
             || reference.Name.Contains("HarfBuzz", StringComparison.OrdinalIgnoreCase)))
-            throw new InvalidDataException("Unexpected native renderer dependency remains in the Android host.");
+            throw new InvalidDataException($"Unexpected native renderer dependency remains in the {assembly} host.");
     }
     File.Move(temporary, destination, overwrite: true);
 }
@@ -53,4 +60,4 @@ finally
 {
     File.Delete(temporary);
 }
-Console.WriteLine("Prepared pinned Android window/input host for managed SimdSkia rendering.");
+Console.WriteLine($"Prepared pinned {assembly} window/input host for SimdSkia rendering.");

@@ -38,6 +38,60 @@ uvec4 sampledImage(vec2 q){
     uint a=uint(clamp(roundEven(result.a),0.0,255.0));return uvec4(clamp(roundEven(result.rgb),vec3(0),vec3(a)),a);
 }
 vec2 localPoint(vec2 point){return vec2(f(22)*point.x+f(23)*point.y+f(24),f(25)*point.x+f(26)*point.y+f(27));}
+float gradientParameter(vec2 point,uint mode){
+    vec2 center=vec2(f(28),f(29));
+    if(mode==3u){
+        vec2 origin=vec2(f(30),f(31)),radius=vec2(f(133),f(134));
+        vec2 focus=(origin-center)/radius,direction=(point-origin)/radius;
+        float a=dot(direction,direction),b=2.0*dot(focus,direction),c=dot(focus,focus)-1.0;
+        if(a==0.0)return 0.0;
+        float root=sqrt(max(0.0,b*b-4.0*a*c));
+        // Use the stable root form on the side that would subtract two close values.
+        return b>0.0?(-b-root)/(2.0*c):2.0*a/(-b+root);
+    }
+    vec2 delta=point-center;
+    if(mode==4u){
+        float angle=delta.x!=0.0?atan(delta.y,delta.x):sign(delta.y)*1.5707963267948966;
+        return fract(angle*0.15915494309189535+0.25-f(135));
+    }
+    vec2 axis=vec2(f(30),f(31))-center;
+    float denominator=dot(axis,axis);
+    return denominator==0.0?1.0:dot(delta,axis)/denominator;
+}
+uint gradientWord(uint base,uint index){
+    uint word=base+index;
+    return floatBitsToUint(edges[word/4u][word%4u]);
+}
+uvec4 storedGradient(float t,uint base,uint count){
+    if(t<=uintBitsToFloat(gradientWord(base,0u)))return unpackColor(gradientWord(base,1u));
+    uint lo=1u,hi=count;
+    // upper_bound preserves the same transition at duplicate stops as the inline sampler.
+    while(lo<hi){
+        uint mid=lo+(hi-lo)/2u;
+        if(t<uintBitsToFloat(gradientWord(base,mid*2u)))hi=mid;
+        else lo=mid+1u;
+    }
+    if(lo==count)return unpackColor(gradientWord(base,count*2u-1u));
+    uint index=lo*2u;
+    float previous=uintBitsToFloat(gradientWord(base,index-2u));
+    float fraction=(t-previous)/(uintBitsToFloat(gradientWord(base,index))-previous);
+    vec4 a=vec4(unpackColor(gradientWord(base,index-1u))),b=vec4(unpackColor(gradientWord(base,index+1u)));
+    return uvec4(roundEven(mix(a,b,fraction)));
+}
+int tileCoordinate(int at,int length,bool mirror){
+    int period=mirror?2*length:length;
+    // Use signed division explicitly: GLSL remainder with a negative operand
+    // is undefined, and mirrored tiles regularly cross negative coordinates.
+    int wrapped=at-(at/period)*period;
+    if(wrapped<0)wrapped+=period;
+    return wrapped<length?wrapped:2*length-1-wrapped;
+}
+uvec4 tileColor(ivec2 at){
+    ivec2 length=ivec2(param(19),param(20));uint mode=param(135);
+    if(mode==0u&&(any(lessThan(at,ivec2(0)))||any(greaterThanEqual(at,length))))return uvec4(0);
+    at=ivec2(tileCoordinate(at.x,length.x,mode==2u||mode==4u),tileCoordinate(at.y,length.y,mode==3u||mode==4u));
+    return uvec4(roundEven(texelFetch(imageTexture,at,0)*255.0));
+}
 uint edgeStart=0u,edgeCount=0u;
 int edgeWinding=0;
 vec4 edgeAt(uint i){
@@ -272,16 +326,23 @@ void main(){
         vec2 uv=(q-vec2(f(12),f(13)))/vec2(f(14)-f(12),f(15)-f(13));
         uvec2 at=uvec2(clamp(uv*vec2(param(19),param(20)),vec2(0),vec2(param(19)-1u,param(20)-1u)));
         uint opacity=color.a;color=uvec4(roundEven(texelFetch(imageTexture,ivec2(at),0)*255.0));color.a=multiplyAlpha(color.a,opacity);
-    }else if(param(16)==2u){
+    }else if(param(16)==5u){
+        uint opacity=color.a;
+        color=tileColor(ivec2(pixel)+ivec2(int(param(133)),int(param(134))));
+        color.a=multiplyAlpha(color.a,opacity);
+    }else if(param(16)>=2u){
         vec2 point=vec2(f(124)*q.x+f(125)*q.y+f(126),f(127)*q.x+f(128)*q.y+f(129));
-        vec2 start=vec2(f(28),f(29)),delta=vec2(f(30),f(31))-start;
-        float denominator=dot(delta,delta),t=denominator==0.0?1.0:dot(point-start,delta)/denominator;
+        float t=gradientParameter(point,param(16));
         t=param(59)==0u?clamp(t,0.0,1.0):param(59)==1u?t-floor(t):1.0-abs((t-2.0*floor(t/2.0))-1.0);
-        uint opacity=color.a;uvec4 mixed=unpackColor(param(61+int((param(58)-1u)*2u)));
-        if(t<=f(60))mixed=unpackColor(param(61));
-        else for(uint i=1u;i<param(58);i++)if(t<f(60+int(i*2u))){
-            float previous=f(60+int((i-1u)*2u)),fraction=(t-previous)/(f(60+int(i*2u))-previous);
-            mixed=uvec4(roundEven(mix(vec4(unpackColor(param(61+int((i-1u)*2u)))),vec4(unpackColor(param(61+int(i*2u)))),fraction)));break;
+        uint opacity=color.a,base=param(136);uvec4 mixed;
+        if(base!=0u)mixed=storedGradient(t,base-1u,param(58));
+        else{
+            mixed=unpackColor(param(61+int((param(58)-1u)*2u)));
+            if(t<=f(60))mixed=unpackColor(param(61));
+            else for(uint i=1u;i<param(58);i++)if(t<f(60+int(i*2u))){
+                float previous=f(60+int((i-1u)*2u)),fraction=(t-previous)/(f(60+int(i*2u))-previous);
+                mixed=uvec4(roundEven(mix(vec4(unpackColor(param(61+int((i-1u)*2u)))),vec4(unpackColor(param(61+int(i*2u)))),fraction)));break;
+            }
         }
         color=mixed;color.a=multiplyAlpha(color.a,opacity);
     }else if(param(16)==1u){

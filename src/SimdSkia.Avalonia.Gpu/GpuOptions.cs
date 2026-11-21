@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using SimdSkia.Gpu;
 
 namespace SimdSkia.Avalonia;
 
@@ -10,15 +11,15 @@ public enum SimdSkiaGpuTextMode { ManagedGlyphAtlas, GpuOutlines }
 public static class SimdSkiaGpuOptions
 {
     /// <summary>Prefers Direct2D native presentation on Windows, Vulkan on Linux and a native
-    /// Metal layer on macOS, then managed CPU. Initialization failures and selected targets are
+    /// Metal layer on macOS/iOS, then managed CPU when the host supplies a framebuffer. Initialization failures and selected targets are
     /// reported in SimdSkiaGpuDiagnostics.</summary>
     public static void UseGpuPreferred(this SimdSkiaOptions options)
     {
         ArgumentNullException.ThrowIfNull(options);options.UseCpu();
         var preference=new GpuPreference();
         options.PreferredRenderTargetFactory=(graphics,surfaces)=>GpuPreferredTarget.Create(graphics,surfaces,preference);
-        // macOS draws through a CAMetalLayer, which the host creates only when asked for Metal.
-        options.UsesPlatformGraphics=OperatingSystem.IsMacOS();
+        // The Apple host creates a CAMetalLayer when configured for Metal.
+        options.UsesPlatformGraphics=MetalDevice.IsSupportedPlatform;
         if(OperatingSystem.IsMacOS())options.Preparations.Add(MetalStartupPreparation.Prepare);
     }
     /// <summary>Enables hardware drawing. Direct2D defaults to a native swapchain; Vulkan uses completed-pixel framebuffer readback.</summary>
@@ -32,7 +33,7 @@ public static class SimdSkiaGpuOptions
         if (backend == SimdSkiaGpuBackend.Vulkan && !OperatingSystem.IsWindows() && !OperatingSystem.IsLinux()) throw new PlatformNotSupportedException("This Vulkan backend supports Windows/Linux. Use SimdSkiaGpuBackend.Metal on macOS.");
         if (backend == SimdSkiaGpuBackend.Metal)
         {
-            if (!OperatingSystem.IsMacOS()) throw new PlatformNotSupportedException("Metal requires macOS.");
+            if (!MetalDevice.IsSupportedPlatform) throw new PlatformNotSupportedException("Metal requires macOS or iOS.");
             if (presentation == SimdSkiaGpuPresentation.FramebufferReadback) throw new NotSupportedException("Metal presents through the native CAMetalLayer.");
             var preference=new GpuPreference();
             options.CanvasBackendFactory=null;options.NativeRenderTargetFactory=null;options.UsesPlatformGraphics=true;options.Preparations.Clear();

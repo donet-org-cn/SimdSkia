@@ -73,8 +73,8 @@ internal sealed partial class DrawingContext
             var brushTransform=Matrix.CreateTranslation(-brushOrigin.X,-brushOrigin.Y)*(brush.Transform?.Value??Matrix.Identity)*Matrix.CreateTranslation(brushOrigin.X,brushOrigin.Y);
             if(!visual&&tile.TileMode==TileMode.None)drawing*=Matrix.CreateTranslation(destination.X,destination.Y);
             var cacheKey=new TileRasterCache.Key(TileRasterCache.Identity((object?)content??bitmap!),bitmap?.Version??0,tile.SourceRect,tile.DestinationRect,tile.Stretch,tile.AlignmentX,tile.AlignmentY,tile.TileMode,bounds.Size,dpi,renderOptions,textOptions);
-            var pixels=TileRasterCache.Get(cacheKey);
-            if(pixels is null)
+            var rasterLease=TileRasterCache.Get(cacheKey);
+            if(rasterLease is null)
             {
                 using var raster=PixelBuffer.Rent(width,height,PixelFormat.Bgra8888,AlphaFormat.Premultiplied);
                 using(var renderer=new DrawingContext(raster,dpi,false){nearestLowerBoundary=true})
@@ -93,7 +93,7 @@ internal sealed partial class DrawingContext
                     }
                     renderer.PopTextOptions();renderer.PopRenderOptions();
                 }
-                pixels=TileRasterCache.Add(cacheKey,raster);
+                rasterLease=TileRasterCache.Add(cacheKey,raster);
             }
             Matrix imageToLocal;
             if(visual)imageToLocal=Matrix.CreateScale(96/dpi.X,96/dpi.Y)*brushTransform*Matrix.CreateTranslation(tile.DestinationRect.ToPixels(bounds).Position);
@@ -102,9 +102,14 @@ internal sealed partial class DrawingContext
                 imageToLocal=(tile.DestinationRect.Unit==RelativeUnit.Relative?Matrix.CreateTranslation(bounds.Position):Matrix.Identity)*brushTransform*Matrix.CreateScale(96/dpi.X,96/dpi.Y);
                 if(tile.TileMode!=TileMode.None)imageToLocal*=Matrix.CreateTranslation(-destination.X,-destination.Y);
             }
-            if(!imageToLocal.TryInvert(out var inverse)){pixels.Dispose();throw new NotSupportedException("Singular tile brush transforms are not supported.");}
-            var shader=new TileShader(pixels,inverse,tile.TileMode,visual?ImageSampling.Nearest:Sampling(renderOptions.BitmapInterpolationMode));
-            return new(new(new(255,255,255,opacity),composite,aa,shader),shader);
+            var activeTile=rasterLease.Value;
+            try
+            {
+                if(!imageToLocal.TryInvert(out var inverse))throw new NotSupportedException("Singular tile brush transforms are not supported.");
+                var shader=new TileShader(activeTile.Pixels,inverse,tile.TileMode,visual?ImageSampling.Nearest:Sampling(renderOptions.BitmapInterpolationMode),activeTile);
+                return new(new(new(255,255,255,opacity),composite,aa,shader),shader);
+            }
+            catch { activeTile.Dispose(); throw; }
         }
         finally{owned?.Dispose();}
     }
@@ -118,20 +123,33 @@ internal static class TileRasterCache
     private static readonly ConditionalWeakTable<object,object> identities=new();
     internal static object Identity(object source)=>identities.GetValue(source,static _=>new());
     internal readonly record struct Key(object Source,int Version,RelativeRect SourceRect,RelativeRect DestinationRect,Stretch Stretch,AlignmentX AlignmentX,AlignmentY AlignmentY,TileMode Mode,Size Bounds,Vector Dpi,RenderOptions Render,TextOptions Text);
-    private sealed record Entry(Key Key,PixelBuffer Pixels,long Bytes);
+    internal sealed class Entry(Key key,PixelBuffer pixels,long bytes)
+    {
+        internal readonly Key Key=key;
+        internal readonly PixelBuffer Pixels=pixels;
+        internal readonly long Bytes=bytes;
+        private int references=1;
+        internal Lease Retain(){Interlocked.Increment(ref references);return new(this);}
+        internal void Release(){if(Interlocked.Decrement(ref references)==0)Pixels.Dispose();}
+    }
+    internal readonly struct Lease(Entry entry):IDisposable
+    {
+        internal PixelBuffer Pixels=>entry.Pixels;
+        public void Dispose()=>entry.Release();
+    }
     private static readonly object gate=new();
     private static readonly Dictionary<Key,LinkedListNode<Entry>> entries=[];
     private static readonly LinkedList<Entry> order=[];
     private static long bytes;
     internal static (int Count,long Bytes) Statistics {get{lock(gate)return(entries.Count,bytes);}}
-    internal static PixelBuffer? Get(Key key)
-    {lock(gate){if(!entries.TryGetValue(key,out var entry))return null;order.Remove(entry);order.AddLast(entry);return entry.Value.Pixels.Share();}}
-    internal static PixelBuffer Add(Key key,PixelBuffer pixels)
+    internal static Lease? Get(Key key)
+    {lock(gate){if(!entries.TryGetValue(key,out var entry))return null;order.Remove(entry);order.AddLast(entry);return entry.Value.Retain();}}
+    internal static Lease Add(Key key,PixelBuffer pixels)
     {
         long size=(long)pixels.Width*pixels.Height*4;
         lock(gate)
         {
-            if(entries.TryGetValue(key,out var existing))return existing.Value.Pixels.Share();
+            if(entries.TryGetValue(key,out var existing))return existing.Value.Retain();
             // Bitmap versions are monotonic. Old snapshots are no longer
             // addressable by a future brush draw; keep leases already handed to
             // shaders alive, but stop retaining obsolete cached versions.
@@ -139,22 +157,41 @@ internal static class TileRasterCache
             {
                 var next=node.Next;
                 if(ReferenceEquals(node.Value.Key.Source,key.Source)&&node.Value.Key.Version!=key.Version)
-                {bytes-=node.Value.Bytes;entries.Remove(node.Value.Key);order.Remove(node);node.Value.Pixels.Dispose();}
+                {bytes-=node.Value.Bytes;entries.Remove(node.Value.Key);order.Remove(node);node.Value.Release();}
                 node=next;
             }
+            var entry=new Entry(key,pixels.Share(),size);
             if(size<=16*1024*1024)
             {
                 while(entries.Count>=64||bytes+size>16*1024*1024)
-                {var first=order.First!;bytes-=first.Value.Bytes;entries.Remove(first.Value.Key);order.RemoveFirst();first.Value.Pixels.Dispose();}
-                entries.Add(key,order.AddLast(new Entry(key,pixels.Share(),size)));bytes+=size;
+                {var first=order.First!;bytes-=first.Value.Bytes;entries.Remove(first.Value.Key);order.RemoveFirst();first.Value.Release();}
+                entries.Add(key,order.AddLast(entry));bytes+=size;
+                return entry.Retain();
             }
-            return pixels.Share();
+            return new(entry);
         }
     }
 }
 
-internal sealed class TileShader(PixelBuffer pixels,Matrix inverse,TileMode mode,ImageSampling sampling):IOpaqueRowShader,IDisposable
+internal sealed class TileShader(PixelBuffer pixels,Matrix inverse,TileMode mode,ImageSampling sampling,TileRasterCache.Lease? lease=null):IOpaqueRowShader,IComputeTileShader,IDisposable
 {
+    private int disposed;
+    public bool TryGetTile(out PixelBuffer image,out ComputeTilePlacement placement)
+    {
+        image=pixels;placement=default;
+        // With integer translations each destination center lands on a texel
+        // center, so bilinear and nearest sampling return the same pixel.
+        if(sampling is not (ImageSampling.Nearest or ImageSampling.Bilinear)||inverse!=Matrix.CreateTranslation(inverse.M31,inverse.M32)||
+            !ComputeTilePlacement.Integer(inverse.M31)||!ComputeTilePlacement.Integer(inverse.M32))return false;
+        var wrap=mode switch
+        {
+            TileMode.None=>ComputeTileMode.None,TileMode.Tile=>ComputeTileMode.Tile,
+            TileMode.FlipX=>ComputeTileMode.FlipX,TileMode.FlipY=>ComputeTileMode.FlipY,
+            TileMode.FlipXY=>ComputeTileMode.FlipXY,_=>throw new NotSupportedException("Unknown tile mode.")
+        };
+        placement=new((int)inverse.M31,(int)inverse.M32,wrap);
+        return true;
+    }
     public bool TryCopyOpaqueRow(Span<byte> destination,PixelFormat format,Matrix3 deviceToShader,int x,int y)
     {
         // Restrict to exact integer translations. Fractional DPI, transformed
@@ -225,5 +262,10 @@ internal sealed class TileShader(PixelBuffer pixels,Matrix inverse,TileMode mode
         }
         return new(PixelBuffer.Unmultiply(premultiplied.R,premultiplied.A),PixelBuffer.Unmultiply(premultiplied.G,premultiplied.A),PixelBuffer.Unmultiply(premultiplied.B,premultiplied.A),premultiplied.A);
     }
-    public void Dispose()=>pixels.Dispose();
+    public void Dispose()
+    {
+        if(Interlocked.Exchange(ref disposed,1)!=0)return;
+        if(lease is {} active)active.Dispose();
+        else pixels.Dispose();
+    }
 }

@@ -1,5 +1,5 @@
-using System.Buffers.Binary;
 using System.Numerics;
+using Reader=SimdSkia.Text.OpenTypeLayoutReader;
 
 namespace SimdSkia.Text;
 
@@ -57,7 +57,7 @@ internal sealed class PairPositioning
     }
     private static bool TryPair(ref Reader r,int table,ushort first,ushort second,out GlyphPairAdjustment pair)
     {
-        pair=default;int coverage=Coverage(ref r,checked(table+r.U16(table+2)),first);if(coverage<0)return false;
+        pair=default;int coverage=r.Coverage(checked(table+r.U16(table+2)),first);if(coverage<0)return false;
         int format=r.U16(table),v1=r.U16(table+4),v2=r.U16(table+6),size1=ValueSize(v1),size2=ValueSize(v2);
         if(v2!=0)throw new NotSupportedException("Kern lookups that consume both glyphs require run-level GPOS processing.");
         int at;
@@ -88,13 +88,6 @@ internal sealed class PairPositioning
         }
         return new(x,y,ax,ay);
     }
-    private static int Coverage(ref Reader r,int table,ushort glyph)
-    {
-        int format=r.U16(table),count=r.U16(table+2),lo=0,hi=count-1;
-        if(format==1){while(lo<=hi){int mid=lo+(hi-lo)/2,value=r.U16(table+4+mid*2);if(value<glyph)lo=mid+1;else if(value>glyph)hi=mid-1;else return mid;}return -1;}
-        if(format!=2)throw new NotSupportedException("Unknown GPOS coverage format.");
-        while(lo<=hi){int mid=lo+(hi-lo)/2,p=table+4+mid*6,start=r.U16(p),end=r.U16(p+2);if(glyph<start)hi=mid-1;else if(glyph>end)lo=mid+1;else return r.U16(p+4)+glyph-start;}return -1;
-    }
     private static int Class(ref Reader r,int table,ushort glyph)
     {
         int format=r.U16(table);
@@ -119,16 +112,5 @@ internal sealed class PairPositioning
             at=checked(at+length);
         }
         return result;
-    }
-    private readonly ref struct Reader
-    {
-        private readonly ReadOnlySpan<byte> data;
-        internal Reader(ReadOnlySpan<byte> data)=>this.data=data;
-        internal void Check(int offset,int length){if(offset<0||length<0||offset>data.Length-length)throw new InvalidDataException("OpenType positioning table offset exceeds its bounds.");}
-        internal int U16(int offset){Check(offset,2);return BinaryPrimitives.ReadUInt16BigEndian(data[offset..]);}
-        internal int S16(int offset){Check(offset,2);return BinaryPrimitives.ReadInt16BigEndian(data[offset..]);}
-        internal uint U32(int offset){Check(offset,4);return BinaryPrimitives.ReadUInt32BigEndian(data[offset..]);}
-        internal int Record(int list,uint tag)
-        {int count=U16(list);for(int i=0;i<count;i++){int p=checked(list+2+i*6);if(U32(p)==tag)return checked(list+U16(p+4));}return 0;}
     }
 }

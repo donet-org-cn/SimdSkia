@@ -39,7 +39,8 @@ public sealed unsafe partial class VulkanCanvas
         {
             if(count>=RectangleBatchSize&&!ordered)break;
             var item=pending[i];var command=item.Command;
-            if(command.Kind!=CommandKind.FillRectangle||command.CoverageClip is not null||!command.Transform.TryInvert(out _))break;
+            if(command.Kind!=CommandKind.FillRectangle||item.Texture is not null||!item.StoredStops.IsEmpty||
+                command.CoverageClip is not null||!command.Transform.TryInvert(out _))break;
             Prepare(item,words);uint width=words[39],height=words[40];if(width==0||height==0)break;var candidate=new RectF(words[37],words[38],words[37]+width,words[38]+height);bool overlap=false;
             foreach(var previous in bounds[..count])if(Intersects(previous,candidate)){overlap=true;break;}
             bool simple=!command.Paint.Antialias&&command.Paint.Shader is null&&command.Transform.M01==0&&command.Transform.M10==0;

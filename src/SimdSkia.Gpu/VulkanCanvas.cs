@@ -68,12 +68,15 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
     /// <summary>Enable device timestamp diagnostics; disabled by default. Read LastProfile after Flush.</summary>
     public bool EnableProfiling {get;set;}
     public VulkanProfile? LastProfile {get;private set;}
-    private readonly record struct Queued(DrawingCommand Command,EdgeEntry? Path,Texture? Texture)
+    private const int InlineStops=32;
+    private readonly record struct Queued(DrawingCommand Command,EdgeEntry? Path,Texture? Texture,
+        ComputeTilePlacement? Tile=null,ReadOnlyMemory<LinearColorStop> StoredStops=default)
     {
         public float[] Edges=>Path?.Edges??[];
         public float[] Data=>Path?.Tiles?.Data??Edges;
     }
-    private static int EdgePayload(Queued item)=>checked((item.Data.Length*4+checked((item.Command.CoverageClip?.Width??0)*(item.Command.CoverageClip?.Height??0))+15)&~15);
+    private static int PathPayload(Queued item)=>checked((item.Data.Length*4+checked((item.Command.CoverageClip?.Width??0)*(item.Command.CoverageClip?.Height??0))+15)&~15);
+    private static int EdgePayload(Queued item)=>checked(PathPayload(item)+((item.StoredStops.Length*8+15)&~15));
     private sealed class ImageEntry
     {
         public required Texture Texture;public required byte[] Snapshot;public int Hash;public long Used,Touched;
@@ -219,11 +222,19 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
         if(!command.Transform.IsFinite||!command.Transform.IsAffine)throw new NotSupportedException("Vulkan drawing requires a finite affine transform.");
         if(!command.Rectangle.IsFinite)throw new ArgumentException("Rectangle coordinates must be finite.");
         if(command.Clip is {} clip&&!clip.IsFinite)throw new ArgumentException("Clip coordinates must be finite.");
-        if(command.Paint.Shader is not null and not LinearGradient)
+        bool useTile=ComputeTilePlacement.TryResolve(command,out var tileImage,out var tile);
+        ReadOnlyMemory<LinearColorStop> gradientStops=default;
+        if(!useTile&&command.Paint.Shader is {} colorShader&&colorShader is not LinearGradient)
         {
-            if(!command.Paint.Shader.TryGetLinearGradient(out var linear)||linear is null)throw new NotSupportedException("Vulkan accepts linear gradient shaders; other shaders require an explicit CPU fallback.");
-            if(linear.Stops.Length>32||!linear.HasUnitStops)throw new NotSupportedException("Vulkan linear gradients accept up to 32 stops in [0,1].");
-            float dx=linear.End.X-linear.Start.X,dy=linear.End.Y-linear.Start.Y;if(!float.IsFinite(dx*dx+dy*dy))throw new NotSupportedException("Gradient coordinates exceed Vulkan float32 precision.");
+            if(ComputeGradient.CanDraw(command))
+                gradientStops=((IComputeGradientShader)colorShader).ComputeGradient!.Stops;
+            else
+            {
+                if(!colorShader.TryGetLinearGradient(out var linear)||linear is null)throw new NotSupportedException("This shader requires explicit CPU fallback on Vulkan.");
+                if(!linear.HasUnitStops)throw new NotSupportedException("Vulkan linear gradients require stop offsets in [0,1].");
+                float dx=linear.End.X-linear.Start.X,dy=linear.End.Y-linear.Start.Y;if(!float.IsFinite(dx*dx+dy*dy))throw new NotSupportedException("Gradient coordinates exceed Vulkan float32 precision.");
+                gradientStops=linear.Stops;
+            }
         }
         if(command.Paint.Shader is LinearGradient shader)
         {float dx=shader.End.X-shader.Start.X,dy=shader.End.Y-shader.Start.Y;if(!float.IsFinite(dx*dx+dy*dy))throw new NotSupportedException("Gradient coordinates exceed Vulkan float32 precision.");}
@@ -242,13 +253,18 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
             edges=ResolveEdges(geometry,command.Transform,command.CurveTolerance);
         }
         Texture? texture=null;
+        var image=tileImage;
         if(command.Kind==CommandKind.DrawImage)
         {
-            var image=command.Image??throw new ArgumentException("Image pixels missing.");image.ThrowIfDisposed();
+            image=command.Image??throw new ArgumentException("Image pixels missing.");image.ThrowIfDisposed();
             var source=command.ImageSource??new RectF(0,0,image.Width,image.Height);
             if(!source.IsFinite||source.IsEmpty||source.Left<0||source.Top<0||source.Right>image.Width||source.Bottom>image.Height)throw new ArgumentOutOfRangeException(nameof(command.ImageSource));
             if(command.Rectangle.IsEmpty)return;
-            if(!imageCache.TryGetValue(image,out var entry)||!command.ImageIsImmutable&&!MatchesSnapshot(image,entry.Snapshot))
+        }
+        if(image is not null)
+        {
+            image.ThrowIfDisposed();
+            if(!imageCache.TryGetValue(image,out var entry)||!useTile&&!command.ImageIsImmutable&&!MatchesSnapshot(image,entry.Snapshot))
             {
                 // The stale texture may still be referenced by queued commands in this batch;
                 // retire it instead of destroying it and free it once the GPU is idle after Flush.
@@ -283,7 +299,9 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
             else TextureCacheHits++;
             entry!.Used=++useCounter;entry.Touched=Stopwatch.GetTimestamp();texture=entry.Texture;
         }
-        pending.Add(new(command with {Image=null},edges,texture));
+        var queued=command with {Image=null};
+        if(useTile)queued=queued with {Paint=queued.Paint with {Shader=null}};
+        pending.Add(new(queued,edges,texture,useTile?tile:null,gradientStops.Length>InlineStops?gradientStops:default));
     }
     private bool OverwritesTarget(in DrawingCommand cmd)
     {
@@ -356,7 +374,7 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
         bool submitted=false,completed=false;
         int edgeStride=256,paramStride=768;
         int edgeBytesNeeded=edgeStride,paramBytesNeeded=pending.Count*(paramStride+256)+RectangleBatchUniformBytes;
-        foreach(var item in pending)edgeBytesNeeded+=((EdgePayload(item)+255)&~255);
+        foreach(var item in pending)edgeBytesNeeded=checked(edgeBytesNeeded+((EdgePayload(item)+255)&~255));
         try
         {
             if(edgesArena is null||edgesArena.Size<edgeBytesNeeded)
@@ -417,8 +435,20 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
                 {
                     edgeBase=(edgeOffset+255)&~255;
                     var payload=edgesArena!.Bytes.Slice(edgeBase,edgeSize);MemoryMarshal.AsBytes(item.Data.AsSpan()).CopyTo(payload);
+                    int pathBytes=PathPayload(item);
                     if(item.Command.CoverageClip is {} coverage)
-                    {var bytes=payload[(item.Data.Length*4)..];bytes.Clear();for(int y=0;y<coverage.Height;y++)coverage.GetRow(coverage.Top+y).CopyTo(bytes.Slice(y*coverage.Width,coverage.Width));}
+                    {var bytes=payload[(item.Data.Length*4)..pathBytes];bytes.Clear();for(int y=0;y<coverage.Height;y++)coverage.GetRow(coverage.Top+y).CopyTo(bytes.Slice(y*coverage.Width,coverage.Width));}
+                    if(!item.StoredStops.IsEmpty)
+                    {
+                        var stops=MemoryMarshal.Cast<byte,uint>(payload[pathBytes..]);
+                        int index=0;
+                        foreach(var stop in item.StoredStops.Span)
+                        {
+                            stops[index++]=BitConverter.SingleToUInt32Bits(stop.Offset);
+                            stops[index++]=Pack(stop.Color);
+                        }
+                        stops[index..].Clear();
+                    }
                     edges=deviceEdgesArena!;edgeOffset=edgeBase+edgeSize;
                 }
                 int paramBase=(paramOffset+255)&~255;var parameters=paramsArena!;int paramSize=160*4;Prepare(item,words);words.CopyTo(MemoryMarshal.Cast<byte,uint>(parameters.Bytes.Slice(paramBase,paramSize)));paramOffset=paramBase+paramSize;
@@ -547,13 +577,24 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
         floats[12]=rect.Left;floats[13]=rect.Top;floats[14]=rect.Right;floats[15]=rect.Bottom;
         words[19]=(uint)(item.Texture?.Width??1);words[20]=(uint)(item.Texture?.Height??1);
         (cmd.Kind==CommandKind.FillPath?cmd.ShaderTransform??cmd.Transform:cmd.Transform).TryInvert(out var inverse);floats[22]=inverse.M00;floats[23]=inverse.M01;floats[24]=inverse.M02;floats[25]=inverse.M10;floats[26]=inverse.M11;floats[27]=inverse.M12;
-        if(cmd.Paint.Shader is LinearGradient gradient){words[16]=1;words[17]=Pack(gradient.StartColor);words[18]=Pack(gradient.EndColor);floats[28]=gradient.Start.X;floats[29]=gradient.Start.Y;floats[30]=gradient.End.X;floats[31]=gradient.End.Y;}
+        if(item.Tile is {} tile)
+        {
+            words[16]=5;words[133]=unchecked((uint)tile.X);words[134]=unchecked((uint)tile.Y);words[135]=(uint)tile.Mode;
+        }
+        else if(cmd.Paint.Shader is LinearGradient gradient){words[16]=1;words[17]=Pack(gradient.StartColor);words[18]=Pack(gradient.EndColor);floats[28]=gradient.Start.X;floats[29]=gradient.Start.Y;floats[30]=gradient.End.X;floats[31]=gradient.End.Y;}
         else if(cmd.Paint.Shader is {} shader&&shader.TryGetLinearGradient(out var linear)&&linear is not null)
         {
-            words[16]=2;words[58]=(uint)linear.Stops.Length;words[59]=(uint)linear.Extend;
+            words[16]=2;
             floats[28]=linear.Start.X;floats[29]=linear.Start.Y;floats[30]=linear.End.X;floats[31]=linear.End.Y;
-            var stops=linear.Stops.Span;for(int i=0;i<stops.Length;i++){floats[60+i*2]=stops[i].Offset;words[61+i*2]=Pack(stops[i].Color);}
-            var m=linear.SampleTransform;floats[124]=m.M00;floats[125]=m.M01;floats[126]=m.M02;floats[127]=m.M10;floats[128]=m.M11;floats[129]=m.M12;
+            StoreGradient(words,floats,linear.Stops.Span,linear.Extend,linear.SampleTransform);
+        }
+        else if(cmd.Paint.Shader is IComputeGradientShader {ComputeGradient:{} compute})
+        {
+            words[16]=(uint)compute.Kind;
+            floats[28]=compute.Center.X;floats[29]=compute.Center.Y;
+            floats[30]=compute.Origin.X;floats[31]=compute.Origin.Y;
+            floats[133]=compute.Radius.X;floats[134]=compute.Radius.Y;floats[135]=compute.AngleTurns;
+            StoreGradient(words,floats,compute.Stops.Span,compute.Extend,compute.SampleTransform);
         }
         if(cmd.Kind is CommandKind.FillRectangle or CommandKind.DrawImage&&cmd.Transform.M01==0&&cmd.Transform.M10==0)
         {
@@ -576,6 +617,16 @@ public sealed unsafe partial class VulkanCanvas : ICanvasBackend
         var source=cmd.ImageSource??new RectF(0,0,words[19],words[20]);floats[46]=source.Left;floats[47]=source.Top;floats[48]=source.Right;floats[49]=source.Bottom;
         words[50]=cmd.ImageSource is not null||cmd.Sampling!=ImageSampling.Nearest||cmd.NearestLowerBoundary||cmd.CoverageClip is not null?(uint)cmd.Sampling+1:0;words[51]=cmd.NearestLowerBoundary?1u:0u;
         if(cmd.CoverageClip is {} coverage){words[52]=(uint)item.Data.Length;words[53]=unchecked((uint)coverage.Left);words[54]=unchecked((uint)coverage.Top);words[55]=(uint)coverage.Width;words[56]=(uint)coverage.Height;words[57]=1;}
+        if(!item.StoredStops.IsEmpty)words[136]=(uint)(PathPayload(item)/4+1);
+    }
+    private static void StoreGradient(Span<uint> words,Span<float> floats,ReadOnlySpan<LinearColorStop> stops,
+        GradientExtendMode extend,Matrix3 transform)
+    {
+        words[58]=(uint)stops.Length;words[59]=(uint)extend;
+        if(stops.Length<=InlineStops)
+            for(int i=0;i<stops.Length;i++){floats[60+i*2]=stops[i].Offset;words[61+i*2]=Pack(stops[i].Color);}
+        floats[124]=transform.M00;floats[125]=transform.M01;floats[126]=transform.M02;
+        floats[127]=transform.M10;floats[128]=transform.M11;floats[129]=transform.M12;
     }
     private void ComputeBounds(in DrawingCommand cmd,float[] edges,RectF clip,RectF rect,out int originX,out int originY,out int extentX,out int extentY)
     {

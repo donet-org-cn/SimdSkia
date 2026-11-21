@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Buffers.Binary;
 using System.Text;
 using Avalonia.Media;
@@ -10,18 +11,22 @@ namespace SimdSkia.Avalonia;
 internal sealed class FontEntry
 {
     private readonly Lazy<FontData> data;
+    private readonly InstalledCmap? cmap;
     internal string Family {get;}
     internal FontWeight Weight {get;}
     internal FontStyle Style {get;}
     internal FontStretch Stretch {get;}
     internal CjkLocale Locale {get;}
+    internal bool HasColorGlyphs {get;}
     internal bool IsLoaded=>data.IsValueCreated;
     internal FontData Data=>data.Value;
     internal FontEntry(FontData value)
-    {Family=value.Family;Locale=CjkFontPreference.ForFamily(Family);Weight=value.Weight;Style=value.Style;Stretch=value.Stretch;data=new(()=>value);_ = data.Value;}
-    private FontEntry(string family,FontWeight weight,FontStyle style,FontStretch stretch,Lazy<FontSource> file,int face)
+    {Family=value.Family;Locale=CjkFontPreference.ForFamily(Family);Weight=value.Weight;Style=value.Style;Stretch=value.Stretch;HasColorGlyphs=value.Font.HasColorGlyphs;data=new(()=>value);_ = data.Value;}
+    private FontEntry(string family,FontWeight weight,FontStyle style,FontStretch stretch,Lazy<FontSource> file,int face,InstalledCmap? cmap,bool hasColorGlyphs)
     {
         Family=family;Locale=CjkFontPreference.ForFamily(Family);Weight=weight;Style=style;Stretch=stretch;
+        this.cmap=cmap;
+        HasColorGlyphs=hasColorGlyphs;
         data=new(()=>
         {
             var value=new FontData(file.Value,face);
@@ -30,7 +35,43 @@ internal sealed class FontEntry
             return value;
         });
     }
-    internal static IReadOnlyList<FontEntry> ReadSystemFile(string path)
+    internal bool MayContain(int codepoint)=>cmap is null || cmap.MayContain(codepoint);
+    internal bool HasGlyph(int codepoint)=>IsLoaded || cmap is null
+        ? Data.Font.GetGlyph(codepoint)!=0 : cmap.HasGlyph(codepoint);
+
+    private sealed record InstalledCmap(string Path,long FileLength,DateTime WriteTime,int Position,
+        UnicodeCmap Map,int GlyphCount,ulong[] Pages)
+    {
+        internal bool MayContain(int codepoint)
+        {
+            int page=codepoint>>8, word=page>>6;
+            return (uint)word<(uint)Pages.Length && (Pages[word]&(1UL<<(page&63)))!=0;
+        }
+
+        internal bool HasGlyph(int codepoint)
+        {
+            using var stream=File.OpenRead(Path);
+            Verify();
+            var rented=ArrayPool<byte>.Shared.Rent(Map.Length);
+            try
+            {
+                var table=rented.AsSpan(0,Map.Length);
+                stream.Position=Position;
+                stream.ReadExactly(table);
+                Verify();
+                return Map.GetGlyph(table,codepoint,GlyphCount)!=0;
+            }
+            finally { ArrayPool<byte>.Shared.Return(rented); }
+
+            void Verify()
+            {
+                if(stream.Length!=FileLength||File.GetLastWriteTimeUtc(stream.SafeFileHandle)!=WriteTime)
+                    throw new IOException("Installed font changed between discovery and use.");
+            }
+        }
+    }
+
+    internal static IReadOnlyList<FontEntry> ReadSystemFile(string path,bool indexCoverage=false)
     {
         using var stream=File.OpenRead(path);long length=stream.Length;var write=File.GetLastWriteTimeUtc(stream.SafeFileHandle);
         if(length>int.MaxValue)throw new NotSupportedException("Font files larger than 2 GiB are not supported.");
@@ -72,7 +113,11 @@ internal sealed class FontEntry
                     if(at>length||size>length-at)throw new InvalidDataException("Font table outside file.");
                     if(!tables.TryAdd(Encoding.ASCII.GetString(entry[..4]),(at,size)))throw new InvalidDataException("Duplicate font table.");
                 }
-                if(!tables.ContainsKey("glyf")||new[]{"fvar","gvar","COLR","CPAL","CBDT","CBLC","sbix","SVG "}.Any(tables.ContainsKey))
+                bool colorBitmaps=tables.ContainsKey("sbix")||tables.ContainsKey("CBDT")&&tables.ContainsKey("CBLC");
+                if((!tables.ContainsKey("glyf")&&!colorBitmaps)||new[]{"fvar","gvar","SVG "}.Any(tables.ContainsKey)||
+                    tables.ContainsKey("CBDT")!=tables.ContainsKey("CBLC")||
+                    tables.TryGetValue("COLR",out var color)&&(!tables.ContainsKey("CPAL")||color.Length<ColorGlyphLayers.HeaderBytes||
+                    !ColorGlyphLayers.HasLegacyRecords(Read(color.Offset,ColorGlyphLayers.HeaderBytes))))
                 {Excluded(face,"unsupported variable/color/CFF rendering");continue;}
                 byte[] Table(string name,int minimum,int maximum)
                 {
@@ -85,7 +130,19 @@ internal sealed class FontEntry
                 var weight=os2.Length>=8?(FontWeight)U16(os2,4):FontWeight.Normal;
                 var stretch=os2.Length>=8?(FontStretch)U16(os2,6):FontStretch.Normal;
                 var style=(U16(head,44)&2)!=0?FontStyle.Italic:FontStyle.Normal;
-                result.Add(new(family,weight,style,stretch,snapshot,face));
+                InstalledCmap? cmap=null;
+                if(indexCoverage)
+                {
+                    if(!tables.TryGetValue("cmap",out var table)||table.Length>4*1024*1024)
+                        throw new InvalidDataException("Missing or oversized cmap metadata.");
+                    int glyphCount=U16(Table("maxp",6,4096),4);
+                    var selected=UnicodeCmap.Select(table.Length,(offset,size)=>Read(table.Offset+offset,size));
+                    int position=checked((int)table.Offset+selected.Offset);
+                    var subtable=Read(position,selected.Length);
+                    selected.Validate(subtable);
+                    cmap=new(path,length,write,position,selected,glyphCount,selected.GetCoveragePages(subtable));
+                }
+                result.Add(new(family,weight,style,stretch,snapshot,face,cmap,colorBitmaps||tables.ContainsKey("COLR")));
             }
             catch (Exception error) when (collection && (error is IOException or InvalidDataException or NotSupportedException or OverflowException or ArgumentOutOfRangeException))
             {

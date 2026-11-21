@@ -40,11 +40,24 @@ public static class ManagedZlib
     }
     private static int DecodeInto(ReadOnlySpan<byte> encoded,Span<byte> output,bool prefix,bool exact)
     {
-        int expectedLength=output.Length;
         if(encoded.Length<6||(encoded[0]&15)!=8||(encoded[0]>>4)>7||((encoded[0]<<8)|encoded[1])%31!=0)throw new InvalidDataException("Invalid zlib header.");
         if((encoded[1]&32)!=0)throw new NotSupportedException("Preset DEFLATE dictionaries are not supported for PNG.");
         int window=1<<((encoded[0]>>4)+8);
-        var reader=new Bits(encoded[2..^4]);int position=0;bool final;
+        int position=Inflate(encoded[2..^4],output,prefix,exact,window);
+        if(!(prefix&&position==output.Length)&&Adler(output[..position])!=BinaryPrimitives.ReadUInt32BigEndian(encoded[^4..]))
+            throw new InvalidDataException("zlib Adler-32 mismatch.");
+        return position;
+    }
+
+    internal static void DecodeRaw(ReadOnlySpan<byte> encoded,Span<byte> output)
+    {
+        try { Inflate(encoded,output,false,true,32768); }
+        catch(OutputLimitException) { throw new InvalidDataException("Inflation exceeds declared image size."); }
+    }
+
+    private static int Inflate(ReadOnlySpan<byte> encoded,Span<byte> output,bool prefix,bool exact,int window)
+    {
+        var reader=new Bits(encoded);int position=0;bool final;
         do
         {
             final=reader.Read(1)!=0;int kind=reader.Read(2);
@@ -97,8 +110,7 @@ public static class ManagedZlib
                 position+=length;if(prefix&&position==output.Length)return position;
             }
         }while(!final);
-        reader.Align();if(reader.BytePosition!=encoded.Length-6||(exact&&position!=expectedLength))throw new InvalidDataException("Unexpected DEFLATE length or trailing payload.");
-        if(Adler(output[..position])!=BinaryPrimitives.ReadUInt32BigEndian(encoded[^4..]))throw new InvalidDataException("zlib Adler-32 mismatch.");
+        reader.Align();if(reader.BytePosition!=encoded.Length||(exact&&position!=output.Length))throw new InvalidDataException("Unexpected DEFLATE length or trailing payload.");
         return position;
     }
     public static byte[] EncodeStored(ReadOnlySpan<byte> data)

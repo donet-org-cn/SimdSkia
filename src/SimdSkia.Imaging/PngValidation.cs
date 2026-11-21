@@ -41,12 +41,7 @@ internal static class PngValidation
                     if(type!=3)continue;
                     // Palette bounds are a semantic input check. Reconstruct only
                     // this indexed row (PNG byte distance is one for all index depths).
-                    for(int i=0;i<line.Length;i++)
-                    {
-                        int a=i==0?0:line[i-1],b=previous[i],c=i==0?0:previous[i-1];
-                        int predictor=filter switch{0=>0,1=>a,2=>b,3=>(a+b)/2,_=>Paeth(a,b,c)};
-                        line[i]=unchecked((byte)(line[i]+predictor));
-                    }
+                    Unfilter(line,previous,1,filter);
                     for(int x=0;x<w;x++)if(((line[x*depth/8]>>(8-depth-x*depth%8))&((1<<depth)-1))>=paletteCount)throw new InvalidDataException("PNG palette index outside its table.");
                     var swap=previous;previous=line;line=swap;
                 }
@@ -92,6 +87,17 @@ internal static class PngValidation
         public override long Seek(long offset,SeekOrigin origin)=>throw new NotSupportedException();
         public override void SetLength(long value)=>throw new NotSupportedException();
         public override void Write(byte[] buffer,int offset,int count)=>throw new NotSupportedException();
+    }
+    internal static void Unfilter(Span<byte> line,ReadOnlySpan<byte> previous,int channels,int filter)
+    {
+        if(filter==0)return;
+        for(int i=0;i<line.Length;i++)
+        {
+            int a=i<channels?0:line[i-channels],b=previous.IsEmpty?0:previous[i];
+            int c=i<channels||previous.IsEmpty?0:previous[i-channels];
+            int predictor=filter switch{1=>a,2=>b,3=>(a+b)/2,_=>Paeth(a,b,c)};
+            line[i]=unchecked((byte)(line[i]+predictor));
+        }
     }
     private static int Paeth(int a,int b,int c){int p=a+b-c,da=Math.Abs(p-a),db=Math.Abs(p-b),dc=Math.Abs(p-c);return da<=db&&da<=dc?a:db<=dc?b:c;}
 }

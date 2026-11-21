@@ -9,8 +9,11 @@ public sealed partial class RasterCanvas : ICanvasBackend
     private readonly PixelBuffer target;
     private bool disposed;
     private readonly record struct MaskKey(PathGeometry Geometry,Matrix3 Transform,bool Antialias,RectF? Clip,bool CompactRuns,float Tolerance,bool HalfUp,bool FixedTriangle);
-    private Dictionary<MaskKey,LinkedListNode<(MaskKey Key,CoverageMask Mask)>>? masks;
-    private LinkedList<(MaskKey Key,CoverageMask Mask)>? maskOrder;
+    private readonly record struct MaskLease(CoverageMask Mask,RasterCoverageStorage? Storage) : IDisposable
+    { public void Dispose()=>Storage?.Dispose(); }
+    private readonly record struct CachedMask(MaskKey Key,MaskLease Lease,long Bytes);
+    private Dictionary<MaskKey,LinkedListNode<CachedMask>>? masks;
+    private LinkedList<CachedMask>? maskOrder;
     private long maskBytes;
     private Dictionary<MaskKey,CoverageMask>? triangleMasks;
     private Queue<(MaskKey Key,long Bytes)>? triangleOrder;
@@ -154,26 +157,42 @@ public sealed partial class RasterCanvas : ICanvasBackend
             }
         }
     }
-    private CoverageMask GetMask(PathGeometry geometry,in DrawingCommand command)
+    private MaskLease GetMask(PathGeometry geometry,in DrawingCommand command,bool persistentClip=false)
     {
-        if(command.FixedTriangleEdges)return GetTriangleMask(geometry,command);
+        if(command.FixedTriangleEdges)return new(GetTriangleMask(geometry,command),null);
         // Bitmap contexts are short lived. Rectangles and globally cached text
         // do not need any of these per-canvas containers.
         masks??=[];maskOrder??=[];
         bool compact=command.Kind==CommandKind.FillPath;
         bool halfUp=command.Kind!=CommandKind.DrawImage||command.LatticeRectangleEdges||command.AliasedRectangleEdges;
         var key=new MaskKey(geometry,command.Transform,command.Paint.Antialias,command.Clip,compact,command.CurveTolerance,halfUp,command.FixedTriangleEdges);
-        if(masks.TryGetValue(key,out var node)){maskOrder.Remove(node);maskOrder.AddLast(node);return node.Value.Mask;}
-        var contours=geometry.Flatten(command.Transform,command.CurveTolerance);
-        var mask=command.FixedTriangleEdges?TriangleCoverage.Rasterize(contours,target.Width,target.Height,command.Clip):PathRasterizer.Rasterize(contours,geometry.FillRule,target.Width,target.Height,command.Paint.Antialias,command.Clip,compact,halfUp);
-        long bytes=MaskBytes(mask,geometry);
-        if(bytes<=16*1024*1024)
+        if(masks.TryGetValue(key,out var node))
         {
-            while(masks.Count>=64||maskBytes+bytes>16*1024*1024)
-            {var old=maskOrder.First!;maskBytes-=MaskBytes(old.Value.Mask,old.Value.Key.Geometry);masks.Remove(old.Value.Key);maskOrder.RemoveFirst();}
-            masks.Add(key,maskOrder.AddLast((key,mask)));maskBytes+=bytes;
+            maskOrder.Remove(node);maskOrder.AddLast(node);
+            node.Value.Lease.Storage?.Retain();return node.Value.Lease;
         }
-        return mask;
+        // Standalone clips can keep their original owned coverage, avoiding a
+        // copy to take them beyond the lifetime of a rendering canvas.
+        RasterCoverageStorage? storage=persistentClip?null:new();
+        try
+        {
+            var mask=PathRasterizer.Rasterize(geometry,command.Transform,command.CurveTolerance,target.Width,target.Height,
+                command.Paint.Antialias,command.Clip,compact,halfUp,storage:storage);
+            var lease=new MaskLease(mask,storage is {HasBuffers:true}?storage:null);
+            long bytes=MaskBytes(mask,geometry);
+            if(bytes<=16*1024*1024)
+            {
+                while(masks.Count>=64||maskBytes+bytes>16*1024*1024)
+                {
+                    var old=maskOrder.First!.Value;
+                    maskBytes-=old.Bytes;masks.Remove(old.Key);maskOrder.RemoveFirst();old.Lease.Dispose();
+                }
+                var cached=new LinkedListNode<CachedMask>(new(key,lease,bytes));
+                masks.Add(key,cached);maskOrder.AddLast(cached);lease.Storage?.Retain();maskBytes+=bytes;
+            }
+            return lease;
+        }
+        catch { storage?.Dispose(); throw; }
     }
     private CoverageMask GetTriangleMask(PathGeometry geometry,in DrawingCommand command)
     {
@@ -193,14 +212,15 @@ public sealed partial class RasterCanvas : ICanvasBackend
         }
         return mask;
     }
-    private static long MaskBytes(CoverageMask mask,PathGeometry geometry)=>mask.Data.LongLength+(long)mask.Runs.Length*16+(long)geometry.SegmentCount*32;
+    private static long MaskBytes(CoverageMask mask,PathGeometry geometry)=>mask.Data.LongLength+mask.RunArray.LongLength*16+(long)geometry.SegmentCount*32;
     private void FillPath(in DrawingCommand command)
     {
         var geometry=command.Path??throw new ArgumentException("Path command requires geometry.");
         int dx=0,dy=0;CoverageMask mask=null!;
         bool text=command.CacheTextCoverage&&TextCoverageCache.TryGet(geometry,command,target.Width,target.Height,out mask!,out dx,out dy);
-        if(!text)mask=GetMask(geometry,command);
-        FillMask(mask,command,dx,dy,text);
+        if(text){FillMask(mask,command,dx,dy,true);return;}
+        using var lease=GetMask(geometry,command);
+        FillMask(lease.Mask,command,0,0,false);
     }
     private void FillMask(CoverageMask mask,in DrawingCommand command,int dx,int dy,bool independentClip)
     {
@@ -269,7 +289,7 @@ public sealed partial class RasterCanvas : ICanvasBackend
         if(command.Transform.IsAffine&&command.Transform.M01==0&&command.Transform.M10==0&&!command.Paint.Antialias&&!image.GetPixelSpan().Overlaps(target.GetPixelSpan()))
         {DrawAxisImage(command,inverse,image);return;}
         var geometry=RectangleGeometry(rect);
-        var mask=GetMask(geometry,command);
+        using var lease=GetMask(geometry,command);var mask=lease.Mask;
         // Source buffers are mutable. Cache geometry only; always read current pixels.
         // Aliased source/destination retain the original immediate pixel traversal.
         if(command.Transform.M01==0&&command.Transform.M10==0&&!image.GetPixelSpan().Overlaps(target.GetPixelSpan()))
@@ -340,7 +360,13 @@ public sealed partial class RasterCanvas : ICanvasBackend
         }
     }
     private void Composite(Span<byte> pixel,Paint paint,byte coverage=255)=>SpanCompositor.Apply(pixel,target.Format,target.Alpha,paint,coverage);
-    public void Dispose(){disposed=true;shaderTransforms=null;lcdRuns=null;DisposeAlphaWork();filteredMasks?.Clear();filteredMaskBytes=filteredMaskClock=0;masks=null;maskOrder=null;maskBytes=0;triangleMasks=null;triangleOrder=null;triangleBytes=0;gradientRows=null;gradientBytes=0;rasterRows=null;rasterRowBytes=0;rectangles=null;imageX=[];}
-    internal void DropCaches(){shaderTransforms=null;lcdRuns=null;DisposeAlphaWork();filteredMasks?.Clear();filteredMaskBytes=filteredMaskClock=0;masks=null;maskOrder=null;maskBytes=0;triangleMasks=null;triangleOrder=null;triangleBytes=0;gradientRows=null;gradientBytes=0;rasterRows=null;rasterRowBytes=0;rectangles=null;imageX=[];}
+    public void Dispose(){disposed=true;DropCaches();}
+    internal void DropCaches()
+    {
+        if(maskOrder is not null)foreach(var entry in maskOrder)entry.Lease.Dispose();
+        shaderTransforms=null;lcdRuns=null;DisposeAlphaWork();filteredMasks?.Clear();filteredMaskBytes=filteredMaskClock=0;
+        masks=null;maskOrder=null;maskBytes=0;triangleMasks=null;triangleOrder=null;triangleBytes=0;
+        gradientRows=null;gradientBytes=0;rasterRows=null;rasterRowBytes=0;rectangles=null;imageX=[];
+    }
     public void Flush(){ObjectDisposedException.ThrowIf(disposed,this);target.ThrowIfDisposed();}
 }

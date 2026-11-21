@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 namespace SimdSkia.Gpu;
 
-// Objective-C calls target only macOS system frameworks. The renderer and all
+// Objective-C calls target Apple system frameworks. The renderer and all
 // resource/lifetime code are C#; the GPU programs are Metal Shading Language.
 internal static unsafe partial class MetalApi
 {
@@ -68,6 +68,7 @@ internal sealed unsafe partial class MetalDevice:IDisposable
     private bool disposed;
     private readonly List<WeakReference<MetalImage>> images=[];
     internal nint Pipeline=>pipeline;
+    internal static bool IsSupportedPlatform=>OperatingSystem.IsMacOS()||OperatingSystem.IsIOS();
     internal nint NativeDevice=>device;
     internal MetalResources Resources {get;}=new();
     internal bool Abandoned;
@@ -79,7 +80,7 @@ internal sealed unsafe partial class MetalDevice:IDisposable
     internal MetalDevice(nint device,nint queue,bool hostSerialized=false)
     {
         HostSerialized=hostSerialized;
-        if(!OperatingSystem.IsMacOS())throw new PlatformNotSupportedException("Metal requires macOS.");
+        if(!IsSupportedPlatform)throw new PlatformNotSupportedException("Metal requires macOS or iOS.");
         if(device==0||queue==0)throw new ArgumentException("A live Metal device and command queue are required.");
         using var pool=new MetalApi.Pool(true);
         if(!MetalApi.Conforms(device,"MTLDevice")||!MetalApi.Conforms(queue,"MTLCommandQueue")||MetalApi.Call(queue,"device")!=device)throw new ArgumentException("The Metal queue must belong to the supplied Metal device.");

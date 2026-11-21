@@ -20,7 +20,8 @@ public sealed partial class RasterCanvas
     }
     private void FillAlphaMask(in DrawingCommand command)
     {
-        var path=command.Kind==CommandKind.FillRectangle?RectangleGeometry(command.Rectangle):command.Path??throw new ArgumentException("A path is required.");var mask=GetMask(path,command);
+        var path=command.Kind==CommandKind.FillRectangle?RectangleGeometry(command.Rectangle):command.Path??throw new ArgumentException("A path is required.");
+        using var lease=GetMask(path,command);var mask=lease.Mask;
         // Reuse the already validated scalar/SIMD RGBA compositor in short
         // stack spans. No destination-sized RGBA shadow plane is allocated for
         // solid A8 shapes, and untouched rows are never copied twice per draw.
@@ -46,7 +47,8 @@ public sealed partial class RasterCanvas
         var image=command.Image!;image.ThrowIfDisposed();var rect=command.Rectangle;var source=command.ImageSource??new(0,0,image.Width,image.Height);
         if(!source.IsFinite||source.IsEmpty||source.Left<0||source.Top<0||source.Right>image.Width||source.Bottom>image.Height)throw new ArgumentOutOfRangeException(nameof(command.ImageSource));
         if(!rect.IsFinite)throw new ArgumentException("Image destination must be finite.");if(rect.IsEmpty||!command.Transform.TryInvert(out var inverse))return;
-        var mask=GetMask(RectangleGeometry(rect),command);float sx=(source.Right-source.Left)/(rect.Right-rect.Left),sy=(source.Bottom-source.Top)/(rect.Bottom-rect.Top);
+        using var lease=GetMask(RectangleGeometry(rect),command);var mask=lease.Mask;
+        float sx=(source.Right-source.Left)/(rect.Right-rect.Left),sy=(source.Bottom-source.Top)/(rect.Bottom-rect.Top);
         foreach(var run in mask.Runs)
         {
             var row=target.GetRowSpan(run.Y);

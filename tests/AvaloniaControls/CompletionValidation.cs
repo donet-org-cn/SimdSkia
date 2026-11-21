@@ -59,6 +59,8 @@ internal static class CompletionValidation
         using(var c=target.CreateDrawingContext())
         {c.Clear(Colors.Transparent);((IDrawingContextImplWithEffects)c).PushEffect(null,new DropShadowEffect{BlurRadius=0,OffsetX=4,OffsetY=3,Color=Colors.Blue,Opacity=.5});c.DrawRectangle(Brushes.Red,null,new Rect(2,2,4,4));((IDrawingContextImplWithEffects)c).PopEffect();}
         Check(Pixel(target,3,3).R==255&&Pixel(target,8,7).B==127&&Pixel(target,8,7).A==127,"DropShadow ignored source/offset/color/opacity.");
+        count += CheckDropShadowReuse();
+        count += CoverageLeaseValidation.Run();
         using(var c=target.CreateDrawingContext())
         {c.Clear(Colors.Transparent);c.DrawRectangle(Brushes.Red,null,new Rect(4,4,8,8),new BoxShadows(new BoxShadow{OffsetX=3,OffsetY=2,Color=Color.FromArgb(128,0,0,0)}));}
         Check(Pixel(target,6,6).R==255&&Pixel(target,14,8).A==128&&Pixel(target,3,3).A==0,"Outer BoxShadow did not exclude original ink bounds.");
@@ -153,5 +155,39 @@ internal static class CompletionValidation
             }
         }
         return count;
+    }
+
+    private static int CheckDropShadowReuse()
+    {
+        int checks = 0;
+        foreach (var format in Enum.GetValues<SimdSkia.PixelFormat>())
+        foreach (var alpha in Enum.GetValues<SimdSkia.AlphaFormat>())
+        {
+            int pixelBytes = format == SimdSkia.PixelFormat.Alpha8 ? 1 : 4;
+            using var input = new CorePixel(113, 91, format, alpha, 113*pixelBytes+9);
+            var cache = new DropShadowBlurCache();
+            foreach (var (x, y, content, sigma, offset) in new (int, int, byte, float, float)[]
+            {
+                (34, 25, 164, 2.7f, 3), (41, 27, 164, 2.7f, -.375f),
+                (48, 29, 137, 2.7f, 3), (39, 25, 164, 2.7f, 3),
+                (34, 25, 164, 0, 3), (34, 25, 164, 2.7f, 3),
+                (1, 0, 164, 2.7f, 3), (98, 80, 164, 2.7f, 3),
+                (2, 1, 229, 2.7f, 3), (98, 80, 164, 2.7f, 3),
+            })
+            {
+                input.GetPixelSpan().Clear();
+                for (int dy = 0; dy < 8; dy++)
+                for (int dx = 0; dx < 11; dx++)
+                    input.WritePixel(x+dx, y+dy, new(43, 97, (byte)(x+dx), (byte)(content+dx-dy)));
+                var region = new RectF(x-4.25f, y-3.4f, x+17.3f, y+11.1f);
+                var color = new Rgba32((byte)(x*2), 84, 135, 184);
+                using var expected = ManagedFilters.DropShadow(input, sigma, 1.7f, offset, 2.25f, color, region);
+                using var actual = ManagedFilters.DropShadow(input, sigma, 1.7f, offset, 2.25f, color, region, cache);
+                if (!expected.GetPixelSpan().SequenceEqual(actual.GetPixelSpan()))
+                    throw new InvalidOperationException($"Cached shadow differed at ({x}, {y}), {format}/{alpha}, sigma {sigma}, offset {offset}.");
+                checks++;
+            }
+        }
+        return checks;
     }
 }

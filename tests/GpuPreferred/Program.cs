@@ -10,6 +10,11 @@ using SimdSkia.Gpu.Direct2D;
 using PixelFormat=SimdSkia.PixelFormat;
 using AlphaFormat=SimdSkia.AlphaFormat;
 
+if(args is ["--radial-direct2d"]){Direct2DRadialValidation.Run();return;}
+if(args is ["--vulkan-gradients"]){GpuBrushValidation.CheckGradients(SimdSkiaGpuBackend.Vulkan);GpuBrushValidation.CheckTiles(SimdSkiaGpuBackend.Vulkan);return;}
+if(args is ["--direct2d-tiles"]){GpuBrushValidation.CheckTiles(SimdSkiaGpuBackend.Direct2D);return;}
+if(args is ["--metal-brushes"]){GpuBrushValidation.CheckMetal();return;}
+
 if(args.Length==4&&args[0]=="--native-throughput")
 {
     if(!OperatingSystem.IsWindows())throw new PlatformNotSupportedException("Native Direct2D throughput requires Windows hardware.");
@@ -265,7 +270,7 @@ if(args.Contains("--hardware"))
     finally{AppContext.SetSwitch("SimdSkia.Direct2D.ValidateCompletionEvent",false);AppContext.SetSwitch("SimdSkia.Direct2D.LegacySwapchain",false);NativeWindow.DestroyWindow(hwnd);}
     var glyph=new PositionedGlyph(PathGeometry.Rectangle(new(0,0,5,8)),new(0,0));
     var run=new GlyphRunGeometry([glyph],Matrix3.Identity);
-    foreach(var backend in Enum.GetValues<SimdSkiaGpuBackend>())
+    foreach(var backend in new[]{SimdSkiaGpuBackend.Direct2D,SimdSkiaGpuBackend.Vulkan})
     {
         using var actual=new PixelBuffer(32,20,PixelFormat.Bgra8888,AlphaFormat.Premultiplied);using var expected=new PixelBuffer(32,20,PixelFormat.Bgra8888,AlphaFormat.Premultiplied);
         using var gpu=new WindowGpuCanvas(actual,backend,true,atlasEntryLimit:3,atlasByteLimit:4096);

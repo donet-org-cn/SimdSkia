@@ -43,7 +43,27 @@ public sealed partial class TrueTypeFont
     private readonly ReadOnlyMemory<byte> glyphLocations;
     private readonly bool longLocations;
     private readonly int glyphTableOffset;
-    private readonly int cmapOffset,cmapLength,cmapFormat,metrics;
+    private readonly int metrics;
+    private readonly UnicodeCmap unicodeCmap;
+    private readonly ColorGlyphLayers? colorLayers;
+    private readonly BitmapGlyphs? bitmapGlyphs;
+    private ColorGlyphComposition? colorComposition;
+    internal bool HasColorGlyphs=>colorLayers is not null||bitmapGlyphs is not null;
+    internal GlyphBitmap? GetBitmapGlyph(ushort glyph,float ppem)=>bitmapGlyphs?.Find(glyph,ppem);
+    internal ReadOnlyMemory<byte> ReadBitmapGlyph(in GlyphBitmap bitmap)=>bitmapGlyphs!.Read(bitmap);
+    internal bool HasColorGlyph(ushort glyph)
+        => !GetColorLayers(glyph).IsEmpty||GetBitmapGlyph(glyph,24) is not null;
+    internal ColorGlyphComposition ColorComposition
+    {
+        get
+        {
+            var current=Volatile.Read(ref colorComposition);
+            if(current is not null)return current;
+            var parsed=new ColorGlyphComposition(this);
+            return Interlocked.CompareExchange(ref colorComposition,parsed,null)??parsed;
+        }
+    }
+    internal ReadOnlySpan<ColorGlyphLayer> GetColorLayers(ushort glyph)=>colorLayers is null?[]:colorLayers.Get(glyph);
     private readonly ReadOnlyMemory<byte> characterMap,horizontalMetrics;
     public int UnitsPerEm {get;}
     public int GlyphCount {get;}
@@ -98,48 +118,46 @@ public sealed partial class TrueTypeFont
             if(!tables.TryAdd(tag,(offset,length)))throw new InvalidDataException("Duplicate font table.");
         }
         if(tables.ContainsKey("fvar")||tables.ContainsKey("gvar"))throw new NotSupportedException("Variable fonts require variation processing.");
-        if(new[]{"COLR","CPAL","CBDT","CBLC","sbix","SVG "}.Any(tables.ContainsKey))throw new NotSupportedException("Color/bitmap/SVG font rendering requires its own color glyph pipeline.");
+        if(tables.ContainsKey("SVG "))throw new NotSupportedException("SVG glyphs require their own renderer.");
         var head=Table("head",54);UnitsPerEm=U16(head.Offset+18);if(UnitsPerEm is <16 or >16384)throw new InvalidDataException("Invalid unitsPerEm.");
         FontBounds=new(S16(head.Offset+36),S16(head.Offset+38),S16(head.Offset+40),S16(head.Offset+42));
         GlyphCount=U16(Table("maxp",6).Offset+4);var hhea=Table("hhea",36);metrics=U16(hhea.Offset+34);
+        if(tables.ContainsKey("COLR"))
+        {
+            var colr=Table("COLR",ColorGlyphLayers.HeaderBytes);var cpal=Table("CPAL",14);
+            colorLayers=ColorGlyphLayers.Read(bytes,colr.Offset,colr.Length,cpal.Offset,cpal.Length,GlyphCount);
+        }
+        if(tables.TryGetValue("sbix",out var sbix))
+            bitmapGlyphs=BitmapGlyphs.ReadSbix(bytes,sbix.Offset,sbix.Length,GlyphCount);
+        if(tables.ContainsKey("CBDT")||tables.ContainsKey("CBLC"))
+        {
+            var cbdt=Table("CBDT",4);var cblc=Table("CBLC",8);
+            var colorBitmaps=BitmapGlyphs.ReadCbdt(bytes,cbdt.Offset,cbdt.Length,cblc.Offset,cblc.Length,GlyphCount);
+            bitmapGlyphs=bitmapGlyphs is null?colorBitmaps:bitmapGlyphs.Append(colorBitmaps);
+        }
         if(metrics<1||metrics>GlyphCount)throw new InvalidDataException("Invalid horizontal metrics.");
         Ascender=S16(hhea.Offset+4);Descender=S16(hhea.Offset+6);LineGap=S16(hhea.Offset+8);
-        var hm=Table("hmtx",checked(metrics*4+(GlyphCount-metrics)*2));horizontalMetrics=bytes.Read(hm.Offset,hm.Length);var glyf=Table("glyf",0);
-        int format=S16(head.Offset+50);if(format is not (0 or 1))throw new InvalidDataException("Invalid loca format.");
-        longLocations=format==1;glyphTableOffset=glyf.Offset;
-        int locationBytes=(GlyphCount+1)*(longLocations?4:2);
-        var loca=Table("loca",locationBytes);
-        glyphLocations=bytes.Read(loca.Offset,locationBytes);
-        int previousOffset=0;
-        for(int i=0;i<=GlyphCount;i++)
+        var hm=Table("hmtx",checked(metrics*4+(GlyphCount-metrics)*2));horizontalMetrics=bytes.Read(hm.Offset,hm.Length);
+        if(bitmapGlyphs is null||tables.ContainsKey("glyf")||tables.ContainsKey("loca"))
         {
-            int offset=GlyphOffset(i);
-            if(offset<previousOffset||offset>glyf.Length)throw new InvalidDataException("Invalid glyph offsets.");
-            previousOffset=offset;
-        }
-        var cmap=Table("cmap",4);int records=U16(cmap.Offset+2);if(4+records*8>cmap.Length)throw new InvalidDataException("Truncated cmap records.");
-        int selected=-1,best=0,lengthSelected=0,formatSelected=0;
-        for(int i=0;i<records;i++)
-        {
-            int record=cmap.Offset+4+i*8;int platform=U16(record),encoding=U16(record+2);int offset=checked((int)U32(record+4));
-            if(offset<0||offset+2>cmap.Length)throw new InvalidDataException("Invalid cmap subtable offset.");
-            int position=cmap.Offset+offset;int f=U16(position);int priority=f==12?2:f==4?1:0;
-            if(priority>best&&(platform==0||(platform==3&&encoding is 1 or 10)))
+            var glyf=Table("glyf",0);
+            int format=S16(head.Offset+50);if(format is not (0 or 1))throw new InvalidDataException("Invalid loca format.");
+            longLocations=format==1;glyphTableOffset=glyf.Offset;
+            int locationBytes=(GlyphCount+1)*(longLocations?4:2);
+            var loca=Table("loca",locationBytes);
+            glyphLocations=bytes.Read(loca.Offset,locationBytes);
+            int previousOffset=0;
+            for(int i=0;i<=GlyphCount;i++)
             {
-                int length=f==12?checked((int)U32(position+4)):U16(position+2);
-                if(length< (f==12?16:16)||length>cmap.Length-offset)throw new InvalidDataException("Invalid cmap subtable length.");
-                selected=position;best=priority;lengthSelected=length;formatSelected=f;
+                int offset=GlyphOffset(i);
+                if(offset<previousOffset||offset>glyf.Length)throw new InvalidDataException("Invalid glyph offsets.");
+                previousOffset=offset;
             }
         }
-        if(selected<0)throw new NotSupportedException("Font has no supported Unicode cmap 4/12.");
-        cmapOffset=selected;cmapLength=lengthSelected;cmapFormat=formatSelected;
-        characterMap=bytes.Read(cmapOffset,cmapLength);
-        if(cmapFormat==4)
-        {
-            var map=characterMap.Span;int segments=BinaryPrimitives.ReadUInt16BigEndian(map[6..])/2;
-            if(segments==0||16+segments*8>map.Length)throw new InvalidDataException("Invalid cmap segment array.");
-            int previous=-1;for(int i=0;i<segments;i++){int end=BinaryPrimitives.ReadUInt16BigEndian(map[(14+i*2)..]),start=BinaryPrimitives.ReadUInt16BigEndian(map[(16+segments*2+i*2)..]);if(end<=previous||start>end||start<=previous)throw new InvalidDataException("cmap segments must be sorted and disjoint.");previous=end;}
-        }
+        var cmap=Table("cmap",4);
+        unicodeCmap=UnicodeCmap.Select(cmap.Length,(offset,length)=>data.Read(cmap.Offset+offset,length));
+        characterMap=bytes.Read(cmap.Offset+unicodeCmap.Offset,unicodeCmap.Length);
+        unicodeCmap.Validate(characterMap.Span);
 
     }
     private readonly ulong[] glyphMapCache=new ulong[128];
@@ -148,38 +166,8 @@ public sealed partial class TrueTypeFont
         if(!Rune.IsValid(codepoint))throw new ArgumentOutOfRangeException(nameof(codepoint));
         int slot=codepoint&127;ulong key=(ulong)((uint)codepoint+1)<<32,value=Volatile.Read(ref glyphMapCache[slot]);
         if((value&0xffffffff00000000UL)==key)return (ushort)value;
-        ushort glyph=MapGlyph(codepoint);Volatile.Write(ref glyphMapCache[slot],key|glyph);return glyph;
-    }
-    private ushort MapGlyph(int codepoint)
-    {
-        void CheckMap(int p,int count){if(p<cmapOffset||p-cmapOffset>cmapLength-count)throw new InvalidDataException("Truncated cmap value.");}
-        ushort U16(int p){CheckMap(p,2);return BinaryPrimitives.ReadUInt16BigEndian(characterMap.Span[(p-cmapOffset)..]);}
-        short S16(int p)=>unchecked((short)U16(p));
-        uint U32(int p){CheckMap(p,4);return BinaryPrimitives.ReadUInt32BigEndian(characterMap.Span[(p-cmapOffset)..]);}
-        if(!Rune.IsValid(codepoint))throw new ArgumentOutOfRangeException(nameof(codepoint));
-        uint glyph=0;
-        if(cmapFormat==12)
-        {
-            uint count=U32(cmapOffset+12);if(count>(uint)((cmapLength-16)/12))throw new InvalidDataException("Invalid cmap groups.");
-            int lo=0,hi=(int)count-1;
-            while(lo<=hi){int mid=lo+(hi-lo)/2,p=cmapOffset+16+mid*12;uint start=U32(p),end=U32(p+4);if((uint)codepoint<start)hi=mid-1;else if((uint)codepoint>end)lo=mid+1;else{glyph=U32(p+8)+(uint)codepoint-start;break;}}
-        }
-        else if(codepoint<=65535)
-        {
-            int count=U16(cmapOffset+6)/2;int endBase=cmapOffset+14,startBase=endBase+count*2+2,deltaBase=startBase+count*2,rangeBase=deltaBase+count*2;
-            if(count==0||rangeBase+count*2>cmapOffset+cmapLength)throw new InvalidDataException("Invalid cmap segments.");
-            // cmap format 4 endCode is sorted. A linear scan here made Chinese
-            // glyph lookup proportional to thousands of segments on every measure.
-            int lo=0,hi=count-1;while(lo<hi){int mid=(lo+hi)>>1;if(U16(endBase+mid*2)<codepoint)lo=mid+1;else hi=mid;}
-            int i=lo,end=U16(endBase+i*2),start=U16(startBase+i*2);
-            if(codepoint>=start&&codepoint<=end)
-            {
-                int delta=S16(deltaBase+i*2),range=U16(rangeBase+i*2);
-                if(range==0)glyph=(uint)((codepoint+delta)&65535);
-                else{int p=rangeBase+i*2+range+(codepoint-start)*2;if(p<cmapOffset||p+2>cmapOffset+cmapLength)throw new InvalidDataException("Invalid cmap glyph offset.");glyph=U16(p);if(glyph!=0)glyph=(uint)((glyph+delta)&65535);}
-            }
-        }
-        if(glyph>=GlyphCount)throw new InvalidDataException("cmap references invalid glyph.");return (ushort)glyph;
+        ushort glyph=unicodeCmap.GetGlyph(characterMap.Span,codepoint,GlyphCount);
+        Volatile.Write(ref glyphMapCache[slot],key|glyph);return glyph;
     }
     public int Advance(ushort glyph){if(glyph>=GlyphCount)throw new ArgumentOutOfRangeException(nameof(glyph));return BinaryPrimitives.ReadUInt16BigEndian(horizontalMetrics.Span[(Math.Min(glyph,metrics-1)*4)..]);}
     private int GlyphOffset(int index)=>longLocations
@@ -187,6 +175,7 @@ public sealed partial class TrueTypeFont
         :BinaryPrimitives.ReadUInt16BigEndian(glyphLocations.Span[(index*2)..])*2;
     private ReadOnlySpan<byte> GlyphData(ushort glyph,int maxLength=int.MaxValue)
     {
+        if(glyphLocations.IsEmpty)return [];
         int start=GlyphOffset(glyph),length=GlyphOffset(glyph+1)-start;
         return bytes.Read(glyphTableOffset+start,Math.Min(length,maxLength)).Span;
     }

@@ -22,7 +22,7 @@ public sealed class GlyphMaskCommands
         for(int i=0;i<result.Length;i++)
         {
             var p=batch.Glyphs[i];var m=p.Mask;byte[] coverage=m.Data;
-            sourceBytes+=128L+m.Data.LongLength+m.Runs.LongLength*16;
+            sourceBytes+=128L+m.Data.LongLength+m.RunArray.LongLength*16;
             if(coverage.Length!=checked(m.Width*m.Height))
             {
                 coverage=new byte[checked(m.Width*m.Height)];size+=coverage.Length;

@@ -53,8 +53,8 @@ public static class AppBuilderExtensions
             if(paths.Length!=0)fontManager=new FontManager(paths);
             else
             {
-                var system=SimdSkiaSystemFonts.Discover();
-                fontManager=new FontManager(system.Files,system.DefaultFamily,supportedFacesOnly:true);
+                var (system,fallbacks)=SimdSkiaSystemFonts.DiscoverForPlatform();
+                fontManager=new FontManager(system.Files,system.DefaultFamily,supportedFacesOnly:true,installedFallbackFiles:fallbacks);
             }
             AvaloniaLocator.CurrentMutable.Bind<IFontManagerImpl>().ToConstant(fontManager);
         },"SimdSkia").UseTextShapingSubsystem(()=>AvaloniaLocator.CurrentMutable.Bind<ITextShaperImpl>().ToConstant(new TextShaper()),"SimdSkia.ManagedText")

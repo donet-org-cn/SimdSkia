@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-ios26.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <ApplicationId>org.simdskia.iossample</ApplicationId>
+    <ApplicationTitle>SimdSkia iOS</ApplicationTitle>
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+    <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
+    <IsPackable>false</IsPackable>
+    <_OfficialIosHost>$(NuGetPackageRoot)/avalonia.ios/12.1.5/lib/net10.0-ios26.0/Avalonia.iOS.dll</_OfficialIosHost>
+    <_PreparedIosHost>$(MSBuildProjectDirectory)/obj/$(Configuration)/hosts/12.1.5/Avalonia.iOS.dll</_PreparedIosHost>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/SimdSkia.Avalonia.Gpu/SimdSkia.Avalonia.Gpu.csproj" />
+    <PackageDownload Include="Avalonia.iOS" Version="[12.1.5]" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="[12.1.5]" />
+    <Reference Include="Avalonia.iOS" HintPath="$(_PreparedIosHost)" Private="true" />
+    <BundleResource Include="../../baseline/fonts/ZCOOLXiaoWei-Regular.ttf" LogicalName="Fonts/ZCOOLXiaoWei-Regular.ttf" />
+    <BundleResource Include="../../baseline/fonts/ZCOOLXiaoWei-OFL.txt" LogicalName="Licenses/ZCOOLXiaoWei-OFL.txt" />
+    <BundleResource Include="../../docs/licenses/Avalonia-MIT.txt" LogicalName="Licenses/Avalonia-MIT.txt" />
+    <BundleResource Include="../../LICENSE" LogicalName="Licenses/SimdSkia-MIT.txt" />
+  </ItemGroup>
+  <Target Name="PrepareSimdSkiaIosHost" BeforeTargets="ResolveAssemblyReferences"
+          Inputs="$(_OfficialIosHost);../../tools/PrepareAndroidHost/Program.cs"
+          Outputs="$(_PreparedIosHost)">
+    <Exec Command="dotnet run --project &quot;$(MSBuildProjectDirectory)/../../tools/PrepareAndroidHost&quot; -c Release -- &quot;$(_OfficialIosHost)&quot; &quot;$(_PreparedIosHost)&quot;" />
+  </Target>
+</Project>

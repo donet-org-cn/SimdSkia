@@ -46,6 +46,7 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
     private long pathBytes;
     private readonly Dictionary<Rgba32,nint> solids=[];
     private readonly Dictionary<(IColorShader Shader,byte Opacity),nint> gradients=[];
+    private nint tileBrush;
     public const int MaximumCachedGradientBrushes=64;
     public int CachedGradientBrushes=>gradients.Count;
     private readonly Dictionary<object,(nint Bitmap,nint Brush,long Bytes)> clips=[];
@@ -152,6 +153,13 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
         }
         catch { result.Dispose(); throw; }
     }
+    internal static bool TryResolveTile(in DrawingCommand command,out PixelBuffer? image,out ComputeTilePlacement placement)
+    {
+        image=null;placement=default;
+        if(command.ShaderTransform is {} brush&&brush!=command.Transform)return false;
+        return ComputeTilePlacement.TryResolve(command,out image,out placement)&&image?.Format!=PixelFormat.Alpha8&&
+            (placement.Mode!=ComputeTileMode.None||command.Paint.Composite==CompositeMode.SourceOver);
+    }
     public void Execute(in DrawingCommand command)
     {
         if(command.TextPixelGeometry is 1 or 2&&pixels.Format==PixelFormat.Bgra8888)throw new NotSupportedException("LCD glyph composition on this GPU pipeline requires explicit raster fallback.");
@@ -164,7 +172,10 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
         if(!command.Transform.IsFinite||!command.Transform.IsAffine||!command.Rectangle.IsFinite||command.Clip is {IsFinite:false})throw new ArgumentException("Finite affine coordinates required.");
         if(!float.IsFinite(command.CurveTolerance)||command.CurveTolerance<=0)throw new ArgumentOutOfRangeException(nameof(command));
         LinearGradientDescription? gradient=null;
-        if(command.Paint.Shader is not null and not LinearGradient&&!command.Paint.Shader.TryGetLinearGradient(out gradient))throw new NotSupportedException("Direct2D accepts solid and linear gradients.");
+        var radial=(command.Paint.Shader as INativeRadialGradient)?.Direct2DGradient;
+        bool hasTile=TryResolveTile(command,out var tileImage,out var tile);
+        if(!hasTile&&radial is null&&command.Paint.Shader is not null and not LinearGradient&&!command.Paint.Shader.TryGetLinearGradient(out gradient))
+            throw new NotSupportedException("This brush requires explicit CPU fallback on Direct2D.");
         if(gradient is not null&&gradient.SampleTransform!=Matrix3.Identity)throw new NotSupportedException("Exact transformed gradient sampling requires explicit CPU fallback; native Direct2D gradient filtering differs from the scalar contract.");
         if(command.CoverageClip is not null&&command.Paint.Composite!=CompositeMode.SourceOver)throw new NotSupportedException("Coverage clipping with Source/Clear requires explicit CPU fallback.");
         if(command.CoverageClip is {Width:0} or {Height:0})return;
@@ -191,11 +202,34 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
             SetBlend(command.Paint.Composite);SetAntialias(command.Paint.Antialias);SetTransform(command.Transform);
             if(command.Kind==CommandKind.Clear){D2DNative.Clear(context,command.Paint.Color);return;}
             if(command.Kind==CommandKind.DrawImage){nint bitmap=CachedBitmap(command.Image!,command.ImageIsImmutable,command.ImageContentVersion);D2DNative.DrawBitmap(context,bitmap,command.Rectangle,command.ImageSource??new(0,0,command.Image!.Width,command.Image.Height),command.Paint.Color.A,command.Sampling);return;}
-            nint brush=command.Paint.Shader is {} shader&&command.Paint.Composite!=CompositeMode.Clear?Gradient(shader,gradient,command.Paint.Color.A):Solid(command.Paint.Composite==CompositeMode.Clear?default:command.Paint.Color);
-            if(command.Kind==CommandKind.FillRectangle)D2DNative.FillRect(context,command.Rectangle,brush);else D2DNative.FillPath(context,GetPath(command.Path!,command.Transform,command.CurveTolerance),brush);
+            if(hasTile&&command.Paint.Composite!=CompositeMode.Clear)
+            {
+                DrawTile(command,tileImage!,tile);
+                return;
+            }
+            nint brush=command.Paint.Shader is {} shader&&command.Paint.Composite!=CompositeMode.Clear?Gradient(shader,gradient,radial,command.Paint.Color.A):Solid(command.Paint.Composite==CompositeMode.Clear?default:command.Paint.Color);
+            Fill(command,brush);
         }
         catch{faulted=true;throw;}
         finally{if(coverage){D2DNative.PopLayer(context);currentBlend=-1;transformKnown=false;antialiasKnown=false;}}
+    }
+    private void Fill(in DrawingCommand command,nint brush)
+    {
+        if(command.Kind==CommandKind.FillRectangle)D2DNative.FillRect(context,command.Rectangle,brush);
+        else D2DNative.FillPath(context,GetPath(command.Path!,command.Transform,command.CurveTolerance),brush);
+    }
+    private void DrawTile(in DrawingCommand command,PixelBuffer image,ComputeTilePlacement tile)
+    {
+        image.ThrowIfDisposed();
+        nint bitmap=CachedBitmap(image,immutable:true,version:1);
+        float left=-(tile.X+command.Transform.M02),top=-(tile.Y+command.Transform.M12);
+        D2DNative.BindTileBrush(context,ref tileBrush,bitmap,tile.Mode,left,top,command.Paint.Color.A);
+        // Direct2D clamp repeats edge texels. For a non-repeating SourceOver
+        // brush, limit the draw to the tile's pixel-aligned footprint instead.
+        bool clip=tile.Mode==ComputeTileMode.None;
+        if(clip)D2DNative.PushClip(context,new(left,top,left+image.Width,top+image.Height));
+        try { Fill(command,tileBrush); }
+        finally { if(clip)D2DNative.PopClip(context); }
     }
     private void SetTransform(Matrix3 value)
     {if(cacheDrawingState&&transformKnown&&currentTransform==value)return;D2DNative.Transform(context,value);currentTransform=value;transformKnown=true;NativeStateChanges++;}
@@ -213,10 +247,11 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
     }
     private nint Solid(Rgba32 color)
     {if(solids.TryGetValue(color,out nint brush))return brush;brush=D2DNative.Solid(context,color);if(solids.Count>=256){foreach(nint value in solids.Values){nint old=value;D2DNative.Release(ref old);}solids.Clear();}solids.Add(color,brush);return brush;}
-    private nint Gradient(IColorShader shader,LinearGradientDescription? description,byte opacity)
+    private nint Gradient(IColorShader shader,LinearGradientDescription? description,RadialGradientDescription? radial,byte opacity)
     {
         var key=(shader,opacity);if(gradients.TryGetValue(key,out nint brush))return brush;
-        brush=description is null?D2DNative.Gradient(context,(LinearGradient)shader,opacity):D2DNative.Gradient(context,description,opacity);
+        brush=radial is not null?D2DNative.RadialGradient(context,radial,opacity):
+            description is null?D2DNative.Gradient(context,(LinearGradient)shader,opacity):D2DNative.Gradient(context,description,opacity);
         try
         {
             if(gradients.Count>=MaximumCachedGradientBrushes)
@@ -621,6 +656,7 @@ public sealed partial class Direct2DCanvas : ICanvasBackend
         ClearPaths();
         foreach(var value in solids.Values){nint p=value;D2DNative.Release(ref p);}solids.Clear();
         foreach(var value in gradients.Values){nint p=value;D2DNative.Release(ref p);}gradients.Clear();
+        D2DNative.Release(ref tileBrush);
         foreach(var value in clips.Values){nint p=value.Brush,b=value.Bitmap;D2DNative.Release(ref p);D2DNative.Release(ref b);}clips.Clear();clipBytes=0;
         foreach(var value in images.Values){nint p=value.Bitmap;D2DNative.Release(ref p);}images.Clear();imageBytes=0;
         D2DNative.Release(ref context);D2DNative.Release(ref target);D2DNative.Release(ref drawingDevice);D2DNative.Release(ref factory);D2DNative.Release(ref completion);D2DNative.Release(ref staging);D2DNative.Release(ref texture);D2DNative.Release(ref presentationBuffer);D2DNative.Release(ref swapChain);if(immediate!=0){D2DNative.ClearState(immediate);D2DNative.Flush(immediate);}D2DNative.Release(ref completionContext);completionEvent?.Dispose();completionEvent=null;D2DNative.Release(ref immediate);D2DNative.Release(ref device);pixels.Dispose();

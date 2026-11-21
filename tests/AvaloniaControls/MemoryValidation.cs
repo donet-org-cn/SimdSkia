@@ -102,11 +102,13 @@ internal static class MemoryValidation
         GC.Collect();GC.WaitForPendingFinalizers();GC.Collect();
         Check(!weak.IsAlive,"Tile cache identity retained its source object.");
         using var oldLease=TileRasterCache.Get(key);
-        Check(oldLease?.ReadPixel(0,0).R==255,"Cached pixels disappeared with the source object.");
+        Check(oldLease?.Pixels.ReadPixel(0,0).R==255,"Cached pixels disappeared with the source object.");
+        using var repeatLease=TileRasterCache.Get(key);
+        Check(ReferenceEquals(oldLease?.Pixels,repeatLease?.Pixels),"Separate shader leases must carry one immutable GPU upload identity.");
         using var replacement=new SimdSkia.PixelBuffer(2,2,SimdSkia.PixelFormat.Bgra8888,SimdSkia.AlphaFormat.Premultiplied);
         replacement.WritePixel(0,0,new(0,0,255,255));
         using var newLease=TileRasterCache.Add(key with{Version=1},replacement);
-        Check(oldLease!.ReadPixel(0,0).R==255&&newLease.ReadPixel(0,0).B==255,"Evicting a bitmap version invalidated an existing shader lease.");
+        Check(oldLease!.Value.Pixels.ReadPixel(0,0).R==255&&newLease.Pixels.ReadPixel(0,0).B==255,"Evicting a bitmap version invalidated an existing shader lease.");
         var geometry=new SimdSkia.Avalonia.StreamGeometry();
         using(var edit=geometry.Open()){edit.BeginFigure(new(1,2),true);edit.QuadraticBezierTo(new(6,12),new(11,2));edit.EndFigure(true);}
         var oldBounds=geometry.Bounds;
@@ -329,7 +331,7 @@ internal static class MemoryValidation
         pixels.WritePixel(0,0,new(255,0,0,255));
         using var retained=TileRasterCache.Add(key,pixels);
         // A cached lease continues to own pixels independently of the source.
-        if(retained.ReadPixel(0,0).R!=255)throw new InvalidOperationException("Tile lease lost source pixels.");
+        if(retained.Pixels.ReadPixel(0,0).R!=255)throw new InvalidOperationException("Tile lease lost source pixels.");
         return (weak,key);
     }
 }

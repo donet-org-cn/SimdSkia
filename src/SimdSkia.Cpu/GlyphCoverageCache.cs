@@ -169,7 +169,7 @@ internal static class GlyphCoverageCache
     {
         var data=new byte[mask.Data.Length];for(int i=0;i<data.Length;i++)data[i]=table[mask.Data[i]];
         var runs=new CoverageRun[mask.Runs.Length];for(int i=0;i<runs.Length;i++)runs[i]=mask.Runs[i] with{Coverage=table[mask.Runs[i].Coverage]};
-        return mask with{Data=data,Runs=runs};
+        return mask with{Data=data,RunArray=runs};
     }
     private static Placement[]? PackDisjoint(Placement[] placements)
     {
@@ -224,7 +224,7 @@ internal static class GlyphCoverageCache
         }
         return true;
     }
-    private static long Size(CoverageMask mask,PathGeometry outline)=>128L+mask.Data.LongLength+mask.Runs.LongLength*16+outline.Segments.Length*32L;
+    private static long Size(CoverageMask mask,PathGeometry outline)=>128L+mask.Data.LongLength+mask.RunArray.LongLength*16+outline.Segments.Length*32L;
     private static CoverageMask ResolveGlyph(PathGeometry outline,Matrix3 transform,bool aa,float tolerance,out int x,out int y)
     {
         var b=outline.ControlBounds;
@@ -239,7 +239,7 @@ internal static class GlyphCoverageCache
         if((long)width*height>4*1024*1024)throw new NotSupportedException("One glyph exceeds the 4 MiB raster mask limit.");
         var local=transform with{M02=transform.M02-x,M12=transform.M12-y};var key=new GlyphKey(outline,local,aa,tolerance);
         if(Enabled)lock(gate)if(glyphs.TryGetValue(key,out var cached)){glyphOrder.Remove(cached);glyphOrder.AddLast(cached);return cached.Value.Mask;}
-        var mask=PathRasterizer.Rasterize(outline.Flatten(local,tolerance),outline.FillRule,width,height,aa,compactRuns:true);
+        var mask=PathRasterizer.Rasterize(outline,local,tolerance,width,height,aa,compactRuns:true);
         long size=Size(mask,outline);
         if(Enabled&&GlyphCountLimit>0&&size<=GlyphByteLimit)lock(gate)
         {

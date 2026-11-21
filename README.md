@@ -172,7 +172,7 @@ dotnet run
 
 在目标为 `net10.0-android36.0` 的启动项目中安装 `SimdSkia.Avalonia.Android`，统一使用 Avalonia `12.1.5` 或更高版本，并在 `CreateAppBuilder()` 中调用 `.UseSimdSkiaAndroid()`。从官方模板迁移时，移除直接引用的 `Avalonia.Android`，并按示例配置 Activity 的 AppCompat 主题和字体。[Android 接入步骤与示例](examples/Mobile.Android/README.md)
 
-Android 当前使用 CPU/SIMD 渲染。发布记录分别列出了 Android 16 ARM64 源码真机验证，以及 NuGet 包消费端的 Release 和 Mono AOT 构建验证。iOS 窗口呈现仍待实现。[真机报告](docs/ANDROID-2026-11-09.md) · [包验收](docs/NUGET-PREVIEW.md)
+Android 当前使用 CPU/SIMD 渲染。发布记录分别列出了 Android 16 ARM64 源码真机验证，以及 NuGet 包消费端的 Release 和 Mono AOT 构建验证。iOS 提供了 Metal 呈现源码示例，待用 Xcode 和设备验收。[Android 真机报告](docs/ANDROID-2026-11-09.md) · [包验收](docs/NUGET-PREVIEW.md) · [iOS 示例](examples/Mobile.iOS/README.md)
 
 ## 兼容性与性能
 

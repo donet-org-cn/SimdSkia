@@ -29,6 +29,12 @@ jobs:
         run: ./tools/fetch-avalonia-font.ps1
       - name: Verify metadata discovery and malformed/unsupported fonts
         run: dotnet run --project tests/PlatformFonts -c Release
+      - name: Verify system Apple Color Emoji through installed fallback
+        if: runner.os == 'macOS'
+        run: dotnet run --project tests/PlatformFonts -c Release --no-build -- --color-bitmap-font "/System/Library/Fonts/Apple Color Emoji.ttc"
+      - name: Verify Metal gradient and tile pixels when hardware is available
+        if: runner.os == 'macOS'
+        run: dotnet run --project tests/GpuPreferred -c Release -- --metal-brushes
       - name: Verify glyph batch equivalence
         run: dotnet run --project tests/GlyphBatches -c Release
       - name: Install fixture as a user font for automatic discovery
