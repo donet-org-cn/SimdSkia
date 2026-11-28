@@ -1,5 +1,11 @@
 # NuGet 发布记录
 
+## 0.1.13 正式版
+
+2026-11-28 发布 13 个正式 NuGet 包，流水线逐包核对公开下载与打包产物。Windows、Linux 和 macOS 通过 Avalonia 12.1.0–12.2.0 窗口矩阵与 12.1.0、12.2.0 的 NativeAOT 检查。macOS 发布矩阵使用 CPU，默认 Metal 窗口缩放测试仍有帧尺寸不匹配的记录。Android 通过独立消费和 ARM64 Release APK 构建。[发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/46116473330) · [GitHub Release](https://github.com/donet-org-cn/SimdSkia/releases/tag/v0.1.13) · [NuGet 0.1.13](https://www.nuget.org/packages/SimdSkia/0.1.13)
+
+标签 `v0.1.13` 指向 `05681e11e4c18ef60dee2a1812db46b889502786`。本版支持桌面 Avalonia 12.2 和 Fluent2，加入彩色 Emoji 和按码点字体回退，减少 CPU 投影与路径分配。[更新说明与性能记录](RELEASE-0.1.13.md) · [#7 的回复](https://github.com/donet-org-cn/SimdSkia/issues/7#issuecomment-7235458848) · [#8 的回复](https://github.com/donet-org-cn/SimdSkia/issues/8#issuecomment-7235460037) · [#9 的回复](https://github.com/donet-org-cn/SimdSkia/issues/9#issuecomment-7235461219) · [#13 的回复](https://github.com/donet-org-cn/SimdSkia/issues/13#issuecomment-7235457656)
+
 ## 0.1.12 正式版
 
 2026-11-20 发布了 13 个正式 NuGet 包。公开下载的程序集、宿主、元数据和发行文档均与 CI 产物一致。Windows、Linux 和 macOS 通过 Avalonia 12.1.0–12.1.6 窗口矩阵与端点 NativeAOT 验证。其中 macOS 使用显式 CPU 渲染，Windows 和 Linux 使用默认模式。Android 使用 Avalonia 12.1.6 通过 ARM64 Mono AOT Release APK 构建。[NuGet 0.1.12](https://www.nuget.org/packages/SimdSkia/0.1.12) · [发布流水线](https://github.com/donet-org-cn/SimdSkia/actions/runs/44727647918)
