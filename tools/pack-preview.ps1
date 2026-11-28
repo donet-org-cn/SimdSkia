@@ -15,7 +15,7 @@ try {
         dotnet pack "src/$project/$project.csproj" -c Release -p:Version=$Version -p:PackageVersion=$Version -o $packagePath --nologo
         if($LASTEXITCODE -ne 0){throw "Preview packing failed: $project"}
     }
-    python tools/verify-preview-packages.py --directory $packagePath --version $Version
+    python tools/verify-preview-packages.py --directory $packagePath --version $Version --current-source
     if($LASTEXITCODE -ne 0){throw 'Preview package content verification failed.'}
 }
 finally {Pop-Location}

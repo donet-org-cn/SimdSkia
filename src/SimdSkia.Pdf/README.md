@@ -1,6 +1,6 @@
-# SimdSkia.Pdf 0.1.12
+# SimdSkia.Pdf 0.1.13
 
-0.1.12 与新增 macOS Metal 窗口呈现的桌面组件同步发布。PDF 包面向 .NET 10，读取依赖 PdfPig 0.1.16。[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.12/docs/RELEASE-0.1.12.md) · [性能报告](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.12/docs/MACOS-METAL-2026-11-20.md)
+0.1.13 与支持 Avalonia 12.2 和 Fluent2 的桌面包同步发布，使用 Sdcb.SimdCodecs 2.1.0。PDF 包面向 .NET 10，读取依赖 PdfPig 0.1.16。[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.13/docs/RELEASE-0.1.13.md)
 
 ## SimdSkia 0.1.4 Android NuGet 接入
 
@@ -18,7 +18,7 @@ Avalonia接受>=12.1.0且<13.0.0，已验证宿主12.1.0–12.1.5。默认SK*解
 
 完整累计更新、性能记录、限制与升级方法见包内CHANGELOG.md和[0.1.2发行说明](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/RELEASE-0.1.2.md)。原始测量按快照保留，不以正式版本号改写画质结果。
 
-## SimdSkia.Pdf 0.1.12
+## SimdSkia.Pdf 0.1.13
 
 Requires .NET 10.
 
@@ -29,7 +29,7 @@ native font library is used for PDF rendering. PDF Flate streams use the managed
 The optional parser is not pulled in by ordinary Avalonia or compatibility users. Keep all direct SimdSkia package versions aligned.
 
 ```shell
-dotnet add package SimdSkia.Pdf --version 0.1.12
+dotnet add package SimdSkia.Pdf --version 0.1.13
 ```
 
 Every package includes `CHANGELOG.md` and NuGet release notes. This release is a

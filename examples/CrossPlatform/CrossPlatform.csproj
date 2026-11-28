@@ -5,7 +5,8 @@
     <OutputType Condition="$([MSBuild]::IsOSPlatform('Windows'))">WinExe</OutputType>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <AvaloniaVersion Condition="'$(AvaloniaVersion)' == ''">12.1.6</AvaloniaVersion>
-    <SimdSkiaPackageVersion Condition="'$(SimdSkiaPackageVersion)' == ''">0.1.12</SimdSkiaPackageVersion>
+    <SimdSkiaPackageVersion Condition="'$(SimdSkiaPackageVersion)' == ''">0.1.13</SimdSkiaPackageVersion>
+    <DefineConstants Condition="'$(UseFluent2)' == 'true'">$(DefineConstants);FLUENT2</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/SimdSkia.Avalonia.Desktop/SimdSkia.Avalonia.Desktop.csproj" Condition="'$(UsePackedSimdSkia)' != 'true'" />
@@ -14,7 +15,8 @@
     <PackageReference Include="SimdSkia.Avalonia.Gpu" Version="$(SimdSkiaPackageVersion)" Condition="'$(UsePackedSimdSkia)' == 'true'" />
     <PackageReference Include="Avalonia" Version="[$(AvaloniaVersion)]" GeneratePathProperty="true" ExcludeAssets="compile" />
     <Reference Include="$(PkgAvalonia)/lib/net10.0/*.dll" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="[$(AvaloniaVersion)]" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="[$(AvaloniaVersion)]" Condition="'$(UseFluent2)' != 'true'" />
+    <PackageReference Include="Avalonia.Themes.Fluent2" Version="[$(AvaloniaVersion)]" Condition="'$(UseFluent2)' == 'true'" />
   </ItemGroup>
   <ItemGroup><Compile Include="../../tests/AvaloniaControls/ControlScene.cs" Link="ControlScene.cs" /></ItemGroup>
   <PropertyGroup Condition="'$(UsePackedSimdSkia)' != 'true'"><SimdSkiaSourceHosts>true</SimdSkiaSourceHosts></PropertyGroup>

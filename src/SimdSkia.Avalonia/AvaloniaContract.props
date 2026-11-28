@@ -1,0 +1,8 @@
+<Project>
+  <PropertyGroup>
+    <SimdSkiaAvaloniaContract Condition="'$(SimdSkiaAvaloniaContract)' == '' And '$(AvaloniaVersion)' != '' And $([MSBuild]::VersionGreaterThanOrEquals('$(AvaloniaVersion)', '12.2.0'))">12.2.0</SimdSkiaAvaloniaContract>
+    <SimdSkiaAvaloniaContract Condition="'$(SimdSkiaAvaloniaContract)' == ''">12.1.0</SimdSkiaAvaloniaContract>
+    <_SimdSkiaAvaloniaRuntimePath>$(PkgAvalonia)/lib/net8.0</_SimdSkiaAvaloniaRuntimePath>
+    <_SimdSkiaAvaloniaRuntimePath Condition="'$(SimdSkiaAvaloniaContract)' == '12.2.0'">$(NuGetPackageRoot)/avalonia/12.2.0/lib/net8.0</_SimdSkiaAvaloniaRuntimePath>
+  </PropertyGroup>
+</Project>

@@ -10,7 +10,7 @@ permissions:
 jobs:
   desktop:
     env:
-      RELEASE_VERSION: 0.1.12
+      RELEASE_VERSION: 0.1.13
     strategy:
       fail-fast: false
       matrix:
@@ -88,17 +88,21 @@ jobs:
       - name: Consume optional PDF nupkg on the current OS
         shell: pwsh
         run: ./tools/test-pdf-package.ps1 -Version $env:RELEASE_VERSION -Packages artifacts/desktop-packages
-      - name: Consume actual nupkg on Linux
+      - name: Consume Avalonia 12.2 and Fluent2 on Linux
         if: runner.os == 'Linux'
-        run: xvfb-run -a -s '-screen 0 1280x900x24' pwsh -NoProfile -File tools/test-desktop-package.ps1 -Version "$RELEASE_VERSION" -Packages artifacts/desktop-packages -SystemFonts
-      - name: Consume actual nupkg on macOS
+        run: xvfb-run -a -s '-screen 0 1280x900x24' pwsh -NoProfile -File tools/test-desktop-package.ps1 -Version "$RELEASE_VERSION" -AvaloniaVersion 12.2.0 -Packages artifacts/desktop-packages -SystemFonts
+      - name: Consume Avalonia 12.2 and Fluent2 on macOS
         if: runner.os == 'macOS'
         shell: pwsh
-        run: ./tools/test-desktop-package.ps1 -Version $env:RELEASE_VERSION -Packages artifacts/desktop-packages -SystemFonts
+        run: ./tools/test-desktop-package.ps1 -Version $env:RELEASE_VERSION -AvaloniaVersion 12.2.0 -Packages artifacts/desktop-packages -SystemFonts
       - name: Consume actual nupkg on Windows
         if: runner.os == 'Windows'
         shell: pwsh
         run: ./tools/test-desktop-package.ps1 -Version $env:RELEASE_VERSION -Packages artifacts/desktop-packages
+      - name: Consume Avalonia 12.2 and Fluent2 on Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./tools/test-desktop-package.ps1 -Version $env:RELEASE_VERSION -AvaloniaVersion 12.2.0 -Packages artifacts/desktop-packages -Output artifacts/desktop-package-consumer-12.2
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -107,5 +111,7 @@ jobs:
             artifacts/cross-platform/
             artifacts/desktop-package-consumer/results/
             artifacts/desktop-package-consumer/*.log
+            artifacts/desktop-package-consumer-12.2/results/
+            artifacts/desktop-package-consumer-12.2/*.log
             artifacts/pdf-package-consumer/results/
           if-no-files-found: warn

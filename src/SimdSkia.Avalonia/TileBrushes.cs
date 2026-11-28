@@ -17,6 +17,7 @@ internal readonly struct PaintLease(Paint paint,IDisposable? resource=null):IDis
 internal sealed partial class DrawingContext
 {
     [ThreadStatic] private static int sceneDepth;
+#if !AVALONIA_12_2
     // The runtime contract is deliberately internal in the pinned Avalonia
     // package. Cache the interface getter; never expose or fabricate a handle.
     private static readonly PropertyInfo imageSourceProperty=typeof(IImageBrushSource).GetProperty("Bitmap",BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic)
@@ -28,6 +29,7 @@ internal sealed partial class DrawingContext
     [UnconditionalSuppressMessage("Trimming","IL2075",Justification="The exact IRef<IBitmapImpl>.Item getter is retained by DynamicDependency on Avalonia 12.1.5's IRef<T> public properties.")]
     private static PropertyInfo GetImageReferenceItem()=>imageSourceProperty.PropertyType.GetProperty("Item")
         ??throw new MissingMemberException("Avalonia 12.1.5 image reference contract is missing.");
+#endif
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private PaintLease CreatePaint(IBrush brush,Rect bounds,bool aa,CompositeMode composite=CompositeMode.SourceOver)
     {
@@ -48,8 +50,13 @@ internal sealed partial class DrawingContext
             Bitmap? bitmap=null;
             if(brush is IImageBrush image&&image.Source is not null)
             {
+#if AVALONIA_12_2
+                var implementation=image.Source.GetBitmap();
+#else
                 var reference=imageSourceProperty.GetValue(image.Source);
-                bitmap=(reference is null?null:imageReferenceItem.GetValue(reference)) as Bitmap??throw new ArgumentException("Image brush source belongs to a foreign rendering backend or is disposed.");
+                var implementation=reference is null?null:imageReferenceItem.GetValue(reference);
+#endif
+                bitmap=implementation as Bitmap??throw new ArgumentException("Image brush source belongs to a foreign rendering backend or is disposed.");
                 bitmap.Pixels.ThrowIfDisposed();
             }
             if(content is null&&bitmap is null)return new(new(new(0,0,0,0),composite,aa));

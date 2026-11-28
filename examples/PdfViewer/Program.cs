@@ -11,15 +11,22 @@ using SkiaSharp;
 
 internal static class Program
 {
-    internal static string FileName = "tests/Pdf/Fixtures/external.pdf";
+    internal static string FileName = Path.Combine(AppContext.BaseDirectory, "external.pdf");
     internal static bool Smoke;
+    internal static bool ForceCpu;
     [STAThread]
     public static int Main(string[] args)
     {
         Smoke = args.Contains("--smoke");
+        ForceCpu = args.Contains("--cpu");
         FileName = args.FirstOrDefault(a => !a.StartsWith("--", StringComparison.Ordinal)) ?? FileName;
         SimdSkiaDiagnostics.CapturePresentedFrames = Smoke;
-        return AppBuilder.Configure<ViewerApp>().UseSimdSkiaDesktop().StartWithClassicDesktopLifetime(args);
+        var builder = AppBuilder.Configure<ViewerApp>();
+        if (ForceCpu)
+            builder.UseSimdSkiaDesktop(options => options.UseCpu());
+        else
+            builder.UseSimdSkiaDesktop();
+        return builder.StartWithClassicDesktopLifetime(args);
     }
 }
 
@@ -84,13 +91,38 @@ internal sealed class ViewerWindow : Window
                     using var frame = SimdSkiaDiagnostics.GetLastPresentedFrame() ?? throw new InvalidOperationException("No presented framebuffer.");
                     Directory.CreateDirectory("artifacts/pdf-viewer");
                     File.WriteAllBytes("artifacts/pdf-viewer/presented.png", SimdSkia.Imaging.PngCodec.Encode(frame));
-                    File.WriteAllText("artifacts/pdf-viewer/result.txt", $"PASS actual PDF window; page {page}/{reader!.PageCount}; frames={SimdSkiaDiagnostics.FramesPresented}\n");
+                    VerifyToolbarPixels(frame);
+                    string renderer = Program.ForceCpu ? "CPU (forced)" : SimdSkiaGpuDiagnostics.SelectedRenderer;
+                    File.WriteAllText("artifacts/pdf-viewer/result.txt",
+                        $"PASS actual PDF window; page {page}/{reader!.PageCount}; frames={SimdSkiaDiagnostics.FramesPresented}; renderer={renderer}\n");
                     desktop.Shutdown();
                 }
                 catch (Exception error) { Directory.CreateDirectory("artifacts/pdf-viewer"); File.WriteAllText("artifacts/pdf-viewer/error.txt", error.ToString()); desktop.Shutdown(1); }
             }, TimeSpan.FromSeconds(2));
         };
         if (Program.Smoke && OperatingSystem.IsWindows()) { Position = new PixelPoint(-20000, -20000); ShowInTaskbar = false; }
+    }
+
+    private void VerifyToolbarPixels(SimdSkia.PixelBuffer frame)
+    {
+        // The controls occupy the top of the window. Probe contrast in either theme.
+        int top = (int)(12 * RenderScaling);
+        int bottom = Math.Min(frame.Height, (int)Math.Ceiling(68 * RenderScaling));
+        int darkest = 765;
+        int brightest = 0;
+        for (int y = top; y < bottom; y++)
+        {
+            for (int x = 0; x < frame.Width; x++)
+            {
+                var pixel = frame.ReadPixel(x, y);
+                int brightness = pixel.R + pixel.G + pixel.B;
+                darkest = Math.Min(darkest, brightness);
+                brightest = Math.Max(brightest, brightness);
+                if (brightest - darkest >= 96)
+                    return;
+            }
+        }
+        throw new InvalidOperationException("The presented toolbar region is blank.");
     }
 
     private void OpenDocument()

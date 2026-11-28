@@ -15,6 +15,7 @@
       <_SimdSkiaHostVersion>$(_SimdSkiaResolvedAvaloniaVersion)</_SimdSkiaHostVersion>
       <_SimdSkiaResolvedPackageVersion>$([System.Version]::Parse('$(_SimdSkiaResolvedAvaloniaVersion)').ToString(3))</_SimdSkiaResolvedPackageVersion>
       <_SimdSkiaFallbackHostVersion>12.1.6.0</_SimdSkiaFallbackHostVersion>
+      <_SimdSkiaFallbackHostVersion Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(_SimdSkiaResolvedAvaloniaVersion)', '12.2.0'))">12.2.0.0</_SimdSkiaFallbackHostVersion>
       <_SimdSkiaHostVersion Condition="'$(SimdSkiaSourceHosts)' != 'true' And !Exists('$(MSBuildThisFileDirectory)../hosts/$(_SimdSkiaHostVersion)/Avalonia.Win32.dll')">$(_SimdSkiaFallbackHostVersion)</_SimdSkiaHostVersion>
       <_SimdSkiaHostVersion Condition="'$(SimdSkiaSourceHosts)' == 'true' And !Exists('$(NuGetPackageRoot)/avalonia.win32/$(_SimdSkiaResolvedPackageVersion)/lib/net8.0/Avalonia.Win32.dll')">$(_SimdSkiaFallbackHostVersion)</_SimdSkiaHostVersion>
       <_SimdSkiaHostFolder>$(MSBuildThisFileDirectory)../hosts/$(_SimdSkiaHostVersion)/</_SimdSkiaHostFolder>

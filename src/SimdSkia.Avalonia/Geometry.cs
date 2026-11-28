@@ -315,11 +315,10 @@ internal class Geometry : IGeometryImpl
         }
         return SPath.FromOwnedSegments(segments);
     }
-    internal static SPath Combine(SPath a,SPath b,GeometryCombineMode mode)
-    {
-        PathsD Normalize(SPath p)=>Clipper.Union(Polygons(p),p.FillRule==SimdSkia.FillRule.EvenOdd?CFill.EvenOdd:CFill.NonZero);
-        return FromPaths(Clipper.BooleanOp(mode switch {GeometryCombineMode.Union=>ClipType.Union,GeometryCombineMode.Intersect=>ClipType.Intersection,GeometryCombineMode.Xor=>ClipType.Xor,GeometryCombineMode.Exclude=>ClipType.Difference,_=>throw new NotSupportedException("Unknown geometry operation.")},Normalize(a),Normalize(b),CFill.NonZero,5));
-    }
+    private static PathsD NormalizeFill(SPath path) =>
+        Clipper.Union(Polygons(path),path.FillRule==SimdSkia.FillRule.EvenOdd?CFill.EvenOdd:CFill.NonZero);
+    internal static SPath Combine(SPath a,SPath b,GeometryCombineMode mode) =>
+        FromPaths(Clipper.BooleanOp(mode switch {GeometryCombineMode.Union=>ClipType.Union,GeometryCombineMode.Intersect=>ClipType.Intersection,GeometryCombineMode.Xor=>ClipType.Xor,GeometryCombineMode.Exclude=>ClipType.Difference,_=>throw new NotSupportedException("Unknown geometry operation.")},NormalizeFill(a),NormalizeFill(b),CFill.NonZero,5));
     public bool FillContains(Point point)
     {
         Validate();
@@ -355,6 +354,24 @@ internal class Geometry : IGeometryImpl
         }
     }
     public IGeometryImpl? Intersect(IGeometryImpl geometry)=>new Geometry(Combine(Path,((Geometry)geometry).Path,GeometryCombineMode.Intersect));
+#if AVALONIA_12_2
+    public IntersectionResult GetFillIntersectionResult(IGeometryImpl geometry)
+    {
+        if(geometry is not Geometry other)return IntersectionResult.Empty;
+        Validate();
+        other.Validate();
+        var left=NormalizeFill(Path);
+        var right=NormalizeFill(other.Path);
+        if(left.Count==0||right.Count==0||
+            Clipper.BooleanOp(ClipType.Intersection,left,right,CFill.NonZero,5).Count==0)
+            return IntersectionResult.Empty;
+        if(Clipper.BooleanOp(ClipType.Difference,right,left,CFill.NonZero,5).Count==0)
+            return IntersectionResult.FullyInside;
+        if(Clipper.BooleanOp(ClipType.Difference,left,right,CFill.NonZero,5).Count==0)
+            return IntersectionResult.FullyContains;
+        return IntersectionResult.Intersects;
+    }
+#endif
     public bool StrokeContains(IPen? pen,Point point)=>pen is not null&&GetWidenedGeometry(pen).FillContains(point);
     public ITransformedGeometryImpl WithTransform(Matrix transform)=>new Transformed(this,transform);
     public bool TryGetPointAtDistance(double distance,out Point point)=>TryGetPointAndTangentAtDistance(distance,out point,out _);
@@ -408,21 +425,59 @@ internal class Geometry : IGeometryImpl
     }
 }
 
-internal sealed class StreamGeometry:Geometry,IStreamGeometryImpl
+internal sealed class StreamGeometry : Geometry
+#if !AVALONIA_12_2
+    , IStreamGeometryImpl
+#endif
 {
     private bool editing;
     private static readonly SPath empty = new([]);
     internal StreamGeometry():base(empty) { }
+#if !AVALONIA_12_2
     public IStreamGeometryImpl Clone()=>new StreamGeometry{Path=Path,StrokePath=StrokePath};
-    public IStreamGeometryContextImpl Open(){if(editing)throw new InvalidOperationException("Geometry is already open.");editing=true;return new Context(this);}
-    internal override void Validate(){if(editing)throw new InvalidOperationException("Dispose the geometry context before using its geometry.");}
-    private sealed class Context(StreamGeometry owner):IStreamGeometryContextImpl
+    public IStreamGeometryContextImpl Open()=>OpenContext();
+#else
+    internal IGeometryContext Open()=>OpenContext();
+#endif
+    private Context OpenContext()
     {
+        if(editing)throw new InvalidOperationException("Geometry is already open.");
+        editing=true;
+        return new Context(this);
+    }
+    internal override void Validate(){if(editing)throw new InvalidOperationException("Dispose the geometry context before using its geometry.");}
+#if AVALONIA_12_2
+    internal sealed class Context : IStreamGeometryBuilder
+#else
+    private sealed class Context : IStreamGeometryContextImpl
+#endif
+    {
+        private readonly StreamGeometry? owner;
         private readonly List<PathSegment> stroke=[];
         // Both streams share the common prefix until a fill/stroke flag or a
         // closing edge requires different geometry.
         private List<PathSegment>? fill;
         private SimdSkia.FillRule rule;private bool disposed,figure,filled;private Point current,start;
+#if AVALONIA_12_2
+        internal Context(StreamGeometry? owner, Geometry? source = null)
+        {
+            this.owner=owner;
+            rule=source?.Path.FillRule??SimdSkia.FillRule.EvenOdd;
+            if(source is null)return;
+            source.Validate();
+            stroke.AddRange(source.StrokePath.Segments);
+            if(!ReferenceEquals(source.Path,source.StrokePath))
+                fill=[.. source.Path.Segments];
+        }
+
+        public IGeometryImpl ToGeometry()
+        {
+            var paths=Finish();
+            return new Geometry(paths.Fill,paths.Stroke);
+        }
+#else
+        internal Context(StreamGeometry owner) => this.owner=owner;
+#endif
         private void Check(){ObjectDisposedException.ThrowIf(disposed,this);}
         public void SetFillRule(AFill value){Check();rule=value==AFill.EvenOdd?SimdSkia.FillRule.EvenOdd:SimdSkia.FillRule.Winding;}
         public void BeginFigure(Point p, bool isFilled = true)
@@ -473,12 +528,23 @@ internal sealed class StreamGeometry:Geometry,IStreamGeometryImpl
             }
             figure=false;
         }
+        private (SPath Fill, SPath Stroke) Finish()
+        {
+            Check();
+            if(figure)EndFigure(false);
+            var strokePath=new SPath(stroke,rule);
+            disposed=true;
+            return (fill is null ? strokePath : new(fill,rule),strokePath);
+        }
         public void Dispose()
         {
-            if(disposed)return;if(figure)EndFigure(false);
-            var strokePath=new SPath(stroke,rule);
-            owner.Replace(fill is null ? strokePath : new(fill,rule),strokePath);
-            owner.editing=false;disposed=true;
+            if(!disposed&&owner is not null)
+            {
+                var paths=Finish();
+                owner.Replace(paths.Fill,paths.Stroke);
+                owner.editing=false;
+            }
+            disposed=true;
         }
     }
 }

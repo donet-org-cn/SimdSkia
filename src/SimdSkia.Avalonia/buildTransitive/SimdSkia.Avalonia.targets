@@ -1,0 +1,26 @@
+<Project>
+  <Target Name="SelectSimdSkiaAvaloniaAdapter" AfterTargets="ResolvePackageAssets" Condition="'$(DesignTimeBuild)' != 'true' Or Exists('$(ProjectAssetsFile)')">
+    <ItemGroup>
+      <_SimdSkiaAvaloniaBase Include="@(Reference)" Condition="'%(Reference.Filename)' == 'Avalonia.Base' And Exists('%(Reference.Identity)')" />
+      <_SimdSkiaAvaloniaBase Include="@(ResolvedCompileFileDefinitions)" Condition="'%(ResolvedCompileFileDefinitions.Filename)' == 'Avalonia.Base'" />
+    </ItemGroup>
+    <GetAssemblyIdentity AssemblyFiles="@(_SimdSkiaAvaloniaBase)" Condition="'@(_SimdSkiaAvaloniaBase)' != ''">
+      <Output TaskParameter="Assemblies" ItemName="_SimdSkiaAvaloniaBaseIdentity" />
+    </GetAssemblyIdentity>
+    <PropertyGroup>
+      <_SimdSkiaAvaloniaBaseVersion>@(_SimdSkiaAvaloniaBaseIdentity->'%(Version)'->Distinct())</_SimdSkiaAvaloniaBaseVersion>
+      <_SimdSkiaAvaloniaAdapter>$(MSBuildThisFileDirectory)../adapters/12.2/SimdSkia.Avalonia.dll</_SimdSkiaAvaloniaAdapter>
+    </PropertyGroup>
+    <ItemGroup Condition="'$(_SimdSkiaAvaloniaBaseVersion)' != '' And $([MSBuild]::VersionGreaterThanOrEquals('$(_SimdSkiaAvaloniaBaseVersion)', '12.2.0'))">
+      <_SimdSkiaLegacyCompile Include="@(ResolvedCompileFileDefinitions)"
+          Condition="'%(ResolvedCompileFileDefinitions.NuGetPackageId)' == 'SimdSkia.Avalonia' And '%(ResolvedCompileFileDefinitions.Filename)' == 'SimdSkia.Avalonia'" />
+      <_SimdSkiaLegacyRuntime Include="@(RuntimeCopyLocalItems)"
+          Condition="'%(RuntimeCopyLocalItems.NuGetPackageId)' == 'SimdSkia.Avalonia' And '%(RuntimeCopyLocalItems.Filename)' == 'SimdSkia.Avalonia'" />
+      <ResolvedCompileFileDefinitions Remove="@(_SimdSkiaLegacyCompile)" />
+      <RuntimeCopyLocalItems Remove="@(_SimdSkiaLegacyRuntime)" />
+      <ResolvedCompileFileDefinitions Include="@(_SimdSkiaLegacyCompile->'$(_SimdSkiaAvaloniaAdapter)')"
+          HintPath="$(_SimdSkiaAvaloniaAdapter)" />
+      <RuntimeCopyLocalItems Include="@(_SimdSkiaLegacyRuntime->'$(_SimdSkiaAvaloniaAdapter)')" />
+    </ItemGroup>
+  </Target>
+</Project>

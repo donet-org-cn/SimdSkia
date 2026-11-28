@@ -1,15 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="AvaloniaContract.props" />
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks><RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <Description>Managed C# rendering/font services for Avalonia 12.1.0 or later. Windows/Linux/macOS installed-font discovery. Add SimdSkia.Avalonia.Desktop for OS window hosts and SimdSkia.Avalonia.Gpu for optional hardware drawing.</Description>
+    <NoWarn>$(NoWarn);NU5100</NoWarn>
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);PackAvalonia12_2Adapter</TargetsForTfmSpecificContentInPackage>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(SimdSkiaAvaloniaContract)' == '12.2.0'">
+    <DefineConstants>$(DefineConstants);AVALONIA_12_2</DefineConstants>
+    <OutputPath>bin/avalonia-12.2/$(Configuration)/</OutputPath>
+    <IntermediateOutputPath>obj/avalonia-12.2/$(Configuration)/</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="/README.md" />
+    <None Include="buildTransitive/SimdSkia.Avalonia.targets" Pack="true" PackagePath="buildTransitive/" />
     <!-- Avalonia's consumer ref assemblies deliberately prohibit implementing backend contracts.
          Compile against the lowest supported runtime contract, not the consumer's
          reference assemblies. The application can select later Avalonia versions. -->
     <PackageReference Include="Avalonia" Version="[12.1.0,)" GeneratePathProperty="true" ExcludeAssets="compile" />
-    <Reference Include="$(PkgAvalonia)/lib/net8.0/*.dll" />
+    <PackageDownload Include="Avalonia" Version="[12.2.0]" />
+    <Reference Include="$(_SimdSkiaAvaloniaRuntimePath)/*.dll" />
     <PackageReference Include="Clipper2" Version="[2.0.0]" />
     <ProjectReference Include="../SimdSkia.Core/SimdSkia.Core.csproj" />
     <ProjectReference Include="../SimdSkia.Cpu/SimdSkia.Cpu.csproj" />
@@ -20,4 +30,16 @@
     <None Include="../../docs/licenses/Clipper2-BSL-1.0.txt" Link="licenses/Clipper2-BSL-1.0.txt" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="licenses" />
     <None Include="../../docs/licenses/Avalonia-MIT.txt" Link="licenses/Avalonia-MIT.txt" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="licenses" />
   </ItemGroup>
+  <Target Name="PackAvalonia12_2Adapter">
+    <Error Condition="'$(SimdSkiaAvaloniaContract)' == '12.2.0'"
+           Text="Pack with the default Avalonia contract to include both Avalonia adapters." />
+    <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="Build"
+             Properties="SimdSkiaAvaloniaContract=12.2.0;BuildProjectReferences=false"
+             RemoveProperties="OutputPath;IntermediateOutputPath">
+      <Output TaskParameter="TargetOutputs" ItemName="_Avalonia12_2Adapter" />
+    </MSBuild>
+    <ItemGroup>
+      <TfmSpecificPackageFile Include="@(_Avalonia12_2Adapter)" PackagePath="adapters/12.2/" />
+    </ItemGroup>
+  </Target>
 </Project>

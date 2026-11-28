@@ -1,5 +1,5 @@
 param(
- [string]$Version='0.1.12',
+ [string]$Version='0.1.13',
  [string]$AvaloniaVersion='12.1.6',
  [string]$Packages='artifacts/nuget-preview',
  [string]$Output='artifacts/desktop-package-consumer',
@@ -20,12 +20,13 @@ try{
  $contentHash=(Get-FileHash -LiteralPath $manifest -Algorithm SHA256).Hash.ToLowerInvariant()
  # Keep the Native AOT library paths below the Windows linker MAX_PATH limit.
  $cache=Join-Path $workspacePath ('artifacts/nuget-cache/av-'+$contentHash.Substring(0,16))
- dotnet restore examples/CrossPlatform/CrossPlatform.csproj -p:UsePackedSimdSkia=true -p:SimdSkiaPackageVersion=$Version -p:AvaloniaVersion=$AvaloniaVersion -p:NuGetLockFilePath=$outPath/packages.lock.json --configfile $config --packages $cache --force-evaluate
+ $themeProperty=if([version]$AvaloniaVersion -ge [version]'12.2.0'){'-p:UseFluent2=true'}else{'-p:UseFluent2=false'}
+ dotnet restore examples/CrossPlatform/CrossPlatform.csproj -p:UsePackedSimdSkia=true -p:SimdSkiaPackageVersion=$Version -p:AvaloniaVersion=$AvaloniaVersion -p:NuGetLockFilePath=$outPath/packages.lock.json $themeProperty --configfile $config --packages $cache --force-evaluate
  if($LASTEXITCODE -ne 0){throw 'Packed desktop restore failed.'}
  $assets=Get-Content examples/CrossPlatform/obj/project.assets.json -Raw|ConvertFrom-Json
  foreach($library in $assets.libraries.PSObject.Properties){if($library.Name -match '^SimdSkia' -and $library.Value.type -eq 'project'){throw 'A source engine ProjectReference leaked into the package consumer.'}}
  if(!$assets.libraries.PSObject.Properties["Avalonia/$AvaloniaVersion"]){throw 'The requested Avalonia version was not resolved.'}
- dotnet build examples/CrossPlatform/CrossPlatform.csproj -c Release -p:UsePackedSimdSkia=true -p:SimdSkiaPackageVersion=$Version -p:AvaloniaVersion=$AvaloniaVersion -p:NuGetLockFilePath=$outPath/packages.lock.json --no-restore -o "$outPath/bin" *> "$outPath/build.log"
+ dotnet build examples/CrossPlatform/CrossPlatform.csproj -c Release -p:UsePackedSimdSkia=true -p:SimdSkiaPackageVersion=$Version -p:AvaloniaVersion=$AvaloniaVersion -p:NuGetLockFilePath=$outPath/packages.lock.json $themeProperty --no-restore -o "$outPath/bin" *> "$outPath/build.log"
  if($LASTEXITCODE -ne 0){Get-Content "$outPath/build.log";throw 'Packed desktop build failed.'}
  foreach($hostName in @('Avalonia.Win32','Avalonia.Win32.Automation','Avalonia.X11','Avalonia.FreeDesktop','Avalonia.FreeDesktop.AtSpi','Avalonia.Native')){
   if([Reflection.AssemblyName]::GetAssemblyName("$outPath/bin/$hostName.dll").Version.ToString() -ne "$AvaloniaVersion.0"){throw "Mismatched $hostName for Avalonia $AvaloniaVersion."}
@@ -40,7 +41,7 @@ try{
  if($NativeAot){
   $prefix=if($IsWindows){'win'}elseif($IsMacOS){'osx'}else{'linux'}
   $arch=[Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString().ToLowerInvariant()
-  dotnet publish examples/CrossPlatform/CrossPlatform.csproj -c Release -r "$prefix-$arch" -p:PublishAot=true -p:UsePackedSimdSkia=true -p:SimdSkiaPackageVersion=$Version -p:AvaloniaVersion=$AvaloniaVersion -p:NuGetLockFilePath=$outPath/packages.lock.json -p:RestoreConfigFile=$config -p:RestorePackagesPath=$cache -o "$outPath/aot" *> "$outPath/aot-build.log"
+  dotnet publish examples/CrossPlatform/CrossPlatform.csproj -c Release -r "$prefix-$arch" -p:PublishAot=true -p:UsePackedSimdSkia=true -p:SimdSkiaPackageVersion=$Version -p:AvaloniaVersion=$AvaloniaVersion -p:NuGetLockFilePath=$outPath/packages.lock.json -p:RestoreConfigFile=$config -p:RestorePackagesPath=$cache $themeProperty -o "$outPath/aot" *> "$outPath/aot-build.log"
   if($LASTEXITCODE -ne 0){Get-Content "$outPath/aot-build.log";throw 'Packed desktop Native AOT publish failed.'}
   $exe=Join-Path $outPath ('aot/CrossPlatform'+$(if($IsWindows){'.exe'}else{''}))
   $aotArgs=@('--smoke','--controls','--font',(Resolve-Path baseline/fonts/ZCOOLXiaoWei-Regular.ttf).Path,'--output',"$outPath/aot-results")

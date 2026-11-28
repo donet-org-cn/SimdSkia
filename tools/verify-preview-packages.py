@@ -11,19 +11,22 @@ parser=argparse.ArgumentParser()
 parser.add_argument('--directory',required=True,type=Path)
 parser.add_argument('--version',required=True)
 parser.add_argument('--desktop-only',action='store_true',help='Build-time desktop CI feed, excluding the Android package.')
+parser.add_argument('--current-source',action='store_true',help='Verify packages built from the current source, including the Avalonia 12.2 adapter.')
 args=parser.parse_args()
+has_avalonia12_2=args.current_source or args.version=='0.1.13'
 if not re.fullmatch(r'\d+\.\d+\.\d+(?:-preview\.\d+)?',args.version):
     raise SystemExit('Expected a stable or preview SemVer.')
 ids=['SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Text','SimdSkia.Imaging','SimdSkia.Gpu','SimdSkia.Gpu.Direct2D','SimdSkia.Compatibility','SimdSkia.Avalonia','SimdSkia.Avalonia.Desktop','SimdSkia.Avalonia.Gpu','SimdSkia']
-modern=args.version in ('0.1.0-preview.10','0.1.0','0.1.1','0.1.2','0.1.3','0.1.4','0.1.5','0.1.6','0.1.7','0.1.8','0.1.9','0.1.10','0.1.11','0.1.12','0.1.2-preview.1','0.1.2-preview.2','0.1.2-preview.3')
-matrix=args.version in ('0.1.1','0.1.2','0.1.3','0.1.4','0.1.5','0.1.6','0.1.7','0.1.8','0.1.9','0.1.10','0.1.11','0.1.12','0.1.2-preview.1','0.1.2-preview.2','0.1.2-preview.3')
-open_avalonia_range=args.version in ('0.1.8','0.1.9','0.1.10','0.1.11','0.1.12')
+modern=args.version in ('0.1.0-preview.10','0.1.0','0.1.1','0.1.2','0.1.3','0.1.4','0.1.5','0.1.6','0.1.7','0.1.8','0.1.9','0.1.10','0.1.11','0.1.12','0.1.13','0.1.2-preview.1','0.1.2-preview.2','0.1.2-preview.3')
+matrix=args.version in ('0.1.1','0.1.2','0.1.3','0.1.4','0.1.5','0.1.6','0.1.7','0.1.8','0.1.9','0.1.10','0.1.11','0.1.12','0.1.13','0.1.2-preview.1','0.1.2-preview.2','0.1.2-preview.3')
+open_avalonia_range=args.version in ('0.1.8','0.1.9','0.1.10','0.1.11','0.1.12','0.1.13')
 host_patches=range(7 if open_avalonia_range else 6)
 if args.version=='0.1.0-preview.9' or modern:
     ids.append('SimdSkia.Pdf')
-if args.version in ('0.1.4','0.1.5','0.1.6','0.1.7','0.1.8','0.1.9','0.1.10','0.1.11','0.1.12') and not args.desktop_only:
+if args.version in ('0.1.4','0.1.5','0.1.6','0.1.7','0.1.8','0.1.9','0.1.10','0.1.11','0.1.12','0.1.13') and not args.desktop_only:
     ids.append('SimdSkia.Avalonia.Android')
 release_topics={
+    '0.1.13':(('Avalonia 12.2','Fluent2','Sdcb.SimdCodecs 2.1.0'),'0.1.13'),
     '0.1.12':(('Metal',),'0.1.12'),
     '0.1.11':(('Metal',),'0.1.11'),
     '0.1.10':(('Avalonia','托管分配'),'0.1.10'),
@@ -63,6 +66,8 @@ for package_id in ids:
         for topic in topics:
             assert topic in readme and topic in changelog,(path,'Missing release topic',topic)
         allowed_bridges={f'hosts/12.1.{i}.0/native/libAvaloniaNative.dylib' for i in host_patches} if matrix and package_id=='SimdSkia.Avalonia.Desktop' else set()
+        if has_avalonia12_2 and package_id=='SimdSkia.Avalonia.Desktop':
+            allowed_bridges.add('hosts/12.2.0.0/native/libAvaloniaNative.dylib')
         assert not any((name.lower().endswith(('.ttf','.ttc','.otf','.woff','.woff2','.so','.dylib')) or name.lower().startswith('runtimes/')) and name not in allowed_bridges for name in names),path
         assert allowed_bridges.issubset(names),path
         assert not any('skiasharp.dll' in name.lower() or 'harfbuzz' in name.lower() for name in names),path
@@ -80,10 +85,12 @@ for package_id in ids:
             assert not any(name.startswith('lib/net8.0/') for name in names),path
             assert 'JpegLibrary' not in dependencies,path
             if package_id=='SimdSkia.Imaging':
-                codec_version='2.0.0' if args.version in ('0.1.5','0.1.6','0.1.7','0.1.8','0.1.9','0.1.10','0.1.11','0.1.12') else '1.4.0'
+                codec_version='2.0.0' if args.version in ('0.1.5','0.1.6','0.1.7','0.1.8','0.1.9','0.1.10','0.1.11','0.1.12','0.1.13') else '1.4.0'
+                if has_avalonia12_2:
+                    codec_version='2.1.0'
                 assert dependencies.get('Sdcb.SimdCodecs')==f'[{codec_version}]',dependencies
                 assert 'licenses/Sdcb.SimdCodecs-MIT.txt' in names,path
-        if args.version in ('0.1.2-preview.3','0.1.2','0.1.3','0.1.4','0.1.5','0.1.6','0.1.7','0.1.8','0.1.9','0.1.10','0.1.11','0.1.12') and package_id!='SimdSkia.Avalonia.Android':
+        if args.version in ('0.1.2-preview.3','0.1.2','0.1.3','0.1.4','0.1.5','0.1.6','0.1.7','0.1.8','0.1.9','0.1.10','0.1.11','0.1.12','0.1.13') and package_id!='SimdSkia.Avalonia.Android':
             pdf_readme_versions=re.findall(r'PdfPig\s+(?:\*\*)?([0-9A-Za-z.+-]+)',readme)
             assert pdf_readme_versions and set(pdf_readme_versions)=={'0.1.16'},(path,'Incorrect PDF dependency version in README',pdf_readme_versions)
         if package_id=='SimdSkia.Pdf':
@@ -106,6 +113,9 @@ for package_id in ids:
             minimum='12.1.5' if package_id=='SimdSkia.Avalonia.Android' else '12.1.0'
             assert dependencies.get('Avalonia','').replace(' ','') in (minimum,f'[{minimum},)'),dependencies
         if package_id=='SimdSkia.Avalonia':
+            if has_avalonia12_2:
+                for asset in ('adapters/12.2/SimdSkia.Avalonia.dll','buildTransitive/SimdSkia.Avalonia.targets'):
+                    assert asset in names,(path,asset)
             if not open_avalonia_range:
                 assert dependencies.get('Avalonia')==('[12.1.0, 13.0.0)' if matrix else '[12.1.5]'),dependencies
             readme=package.read('README.md').decode('utf-8')
@@ -116,13 +126,16 @@ for package_id in ids:
             assert '系统' in readme and label in readme,path
         if package_id=='SimdSkia.Avalonia.Desktop':
             if matrix:
-                assert dependencies.get('Tmds.DBus.Protocol')=='[0.94.1]',dependencies
+                dbus_version='0.95.2' if has_avalonia12_2 else '0.94.1'
+                assert dependencies.get('Tmds.DBus.Protocol')==f'[{dbus_version}]',dependencies
                 assert not any(name in dependencies for name in ('Avalonia.Native','Avalonia.FreeDesktop','Avalonia.FreeDesktop.AtSpi')),dependencies
             else:
                 assert dependencies.get('Avalonia.Native')=='[12.1.5]',dependencies
             hosts=['Avalonia.Win32.dll','Avalonia.Win32.Automation.dll','Avalonia.X11.dll']
             if matrix:hosts+=['Avalonia.FreeDesktop.dll','Avalonia.FreeDesktop.AtSpi.dll','Avalonia.Native.dll']
             for host in hosts:
+                if has_avalonia12_2:
+                    assert f'hosts/12.2.0.0/{host}' in names,(path,host)
                 if matrix:
                     for patch in host_patches:
                         assert f'hosts/12.1.{patch}.0/{host}' in names,(path,host,patch)
@@ -131,8 +144,8 @@ for package_id in ids:
                 else:
                     assert f'lib/{framework}/{host}' in names,(path,host)
         if package_id=='SimdSkia.Gpu.Direct2D':
-            assert set(dependencies)==({'SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Gpu'} if args.version in ('0.1.2','0.1.3','0.1.4','0.1.5','0.1.6','0.1.7','0.1.8','0.1.9','0.1.10','0.1.11','0.1.12','0.1.2-preview.1','0.1.2-preview.2','0.1.2-preview.3') else {'SimdSkia.Core'}),dependencies
-        if args.version in ('0.1.3','0.1.4','0.1.5','0.1.6','0.1.7','0.1.8','0.1.9','0.1.10','0.1.11','0.1.12') and package_id=='SimdSkia.Avalonia.Desktop':
+            assert set(dependencies)==({'SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Gpu'} if args.version in ('0.1.2','0.1.3','0.1.4','0.1.5','0.1.6','0.1.7','0.1.8','0.1.9','0.1.10','0.1.11','0.1.12','0.1.13','0.1.2-preview.1','0.1.2-preview.2','0.1.2-preview.3') else {'SimdSkia.Core'}),dependencies
+        if args.version in ('0.1.3','0.1.4','0.1.5','0.1.6','0.1.7','0.1.8','0.1.9','0.1.10','0.1.11','0.1.12','0.1.13') and package_id=='SimdSkia.Avalonia.Desktop':
             assert dependencies.get('SimdSkia.Avalonia.Gpu','').strip('[]')==args.version,(path,'GPU-preferred desktop dependency missing')
         if package_id=='SimdSkia.Avalonia.Android':
             if not open_avalonia_range:

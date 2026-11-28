@@ -1,5 +1,5 @@
 param(
-    [Parameter(Mandatory=$true)][ValidatePattern('^0\.1\.(?:[0-9]|1[012])$')][string]$Version,
+    [Parameter(Mandatory=$true)][ValidatePattern('^0\.1\.(?:[0-9]|1[0123])$')][string]$Version,
     [string]$Output='artifacts/nuget-stable',
     [switch]$DesktopOnly
 )
@@ -12,12 +12,12 @@ try {
     $packagePath=[IO.Path]::GetFullPath($Output)
     New-Item -ItemType Directory -Path $packagePath -Force | Out-Null
     $projects=@('SimdSkia.Core','SimdSkia.Cpu','SimdSkia.Text','SimdSkia.Imaging','SimdSkia.Gpu','SimdSkia.Gpu.Direct2D','SimdSkia.Compatibility','SimdSkia.Avalonia','SimdSkia.Avalonia.Desktop','SimdSkia.Avalonia.Gpu','SimdSkia','SimdSkia.Pdf')
-    if($Version -in @('0.1.4','0.1.5','0.1.6','0.1.7','0.1.8','0.1.9','0.1.10','0.1.11','0.1.12') -and !$DesktopOnly){$projects+='SimdSkia.Avalonia.Android'}
+    if($Version -in @('0.1.4','0.1.5','0.1.6','0.1.7','0.1.8','0.1.9','0.1.10','0.1.11','0.1.12','0.1.13') -and !$DesktopOnly){$projects+='SimdSkia.Avalonia.Android'}
     foreach($project in $projects){
         dotnet pack "src/$project/$project.csproj" -c Release -p:Version=$Version -p:PackageVersion=$Version -p:StableRelease=true -o $packagePath --nologo
         if($LASTEXITCODE -ne 0){throw "Stable release packing failed: $project"}
     }
-    $verifyArguments=@('tools/verify-preview-packages.py','--directory',$packagePath,'--version',$Version)
+    $verifyArguments=@('tools/verify-preview-packages.py','--directory',$packagePath,'--version',$Version,'--current-source')
     if($DesktopOnly){$verifyArguments+='--desktop-only'}
     python @verifyArguments
     if($LASTEXITCODE -ne 0){throw 'Stable package content verification failed.'}

@@ -1,6 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><OutputType>Exe</OutputType><AssemblyName>SimdSkia.Avalonia.Controls.Tests</AssemblyName><DefineConstants>$(DefineConstants);MANAGED</DefineConstants><AllowUnsafeBlocks>true</AllowUnsafeBlocks><RestorePackagesWithLockFile>true</RestorePackagesWithLockFile></PropertyGroup>
   <PropertyGroup><AvaloniaVersion Condition="'$(AvaloniaVersion)' == ''">12.1.5</AvaloniaVersion></PropertyGroup>
+  <PropertyGroup Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(AvaloniaVersion)', '12.2.0'))">
+    <DefineConstants>$(DefineConstants);AVALONIA_12_2</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/SimdSkia.Avalonia/SimdSkia.Avalonia.csproj" Condition="'$(UsePackedSimdSkia)' != 'true'" />
     <PackageReference Include="SimdSkia.Avalonia" Version="$(SimdSkiaPackageVersion)" Condition="'$(UsePackedSimdSkia)' == 'true'" />

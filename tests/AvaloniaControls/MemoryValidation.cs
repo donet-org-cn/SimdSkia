@@ -118,7 +118,11 @@ internal static class MemoryValidation
         Check(GC.GetAllocatedBytesForCurrentThread()-beforeBounds<=64,"Repeated immutable bounds queries allocate.");
         using(var edit=geometry.Open()){edit.BeginFigure(new(-5,-3),true);edit.LineTo(new(20,14));edit.LineTo(new(-5,14));edit.EndFigure(true);}
         Check(geometry.Bounds==new Rect(-5,-3,25,17),"Editing geometry did not invalidate its cached bounds.");
+#if AVALONIA_12_2
+        var clone=geometry.WithTransform(Matrix.Identity);
+#else
         var clone=(SimdSkia.Avalonia.Geometry)geometry.Clone();
+#endif
         Check(clone.Bounds==geometry.Bounds,"Cloned geometry lost its bounds.");
         Parallel.For(0,64,_=>{if(clone.Bounds!=new Rect(-5,-3,25,17))throw new InvalidOperationException("Concurrent bounds query changed geometry.");});checks++;
         using var reference=factory.CreateRenderTargetBitmap(new(64,48),new(96,96));
@@ -200,14 +204,13 @@ internal static class MemoryValidation
                 },
             };
             var line = factory.CreateLineGeometry(start, end);
-            var outline = factory.CreateStreamGeometry();
-            using (var edit = outline.Open())
+            var outline = Validation.BuildStreamGeometry(factory, edit =>
             {
                 edit.BeginFigure(start, false);
                 edit.LineTo(end);
                 edit.LineTo(end); // Same stroke, with a contour that uses the polygon stroker.
                 edit.EndFigure(false);
-            }
+            });
             Check(line.GetRenderBounds(pen) == outline.GetRenderBounds(pen), "Flat-axis stroke bounds diverged from the polygon stroker.");
             var transform = i % 3 == 0 ? Matrix.CreateRotation(.137) : Matrix.Identity;
             using (var draw = reused.CreateDrawingContext())

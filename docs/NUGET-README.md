@@ -1,6 +1,6 @@
-# SimdSkia 0.1.12
+# SimdSkia 0.1.13
 
-新增 macOS Metal 窗口呈现，修复 CJK 回退和 TTC 字形发现，减少 CPU 阴影与路径光栅化的开销。[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.12/docs/RELEASE-0.1.12.md)
+0.1.13 支持 Avalonia 12.2 和 Fluent2，引入彩色 Emoji 和按码点字体回退，降低 CPU 投影与路径分配。编解码器升级到 Sdcb.SimdCodecs 2.1.0。[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.13/docs/RELEASE-0.1.13.md)
 
 ## 0.1.11 暂缓发布的构建
 

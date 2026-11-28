@@ -63,6 +63,23 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & artifacts/codec-aot/CodecIntegration.exe artifacts/codec-aot-results
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Verify the published PDF viewer opens and draws its toolbar
+        shell: pwsh
+        run: |
+          dotnet publish examples/PdfViewer -c Release -r win-x64 -p:PublishAot=true -p:OptimizationPreference=Size -o artifacts/pdf-viewer-aot/publish
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $publish = (Resolve-Path artifacts/pdf-viewer-aot/publish).Path
+          $run = New-Item -ItemType Directory -Path artifacts/pdf-viewer-aot/run
+          $process = Start-Process -FilePath "$publish/PdfViewer.exe" -WorkingDirectory $run.FullName -ArgumentList '--smoke' -WindowStyle Hidden -PassThru
+          if (!$process.WaitForExit(45000)) { $process.Kill(); throw "PDF viewer smoke timed out" }
+          $results = Join-Path $run.FullName 'artifacts/pdf-viewer'
+          if ($process.ExitCode -ne 0) {
+            if (Test-Path "$results/error.txt") { Get-Content "$results/error.txt" }
+            throw "PDF viewer smoke exited with $($process.ExitCode)"
+          }
+          if ((Get-Content "$results/result.txt" -Raw) -notmatch 'PASS actual PDF window; page 1/2;') {
+            throw "Missing successful PDF viewer smoke result"
+          }
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -72,4 +89,5 @@ jobs:
             artifacts/sampling-aot/*.txt
             artifacts/standalone-aot/*-results/
             artifacts/codec-aot-results/
+            artifacts/pdf-viewer-aot/run/artifacts/pdf-viewer/
           if-no-files-found: ignore

@@ -1,8 +1,8 @@
 param(
- [string]$Version='0.1.12',
+ [string]$Version='0.1.13',
  [string]$Packages='artifacts/avalonia-matrix/packages',
  [string]$Output='artifacts/avalonia-matrix/results',
- [string[]]$AvaloniaVersions=@('12.1.0','12.1.1','12.1.2','12.1.3','12.1.4','12.1.5','12.1.6'),
+ [string[]]$AvaloniaVersions=@('12.1.0','12.1.1','12.1.2','12.1.3','12.1.4','12.1.5','12.1.6','12.2.0'),
  [ValidateSet('auto','cpu')][string]$DesktopBackend='auto',
  [switch]$SkipDesktop,
  [switch]$NativeAot
@@ -19,9 +19,21 @@ try{
  $cache=Join-Path $workspacePath ('artifacts/nuget-cache/av-'+$manifestHash.Substring(0,16))
  Add-Type -AssemblyName System.IO.Compression.FileSystem
  $zip=[IO.Compression.ZipFile]::OpenRead("$feed/SimdSkia.Avalonia.$Version.nupkg")
- try{$stream=$zip.GetEntry('lib/net10.0/SimdSkia.Avalonia.dll').Open();try{$sha=[Security.Cryptography.SHA256]::Create();$expected=[Convert]::ToHexString($sha.ComputeHash($stream))}finally{$stream.Dispose();$sha.Dispose()}}finally{$zip.Dispose()}
+ try{
+  $adapterHashes=@{}
+  foreach($entryPath in @('lib/net10.0/SimdSkia.Avalonia.dll','adapters/12.2/SimdSkia.Avalonia.dll')){
+   $entry=$zip.GetEntry($entryPath)
+   if(!$entry){continue}
+   $stream=$entry.Open()
+   try{$adapterHashes[$entryPath]=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($stream))}
+   finally{$stream.Dispose()}
+  }
+ }finally{$zip.Dispose()}
  $rows=@()
  foreach($av in $AvaloniaVersions){
+  $entryPath=if([version]$av -ge [version]'12.2.0'){'adapters/12.2/SimdSkia.Avalonia.dll'}else{'lib/net10.0/SimdSkia.Avalonia.dll'}
+  $expected=$adapterHashes[$entryPath]
+  if(!$expected){throw "Missing adapter in package for Avalonia $av."}
   $rowPath=Join-Path $outPath $av;New-Item -ItemType Directory -Force $rowPath|Out-Null
   $props=@('-p:UsePackedSimdSkia=true',"-p:SimdSkiaPackageVersion=$Version","-p:AvaloniaVersion=$av","-p:NuGetLockFilePath=$rowPath/packages.lock.json")
   for($attempt=1;$attempt -le 3;$attempt++){
@@ -54,7 +66,7 @@ try{
   }
   $rows+=@{avalonia=$av;assemblyVersion=$loaded;adapterSha256=$actual;controls='passed';desktop=$(if($SkipDesktop){'not-run'}else{'passed'});desktopBackend=$(if($SkipDesktop){'not-run'}else{$DesktopBackend});nativeAot=$(if($aot -and !$SkipDesktop){'passed'}else{'not-run'})}
   $rows|ConvertTo-Json -Depth 8|Set-Content "$outPath/results.json" -Encoding utf8
-  Write-Output "PASS Avalonia ${av}: same adapter binary, controls, desktop=$(!$SkipDesktop) ($DesktopBackend), NativeAot=$aot"
+  Write-Output "PASS Avalonia ${av}: packaged adapter $entryPath, controls, desktop=$(!$SkipDesktop) ($DesktopBackend), NativeAot=$aot"
  }
 }
 finally{Pop-Location}

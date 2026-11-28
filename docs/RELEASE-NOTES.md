@@ -1,5 +1,16 @@
 # SimdSkia 更新日志 / Release notes
 
+## 0.1.13 正式版 · Avalonia 12.2、字体与渲染（2026-11-28）
+
+- 支持 Avalonia 12.2.0 的几何构建和命中测试。桌面包按应用解析的 Avalonia 版本选择适配器和配套宿主，覆盖现有 12.1.x 应用与 12.2.0 Fluent2 应用。[Issue #13](https://github.com/donet-org-cn/SimdSkia/issues/13)
+- 编解码依赖更新至 Sdcb.SimdCodecs 2.1.0，桌面 D-Bus 依赖更新至 Tmds.DBus.Protocol 0.95.2。
+- 系统字体按码点查找并按需加载，新增 `sbix`、`COLRv0/CPAL` 和 `CBDT/CBLC` 彩色字形支持。[#7](https://github.com/donet-org-cn/SimdSkia/issues/7) · [#8](https://github.com/donet-org-cn/SimdSkia/issues/8)
+- CPU 投影可复用模糊后的遮罩。路径展平、扫描段和覆盖率缓冲减少了每帧的临时分配。[#9](https://github.com/donet-org-cn/SimdSkia/issues/9) · [#10](https://github.com/donet-org-cn/SimdSkia/issues/10)
+- Vulkan 和 Metal 新增径向、扫掠渐变和图像平铺。在 Direct2D 上，支持的径向渐变使用原生实现。[#11](https://github.com/donet-org-cn/SimdSkia/issues/11)
+- 自带 PDFViewer 随发布输出复制示例 PDF，支持用 `--cpu` 排查窗口呈现。[#12](https://github.com/donet-org-cn/SimdSkia/issues/12)
+
+[发行说明与测试记录](RELEASE-0.1.13.md)
+
 ## 0.1.12 正式版 · macOS Metal、字体与 CPU 渲染（2026-11-20）
 
 - macOS 桌面优先使用 Metal，支持 GPU 图层、模糊和阴影。感谢 [@239573049](https://github.com/239573049) 的实现、实机验证和测试。[PR #4](https://github.com/donet-org-cn/SimdSkia/pull/4)

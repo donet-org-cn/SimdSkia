@@ -6,7 +6,11 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+#if FLUENT2
+using Avalonia.Themes.Fluent2;
+#else
 using Avalonia.Themes.Fluent;
+#endif
 using Avalonia.Threading;
 using SimdSkia.Avalonia;
 
@@ -54,6 +58,9 @@ internal static class Program
             if (window.ClientSize.Width < 500 || window.ClientSize.Height < 200) throw new InvalidOperationException("The native window did not resize.");
             button.RaiseEvent(new global::Avalonia.Interactivity.RoutedEventArgs(Button.ClickEvent));
             if (!Equals(button.Content, "Clicked / 已点击")) throw new InvalidOperationException("The control event route failed.");
+#if FLUENT2
+            VerifyGeometryBuilder();
+#endif
             int width=(int)Math.Ceiling(window.ClientSize.Width),height=(int)Math.Ceiling(window.ClientSize.Height);
             using var target = new RenderTargetBitmap(new PixelSize(width,height), new Vector(96, 96)); target.Render(window);
             byte[] pixels = new byte[width * height * 4]; var handle = GCHandle.Alloc(pixels, GCHandleType.Pinned);
@@ -82,11 +89,43 @@ internal static class Program
         }
         catch (Exception error) { Console.Error.WriteLine(error); desktop.Shutdown(1); }
     }
+
+#if FLUENT2
+    private static void VerifyGeometryBuilder()
+    {
+        var first = StreamGeometry.Parse("M0,0 L20,0 L20,20 L0,20 Z");
+        var appended = (StreamGeometry)first.Clone();
+        using (var context = appended.Open())
+        {
+            context.BeginFigure(new(30, 0));
+            context.LineTo(new(50, 0));
+            context.LineTo(new(50, 20));
+            context.LineTo(new(30, 20));
+            context.EndFigure(true);
+        }
+        if (!appended.FillContains(new(10, 10)) || !appended.FillContains(new(40, 10)) ||
+            first.FillContains(new(40, 10)) || appended.FillContains(new(25, 10)))
+            throw new InvalidOperationException("Appending figures did not preserve the original geometry.");
+
+        var inner = new RectangleGeometry(new Rect(5, 5, 5, 5));
+        var overlap = new RectangleGeometry(new Rect(15, 15, 10, 10));
+        var separate = new RectangleGeometry(new Rect(21, 0, 8, 20));
+        if (first.GetFillIntersectionResult(inner) != IntersectionResult.FullyInside ||
+            inner.GetFillIntersectionResult(first) != IntersectionResult.FullyContains ||
+            first.GetFillIntersectionResult(overlap) != IntersectionResult.Intersects ||
+            appended.GetFillIntersectionResult(separate) != IntersectionResult.Empty)
+            throw new InvalidOperationException("Geometry fill intersection classification failed.");
+    }
+#endif
 }
 
 internal sealed class DemoApp : Application
 {
+#if FLUENT2
+    public override void Initialize() => Styles.Add(new Fluent2Theme());
+#else
     public override void Initialize() => Styles.Add(new FluentTheme());
+#endif
     public override void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)

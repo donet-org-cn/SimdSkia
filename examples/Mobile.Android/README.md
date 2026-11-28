@@ -1,17 +1,17 @@
-# SimdSkia.Avalonia.Android 0.1.12
+# SimdSkia.Avalonia.Android 0.1.13
 
-0.1.12 与新增 macOS Metal 窗口呈现的桌面组件同步发布。Android 包接受 Avalonia 12.1.5 及更高版本，示例使用 12.1.6。[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.12/docs/RELEASE-0.1.12.md) · [桌面性能报告](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.12/docs/MACOS-METAL-2026-11-20.md)
+0.1.13 与支持 Avalonia 12.2 和 Fluent2 的桌面包同步发布，更新到 Sdcb.SimdCodecs 2.1.0。Android 示例使用 Avalonia 12.1.6。[发行说明](https://github.com/donet-org-cn/SimdSkia/blob/v0.1.13/docs/RELEASE-0.1.13.md)
 
 该源码示例使用 SimdSkia 的 C# CPU/通用 SIMD 光栅化。随包的 12.1.5 Android 宿主负责 Activity、触摸、输入法和帧缓冲显示。
 
-中文、输入框、按钮、动画进度条、圆角渐变及前后台恢复已在 Android 16 ARM64 USB 真机测试。0.1.4 新增可直接引用的 Android 包，包消费另做独立缓存 Release/Mono AOT 构建。iOS 呈现适配仍待实现。测试范围见[移动端报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/ANDROID-2026-11-09.md)，当前发行结果见[发布记录](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/NUGET-PREVIEW.md)。
+中文、输入框、按钮、动画进度条、圆角渐变及前后台恢复已在 Android 16 ARM64 USB 真机测试。0.1.4 新增可直接引用的 Android 包，包消费另做独立缓存 Release/Mono AOT 构建。iOS 呈现示例需要在 Mac 和设备上验证。测试范围见[移动端报告](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/ANDROID-2026-11-09.md)，当前发行结果见[发布记录](https://github.com/donet-org-cn/SimdSkia/blob/main/docs/NUGET-PREVIEW.md)。
 
 ## NuGet 接入
 
 目标框架使用 `net10.0-android36.0`。在 Android 启动项目中统一 Avalonia 家族包版本，以下命令使用 12.1.6。
 
 ```powershell
-dotnet add package SimdSkia.Avalonia.Android --version 0.1.12
+dotnet add package SimdSkia.Avalonia.Android --version 0.1.13
 dotnet add package Avalonia.Themes.Fluent --version 12.1.6
 ```
 

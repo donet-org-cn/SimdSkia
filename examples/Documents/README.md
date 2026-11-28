@@ -13,6 +13,19 @@ The first command generates a two-page 144 DPI **raster** PDF, reopens it and
 renders both pages to PNG. The second renders an existing PDF to PNG instead;
 the third opens the window viewer with Open / Previous / Next controls. Windows
 uses `WinExe` for the viewer, so an extra console window is not created.
+Without a PDF path, the viewer opens the two-page `external.pdf` copied next to
+the executable.
+
+To publish the viewer with Native AOT on Windows x64:
+
+```powershell
+dotnet publish examples/PdfViewer -c Release -r win-x64 -p:PublishAot=true -p:OptimizationPreference=Size -o artifacts/pdf-viewer
+./artifacts/pdf-viewer/PdfViewer.exe
+```
+
+If the window is blank, run the same executable with `--cpu` to check software
+presentation on the same machine. `--smoke` checks PDF navigation and records the
+rendered toolbar under `artifacts/pdf-viewer` in the current working directory.
 
 Generation uses `SKDocument.CreatePdf`, `BeginPage`, ordinary `SKCanvas` commands,
 `EndPage` and `Close`. Caller-owned streams remain open. Page canvases become

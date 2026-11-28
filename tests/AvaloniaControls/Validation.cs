@@ -14,6 +14,11 @@ using System.Text.Json;
 using System.Security.Cryptography;
 using CorePixel=SimdSkia.PixelBuffer;
 using AAlpha=Avalonia.Platform.AlphaFormat;
+#if AVALONIA_12_2
+using GeometryContext=Avalonia.Platform.IGeometryContext;
+#else
+using GeometryContext=Avalonia.Platform.IStreamGeometryContextImpl;
+#endif
 
 namespace SimdSkia.ControlValidation;
 
@@ -148,17 +153,16 @@ internal static class Validation
         Assert(dotted.FillContains(new(2,8))&&dotted.FillContains(new(6,8))&&!dotted.FillContains(new(4,8)),"Zero-length round dash did not render actual dots.");
         var line=Factory.CreateLineGeometry(new(0,0),new(10,0));Assert(Math.Abs(line.ContourLength-10)<1e-5&&line.TryGetPointAtDistance(5,out var midpoint)&&midpoint==new Point(5,0),"Geometry distance evaluation failed.");
         Assert(line.TryGetSegment(2,6,true,out var segment)&&Math.Abs(segment.ContourLength-4)<1e-5,"Geometry trim did not preserve requested distances.");
-        var geometry=Factory.CreateStreamGeometry();using(var context=geometry.Open()){context.BeginFigure(new(0,10),false);context.ArcTo(new(20,10),new(10,10),0,false,SweepDirection.Clockwise);context.EndFigure(false);}
+        var geometry=new StreamGeometry();using(var context=geometry.Open()){context.BeginFigure(new(0,10),false);context.ArcTo(new(20,10),new(10,10),0,false,SweepDirection.Clockwise);context.EndFigure(false);}
         Assert(geometry.ContourLength>30&&geometry.ContourLength<32&&geometry.Bounds.Width>19,"Unfilled SVG elliptical arc lost its curve or bounds.");
-        var openFigures = Factory.CreateStreamGeometry();
-        using (var context = openFigures.Open())
+        var openFigures = BuildStreamGeometry(Factory, context =>
         {
             context.BeginFigure(new(2, 4), false);
             context.LineTo(new(10, 4));
             context.LineTo(new(10, 12));
             context.BeginFigure(new(18, 18), false);
             context.LineTo(new(28, 18));
-        }
+        });
         Assert(Math.Abs(openFigures.ContourLength - 26) < 1e-5, "Consecutive figures changed the length of open contours.");
         using (var image = Target())
         {
@@ -170,11 +174,28 @@ internal static class Validation
             Assert(Pixel(image, 6, 4) == Colors.Red && Pixel(image, 22, 18) == Colors.Red, "The stream did not draw both figures.");
             Assert(Pixel(image, 6, 8).A == 0 && Pixel(image, 14, 15).A == 0, "Starting another figure closed or joined open contours.");
         }
-        var clone=geometry.Clone();using(var edit=clone.Open()){edit.BeginFigure(new(3,3));edit.LineTo(new(5,3));edit.LineTo(new(5,5));edit.EndFigure(true);}Assert(clone.FillContains(new(4.5,3.5))&&geometry.ContourLength>30,"Editing cloned geometry changed the original.");
+        var clone=(StreamGeometry)geometry.Clone();using(var edit=clone.Open()){edit.BeginFigure(new(3,3));edit.LineTo(new(5,3));edit.LineTo(new(5,5));edit.EndFigure(true);}Assert(clone.FillContains(new(4.5,3.5))&&geometry.ContourLength>30,"Editing cloned geometry changed the original.");
         clone.GetWidenedGeometry(new Pen(Brushes.Black,1));using(var edit=clone.Open()){edit.BeginFigure(new(20,20));edit.LineTo(new(25,20));edit.EndFigure(false);}Assert(clone.GetWidenedGeometry(new Pen(Brushes.Black,1)).FillContains(new(22,20)),"Editing a geometry did not invalidate its stroke cache.");
+#if AVALONIA_12_2
+        Assert(clone.FillContains(new(4.5,3.5)),"Editing a geometry discarded a previously appended figure.");
+#else
         Assert(!clone.FillContains(new(4.5,3.5)),"Hit testing reused contours from an earlier edit.");
+#endif
         GC.Collect();GC.WaitForPendingFinalizers();
         Assert(cut.FillContains(new(1,1))&&!cut.FillContains(new(15,15)),"Rebuilding hit contours after GC changed a hole.");
+    }
+    internal static IGeometryImpl BuildStreamGeometry(IPlatformRenderInterface factory, Action<GeometryContext> write)
+    {
+#if AVALONIA_12_2
+        using var builder = factory.CreateStreamGeometryBuilder();
+        write(builder);
+        return builder.ToGeometry();
+#else
+        var geometry = factory.CreateStreamGeometry();
+        using (var context = geometry.Open())
+            write(context);
+        return geometry;
+#endif
     }
     private static void RunShaping(string font)
     {

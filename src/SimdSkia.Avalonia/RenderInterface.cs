@@ -22,7 +22,12 @@ internal sealed class RenderInterface(Func<PixelBuffer,ICanvasBackend>? backendF
     public IGeometryImpl CreateEllipseGeometry(Rect rect)=>Geometry.Ellipse(rect);
     public IGeometryImpl CreateRectangleGeometry(Rect rect)=>Geometry.Rectangle(rect);
     public IGeometryImpl CreateLineGeometry(Point a,Point b)=>new Geometry(new SimdSkia.PathGeometry([new(PathVerb.Move,ConvertTo.Point(a)),new(PathVerb.Line,ConvertTo.Point(b))]));
+#if AVALONIA_12_2
+    public IStreamGeometryBuilder CreateStreamGeometryBuilder(IGeometryImpl? source = null) =>
+        new StreamGeometry.Context(null, (Geometry?)source);
+#else
     public IStreamGeometryImpl CreateStreamGeometry()=>new StreamGeometry();
+#endif
     public IGeometryImpl CreateGeometryGroup(global::Avalonia.Media.FillRule rule,IReadOnlyList<IGeometryImpl> children)
     {
         var fill=new List<PathSegment>();var stroke=new List<PathSegment>();foreach(Geometry child in children){child.Validate();child.Path.AppendTransformedTo(fill,Matrix3.Identity);child.StrokePath.AppendTransformedTo(stroke,Matrix3.Identity);}
